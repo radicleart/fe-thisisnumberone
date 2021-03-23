@@ -1,0 +1,144 @@
+// Variables
+//
+// Variables should follow the `$component-state-property-size` formula for
+// consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
+
+// Color system
+$sans-serif-family:          'Montserrat', 'Helvetica Neue',  Arial, sans-serif !default;
+
+$none:                       0   !default;
+$border-thin:                1px !default;
+$border-thick:               2px !default;
+
+$login-blue:                 #283593 !default;
+
+$white-color:                #FFFFFF !default;
+$white-bg:                   #FFFFFF !default;
+$orange-bg:                  #e95e38 !default;
+
+$smoke-bg:                   #F5F5F5 !default;
+$light-black:                #444    !default;
+
+$black-bg:                   rgba(30,30,30,.97) !default;
+
+$black-color:                #2c2c2c !default;
+$black-hr:                   #444444 !default;
+
+$light-gray:                 #E3E3E3 !default;
+$medium-gray:                #DDDDDD !default;
+$dark-gray:                  #9A9A9A !default;
+
+$opacity-gray-3:             rgba(222,222,222, .3) !default;
+$opacity-gray-5:             rgba(222,222,222, .5) !default;
+$opacity-gray-8:             rgba(222,222,222, .8) !default;
+
+
+$opacity-5:                  rgba(255,255,255, .5) !default;
+$opacity-8:                  rgba(255,255,255, .8) !default;
+
+$datepicker-color-days:             rgba(255,255,255, .8)  !default;
+$datepicker-color-old-new-days:     rgba(255,255,255, .4)  !default;
+
+
+$opacity-1:                  rgba(255,255,255, .1) !default;
+$opacity-2:                  rgba(255,255,255, .2) !default;
+
+$transparent-bg:             transparent !default;
+$dark-background:            #555555 !default;
+
+$default-color:              #888888 !default;
+$default-states-color:       lighten($default-color, 6%) !default;
+$default-color-opacity:      rgba(182, 182, 182, .6) !default;
+
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #9e9e9e !default;
+//#e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #000 !default;
+$gray-700: #707070!default;
+$gray-800: #212121 !default;
+//#343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
+
+$grays: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$grays: map-merge(
+  (
+    "100": $gray-100,
+    "200": $gray-200,
+    "300": $gray-300,
+    "400": $gray-400,
+    "500": $gray-500,
+    "600": $gray-600,
+    "700": $gray-700,
+    "800": $gray-800,
+    "900": $gray-900
+  ),
+  $grays
+);
+
+$elegant:    #2E2E2E !default;
+$stylish:    #4B515D !default;
+$blue:    #283593 !default;
+$brown:   #795548 !default;
+$indigo:  #5154A1 !default;
+$purple:  #6f42c1 !default;
+$pink:    #e83e8c !default;
+$red:     #FF0552 !default; //#dc3545 !default;
+$orange:  #f57c00 !default;
+$yellow:  #FDA800 !default;
+$green:   #28a745 !default;
+$teal:    #00695c !default;
+/*
+$cyan:    #17a2b8 !default;
+*/
+$cyan:    #5FBDC1 !default;
+
+$colors: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$colors: map-merge(
+  (
+    "stylish":    $stylish,
+    "elegant":    $elegant,
+    "blue":       $blue,
+    "brown":      $brown,
+    "indigo":     $indigo,
+    "purple":     $purple,
+    "pink":       $pink,
+    "red":        $red,
+    "orange":     $orange,
+    "yellow":     $yellow,
+    "green":      $green,
+    "teal":       $teal,
+    "cyan":       $cyan,
+    "white":      $white,
+    "gray":       $gray-600,
+    "gray-dark":  $gray-800
+  ),
+  $colors
+);
+
+$primary:       $stylish !default;
+$secondary:     $indigo !default;
+$success:       $teal !default;
+$info:          #50B1B5 !default; //$cyan !default;
+$warning:       $yellow !default;
+$danger:        $red !default;
+$light:         $gray-200 !default;
+$dark:          $gray-800 !default;
+
+
+$text-primary: #cbcbcb;
+//$primary: #cbcbcb;
+
+//body colour
+$body-color: #707070;
+
+$headings-font-family: Roboto;
+$font-family-sans-serif:  Roboto, Helvetica, Arial, sans-serif !default;
+
+$headings-font-weight: 500 !default;

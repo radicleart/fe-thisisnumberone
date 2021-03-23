@@ -1,0 +1,208 @@
+#rpay-pay-card .card {
+  color: #000;
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 20px #00000029;
+  border-radius: 14px;
+}
+#rpay-pay-card .card-text {
+  padding: 0.25rem;
+}
+#rpay-pay-card .card-body {
+  padding: 0 0 30px 0;
+}
+#rpay-pay-card .text-one {
+  color: #000;
+}
+#rpay-pay-card .text-two {
+  color: #ad1457;
+}
+#rpay-pay-card .text-three {
+  color: #ffd54f;
+}
+#rpay-pay-card .co-option-on {
+  color: #ffffff;
+  padding: 5px 15px;
+  margin: 8px;
+  text-transform: capitalize;
+  font-size: 12px;
+  font-weight: 700;
+}
+#rpay-pay-card .co-option-off {
+  color: #000000;
+  border: #cccccc;
+  background-color: #cccccc;
+  padding: 5px 15px;
+  margin: 8px;
+  text-transform: capitalize;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+#rpay-pay-card .no-option-on {
+  color: #ffffff;
+  padding: 5px 15px;
+  margin: 8px;
+  text-transform: capitalize;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 70%;
+  border-radius: 18px;
+}
+#rpay-pay-card .round-btn {
+  border-radius: 18px;
+  width: 50%;
+  white-space: 'nowrap';
+}
+
+#rpay-pay-card .no-option-off {
+  color: #000000;
+  border: #cccccc;
+  background-color: #cccccc;
+  padding: 5px 15px;
+  margin: 8px;
+  text-transform: capitalize;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 70%;
+  border-radius: 18px;
+}
+
+#rpay-pay-card .oi-card-text {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  margin-top: 0;
+  padding: 0;
+  background-color: #F7F7F7;
+}
+#rpay-pay-card .rpay-card {
+  max-width: 450px;
+  min-width: 450px;
+  min-height: 60vh;
+  padding: '0';
+  margin: '0';
+  background-repeat: 'no-repeat';
+  -webkit-background-size: 'cover';
+  -moz-background-size: 'cover';
+  -o-background-size: 'cover';
+  background-size: 'cover';
+  /** opacity: 0.9;
+  background-image: url('https://risidio-journal.cdn.prismic.io/risidio-journal/59455bcb-a954-4713-9afd-cfe6130f0b26_Group+994.svg');
+  **/
+}
+#rpay-pay-card .btn:focus {
+  box-shadow: none !important;
+}
+#rpay-pay-card .text-small {
+  font-size: 10px;
+}
+#rpay-pay-card a {
+  font-size: 14px;
+  font-weight: normal;
+  color: #000000;
+}
+#rpay-pay-card .picker-input {
+  width: 54px;
+  height: 54px;
+  text-align: center;
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  border: none;
+  opacity: 1;
+  box-shadow: 0px 3px 6px #0000003B;
+}
+#rpay-pay-card h1 {
+  font-weight: 300;
+  font-size: 15px;
+}
+#rpay-pay-card .text-bold {
+  font-weight: 700;
+  font-size: 12px;
+}
+#rpay-pay-card .text-300 {
+  font-weight: 300;
+}
+#rpay-pay-card .cp-stepper {
+  position: relative;
+  margin-top: 15px;
+  font-weight: 700;
+  width: 28px;
+  height: 28px;
+  border: 1pt solid #ad1457;
+  border-radius: 50%;
+  color: #ad1457;
+  padding: 5px;
+  cursor: pointer;
+}
+#rpay-pay-card .cp-totals-outer {
+  margin: 30px auto;
+  width: 70%;
+}
+#rpay-pay-card .cp-totals {
+  background: #F0EFEF 0% 0% no-repeat padding-box;
+  border-radius: 16px;
+  opacity: 1;
+  padding: 20px;
+}
+#rpay-pay-card .cp-btn-order {
+  width: 100%;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 18px;
+  height: 46px;
+}
+#rpay-pay-card .sq-btn-order {
+  position: relative;
+  top: 40px;
+  width: 100%;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 18px;
+  height: 46px;
+}
+
+#rpay-pay-card a {
+  font-weight: 200;
+}
+#rpay-pay-card .rpay-text-secondary {
+  font-size: 12px;
+}
+#rpay-pay-card .text-h2 {
+  font-size: 24px;
+  font-weight: 300;
+}
+#rpay-pay-card .rpay-sq-logo {
+  padding: 20px;
+  max-width: 250px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+#rpay-pay-card .rpay-sq-payment-box {
+  border-radius: 5px;
+  padding: 10px;
+  min-width: 400px;
+  max-width: 400px;
+}
+#rpay-pay-card .rpay-countdown {
+  position: relative;
+  top: 0px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 200;
+  letter-spacing: 0px;
+  opacity: 1;
+}
+#rpay-pay-card .footer-container input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  cursor: default;
+  height: 18px !important;
+  width: 18px;
+  border-radius: 50%;
+  background-color: #ad1457;
+  margin-top: -7px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+}
+#rpay-pay-card .footer-container {
+  max-height: 60px !important;
+  background-color: #fff !important;
+}
