@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="success-modal">
+  <b-modal size="lg" id="success-modal">
     <b-container class="text-white" fluid>
     <div class="row">
       <div class="col-12 my-1">

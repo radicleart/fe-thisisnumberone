@@ -1,9 +1,9 @@
 <template>
 <div v-if="content">
-  <footer class="text-white footer-container">
+  <footer class="footer-container">
     <div style="height: 240px;" class="row">
-      <div class="col-12 text-center mt-4"><h1>Sticks And Tones</h1></div>
-      <div class="col-12 text-center">By Risidio - <router-link class="text-white" to="/donate">fun drowd</router-link></div>
+      <div class="col-12 text-center mt-4"><h1>This Is Definitely Not The One</h1></div>
+      <div class="col-12 text-center">By Risidio</div>
       <div class="col-12 text-center social-icons">
         <span style="font-size: 15px;">
           <a href="https://discord.gg/qvuxB9P"><b-icon class="mx-4" scale="3" icon="discord"></b-icon></a>
@@ -55,7 +55,6 @@ export default {
 <style>
 .footer-container {
   height: 280px;
-  background: transparent linear-gradient(105deg, #FF0552 0%, #EC776B 100%) 0% 0% no-repeat padding-box;
 }
 
 .footer-container h2 {

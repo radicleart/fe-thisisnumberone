@@ -12,8 +12,8 @@
   <div class="d-flex justify-content-between" v-else>
     <span>not valid - fields required: </span>
   </div>
-  <b-modal id="minting-modal">
-    <risidio-pay v-if="showRpay" :configuration="configuration"/>
+  <b-modal size="lg" id="minting-modal">
+    <risidio-pay class="text-dark" v-if="showRpay" :configuration="configuration"/>
   </b-modal>
   <b-modal id="result-modal">
     <div v-html="mintResult"></div>
@@ -54,7 +54,7 @@ export default {
           item.tokenId = data.tokenId
           item.nftIndex = data.nftIndex
           item.network = data.network
-          item.musicFile.mintedDate = moment({}).valueOf()
+          item.mintedDate = moment({}).valueOf()
           $self.$store.dispatch('myItemStore/saveItem', item).then((item) => {
             $self.mintResult = item.name + ' (#' + item.nftIndex + ') has been saved to your storage'
           })
@@ -100,8 +100,8 @@ export default {
       return invalidItems.length === 0
     },
     mintedDate: function () {
-      if (this.item.musicFile.mintedDate) {
-        return moment(this.item.musicFile.mintedDate).format('YYYY-MM-DD HH:mm:SS')
+      if (this.item.nftIndex > -1) {
+        return moment(this.item.mintedDate).format('YYYY-MM-DD HH:mm:SS')
       }
       return null
     }

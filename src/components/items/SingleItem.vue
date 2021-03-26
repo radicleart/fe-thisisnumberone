@@ -1,10 +1,7 @@
 <template>
 <div class="mt-3">
   <router-link :to="assetUrl">
-    <div class="mb-4">
-      <div class="" :style="bannerImage">
-      </div>
-    </div>
+    <media-item :dims="dims" :nftMedia="item.nftMedia" :targetItem="'artworkFile'"/>
   </router-link>
   <div class="ml-1">
     <div class="mb-2 d-flex justify-content-between">
@@ -23,15 +20,18 @@
 import utils from '@/services/utils'
 import { APP_CONSTANTS } from '@/app-constants'
 import ItemMintInfo from '@/components/items/ItemMintInfo'
+import MediaItem from '@/components/utils/MediaItem'
 
 export default {
   name: 'SingleItem',
   components: {
-    ItemMintInfo
+    ItemMintInfo,
+    MediaItem
   },
   props: ['item'],
   data () {
     return {
+      dims: { width: 360, height: 202 },
       likeIconTurquoise: require('@/assets/img/Favorite_button_turquoise_empty.png'),
       likeIconPurple: require('@/assets/img/Favorite_button_purple_empty.png')
     }
@@ -57,7 +57,7 @@ export default {
   },
   computed: {
     bannerImage () {
-      let imageUrl = this.item.imageUrl
+      let imageUrl = this.item.nftMedia.imageUrl
       if (!imageUrl) {
         imageUrl = this.waitingImage
       }

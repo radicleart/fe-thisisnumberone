@@ -99,6 +99,9 @@ const myItemService = {
       // const artwork = Buffer.from(imageData.imageBuffer).toString('base64') // imageDataURI.decode(dataUrl)
       const encodedFile = utils.getBase64FromImageUrl(file.dataUrl)
       const path = filename
+      if (file.size >= 20971520) {
+        reject(new Error('File exceeds Gaia file size limit of 20971520 bytes'))
+      }
       const options = {
         contentType: file.type,
         encrypt: false,

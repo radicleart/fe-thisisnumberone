@@ -3,17 +3,13 @@
 <div class="mt-3" v-if="!item">
   {{message}}
 </div>
-<div class="mt-3" v-else>
+<div class="mt-3 text-white" v-else>
   <div class="row">
-    <div class="col-md-6 col-sm-12">
+    <div class="col-md-9 col-sm-12">
       <div id="result-item" class="mb-4">
-        <div :style="bannerImage">
-          <audio controls :src="musicData" v-if="musicData">
-            Your browser does not support the
-            <code>audio</code> element.
-          </audio>
-        </div>
+        <media-item :nftMedia="nftMedia" :targetItem="'artworkFile'" :dims="dims"/>
       </div>
+
       <div>
         <div class="mb-2 d-flex justify-content-between">
           <div class="">{{item.name}}</div>
@@ -22,7 +18,7 @@
         <div class="text-small">Uploaded by : {{item.uploader}}</div>
       </div>
     </div>
-    <div class="col-md-6 col-sm-12">
+    <div class="col-md-3 col-sm-12">
       <div class="mb-2 text-bold">Editions {{item.editions}}</div>
       <span class="text-small mr-1" v-for="(kw, index) in item.keywords" :key="index">#{{kw.name}}</span>
       <div class="text-small">{{item.description}}</div>
@@ -34,18 +30,18 @@
 </template>
 
 <script>
-import { APP_CONSTANTS } from '@/app-constants'
-import utils from '@/services/utils'
 import ItemMintInfo from '@/components/items/ItemMintInfo'
+import MediaItem from '@/components/utils/MediaItem'
 
 export default {
   name: 'ItemPreview',
   components: {
-    ItemMintInfo
+    ItemMintInfo,
+    MediaItem
   },
   data: function () {
     return {
-      musicData: null,
+      dims: { width: 768, height: 432 },
       showHash: false,
       assetHash: null,
       message: 'No item available...'
@@ -54,14 +50,9 @@ export default {
   mounted () {
     this.loading = false
     this.assetHash = this.$route.params.assetHash
-    const $self = this
     this.$store.dispatch('myItemStore/findItemByAssetHash', this.assetHash).then((item) => {
       if (!item) {
         this.$router.push('/404')
-      } else {
-        utils.audioToBase64(item.musicFileUrl).then((data) => {
-          $self.musicData = data
-        })
       }
     })
   },
@@ -72,12 +63,12 @@ export default {
       const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
       return item
     },
+    nftMedia () {
+      const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
+      return item.nftMedia
+    },
     keywords () {
       return this.$store.getters['myItemStore/myItem'](this.assetHash)
-    },
-    bannerImage () {
-      const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
-      return this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](item.imageUrl)
     }
   }
 }

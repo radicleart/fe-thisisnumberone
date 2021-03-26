@@ -24,10 +24,12 @@ const myItemStore = {
     },
     getItemParamValidity: state => (item, param) => {
       if (!state.rootFile) return
-      if (param === 'music') {
-        return ((item.musicFile && item.musicFile.dataUrl) || item.musicFileUrl)
-      } else if (param === 'cover') {
-        return ((item.coverImage && item.coverImage.dataUrl) || item.imageUrl)
+      if (param === 'artworkFile') {
+        return ((item.nftMedia.artworkFile && item.nftMedia.artworkFile.fileUrl))
+      } else if (param === 'artworkClip') {
+        return ((item.nftMedia.artworkClip && item.nftMedia.artworkClip.fileUrl))
+      } else if (param === 'coverImage') {
+        return ((item.nftMedia.coverImage && item.nftMedia.coverImage.fileUrl))
       } else if (param === 'name') {
         return (item.name && item.name.length > 2)
       } else if (param === 'keywords') {
@@ -35,7 +37,7 @@ const myItemStore = {
       } else if (param === 'editions') {
         return (item.editions > 0)
       } else if (param === 'coverArtist') {
-        return (item.coverArtist && item.coverArtist.length > 1)
+        return (item.nftMedia.coverArtist && item.nftMedia.coverArtist.length > 1)
       }
       return true
     },
@@ -45,8 +47,9 @@ const myItemStore = {
       const myGetter = 'getItemParamValidity'
       if (!getters[myGetter](item, 'uploader')) invalidParams.push('uploader')
       if (!getters[myGetter](item, 'editions')) invalidParams.push('editions')
-      if (!getters[myGetter](item, 'music')) invalidParams.push('music')
-      if (!getters[myGetter](item, 'cover')) invalidParams.push('cover')
+      if (!getters[myGetter](item, 'artworkFile')) invalidParams.push('artworkFile')
+      if (!getters[myGetter](item, 'artworkClip')) invalidParams.push('artworkClip')
+      if (!getters[myGetter](item, 'coverImage')) invalidParams.push('coverImage')
       if (!getters[myGetter](item, 'keywords')) invalidParams.push('keywords')
       return invalidParams
     },
@@ -84,8 +87,8 @@ const myItemStore = {
     },
     deleteItem ({ state }, item) {
       return new Promise(() => {
-        let musicUrl = item.musicFileUrl
-        let imageUrl = item.imageUrl
+        let musicUrl = item.nftMedia.musicFileUrl
+        let imageUrl = item.nftMedia.imageUrl
         const indexMusic = musicUrl.lastIndexOf('/') + 1
         const indexImage = imageUrl.lastIndexOf('/') + 1
         musicUrl = musicUrl.substring(indexMusic)
@@ -101,26 +104,29 @@ const myItemStore = {
         myItemService.saveItem(state.rootFile)
       })
     },
-    deleteCoverFile ({ dispatch }, item) {
+    deleteMediaItem ({ dispatch }, data) {
       return new Promise((resolve, reject) => {
-        if (!item.assetHash || !item.musicFileUrl || !item.coverImage) {
-          reject(new Error('Unable to save your data...'))
+        if (!data.item.assetHash) {
+          reject(new Error('Unable to delete - unknown data...'))
           return
         }
-        const lio = item.imageUrl.lastIndexOf('/')
-        const coverImageFileName = item.imageUrl.substring(lio + 1)
+        if (data.item.nftMedia[data.id].storage !== 'gaia') {
+          data.item.nftMedia[data.id] = null
+          dispatch('saveItem', data.item).then((item) => {
+            resolve(item)
+          })
+          return
+        }
+        const lio = data.item.nftMedia[data.id].fileUrl.lastIndexOf('/')
+        const coverImageFileName = data.item.nftMedia[data.id].fileUrl.substring(lio + 1)
         myItemService.deleteFile(coverImageFileName).then(() => {
-          item.imageUrl = null
-          item.musicFile.dataUrl = null
-          item.coverImage.dataUrl = null
-          dispatch('saveItem', item).then((item) => {
+          data.item.nftMedia[data.id] = null
+          dispatch('saveItem', data.item).then((item) => {
             resolve(item)
           })
         }).catch(() => {
-          item.imageUrl = null
-          item.musicFile.dataUrl = null
-          item.coverImage.dataUrl = null
-          dispatch('saveItem', item).then((item) => {
+          data.item.nftMedia[data.id] = null
+          dispatch('saveItem', data.item).then((item) => {
             resolve(item)
           })
         })
@@ -143,73 +149,19 @@ const myItemStore = {
         resolve(state.rootFile.records[index])
       })
     },
-    saveModifications ({ state, commit }, item) {
+    saveNftMediaObject ({ state }: any, data: any) {
       return new Promise((resolve, reject) => {
-        const index = state.rootFile.records.findIndex((o) => o.assetHash === item.assetHash)
-        if (index < 0) {
-          state.rootFile.records.splice(0, 0, item)
-        } else {
-          state.rootFile.records.splice(index, 1, item)
+        if (!data.nftMedia.dataUrl) {
+          // ok the file is stored externally - carry on..
+          resolve(data.nftMedia)
         }
-        myItemService.saveItem(state.rootFile).then((rootFile) => {
-          commit('rootFile', rootFile)
-          resolve(item)
-          if (!item.private) {
-            searchIndexService.addRecord(item).then((result) => {
-              console.log(result)
-            }).catch((error) => {
-              console.log(error)
-            })
-          }
-        }).catch((error) => {
-          reject(error)
-        })
-      })
-    },
-    saveMusicFile ({ state, commit, dispatch }, item) {
-      return new Promise((resolve, reject) => {
-        const rootFile = state.rootFile
-        const assetHash = utils.buildHash(item.musicFile.dataUrl)
-        const index = rootFile.records.findIndex((o) => o.assetHash === assetHash)
-        if (index > -1) {
-          // this music file has already been uploaded - no need to upload it again
-          commit('rootFile', rootFile)
-          resolve(rootFile.records[index])
-          return
-        }
-        const musicFileName = assetHash + utils.getFileExtension(item.musicFile.name)
-        myItemService.uploadFileData(musicFileName, item.musicFile).then((gaiaUrl: string) => {
-          item.assetHash = assetHash
-          item.musicFile.dataUrl = null
-          item.musicFileUrl = gaiaUrl
-          dispatch('saveItem', item).then((item) => {
-            resolve(item)
-          })
-        }).catch((error) => {
-          reject(error)
-        })
-      })
-    },
-    saveCoverFile ({ dispatch }: any, item: any) {
-      return new Promise((resolve, reject) => {
-        if (!item.assetHash || !item.musicFileUrl || !item.coverImage) {
-          reject(new Error('Unable to save your data...'))
-          return
-        }
-        const coverImageFileName = item.assetHash + utils.getFileExtension(item.coverImage.name)
-        myItemService.uploadFileData(coverImageFileName, item.coverImage).then((gaiaUrl: string) => {
-          item.imageUrl = gaiaUrl
-          item.musicFile.dataUrl = null
-          item.coverImage.dataUrl = null
-          dispatch('saveItem', item).then((item) => {
-            resolve(item)
-          })
-        }).catch(() => {
-          item.musicFile.dataUrl = null
-          item.coverImage.dataUrl = null
-          dispatch('saveItem', item).then((item) => {
-            resolve(item)
-          })
+        data.nftMedia.storage = 'gaia'
+        const fileName = data.assetHash + '_' + data.nftMedia.id + utils.getFileExtension(data.nftMedia.fileUrl, data.nftMedia.type)
+        myItemService.uploadFileData(fileName, data.nftMedia).then((gaiaUrl: string) => {
+          data.nftMedia.fileUrl = gaiaUrl
+          resolve(data.nftMedia)
+        }).catch((err) => {
+          reject(err)
         })
       })
     },
@@ -218,18 +170,21 @@ const myItemStore = {
         const profile = store.getters[APP_CONSTANTS.KEY_PROFILE]
         item.uploader = profile.username
         if (!item.owner) item.owner = profile.username
-        if (!profile.loggedIn || !item.assetHash || !item.musicFileUrl || !item.coverImage || !item.musicFile || !item.name) {
+        // the item can be saved once there is an asset hash - all other fields can be added later..
+        // e.g. || !item.nftMedia.musicFileUrl || !item.nftMedia.coverImage || !item.nftMedia.musicFile
+        if (!profile.loggedIn || !item.assetHash) {
           reject(new Error('Unable to save your data...'))
           return
         }
         if (typeof item.nftIndex === 'undefined') item.nftIndex = -1
-        const mintedUrl = encodeURI(item.imageUrl)
-        item.externalUrl = location.origin + '/display?asset=' + mintedUrl
+        if (item.nftMedia && item.nftMedia.coverImage && item.nftMedia.coverImage.fileUrl) {
+          const mintedUrl = encodeURI(item.nftMedia.coverImage.fileUrl)
+          item.externalUrl = location.origin + '/display?asset=' + mintedUrl
+          item.imageUrl = item.nftMedia.coverImage.fileUrl
+        }
         item.projectId = STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
-        item.musicFile.dataUrl = null
-        item.coverImage.dataUrl = null
         item.domain = location.hostname
-        item.objType = 'music'
+        item.objType = 'artwork'
         item.updated = moment({}).valueOf()
         const index = state.rootFile.records.findIndex((o) => o.assetHash === item.assetHash)
         if (index < 0) {

@@ -191,18 +191,19 @@ p {
   border-radius: 6px;
 }
 .modal-content {
-  background-color: #5154A1 !important;
-  border-radius: 20px;
+  border: 1px solid #dee2e6;
+  background-color: #000 !important;
+  border-radius: 0px;
   min-height: 200px;
   color: #fff;
 }
 .modal-header {
-  border-bottom: 0px solid #dee2e6;
-  border-radius: 20px;
+  border-bottom: none;
+  border-radius: 0px;
 }
 .modal-footer {
   border-top: 0px solid #dee2e6;
-  border-radius: 20px;
+  border-radius: 0px;
   display: none;
 }
 .footer-text {
@@ -217,7 +218,9 @@ p {
   width: auto;
   white-space: 'nowrap';
 }
-
+.bg-black {
+  background-color: #000;
+}
 .text-preview {
   font-size: 0.8rem;
   font-weight: 500;

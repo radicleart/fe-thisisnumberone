@@ -1,37 +1,30 @@
 <template>
-<div id="update-item" class="mb-5 pb-5 container" v-if="loaded">
-  <div class="" :key="componentKey">
+<div id="update-item" class="text-white" v-if="loaded">
+  <div class="container" :key="componentKey">
     <div class="row mt-4">
-      <div class="col-md-6 col-sm-12">
-        <h4>Update NFT Information</h4>
-        <div class="my-4 bg-danger p-3" v-if="invalidItems.length > 0">
-          Invalid fields: <span class="mr-1 text-white" v-for="(field, index) in invalidItems" :key="index">{{field}}</span>
+      <div class="col-12">
+        <h4>{{contextTitle()}}</h4>
+      </div>
+    </div>
+    <media-handler :uploadState="uploadState" :nftMedia="item.nftMedia" @updateMedia="updateMedia" @deleteMediaItem="deleteMediaItem"/>
+    <div class="row mt-4">
+      <div class="col-md-6 offset-md-3 col-sm-12">
+        <h2>NFT Info</h2>
+        <p>Information displayed in the context of this artwork and to help people find it</p>
+        <div class="my-4 bg-danger p-3" v-if="invalidItems.length > 0 && showErrors">
+          <div>Required fields:</div>
+          <div class="mr-1 text-white" v-for="(field, index) in invalidItems" :key="index">{{field}}</div>
         </div>
-        <div v-if="hasFile('music')">
-          <div class="mb-4">
-            <h6><b-icon icon="music-note-beamed"/> Music File</h6>
-            <b-icon  v-if="item.loadingState === 1" icon="cylon-vertical"/>
-            <a class="text-success" href="#" @click.prevent="showHash = !showHash"> {{ item.musicFile.name }}</a>
-            <div v-if="showHash">{{ item.assetHash }}</div>
-          </div>
+        <div>
+          <item-form-part1 v-if="uploadState > 2" @upload-state="updateUploadState" :item="item" :upload="true" :formSubmitted="formSubmitted"/>
+          <item-form-part2 v-if="uploadState > 3" @upload-state="updateUploadState" :item="item" :upload="true" :formSubmitted="formSubmitted"/>
+          <item-form-part3 v-if="uploadState > 4" @upload-state="updateUploadState" :item="item" :upload="true" :formSubmitted="formSubmitted"/>
         </div>
-        <div class="drop-zone" v-if="editCoverFile">
-          <media-upload :myUploadId="'CoverImageInput'" :dims="dims" :contentModel="contentModelCoverImage" :mediaFiles="mediaFilesCoverImage" :limit="1" :sizeLimit="2000000" :mediaTypes="'image'" @startLoad="startLoad" @updateMedia="setByEventLogoCoverImage($event)"/>
+        <div class="my-4 bg-danger p-3" v-if="invalidItems.length > 0 && showErrors">
+          <div>Required fields:</div>
+          <div class="mr-1 text-white" v-for="(field, index) in invalidItems" :key="index">{{field}}</div>
         </div>
-        <div class="" v-else>
-          <div v-if="hasFile('cover')" class="mb-4 d-flex justify-content-start">
-            <div class="border mr-3"><img width="150px" :src="item.imageUrl"/></div>
-            <div class="">
-              <h6><b-icon icon="brush"/> Cover Art (<a href="#" @click.prevent="editCoverFile = true">edit</a>)</h6>
-              <span class="text-success">{{ item.coverImage.name }}</span>
-              <div class="mb-2" v-if="item.coverArtist"><span class="text-success">{{ item.coverArtist }}</span></div>
-            </div>
-          </div>
-        </div>
-        <item-form-part1 @upload-state="updateUploadState" :item="item" :upload="false" :formSubmitted="formSubmitted"/>
-        <item-form-part2 @upload-state="updateUploadState" :item="item" :upload="false" :formSubmitted="formSubmitted"/>
-        <item-form-part3 @upload-state="updateUploadState" :item="item" :upload="false" :formSubmitted="formSubmitted"/>
-        <div class="my-4 text-right"><b-button class="" variant="danger" @click.prevent="updateUploadState({ change: 'done' })">Save</b-button></div>
+        <div class="my-4 text-right"><b-button class="" variant="danger" @click.prevent="uploadItem()">Continue</b-button></div>
       </div>
     </div>
   </div>
@@ -43,27 +36,26 @@ import { APP_CONSTANTS } from '@/app-constants'
 import ItemFormPart1 from '@/components/items/ItemFormPart1'
 import ItemFormPart2 from '@/components/items/ItemFormPart2'
 import ItemFormPart3 from '@/components/items/ItemFormPart3'
-import MediaUpload from '@/components/utils/MediaUpload'
+import MediaHandler from '@/components/items/MediaHandler'
 import utils from '@/services/utils'
 
 export default {
   name: 'UpdateItem',
   components: {
-    MediaUpload,
+    MediaHandler,
     ItemFormPart1,
     ItemFormPart2,
     ItemFormPart3
   },
   data () {
     return {
-      editCoverFile: false,
       formSubmitted: false,
+      showErrors: false,
       componentKey: 0,
-      uploadState: 1,
-      showHash: false,
+      uploadState: 10,
       loaded: false,
-      dims: { width: 250, height: 250 },
       result: 'Saving data to your storage - back in a mo!',
+      assetHash: null,
       item: {
         owner: null,
         coverArtist: null,
@@ -72,57 +64,47 @@ export default {
         description: '',
         editions: null,
         keywords: '',
-        coverImage: {},
-        musicFile: {}
-      },
-      contentModelCoverImage: {
-        title: 'Cover Image',
-        buttonName: 'Choose File',
-        iconName: 'brush',
-        errorMessage: 'A image file is required.',
-        popoverBody: 'Your cover image.'
-      },
-      contentModelMusicFile: {
-        title: 'Music File',
-        buttonName: 'Choose File',
-        iconName: 'music-note-beamed',
-        errorMessage: 'A mp3 file is required',
-        popoverBody: 'Your music file.'
+        nftMedia: {
+          coverImage: {},
+          musicFile: {}
+        }
       },
       doValidate: true,
-      defaultBadge: require('@/assets/img/risidio_collection_logo.svg'),
-      defaultBadgeData: null
+      defaultBadge: require('@/assets/img/risidio_collection_logo.svg')
     }
   },
   mounted () {
-    const assetHash = this.$route.params.assetHash
-    if (!assetHash) {
+    this.assetHash = this.$route.params.assetHash
+    this.$store.dispatch('myItemStore/findItemByAssetHash', this.assetHash).then((item) => {
+      // this.uploadState++
+      if (!item) {
+        this.$router.push('/404')
+        return
+      }
+      this.item = item
+      /**
+      if (!this.item.nftMedia.coverImage) {
+        this.item.nftMedia.coverImage = {}
+      }
+      if (!this.item.nftMedia.musicFile) {
+        this.item.nftMedia.musicFile = {}
+      }
+      this.setImage(item.nftMedia.imageUrl)
+      if (item.nftMedia.imageUrl) this.item.nftMedia.imageUrl = item.nftMedia.imageUrl
+      **/
       this.loaded = true
-    } else {
-      this.$store.dispatch('myItemStore/findItemByAssetHash', assetHash).then((item) => {
-        this.uploadState++
-        if (!item) {
-          this.$router.push('/404')
-          return
-        }
-        this.item = item
-        if (!this.item.coverImage) {
-          this.item.coverImage = {}
-        }
-        if (!this.item.musicFile) {
-          this.item.musicFile = {}
-        }
-        this.setImage(item.imageUrl)
-        if (item.imageUrl) this.item.imageUrl = item.imageUrl
-        this.loaded = true
-      })
-    }
+    })
   },
   methods: {
+    deleteMediaItem: function (mediaId) {
+      this.$store.dispatch('myItemStore/deleteMediaItem', { item: this.item, id: mediaId }).then(() => {
+        this.$emit('delete-cover')
+      })
+    },
     updateUploadState: function (data) {
       this.$store.dispatch('myItemStore/saveItem', this.item).then(() => {
         if (data.change === 'done') {
-          this.$router.push('/item-preview/' + this.item.assetHash)
+          this.$router.push('/item-preview/' + this.assetHash)
         } else if (data.change === 'up') {
           this.uploadState++
         } else {
@@ -130,44 +112,28 @@ export default {
         }
       })
     },
-    hasFile: function (type) {
-      if (type === 'music') {
-        return (this.itemSummary.item.musicFile) ? this.itemSummary.item.musicFile.name : null
-      }
-      return (this.itemSummary.item.coverImage) ? this.itemSummary.item.coverImage.name : null
-    },
-    startLoad: function (data) {
-      if (data && data.file.type.indexOf('audio') > -1) {
-        this.$store.commit('setModalMessage', 'Loading ' + data.file.name + ' a ' + data.file.type + ' type file into browser - shouldn\'t be long...')
+    updateMedia: function (data) {
+      if (data.startLoad) {
+        this.$store.commit('setModalMessage', data.startLoad)
         this.$root.$emit('bv::show::modal', 'waiting-modal')
+      } else if (data.errorMessage) {
+        this.$store.commit('setModalMessage', data.errorMessage)
       }
-    },
-    setByEventLogoCoverImage (data) {
-      if (!data.media || data.media.length === 0) return
-      this.item.coverImage = data.media[data.media.length - 1]
-      this.$root.$emit('bv::hide::modal', 'waiting-modal')
-      if (this.item.coverImage.dataUrl) {
-        this.$store.commit('setModalMessage', 'Uploading ' + this.item.coverImage.name + ' to your storage.')
-        this.$store.dispatch('myItemStore/saveCoverFile', this.item).then((item) => {
-          this.item = item
-          this.editCoverFile = false
-          this.$root.$emit('bv::hide::modal', 'waiting-modal')
-        })
-      }
-      this.uploadState = 3
-    },
-    setByEventLogoMusicFile (data) {
-      if (!data.media || data.media.length === 0) return
-      this.item.musicFile = data.media[0]
-      if (this.item.musicFile.name) {
-        this.item.name = utils.getFileNameNoExtension(this.item.musicFile.name)
-      }
-      if (this.item.musicFile.dataUrl) {
-        this.$store.commit('setModalMessage', 'Uploading ' + this.item.musicFile.name + ' to your storage.')
-        this.$store.dispatch('myItemStore/saveMusicFile', this.item).then((item) => {
-          this.item = item
-          this.uploadState = 2
-          this.$root.$emit('bv::hide::modal', 'waiting-modal')
+      if (data.media && data.media.dataHash) {
+        const $self = this
+        this.$store.commit('setModalMessage', 'Fetched. Saving file info to library.')
+        this.$store.dispatch('myItemStore/saveNftMediaObject', { assetHash: this.assetHash, nftMedia: data.media }).then((nftMedia) => {
+          const localItem = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+          localItem.nftMedia[nftMedia.id] = nftMedia
+          $self.$store.dispatch('myItemStore/saveItem', localItem).then((item) => {
+            $self.item = item
+            $self.$store.commit('setModalMessage', '')
+            $self.$root.$emit('bv::hide::modal', 'waiting-modal')
+            $self.componentKey++
+          }).catch((error) => {
+            $self.$store.commit('setModalMessage', 'Error occurred processing file upload.')
+            $self.result = error
+          })
         })
       }
     },
@@ -182,39 +148,28 @@ export default {
         }]
       })
     },
-    fileNameCoverImage () {
-      if (this.item.coverImage.name) {
-        return
-      }
-      const filename = this.item.coverImage.name
-      return filename.split(/\./)[0]
-    },
-    fileNameMusicFile () {
-      if (this.item.musicFile && this.item.musicFile.length === 0) {
-        return
-      }
-      const filename = this.item.musicFile.name
-      return filename.split(/\./)[0]
-    },
     contextTitle: function () {
       if (this.uploadState === 1) return 'Upload your music'
       else if (this.uploadState === 2) return 'Add cover art'
       else if (this.uploadState === 3) return 'Help people find it..'
     },
     uploadItem: function () {
+      this.showErrors = false
       const invalidItems = this.$store.getters[APP_CONSTANTS.KEY_ITEM_VALIDITY](this.item)
       if (this.item.editions) this.item.editions = parseInt(this.item.editions)
       if (this.doValidate && invalidItems.length > 0) {
+        this.showErrors = true
         this.$notify({ type: 'error', title: 'Upload Error', text: 'Please enter missing data' })
         return
       }
       this.showWaitingModal = true
-      this.$store.commit('setModalMessage', 'Uploading files - this can sometimes take a while depending on network traffic and file size. We don\'t store your data in our infrastructure - instead we are doing something new that gives you control over the data you load into applications.. <a target="_blank" href="https://radiclesociety.medium.com/radicle-peer-to-peer-marketplaces-whats-the-deal-767960da195b">read more</a>')
+      this.$store.commit('setModalMessage', 'Uploading files - can take a while.. <a target="_blank" href="https://radiclesociety.medium.com/radicle-peer-to-peer-marketplaces-whats-the-deal-767960da195b">read why</a>')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
-      this.$store.dispatch('myItemStore/saveItem', { item: this.item, musicFile: this.item.musicFile[0], coverImage: this.item.coverImage[0] }).then(() => {
+      this.$store.dispatch('myItemStore/saveItem', this.item).then(() => {
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
-        this.$root.$emit('bv::show::modal', 'success-modal')
-        this.$store.commit('setModalMessage', 'Your music is now uploaded to your personal cloud.')
+        this.$root.$emit('bv::hide::modal', 'success-modal')
+        this.$store.commit('setModalMessage', '')
+        this.$router.push('/item-preview/' + this.item.assetHash)
       }).catch((error) => {
         this.$store.commit('setModalMessage', 'Error occurred processing transaction.')
         this.result = error
@@ -235,23 +190,6 @@ export default {
         isValid: invalidItems.length === 0,
         context: 'upload'
       }
-    },
-    mediaFilesCoverImage () {
-      const files = []
-      if (this.item.coverImage && this.item.coverImage.dataUrl) {
-        files.push(this.item.coverImage)
-      }
-      return files
-    },
-    mediaFilesMusicFile () {
-      const files = []
-      if (this.item.musicFile && this.item.musicFile.dataUrl) {
-        files.push(this.item.musicFile)
-      }
-      return files
-    },
-    contractAddressUser () {
-      return this.$store.getters[APP_CONSTANTS.KEY_PROFILE].stxAddress
     }
   }
 }

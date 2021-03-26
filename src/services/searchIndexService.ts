@@ -72,8 +72,7 @@ const searchIndexService = {
       indexable.owner = asset.owner
       indexable.description = asset.description
       indexable.artist = asset.owner
-      indexable.mintedOn = (asset.musicFile) ? asset.musicFile.mintedOn : null
-      indexable.domain = location.hostname
+      indexable.mintedOn = asset.mintedOn
       indexable.domain = location.hostname
       indexable.objType = 'artwork'
       if (asset.objType) {

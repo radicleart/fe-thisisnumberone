@@ -16,7 +16,6 @@
     </b-form-invalid-feedback>
     <b-form-text id="item-keywords-help">Any number of editions to be created - must be at least 1?</b-form-text>
   </div>
-  <div v-if="upload && itemEditionsState" class="my-4 text-right"><b-button class="" variant="danger" @click.prevent="$emit('upload-state', { change: 'up' })">Next</b-button></div>
 </div>
 </template>
 

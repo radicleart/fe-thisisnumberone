@@ -5,6 +5,7 @@ import MainFooter from '@/components/layout/MainFooter.vue'
 import Login from '../views/Login.vue'
 // import Profile from '../views/Profile.vue'
 import Home from '../views/Home.vue'
+import Admin from '../views/Admin.vue'
 import Donate from '../views/Donate.vue'
 import ItemPreview from '../views/ItemPreview.vue'
 import UploadItem from '../views/UploadItem.vue'
@@ -15,11 +16,40 @@ import store from '@/store'
 
 Vue.use(VueRouter)
 
+const isPermitted = function (to, profile) {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (to.matched.some(record => record.meta.requiresAdmin)) {
+      return profile.superAdmin
+    }
+    return profile.loggedIn
+  } else {
+    return true
+  }
+  if (to.matched.some(record => record.meta.requiresAdmin)) {
+    if (profile.superAdmin) {
+      return true
+    } else {
+      return false
+    }
+  } else {
+    return true
+  }
+}
+
 const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'home',
     components: { default: Home, header: MainNavbar }
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    components: { default: Admin, header: MainNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   },
   {
     path: '/donate',
@@ -78,12 +108,20 @@ router.beforeEach((to, from, next) => {
     // if not, redirect to login page.
     let myProfile = store.getters['authStore/getMyProfile']
     if (myProfile.loggedIn) {
-      return next()
+      if (isPermitted(to, myProfile)) {
+        return next()
+      } else {
+        return next({ path: '/404', query: { redirect: to.fullPath } })
+      }
     } else {
       setTimeout(function () {
         myProfile = store.getters['authStore/getMyProfile']
         if (myProfile.loggedIn) {
-          return next()
+          if (isPermitted(to, myProfile)) {
+            return next()
+          } else {
+            return next({ path: '/404', query: { redirect: to.fullPath } })
+          }
         } else {
           return next({
             path: '/login',

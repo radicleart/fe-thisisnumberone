@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="waiting-modal">
+  <b-modal size="lg" id="waiting-modal">
     <b-container class="text-white" fluid>
     <div class="row">
       <div class="col-12 my-1" v-html="modalMessage">

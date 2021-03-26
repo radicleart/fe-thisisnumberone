@@ -10,9 +10,14 @@ const utils = {
   buildHash: function (hashable) {
     return crypto.createHash('sha256').update(hashable).digest('hex')
   },
-  getFileExtension: function (filename) {
-    const index = filename.lastIndexOf('.')
-    return filename.substring(index)
+  getFileExtension: function (filename, type) {
+    if (filename && filename.lastIndexOf('.') > 0) {
+      const index = filename.lastIndexOf('.')
+      return filename.substring(index)
+    } else {
+      const index = type.lastIndexOf('/') + 1
+      return '.' + type.substring(index)
+    }
   },
   getFileNameNoExtension: function (filename) {
     const index = filename.lastIndexOf('.')
@@ -96,7 +101,7 @@ const utils = {
   },
   fetchBase64FromImageUrl: function (url, document) {
     return new Promise((resolve) => {
-      const img = new Image()
+      const img = new File()
       img.setAttribute('crossOrigin', 'anonymous')
       img.onload = function () {
         const canvas = document.createElement('canvas')
@@ -110,6 +115,26 @@ const utils = {
         resolve({ dataURL: dataURL, imageBuffer: imageBuffer, mimeType: mimeType })
       }
       img.src = url
+    })
+  },
+  readFileFromUrlToDataURL: function (url) {
+    return new Promise((resolve) => {
+      const request = new XMLHttpRequest()
+      request.open('GET', url, true)
+      request.responseType = 'blob'
+      request.onload = function () {
+        const reader = new FileReader()
+        reader.readAsDataURL(request.response)
+        const file = {
+          size: request.response.size,
+          type: request.response.type
+        }
+        reader.onload = function (e) {
+          file.dataUrl = e.target.result
+          resolve(file)
+        }
+      }
+      request.send()
     })
   },
   getBase64FromImageUrl: function (dataURL) {

@@ -1,7 +1,7 @@
 <template>
-  <div id="app" :style="bannerImage" v-if="!loading">
+  <div id="app" v-if="!loading">
     <div :key="componentKey">
-      <div id="guitarMan" :style="guitarMan"></div>
+      <div></div>
       <router-view name="header"/>
       <router-view class="container-fluid mt-5" style="min-height: 50vh;"/>
       <router-view name="footer"/>
@@ -37,6 +37,10 @@ export default {
     const $self = this
     let resizeTimer
     window.addEventListener('resize', function () {
+      const currentComponent = $self.$route.name
+      if (currentComponent === 'upload-item' || currentComponent === 'edit-item') {
+        return
+      }
       clearTimeout(resizeTimer)
       resizeTimer = setTimeout(function () {
         $self.$store.commit('setWinDims')

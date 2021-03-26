@@ -1,5 +1,5 @@
 <template>
-<div class="px-5" :class="headerClass()">
+<div class="px-5">
 <b-navbar toggleable="lg" variant="transparent">
     <b-navbar-brand href="#">
       <div class="">
@@ -8,11 +8,24 @@
     </b-navbar-brand>
     <b-navbar-toggle class="" target="nav-collapse">
       <template v-slot:default="{ expanded }">
-        <b-icon width="20px" height="30px" v-if="expanded" icon="chevron-contract"></b-icon>
-        <img width="20px" v-else :src="toggler"/>
+        <b-icon class="text-white" width="40px" height="40px" v-if="expanded" icon="grid-fill"></b-icon>
+        <b-icon class="text-white" width="40px" height="40px" v-else icon="grid"></b-icon>
       </template>
     </b-navbar-toggle>
-
+<!--
+    <b-collapse id="nav-collapse" is-nav align="end">
+        <b-navbar-nav class="ml-auto" is-nav>
+          <b-nav vertical>
+            <b-nav-item class="mb-5"><router-link class="text-black" to="/how-it-works">How It Works</router-link></b-nav-item>
+            <b-nav-item class="mb-5"><router-link class="text-black" to="/upload-item">Protect Your Music</router-link></b-nav-item>
+            <b-nav-item class="mb-5" v-if="loggedIn"><router-link class="text-black" to="/profile">My Profile</router-link></b-nav-item>
+            <b-nav-item class="mb-5" v-if="loggedIn"><router-link class="text-black" to="/my-items">My Items</router-link></b-nav-item>
+            <b-nav-item class="mb-5" v-if="loggedIn"><span @click="logout()">Logout</span></b-nav-item>
+            <b-nav-item class="mb-5" v-if="!loggedIn"><b-button variant="light" @click.prevent="startLogin()">Login</b-button></b-nav-item>
+        </b-nav>
+        </b-navbar-nav>
+    </b-collapse>
+    -->
     <b-collapse id="nav-collapse" is-nav align="end">
         <b-navbar-nav class="ml-auto" is-nav>
           <b-nav-item><router-link class="text-white" to="/how-it-works">How It Works</router-link></b-nav-item>
@@ -25,6 +38,7 @@
             <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item><router-link class="text-dark" to="/profile">My Profile</router-link></b-dropdown-item>
             <b-dropdown-item><router-link class="text-dark" to="/my-items">My Items</router-link></b-dropdown-item>
+            <b-dropdown-item><router-link class="text-dark" to="/admin">Admin</router-link></b-dropdown-item>
             <b-dropdown-item><span @click="logout()">Logout</span></b-dropdown-item>
           </b-dropdown>
           <b-nav-item v-else><b-button variant="light" @click.prevent="startLogin()">Login</b-button></b-nav-item>
@@ -93,7 +107,24 @@ export default {
 .navbar-light .navbar-nav .nav-link {
     color: #fff;
 }
-.header-class {
-  background: transparent linear-gradient(105deg, #FF0552 0%, #EC776B 100%) 0% 0% no-repeat padding-box;
+/**
+#nav-collapse {
+  position: absolute;
+  height: 80vh;
+  width: 1000px;
+  left: -100px;
+  right: 100px;
+  margin-left: calc(-100vw / 2 + 940px / 2);
+  margin-right: calc(-100vw / 2 + 940px / 2);
+  background-color: rgb(223, 166, 82);
+  color: #fff !important;
+  top: 100px;
+  padding: 50px;
+  text-align: center;
+  z-index: 3;
 }
+#nav-collapse a {
+  color: #000;
+}
+**/
 </style>
