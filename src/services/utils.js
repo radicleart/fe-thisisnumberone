@@ -168,6 +168,7 @@ const utils = {
       return {
         // owner: td.decode(res.value.data.owner.buffer),
         contractId: td.decode(res.value.data['app-contract-id'].buffer),
+        gaiaRootPath: td.decode(res.value.data['gaia-root-path'].buffer),
         status: res.value.data.status.value.toNumber(),
         storageModel: res.value.data['storage-model'].value.toNumber()
       }

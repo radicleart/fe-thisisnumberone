@@ -7,26 +7,39 @@
         <p><b-button variant="light" to="/upload-item">Protect Your Music</b-button></p>
       </div>
     </div>
+    <risidio-pay class="text-dark" v-if="showRpay" :configuration="configuration"/>
   </div>
 </section>
 </template>
 
 <script>
 import SlicesBlock from '@/components/prismic/SlicesBlock.vue'
+import RisidioPay from 'risidio-pay'
+import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'Home',
   components: {
-    SlicesBlock
+    SlicesBlock,
+    RisidioPay
   },
   data () {
     return {
-      loading: true
+      loading: true,
+      showRpay: false
     }
+  },
+  mounted () {
+    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'marketplace-flow' })
+    this.showRpay = true
   },
   methods: {
   },
   computed: {
+    configuration () {
+      const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
+      return configuration
+    },
     slices () {
       const content = this.$store.getters['contentStore/getHomepage']
       return (content) ? content.body : null

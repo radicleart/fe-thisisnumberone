@@ -1,5 +1,7 @@
 export const APP_CONSTANTS = {
   KEY_RPAY_CONFIGURATION: 'getRpayConfiguration',
+  SET_RPAY_FLOW: 'setRpayFlow',
+
   KEY_MY_ITEMS: 'myItemStore/getMyItems',
   KEY_MY_ITEM: 'myItemStore/myItem',
   KEY_PUBLIC_ITEMS: 'publicItemsStore/getPublicItems',

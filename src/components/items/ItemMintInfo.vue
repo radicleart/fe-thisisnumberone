@@ -12,7 +12,7 @@
   <div class="d-flex justify-content-between" v-else>
     <span>not valid - fields required: </span>
   </div>
-  <b-modal size="lg" id="minting-modal">
+  <b-modal size="md" id="minting-modal">
     <risidio-pay class="text-dark" v-if="showRpay" :configuration="configuration"/>
   </b-modal>
   <b-modal id="result-modal">
@@ -43,6 +43,7 @@ export default {
   },
   mounted () {
     const $self = this
+    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: this.item })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
         $self.mintResult = data.message
@@ -59,8 +60,7 @@ export default {
             $self.mintResult = item.name + ' (#' + item.nftIndex + ') has been saved to your storage'
           })
         } else if (data.opcode === 'save-mint-data') {
-          $self.$bvModal.hide('minting-modal')
-          $self.showRpay = false
+          console.log(data)
         } else {
           $self.$bvModal.hide('minting-modal')
           $self.showRpay = false
@@ -92,7 +92,7 @@ export default {
       return null
     },
     configuration () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION](this.item)
+      const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]({ flow: 'minting-flow', asset: this.item })
       return configuration
     },
     isValid: function () {

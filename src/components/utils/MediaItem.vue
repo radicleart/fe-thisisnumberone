@@ -64,7 +64,9 @@ export default {
   },
   methods: {
     poster: function () {
-      return this.nftMedia.coverImage.fileUrl
+      if (this.nftMedia.coverImage) {
+        return this.nftMedia.coverImage.fileUrl
+      }
     },
     mediaItem: function () {
       return this.nftMedia[this.targetItem]

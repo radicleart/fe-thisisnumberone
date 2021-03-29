@@ -1,15 +1,20 @@
 <template>
-  <div id="app" v-if="!loading">
-    <div :key="componentKey">
-      <div></div>
-      <router-view name="header"/>
-      <router-view class="container-fluid mt-5" style="min-height: 50vh;"/>
-      <router-view name="footer"/>
-      <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
-      <waiting-modal/>
-      <success-modal />
-    </div>
+<b-container v-if="loading">
+  <b-row class="splash-screen vh-100 text-center" align-v="center">
+    <b-col><b-button class="main-navigation-button" variant="primary">#1</b-button></b-col>
+  </b-row>
+</b-container>
+<div id="app" v-else>
+  <div :key="componentKey">
+    <div></div>
+    <router-view name="header"/>
+    <router-view class="container-fluid mt-5" style="min-height: 50vh;"/>
+    <router-view name="footer"/>
+    <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
+    <waiting-modal/>
+    <success-modal />
   </div>
+</div>
 </template>
 
 <script>
@@ -113,3 +118,16 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.splash-screen {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  height: 100vh;
+  background-color: aqua;
+  text-align: center;
+  vertical-align: middle;
+}
+</style>
