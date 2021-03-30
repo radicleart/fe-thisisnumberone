@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div id="video-demo-container" v-if="isVideo(mediaItem())">
+  <div id="video-demo-container" v-if="isVideo(mediaItem())" >
     <video :poster="poster()" controls :style="dimensions()">
       <source :src="mediaItem().fileUrl" :type="mediaItem().type">
     </video>
@@ -72,6 +72,9 @@ export default {
       return this.nftMedia[this.targetItem]
     },
     dimensions: function () {
+      if (this.dims) {
+        return 'width: ' + this.dims.width + 'px; height: ' + this.dims.height + 'px;'
+      }
       return 'width: 100%; height: auto'
     },
     fileSizeM: function (fsize) {

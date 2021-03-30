@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="mb-3" role="group">
-    <label for="item-name">Name of Item</label>
+    <label for="item-name">Name of Artwork</label>
     <b-form-input
       id="item-name"
       v-model="item.name"
@@ -14,6 +14,21 @@
       Enter at least 3 letters
     </b-form-invalid-feedback>
     <b-form-text id="item-name-help">A name is needed to upload this item</b-form-text>
+  </div>
+  <div class="mb-3" role="group">
+    <label for="item-name">Name of Artist</label>
+    <b-form-input
+      id="artist-name"
+      v-model="item.artist"
+      :state="itemArtistState"
+      aria-describedby="item-artist-help item-artist-feedback"
+      placeholder="Enter artist name"
+      trim
+    ></b-form-input>
+    <b-form-invalid-feedback id="item-artist-feedback">
+      Enter the name of the artist
+    </b-form-invalid-feedback>
+    <b-form-text id="item-name-help">The artists name is needed to upload this item</b-form-text>
   </div>
   <!--
   <div class="text-right mb-4">

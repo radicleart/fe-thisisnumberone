@@ -30,6 +30,8 @@ const myItemStore = {
         return ((item.nftMedia.artworkClip && item.nftMedia.artworkClip.fileUrl))
       } else if (param === 'coverImage') {
         return ((item.nftMedia.coverImage && item.nftMedia.coverImage.fileUrl))
+      } else if (param === 'artist') {
+        return (item.artist && item.artist.length > 2)
       } else if (param === 'name') {
         return (item.name && item.name.length > 2)
       } else if (param === 'keywords') {
@@ -47,6 +49,7 @@ const myItemStore = {
       const myGetter = 'getItemParamValidity'
       if (!getters[myGetter](item, 'uploader')) invalidParams.push('uploader')
       if (!getters[myGetter](item, 'editions')) invalidParams.push('editions')
+      if (!getters[myGetter](item, 'artist')) invalidParams.push('artist')
       if (!getters[myGetter](item, 'artworkFile')) invalidParams.push('artworkFile')
       if (!getters[myGetter](item, 'artworkClip')) invalidParams.push('artworkClip')
       if (!getters[myGetter](item, 'coverImage')) invalidParams.push('coverImage')
