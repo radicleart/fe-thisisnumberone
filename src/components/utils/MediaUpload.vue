@@ -1,8 +1,5 @@
 <template>
 <div class="text-center">
-  <div id="video-demo-container" v-if="mediaItem && isVideo(mediaItem)">
-    <video-player :option="videoOptions"/>
-  </div>
   <div @drop.prevent="loadMediaObjects" @dragover.prevent class="drop-zone text-danger d-flex flex-column align-items-center">
       <div class="mt-5"><b-icon scale="3" :icon="contentModel.iconName"/></div>
       <div class="mt-4 mb-5 text-center" v-html="contentModel.title"></div>
@@ -41,12 +38,10 @@
 <script>
 import _ from 'lodash'
 import utils from '@/services/utils'
-import VideoPlayer from './videoPlayer'
 
 export default {
   name: 'MediaUpload',
   components: {
-    VideoPlayer
     // BFormFile
   },
   props: {
@@ -103,8 +98,7 @@ export default {
       loaded: false,
       mediaObjects: [],
       internalError: null,
-      missing: '/img/pdf-holding.png',
-      videoOptions: { autoplay: true, controls: true, sources: [{ src: this.mediaItem.fileUrl, type: this.mediaItem.type }] }
+      missing: '/img/pdf-holding.png'
     }
   },
   mounted () {

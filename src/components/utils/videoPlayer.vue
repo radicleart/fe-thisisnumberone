@@ -5,32 +5,37 @@
 </template>
 
 <script>
-import videojs from 'video.js';
+import videojs from 'video.js'
 
 export default {
-  name: "VideoPlayer",
+  name: 'VideoPlayer',
   props: {
     options: {
       type: Object,
-      default() {
-        return {};
+      default () {
+        return {}
       }
     }
   },
-  data() {
+  data () {
     return {
       player: null
     }
   },
-  mounted() {
-    this.player = videojs(this.$refs.videoPlayer, this.options, function onPlayerReady() {
-      console.log('onPlayerReady', this);
+  mounted () {
+    console.log(this.options)
+    this.player = videojs(this.$refs.videoPlayer, this.options, function onPlayerReady () {
+      console.log('onPlayerReady', this)
     })
   },
-  beforeDestroy() {
+  beforeDestroy () {
     if (this.player) {
       this.player.dispose()
     }
   }
 }
 </script>
+
+<style>
+  @import '../../assets/scss/video-js.css';
+</style>
