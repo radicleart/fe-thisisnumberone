@@ -1,26 +1,18 @@
 <template>
-<section id="homeSection" v-if="slices">
-  <div class="container home-content">
-    <div class="row">
-      <div class="col-md-6 col-sm-12 text-white">
-        <slices-block :rootId="'home-slice-'" :slices="slices" class="outer-container"/>
-        <p><b-button variant="light" to="/upload-item">Protect Your Music</b-button></p>
-      </div>
-    </div>
+<section id="home-section" v-if="slices">
+  <div class="">
     <risidio-pay class="text-dark" v-if="showRpay" :configuration="configuration"/>
   </div>
 </section>
 </template>
 
 <script>
-import SlicesBlock from '@/components/prismic/SlicesBlock.vue'
 import RisidioPay from 'risidio-pay'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'Home',
   components: {
-    SlicesBlock,
     RisidioPay
   },
   data () {

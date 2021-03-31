@@ -2,6 +2,8 @@ const contentStore = {
   namespaced: true,
   state: {
     content: {
+      artists: [],
+      charities: [],
       navigation: null,
       homepage: null,
       howItWorks: null
@@ -25,6 +27,12 @@ const contentStore = {
         border: '1pt solid #ccc'
       }
     },
+    getCharityById: state => id => {
+      return state.content.charities.find((o) => o.uid === id)
+    },
+    getArtistById: state => id => {
+      return state.content.artists.find((o) => o.uid === id)
+    },
     getHomepage: state => {
       return state.content.homepage
     },
@@ -44,6 +52,12 @@ const contentStore = {
     },
     addHowItWorks (state, o) {
       state.content.howItWorks = o
+    },
+    addCharities (state, o) {
+      state.content.charities = o
+    },
+    addArtists (state, o) {
+      state.content.artists = o
     }
   },
   actions: {

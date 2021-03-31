@@ -5,6 +5,7 @@ import MainFooter from '@/components/layout/MainFooter.vue'
 import Login from '../views/Login.vue'
 // import Profile from '../views/Profile.vue'
 import Home from '../views/Home.vue'
+import AssetDetails from '../views/AssetDetails.vue'
 import Admin from '../views/Admin.vue'
 import Donate from '../views/Donate.vue'
 import ItemPreview from '../views/ItemPreview.vue'
@@ -40,7 +41,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'home',
-    components: { default: Home, header: MainNavbar }
+    components: { default: Home }
   },
   {
     path: '/admin',
@@ -70,6 +71,12 @@ const routes: Array<RouteConfig> = [
     path: '/item-preview/:assetHash',
     name: 'item-preview',
     components: { default: ItemPreview, header: MainNavbar, footer: MainFooter },
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/assets/:assetHash',
+    name: 'asset-by-hash',
+    components: { default: AssetDetails, header: MainNavbar, footer: MainFooter },
     meta: { requiresAuth: true }
   },
   {

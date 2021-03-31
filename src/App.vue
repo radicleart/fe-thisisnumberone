@@ -8,7 +8,7 @@
   <div :key="componentKey">
     <div></div>
     <router-view name="header"/>
-    <router-view class="container-fluid mt-5" style="min-height: 50vh;"/>
+    <router-view class="" style="min-height: 50vh;"/>
     <router-view name="footer"/>
     <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
     <waiting-modal/>
@@ -41,6 +41,7 @@ export default {
     })
     const $self = this
     let resizeTimer
+
     window.addEventListener('resize', function () {
       const currentComponent = $self.$route.name
       if (currentComponent === 'upload-item' || currentComponent === 'edit-item') {
@@ -61,6 +62,18 @@ export default {
       if (document) {
         this.$store.commit('contentStore/addHowItWorks', document.data)
       }
+    })
+    this.$prismic.client.query(
+      this.$prismic.Predicates.at('document.type', 'charity'),
+      { pageSize: 20, page: 1 }
+    ).then((response) => {
+      this.$store.commit('contentStore/addCharities', response.results)
+    })
+    this.$prismic.client.query(
+      this.$prismic.Predicates.at('document.type', 'artist'),
+      { pageSize: 20, page: 1 }
+    ).then((response) => {
+      this.$store.commit('contentStore/addArtists', response.results)
     })
   },
   methods: {
