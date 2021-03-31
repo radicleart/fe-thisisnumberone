@@ -1,9 +1,7 @@
 <template>
 <div>
-  <div id="video-demo-container" v-if="isVideo(mediaItem())" >
-    <video :poster="poster()" controls :style="dimensions()">
-      <source :src="mediaItem().fileUrl" :type="mediaItem().type">
-    </video>
+  <div id="video-demo-container" v-if="isVideo(mediaItem())">
+    <video-player :options="videoOptions"/>
     <div class="d-flex justify-content-between">
       <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
       <div @click="deleteMediaItem()" v-if="mediaItem().id === 'artworkClip'" class="text-small text-danger"><b-icon icon="trash"/></div>
@@ -39,10 +37,12 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
+import VideoPlayer from './videoPlayer'
 
 export default {
   name: 'MediaItem',
   components: {
+    VideoPlayer
     // BFormFile
   },
   props: ['targetItem', 'nftMedia', 'dims'],
@@ -50,7 +50,8 @@ export default {
     return {
       mediaObjects: [],
       waitingImage: 'https://images.prismic.io/radsoc/f60d92d0-f733-46e2-9cb7-c59e33a15fc1_download.jpeg?auto=compress,format',
-      missing: '/img/pdf-holding.png'
+      missing: '/img/pdf-holding.png',
+      videoOptions: { autoplay: true, controls: true, sources: [{ src: this.mediaItem().fileUrl, type: this.mediaItem().type }], fluid: true }
     }
   },
   computed: {

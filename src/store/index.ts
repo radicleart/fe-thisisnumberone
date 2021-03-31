@@ -35,7 +35,7 @@ const setup = function (data) {
   }
   const useNetwork = 'testnet'
   // let beneficiaries = []
-  let risidioBaseApi = 'http://api.risidio.local'
+  let risidioBaseApi = 'http://https://tapi.risidio.com'
   if (location.href.indexOf('https://one.risidio.com') > -1 || location.href.indexOf('https://test.loopbomb.com') > -1) {
     risidioBaseApi = 'https://tapi.risidio.com'
   } else if (location.href.indexOf('https://loopbomb.com') > -1) {
