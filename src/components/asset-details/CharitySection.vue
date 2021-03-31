@@ -11,7 +11,7 @@
             <prismic-items :prismicItems="content.description"></prismic-items>
           </b-col>
           <b-col cols="12" align-self="end">
-            <social-links :socialLinks="content.social_links" />
+              <social-links :socialLinks="content['social_links']" />
           </b-col>
         </b-row>
       </div>

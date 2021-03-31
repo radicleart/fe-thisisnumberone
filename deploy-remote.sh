@@ -2,7 +2,7 @@
 set -e;
 
 export DEPLOYMENT=$1
-PATH_DEPLOY=../radsoc/volumes/www/production/sounds
+PATH_DEPLOY=../radsoc/volumes/www/production/one
 mkdir -p $PATH_DEPLOY
 export SERVER=zeno.brightblock.org
 export BUILDER=build-stag
@@ -25,7 +25,7 @@ function __build() {
 
 function __pushcode() {
   printf "\n- deploying from pipeline build \n";
-  rsync -aP -e "ssh  -p 7019" $PATH_DEPLOY/* bob@$SERVER:/var/www/sounds
+  rsync -aP -e "ssh  -p 7019" $PATH_DEPLOY/* bob@$SERVER:/var/www/one
 }
 
 # BUILD_PATH=../fe-lsat

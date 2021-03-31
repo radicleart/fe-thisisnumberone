@@ -19,23 +19,29 @@
               <div class=""><router-link :to="'/charity/' + item.assetHash">Charity</router-link></div>
             </div>
             <div class="d-flex justify-content-between">
-              <b-button class="mr-2 w-50" variant="light">Find out more</b-button>
-              <b-button class="ml-2 w-50" variant="dark">Charity</b-button>
+              <b-button @click="openMakeOffer()" class="mr-1 w-50" variant="light">MAKE AN OFFER</b-button>
+              <b-button @click="openUpdates()" class="ml-1 w-50" variant="dark">GET UPDATES</b-button>
             </div>
           </b-col>
         </b-row>
       </div>
     </b-row>
   </b-container>
+  <asset-updates-modal :assetHash="assetHash" @registerForUpdates="registerForUpdates"/>
+  <asset-offer-modal :assetHash="assetHash"/>
 </section>
 </template>
 
 <script>
 import Vue from 'vue'
+import AssetUpdatesModal from './AssetUpdatesModal'
+import AssetOfferModal from './AssetOfferModal'
 
 export default {
   name: 'AssetDetailsSection',
   components: {
+    AssetUpdatesModal,
+    AssetOfferModal
   },
   data: function () {
     return {
@@ -65,6 +71,30 @@ export default {
       if (item.nftMedia.coverImage) {
         return item.nftMedia.coverImage.fileUrl
       }
+    },
+    openUpdates: function () {
+      this.$bvModal.show('asset-updates-modal', { assetHash: this.assetHash })
+    },
+    openMakeOffer: function () {
+      this.$bvModal.show('asset-offer-modal', { assetHash: this.assetHash })
+    },
+    registerForUpdates: function (email) {
+      const data = {
+        status: 1,
+        domain: location.host,
+        assetHash: this.assetHash,
+        email: email
+      }
+      this.$store.dispatch('assetGeneralStore/registerForUpdates', data).then((result) => {
+        this.$store.commit('setModalMessage', 'Thanks for registering an interest - we will keep you updated.')
+        this.$bvModal.hide('asset-updates-modal')
+        this.$root.$emit('bv::show::modal', 'success-modal')
+        this.message = result
+      }).catch(() => {
+        this.$store.commit('setModalMessage', 'Thanks for re-registering an interest - we will keep you updated.')
+        this.$bvModal.hide('asset-updates-modal')
+        this.$root.$emit('bv::show::modal', 'success-modal')
+      })
     }
   },
   computed: {

@@ -8,6 +8,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import authStore from './authStore'
 import myItemStore from './myItemStore'
+import assetGeneralStore from './assetGeneralStore'
 import contentStore from './contentStore'
 import publicItemsStore from './publicItemsStore'
 
@@ -158,6 +159,7 @@ const setup = function (data) {
 
 export default new Vuex.Store({
   modules: {
+    assetGeneralStore,
     contentStore,
     myItemStore,
     authStore,
