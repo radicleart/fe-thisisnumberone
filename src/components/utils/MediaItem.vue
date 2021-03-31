@@ -1,14 +1,7 @@
 <template>
 <div>
-<<<<<<< HEAD
   <div id="video-demo-container" v-if="isVideo(mediaItem())">
     <video-player :options="videoOptions"/>
-=======
-  <div id="video-demo-container" v-if="isVideo(mediaItem())" >
-    <video :poster="poster()" controls :style="dimensions()">
-      <source :src="mediaItem().fileUrl" :type="mediaItem().type">
-    </video>
->>>>>>> main
     <div class="d-flex justify-content-between">
       <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
       <div @click="deleteMediaItem()" v-if="mediaItem().id === 'artworkClip'" class="text-small text-danger"><b-icon icon="trash"/></div>
