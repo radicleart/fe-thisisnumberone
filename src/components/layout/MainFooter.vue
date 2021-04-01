@@ -8,25 +8,37 @@
     <div class="row">
       <div class="col">
         <div v-for="(item,index) of content.column_about" :key="index">
-          <div><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+          <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+          <div v-else-if="item.title_of_the_link[0].type === 'image'">
+            <a :href=item.link.url><img :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+          </div>
         </div>
       </div>
 
       <div class="col">
         <div v-for="(item,index) of content.column__1" :key="index">
-          <div><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+          <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+          <div v-else-if="item.title_of_the_link[0].type === 'image'">
+            <a :href=item.link.url><img :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+          </div>
         </div>
       </div>
 
       <div class="col">
         <div v-for="(item,index) of content.news_column" :key="index">
-          <div><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+          <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+          <div v-else-if="item.title_of_the_link[0].type === 'image'">
+            <a :href=item.link.url><img :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+          </div>
         </div>
       </div>
 
       <div class="col">
         <div v-for="(item,index) of content.partners_column" :key="index">
-          <div><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+          <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+          <div v-else-if="item.title_of_the_link[0].type === 'image'">
+            <a :href=item.link.url><img :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+          </div>
         </div>
       </div>
     </div>
