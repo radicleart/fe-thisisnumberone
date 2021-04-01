@@ -126,6 +126,10 @@ export default {
       if (!this.formSubmitted && !this.item.name) return null
       return (this.item.name && this.item.name.length > 2)
     },
+    itemArtistState () {
+      if (!this.formSubmitted && !this.item.artist) return null
+      return (this.item.artist && this.item.artist.length > 2)
+    },
     itemKeywordsState () {
       if (!this.formSubmitted && !this.item.keywords) return null
       return (this.item.keywords && this.item.keywords.length > 0)

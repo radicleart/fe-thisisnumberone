@@ -1,19 +1,19 @@
 <template>
 <section id="home-section" v-if="slices">
   <div class="">
-    <risidio-pay class="text-dark" v-if="showRpay" :configuration="configuration"/>
+    <result-grid />
   </div>
 </section>
 </template>
 
 <script>
-import RisidioPay from 'risidio-pay'
+import ResultGrid from '@/components/marketplace/ResultGrid'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'Home',
   components: {
-    RisidioPay
+    ResultGrid
   },
   data () {
     return {
@@ -46,6 +46,15 @@ export default {
 </script>
 
 <style>
+.market-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 200px;
+  background-color: rgb(2, 0, 0) !important;
+  text-align: center;
+}
+
 .home-content {
   position: relative;
   top: 140px;

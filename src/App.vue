@@ -37,6 +37,7 @@ export default {
   },
   mounted () {
     this.$store.dispatch('initApplication').then(() => {
+      this.$store.dispatch('contractStore/initialiseTheOne')
       this.loading = false
     })
     const $self = this

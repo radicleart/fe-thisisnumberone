@@ -1,27 +1,25 @@
 <template>
 <div class="text-center">
-  <div @drop.prevent="loadMediaObjects" @dragover.prevent class="drop-zone text-danger d-flex flex-column align-items-center">
+  <div @drop.prevent="loadMediaObjects" @dragover.prevent class="p-4 drop-zone text-danger d-flex flex-column align-items-center">
       <div class="mt-5"><b-icon scale="3" :icon="contentModel.iconName"/></div>
-      <div class="mt-4 mb-5 text-center" v-html="contentModel.title"></div>
-      <div class="mt-auto" style="position: relative; top: 10px;">
+      <div class="mt-4 mb-5" v-html="contentModel.title"></div>
+      <div class="text-center mx-auto" style="position: relative; top: 10px;">
         <div>
-          <div class="mb-3" role="group">
-            <label for="item-name">Download URL</label>
-            <b-form-input
-              id="item-name"
-              v-model="directUrl"
-              @keyup="startDownload()"
-              aria-describedby="item-name-help item-name-feedback"
-              placeholder="Enter URL"
-              trim
-            ></b-form-input>
-          </div>
+          <input style="width: 80%;" class="input-file" type="file" :ref="getUploadId()" @change.prevent="loadMediaObjects"/>
         </div>
         <div>
-          <b-button variant="light" v-html="contentModel.buttonName" @click="chooseFiles()"></b-button>
+          <b-button style="width: 80%;" variant="light" v-html="contentModel.buttonName" @click="chooseFiles()"></b-button>
         </div>
-        <div>
-          <input class="input-file" type="file" :ref="getUploadId()" @change.prevent="loadMediaObjects"/>
+        <div style="width: 100%;" class="text-left mt-4 mb-3" role="group">
+          <label for="item-name">Or Paste Download URL</label>
+          <b-form-input
+            id="item-name"
+            v-model="directUrl"
+            @keyup="startDownload()"
+            aria-describedby="item-name-help item-name-feedback"
+            placeholder="Enter URL"
+            trim
+          ></b-form-input>
         </div>
       </div>
     <div class="invalid-feedback d-block" v-if="showError">
@@ -351,7 +349,6 @@ export default {
 <style scoped>
 .input-file {
   opacity: 0;
-  min-width: 300px;
   position: relative;
   top: -40px;
 }
