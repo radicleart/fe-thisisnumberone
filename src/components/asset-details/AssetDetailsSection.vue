@@ -11,7 +11,7 @@
         <b-row align-v="stretch" :style="'height:' + videoHeight + 'px;'">
           <b-col cols="12"><router-link to="/"><b-icon icon="chevron-left" shift-h="-4" variant="danger"></b-icon> Back</router-link></b-col>
           <b-col cols="12" align-self="end">
-            <h1>Artist {{item.artist}}</h1>
+            <h1>Artist {{getArtist()}}</h1>
             <h2>{{item.name}}</h2>
             <p class="border-top text-small">{{item.description}}</p>
             <div class="mb-5 d-flex justify-content-between">
@@ -70,6 +70,16 @@ export default {
       const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
       if (item.nftMedia.coverImage) {
         return item.nftMedia.coverImage.fileUrl
+      }
+    },
+    getArtist: function () {
+      const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
+      if (item.artist) {
+        return item.artist
+      } else if (item.owner) {
+        return item.owner.substring(0, item.owner.indexOf('.'))
+      } else {
+        return 'Unknown Artist'
       }
     },
     openUpdates: function () {

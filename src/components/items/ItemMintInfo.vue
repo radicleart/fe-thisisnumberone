@@ -1,8 +1,12 @@
 <template>
 <div  class="mt-3">
-  <div class="bg-success p-3 text-white d-flex justify-content-between" v-if="mintedDate">
-    <div><a :href="risidioAuctionsUrl" target="_blank">NFT #{{item.nftIndex}}</a></div>
+  <div class="text-white d-flex justify-content-between" v-if="minted()">
+    <!-- <div><a :href="risidioAuctionsUrl" target="_blank">NFT #{{item.nftIndex}}</a></div>
     <div>minted on: {{mintedDate}}</div>
+    -->
+    <div class="text-small">
+      <b-button class="" variant="success">Minted at #{{item.nftIndex}}</b-button>
+    </div>
   </div>
   <div class="d-flex justify-content-between" v-else-if="isValid">
     <div class="text-small" v-if="isValid && !mintedDate">
@@ -60,13 +64,15 @@ export default {
             $self.mintResult = item.name + ' (#' + item.nftIndex + ') has been saved to your storage'
           })
         } else if (data.opcode === 'save-mint-data') {
-          console.log(data)
+          console.log(data.opcode)
+        } else if (data.opcode === 'stx-contract-data') {
+          console.log(data.opcode)
         } else {
-          $self.$bvModal.hide('minting-modal')
-          $self.showRpay = false
-          $self.mintResult = data.message
-          $self.mintTitle = 'Not Minted'
-          $self.$bvModal.show('result-modal')
+          // $self.$bvModal.hide('minting-modal')
+          // $self.showRpay = false
+          // $self.mintResult = data.message
+          // $self.mintTitle = 'Not Minted'
+          // $self.$bvModal.show('result-modal')
         }
       })
     }
@@ -80,6 +86,9 @@ export default {
     downable: function () {
       return this.uploadState > 2
     },
+    minted: function () {
+      return this.item.nftIndex > -1
+    },
     upable: function () {
       return this.uploadState > 1 && this.uploadState < 5
     }
@@ -92,7 +101,7 @@ export default {
       return null
     },
     configuration () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]({ flow: 'minting-flow', asset: this.item })
+      const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
       return configuration
     },
     isValid: function () {

@@ -9,6 +9,7 @@ import Vuex from 'vuex'
 import authStore from './authStore'
 import myItemStore from './myItemStore'
 import assetGeneralStore from './assetGeneralStore'
+import contractStore from './contractStore'
 import contentStore from './contentStore'
 import publicItemsStore from './publicItemsStore'
 
@@ -35,7 +36,7 @@ const setup = function (data) {
   }
   const useNetwork = 'testnet'
   // let beneficiaries = []
-  let risidioBaseApi = 'http://https://tapi.risidio.com'
+  let risidioBaseApi = 'http://api.risidio.local'
   if (location.href.indexOf('https://one.risidio.com') > -1 || location.href.indexOf('https://test.loopbomb.com') > -1) {
     risidioBaseApi = 'https://tapi.risidio.com'
   } else if (location.href.indexOf('https://loopbomb.com') > -1) {
@@ -161,6 +162,7 @@ export default new Vuex.Store({
   modules: {
     assetGeneralStore,
     contentStore,
+    contractStore,
     myItemStore,
     authStore,
     publicItemsStore

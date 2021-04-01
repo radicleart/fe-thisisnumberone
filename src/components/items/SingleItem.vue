@@ -1,14 +1,14 @@
 <template>
-<div class="mt-3">
-  <router-link :to="assetUrl">
-    <media-item :dims="dims" :nftMedia="item.nftMedia" :targetItem="'artworkFile'"/>
-  </router-link>
-  <div class="ml-1">
-    <div class="mb-2 d-flex justify-content-between">
-      <div class="text-bold">{{item.name}}</div>
-      <div v-if="isDeletable()">
-        <router-link class="mr-2" :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"></b-icon></router-link>
-        <a href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
+<div v-if="item && item.nftMedia" class="mt-3">
+  <media-item :dims="dims" :nftMedia="item.nftMedia" :targetItem="'artworkFile'"/>
+  <div class="">
+    <div class="mt-5 mb-2 d-flex justify-content-between">
+      <div class="text-bold">
+        <router-link :to="assetUrl"><b-icon class="mr-2" icon="arrow-up-right-square"/></router-link>{{item.name}}
+      </div>
+      <div>
+        <router-link v-if="isAllowed('delete')" class="mr-2" :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"></b-icon></router-link>
+        <a v-if="isAllowed('delete')" href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
       </div>
     </div>
     <item-mint-info :item="item" />
@@ -41,6 +41,11 @@ export default {
       this.dHover[index] = true
       this.componentKey += 1
     },
+    isAllowed (opcode) {
+      if (opcode === 'delete' || opcode === 'edit') {
+        return this.item.nftIndex === -1
+      }
+    },
     hoverOut () {
       this.dHover = [false, false, false, false, false, false, false, false, false, false, false, false]
       this.componentKey += 1
@@ -50,9 +55,6 @@ export default {
     },
     deleteItem () {
       this.$store.dispatch('myItemStore/deleteItem', this.item)
-    },
-    isDeletable () {
-      return !this.item.nftIndex || this.item.nftIndex === -1
     }
   },
   computed: {

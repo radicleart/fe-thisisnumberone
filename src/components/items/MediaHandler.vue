@@ -1,7 +1,7 @@
 <template>
 <div class="row" v-if="assetHash">
   <div class="col-md-4 col-sm-12 mb-4">
-    <media-item :dims="dims" :nftMedia="nftMedia" :targetItem="'artworkFile'"/>
+    <media-item :dims="dims" :autoplay="false" :nftMedia="nftMedia" :targetItem="'artworkFile'"/>
   </div>
   <div class="col-md-4 col-sm-12 mb-4">
     <media-item v-if="hasFile('artworkClip')" :dims="dims" :nftMedia="nftMedia" :targetItem="'artworkClip'" v-on="$listeners"/>
@@ -33,7 +33,7 @@ export default {
   props: ['uploadState', 'nftMedia'],
   data: function () {
     return {
-      artworkFileUrl: null, // 1.78
+      artworkFileUrl: null,
       dims: { width: 360, height: 202 },
       contentModelCoverImage: {
         id: 'coverImage',

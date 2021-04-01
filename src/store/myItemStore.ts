@@ -88,23 +88,26 @@ const myItemStore = {
         }
       })
     },
-    deleteItem ({ state }, item) {
-      return new Promise(() => {
-        let musicUrl = item.nftMedia.musicFileUrl
-        let imageUrl = item.nftMedia.imageUrl
-        const indexMusic = musicUrl.lastIndexOf('/') + 1
-        const indexImage = imageUrl.lastIndexOf('/') + 1
-        musicUrl = musicUrl.substring(indexMusic)
-        imageUrl = imageUrl.substring(indexImage)
-        myItemService.deleteFile(musicUrl)
-        myItemService.deleteFile(imageUrl)
+    deleteItem ({ state, dispatch }, item) {
+      return new Promise((resolve, reject) => {
+        if (item.nftIndex > -1) {
+          reject(new Error('Forbidden - item has been minted.'))
+          return
+        }
+        const artworkFile = item.nftMedia.artworkFile
+        if (artworkFile && artworkFile.storage === 'gaia') dispatch('deleteMediaItem', { id: 'artworkFile', item: item })
+        const artworkClip = item.nftMedia.artworkClip
+        if (artworkClip && artworkClip.storage === 'gaia') dispatch('deleteMediaItem', { id: 'artworkClip', item: item })
+        const coverImage = item.nftMedia.coverImage
+        if (coverImage && coverImage.storage === 'gaia') dispatch('deleteMediaItem', { id: 'coverImage', item: item })
 
-        const extractHash = musicUrl.substr(0, musicUrl.indexOf('.'))
-        const index = state.rootFile.records.findIndex((o) => o.assetHash === extractHash)
+        const index = state.rootFile.records.findIndex((o) => o.assetHash === item.assetHash)
         state.rootFile.records.splice(index, 1)
 
         console.log(state.rootFile.records)
-        myItemService.saveItem(state.rootFile)
+        myItemService.saveItem(state.rootFile).then((res) => {
+          resolve(res)
+        })
       })
     },
     deleteMediaItem ({ dispatch }, data) {
