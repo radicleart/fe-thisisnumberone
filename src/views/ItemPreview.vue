@@ -7,7 +7,7 @@
   <div class="row">
     <div class="col-md-9 col-sm-12">
       <div id="result-item" class="mb-4">
-        <media-item :nftMedia="nftMedia" :targetItem="'artworkFile'" :dims="dims"/>
+        <media-item :videoOptions="videoOptions" :nftMedia="nftMedia" :targetItem="'artworkFile'" :dims="dims"/>
       </div>
 
       <div>
@@ -59,6 +59,19 @@ export default {
   methods: {
   },
   computed: {
+    videoOptions () {
+      const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
+      const videoOptions = {
+        autoplay: false,
+        controls: true,
+        poster: (item.nftMedia.coverImage) ? item.nftMedia.coverImage.fileUrl : null,
+        sources: [
+          { src: item.nftMedia.artworkFile.fileUrl, type: item.nftMedia.artworkFile.type }
+        ],
+        fluid: true
+      }
+      return videoOptions
+    },
     item () {
       const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
       return item

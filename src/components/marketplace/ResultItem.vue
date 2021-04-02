@@ -1,27 +1,24 @@
 <template>
-<div>
-<router-link :to="assetUrl">
-  <div ref="lndQrcode" class="result-item0 mb-4 bg-light" :style="calcHeight()">
-  </div>
-</router-link>
-<!-- {{created(result.created)}} / {{created(result.updated)}} -->
+<div :style="dimensions()" class="text-right">
+  <router-link style="position: relative; top: 25px; right: 10px; z-index: 100" :to="assetUrl"><b-icon icon="arrow-right-circle"/></router-link>
+  <media-item :videoOptions="videoOptions" :hideMeta="true" :nftMedia="result.nftMedia" :targetItem="'artworkFile'"/>
 </div>
 </template>
 
 <script>
-import { APP_CONSTANTS } from '@/app-constants'
-import moment from 'moment'
-import utils from '@/services/utils'
 import Vue from 'vue'
+import MediaItem from '@/components/utils/MediaItem'
 
 export default {
   name: 'ResultItem',
   components: {
+    MediaItem
   },
   props: ['result'],
   data () {
     return {
       height: 300,
+      dims: { width: 300, height: 300 },
       likeIconTurquoise: require('@/assets/img/Favorite_button_turquoise_empty.png'),
       likeIconPurple: require('@/assets/img/Favorite_button_purple_empty.png')
     }
@@ -37,81 +34,22 @@ export default {
     }, this)
   },
   methods: {
-    hoverIn (index) {
-      this.dHover[index] = true
-      this.componentKey += 1
-    },
-    hoverOut () {
-      this.dHover = [false, false, false, false, false, false, false, false, false, false, false, false]
-      this.componentKey += 1
-    },
-    toggleFavourite () {
-      utils.makeFlasher(this.$refs.lndQrcode)
-      this.$store.dispatch('projectStore/toggleFavourite', this.result).then((index) => {
-        if (index < 0) {
-          this.$notify({ type: 'info', title: 'Favourites', text: this.result.title + ' has been added to your favourites - you can access them in your account.' })
-        } else {
-          this.$notify({ type: 'info', title: 'Favourites', text: this.result.title + ' has been removed from your favourites.' })
-        }
-      })
-    },
-    calcHeight () {
-      return {
-        height: this.height + 'px',
-        width: '100%',
-        'background-repeat': 'no-repeat',
-        'background-image': `url(${this.result.assetUrl})`,
-        'background-position': 'center center',
-        '-webkit-background-size': 'cover',
-        '-moz-background-size': 'cover',
-        '-o-background-size': 'cover',
-        'background-size': 'cover'
-      }
-    },
-    truncateProjectId (projectId) {
-      if (projectId.indexOf('.') > -1) {
-        let addr = projectId.split('.')[0]
-        addr = addr.substring(addr.length - 5)
-        return addr + '.' + projectId.split('.')[1]
-      }
-      return projectId
-    },
-    truncateAssetHash (assetHash) {
-      const addr = assetHash.substring(0, 4)
-      return addr + '...' + assetHash.substring(assetHash.length - 4)
-    },
-    amIOwner () {
-      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      return profile.username === this.result.owner
-    },
-    owner (id) {
-      return (id && id.indexOf('.') > -1) ? id.split('.')[0] : '?'
-    },
-    saleType () {
-      if (this.result.tradeInfo && this.result.tradeInfo.saleType === 0) {
-        return 'not selling'
-      } else if (this.result.tradeInfo && this.result.tradeInfo.saleType === 1) {
-        return 'buy now'
-      } else if (this.result.tradeInfo && this.result.tradeInfo.saleType === 2) {
-        return 'place bid'
-      } else if (this.result.tradeInfo && this.result.tradeInfo.saleType === 3) {
-        return 'make offer'
-      }
-    },
-    created (created) {
-      return moment(created).format('YYYY-MM-DD HH:mm:SS')
+    dimensions () {
+      return 'width: ' + this.dims.width + 'px; height: ' + this.dims.width + ';'
     }
   },
   computed: {
-    buyingPriceConversion () {
-      const tradeInfo = this.$store.getters[APP_CONSTANTS.GET_TRADE_INFO_FROM_HASH](this.result.assetHash)
-      const buyNowOrStartingPrice = tradeInfo.buyNowOrStartingPrice
-      const rate = this.$store.getters[APP_CONSTANTS.KEY_EXCHANGE_RATE](buyNowOrStartingPrice)
-      return rate
-    },
-    buyingPrice () {
-      const tradeInfo = this.$store.getters[APP_CONSTANTS.GET_TRADE_INFO_FROM_HASH](this.result.assetHash)
-      return tradeInfo.buyNowOrStartingPrice
+    videoOptions () {
+      const videoOptions = {
+        autoplay: false,
+        controls: true,
+        poster: (this.result.nftMedia.coverImage) ? this.result.nftMedia.coverImage.fileUrl : null,
+        sources: [
+          { src: this.result.nftMedia.artworkFile.fileUrl, type: this.result.nftMedia.artworkFile.type }
+        ],
+        fluid: true
+      }
+      return videoOptions
     },
     assetUrl () {
       let assetUrl = '/assets/' + this.result.assetHash
@@ -124,8 +62,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.result-item {
-  position: relative;
+.result-item0 {
+  border: 1pt solid #fff;
 }
 .flasher {
   width: 50px;

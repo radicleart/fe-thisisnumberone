@@ -16,7 +16,8 @@ const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 const myItemStore = {
   namespaced: true,
   state: {
-    rootFile: null
+    rootFile: null,
+    gaiaUrl: null
   },
   getters: {
     getMyItems: state => {
@@ -164,6 +165,7 @@ const myItemStore = {
         data.nftMedia.storage = 'gaia'
         const fileName = data.assetHash + '_' + data.nftMedia.id + utils.getFileExtension(data.nftMedia.fileUrl, data.nftMedia.type)
         myItemService.uploadFileData(fileName, data.nftMedia).then((gaiaUrl: string) => {
+          state.gaiaUrl = gaiaUrl
           data.nftMedia.fileUrl = gaiaUrl
           resolve(data.nftMedia)
         }).catch((err) => {
@@ -198,6 +200,9 @@ const myItemStore = {
         } else {
           state.rootFile.records.splice(index, 1, item)
         }
+        if (item.nftMedia.artworkClip && item.nftMedia.artworkClip.dataUrl) item.nftMedia.artworkClip.dataUrl = null
+        if (item.nftMedia.artworkFile && item.nftMedia.artworkFile.dataUrl) item.nftMedia.artworkFile.dataUrl = null
+        if (item.nftMedia.coverImage && item.nftMedia.coverImage.dataUrl) item.nftMedia.coverImage.dataUrl = null
         myItemService.saveItem(state.rootFile).then((rootFile) => {
           commit('rootFile', rootFile)
           resolve(item)

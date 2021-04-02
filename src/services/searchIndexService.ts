@@ -49,7 +49,7 @@ const searchIndexService = {
 
   addTradeInfo: function (asset: any) {
     return new Promise(function (resolve, reject) {
-      axios.post(SEARCH_API_PATH + '/v1/trade-info/' + asset.assetHash, asset.tradeInfo).then((result) => {
+      axios.post(SEARCH_API_PATH + '/v1/trade-info/' + asset.assetHash, asset.saleData).then((result) => {
         resolve(result.data)
       }).catch((error) => {
         reject(new Error('Unable index record: ' + error))
@@ -88,12 +88,12 @@ const searchIndexService = {
       } else {
         indexable.category = asset.category
       }
-      indexable.tradeInfo = {
-        saleType: (asset.tradeInfo) ? asset.tradeInfo.saleType : 0,
-        buyNowOrStartingPrice: (asset.tradeInfo) ? asset.tradeInfo.buyNowOrStartingPrice : 0,
-        reservePrice: (asset.tradeInfo) ? asset.tradeInfo.reservePrice : 0,
-        biddingEndTime: (asset.tradeInfo) ? asset.tradeInfo.biddingEndTime : 0,
-        incrementPrice: (asset.tradeInfo) ? asset.tradeInfo.incrementPrice : 0
+      indexable.saleData = {
+        saleType: (asset.saleData) ? asset.saleData.saleType : 0,
+        buyNowOrStartingPrice: (asset.saleData) ? asset.saleData.buyNowOrStartingPrice : 0,
+        reservePrice: (asset.saleData) ? asset.saleData.reservePrice : 0,
+        biddingEndTime: (asset.saleData) ? asset.saleData.biddingEndTime : 0,
+        incrementPrice: (asset.saleData) ? asset.saleData.incrementPrice : 0
       }
       axios.post(SEARCH_API_PATH + '/addRecord', indexable).then((result) => {
         resolve(result)

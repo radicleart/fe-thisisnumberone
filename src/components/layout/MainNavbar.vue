@@ -1,5 +1,5 @@
 <template>
-<div class="px-5">
+<div id="one-nav" class="px-5" @mouseover="transme" @mouseout="transbackme">
 <b-navbar toggleable="lg" variant="transparent">
     <b-navbar-brand href="#">
       <div class="">
@@ -63,6 +63,15 @@ export default {
     }
   },
   methods: {
+    // test methods - just anticipating the design...
+    transme () {
+      const nav = document.getElementById('one-nav')
+      if (nav) nav.style.depth = '100px'
+    },
+    transbackme () {
+      const nav = document.getElementById('one-nav')
+      if (nav) nav.style.depth = '100px'
+    },
     headerClass () {
       return (this.$route.name === 'home' || this.$route.name === 'login' || this.$route.name === 'how-it-works') ? '' : 'header-class'
     },

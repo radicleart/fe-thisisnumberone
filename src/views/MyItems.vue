@@ -34,16 +34,12 @@ export default {
       filter: 'none'
     }
   },
-  mounted () {
-    this.$store.dispatch('myItemStore/fetchItems').then(() => {
-      this.loading = false
-    })
-  },
   methods: {
   },
   computed: {
     myItems () {
-      const myItems = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEMS]
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      const myItems = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS_BY_OWNER](profile.username)
       if (myItems) return myItems
       return []
     }

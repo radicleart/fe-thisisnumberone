@@ -1,7 +1,7 @@
 <template>
 <section id="home-section" v-if="slices">
   <div class="">
-    <result-grid />
+    <result-grid :resultSet="resultSet"/>
   </div>
 </section>
 </template>
@@ -28,6 +28,16 @@ export default {
   methods: {
   },
   computed: {
+    resultSet () {
+      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      const numbs = resultSet.length
+      if (numbs < 4) {
+        return resultSet.slice(1)
+      } else if (numbs < 9) {
+        return resultSet.slice(4)
+      }
+      return resultSet.slice(9)
+    },
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
       return configuration

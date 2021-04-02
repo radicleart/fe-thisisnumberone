@@ -1,8 +1,8 @@
 <template>
 <div>
   <div id="video-demo-container" v-if="isVideo(mediaItem())">
-    <video-player :options="videoOptions()"/>
-    <div class="d-flex justify-content-between">
+    <video-player :options="videoOptions"/>
+    <div class="d-flex justify-content-between" v-if="!hideMeta">
       <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
       <div @click="deleteMediaItem()" v-if="mediaItem().id === 'artworkClip'" class="text-small text-danger"><b-icon icon="trash"/></div>
     </div>
@@ -37,7 +37,7 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import VideoPlayer from './videoPlayer'
+import VideoPlayer from './VideoPlayer'
 
 export default {
   name: 'MediaItem',
@@ -45,13 +45,12 @@ export default {
     VideoPlayer
     // BFormFile
   },
-  props: ['targetItem', 'nftMedia', 'dims', 'autoplay'],
+  props: ['videoOptions', 'targetItem', 'nftMedia', 'dims', 'autoplay', 'hideMeta'],
   data () {
     return {
       mediaObjects: [],
       waitingImage: 'https://images.prismic.io/radsoc/f60d92d0-f733-46e2-9cb7-c59e33a15fc1_download.jpeg?auto=compress,format',
-      missing: '/img/pdf-holding.png',
-      vo: { controls: true, sources: [{ src: this.mediaItem().fileUrl, type: this.mediaItem().type }], fluid: true }
+      missing: '/img/pdf-holding.png'
     }
   },
   computed: {
@@ -64,15 +63,6 @@ export default {
     }
   },
   methods: {
-    videoOptions: function () {
-      this.vo.autoplay = this.autoplay
-      return this.vo
-    },
-    poster: function () {
-      if (this.nftMedia.coverImage) {
-        return this.nftMedia.coverImage.fileUrl
-      }
-    },
     mediaItem: function () {
       return this.nftMedia[this.targetItem]
     },

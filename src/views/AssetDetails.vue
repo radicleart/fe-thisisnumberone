@@ -1,11 +1,13 @@
 <template>
 <div>
-  <div class="mt-3" v-if="loading">
+  <div class="mt-3" v-if="!gaiaAsset">
     {{message}}
   </div>
-  <asset-details-section />
-  <artist-section />
-  <charity-section />
+  <div class="mt-3" v-else>
+    <asset-details-section :gaiaAsset="gaiaAsset" />
+    <artist-section />
+    <charity-section />
+  </div>
 </div>
 </template>
 
@@ -13,6 +15,7 @@
 import AssetDetailsSection from '@/components/asset-details/AssetDetailsSection'
 import ArtistSection from '@/components/asset-details/ArtistSection'
 import CharitySection from '@/components/asset-details/CharitySection'
+import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'AssetDetails',
@@ -29,16 +32,14 @@ export default {
   },
   mounted () {
     this.assetHash = this.$route.params.assetHash
-    this.$store.dispatch('myItemStore/findItemByAssetHash', this.assetHash).then((item) => {
-      this.loading = false
-      if (!item) {
-        this.$router.push('/404')
-      }
-    })
   },
   methods: {
   },
   computed: {
+    gaiaAsset () {
+      const gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.$route.params.assetHash)
+      return gaiaAsset
+    }
   }
 }
 </script>

@@ -12,7 +12,9 @@ export const APP_CONSTANTS = {
   KEY_CONTENT_CHARITY_BY_ID: 'contentStore/getCharityById',
   KEY_CONTENT_ARTIST_BY_ID: 'contentStore/getArtistById',
 
-  KEY_APP_MAP_PROJECT: 'contractStore/getAppmapProject',
+  KEY_GAIA_ASSET_BY_HASH: 'contractStore/getGaiaAssetByHash',
+  KEY_GAIA_ASSETS: 'contractStore/getGaiaAssets',
+  KEY_GAIA_ASSETS_BY_OWNER: 'contractStore/getGaiaAssetsByOwner',
 
   SET_CURRENT_SEARCH: 'searchStore/setCurrentSearch',
   KEY_CURRENT_SEARCH: 'searchStore/getCurrentSearch',

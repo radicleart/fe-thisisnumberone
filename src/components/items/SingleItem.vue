@@ -1,6 +1,6 @@
 <template>
 <div v-if="item && item.nftMedia" class="mt-3">
-  <media-item :dims="dims" :nftMedia="item.nftMedia" :targetItem="'artworkFile'"/>
+  <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="item.nftMedia" :targetItem="'artworkFile'"/>
   <div class="">
     <div class="mt-5 mb-2 d-flex justify-content-between">
       <div class="text-bold">
@@ -58,6 +58,18 @@ export default {
     }
   },
   computed: {
+    videoOptions () {
+      const videoOptions = {
+        autoplay: false,
+        controls: true,
+        poster: (this.item.nftMedia.coverImage) ? this.item.nftMedia.coverImage.fileUrl : null,
+        sources: [
+          { src: this.item.nftMedia.artworkFile.fileUrl, type: this.item.nftMedia.artworkFile.type }
+        ],
+        fluid: true
+      }
+      return videoOptions
+    },
     bannerImage () {
       let imageUrl = this.item.nftMedia.imageUrl
       if (!imageUrl) {

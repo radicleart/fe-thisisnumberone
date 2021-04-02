@@ -276,11 +276,11 @@ export default {
           size: fileObject.size,
           type: fileObject.type
         }
-        this.$emit('updateMedia', { startLoad: 'Loading from file system ' + thisFile.name + ' size is ' + Math.round(thisFile.size * 100) / 100 + 'M' })
+        this.$emit('updateMedia', { startLoad: 'Loading from file system ' + thisFile.name + ' size is ' + Math.round(thisFile.size * 100) / 100 + ' bytes' })
         let ksize = fileObject.size / 1000000
         ksize = Math.round(ksize * 100) / 100
         if (ksize > Number($self.sizeLimit)) {
-          $self.internalError = 'This file (' + ksize + ' M) exceeds the size limit of ' + this.sizeLimit + ' M'
+          $self.internalError = 'This file (' + ksize + ' M) exceeds the size limit of ' + this.sizeLimit + ' M - try dropping in a of a file url - we can create the NFT from this and serve the content from the URL'
           this.$emit('updateMedia', { errorMessage: $self.internalError })
           return
         }
@@ -304,6 +304,7 @@ export default {
           allowed = allowed || $self.isMusic(fileObject)
         }
         if (!allowed) {
+          this.$emit('updateMedia', { errorMessage: 'Files of type ' + fileObject.type + ' are not allowed here.' })
           $self.internalError = 'Files of type ' + fileObject.type + ' are not allowed here.'
           return
         }

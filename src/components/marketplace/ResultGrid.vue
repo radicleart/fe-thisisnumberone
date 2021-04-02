@@ -1,13 +1,17 @@
 <template>
-<div class="">
-  <div v-for="(result, index) in resultSet" :key="index" :class="gridClasses">
-    <result-item :result="result" />
-  </div>
-</div>
+<b-container fluid>
+  <b-row class="splash-screen hundred-vh text-center" align-v="center" align-h="center">
+    <b-col cols="4">
+      <div v-for="(result, index) in resultSet" :key="index">
+        <result-item :result="result" />
+      </div>
+    </b-col>
+  </b-row>
+</b-container>
+
 </template>
 
 <script>
-import { APP_CONSTANTS } from '@/app-constants'
 import ResultItem from './ResultItem'
 
 export default {
@@ -15,22 +19,19 @@ export default {
   components: {
     ResultItem
   },
-  props: ['gridClasses'],
+  props: ['resultSet'],
   data () {
     return {
     }
   },
   methods: {
+    cols: function () {
+      if (this.resultSet.length < 4) return 12
+      else if (this.resultSet.length < 9) return 6
+      else return 4
+    }
   },
   computed: {
-    application () {
-      const application = this.$store.getters[APP_CONSTANTS.KEY_APP_MAP_PROJECT]
-      return (application && application.gaiaProject) ? application : null
-    },
-    resultSet () {
-      const application = this.$store.getters[APP_CONSTANTS.KEY_APP_MAP_PROJECT]
-      return (application && application.gaiaProject) ? application : null
-    }
   }
 }
 </script>

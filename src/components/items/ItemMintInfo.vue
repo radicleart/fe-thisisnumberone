@@ -21,6 +21,10 @@
   </b-modal>
   <b-modal id="result-modal">
     <div v-html="mintResult"></div>
+    <template #modal-footer class="text-center">
+      <div class="w-100">
+      </div>
+    </template>
   </b-modal>
 </div>
 </template>
@@ -52,9 +56,9 @@ export default {
       window.eventBus.$on('rpayEvent', function (data) {
         $self.mintResult = data.message
         if (data.opcode === 'stx-mint-success' || data.opcode === 'eth-mint-success') {
+          $self.showRpay = false
           $self.$bvModal.hide('minting-modal')
           $self.$bvModal.show('result-modal')
-          $self.showRpay = false
           const item = $self.$store.getters['myItemStore/myItem']($self.item.assetHash)
           item.tokenId = data.tokenId
           item.nftIndex = data.nftIndex

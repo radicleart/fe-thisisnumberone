@@ -16,16 +16,17 @@ const userSession = new UserSession({ appConfig })
 const storage = new Storage({ userSession })
 
 const tokenFromHash = function (state, ahash) {
+  let retToken = null
   if (state.application) {
     const app = state.application
     if (app.tokenContract && app.tokenContract.tokens) {
-      app.tokenContract.tokens.forEach((token) => {
-        if (token.tokenInfo.assetHash === ahash) {
-          return token
-        }
-      })
+      const index = app.tokenContract.tokens.findIndex((o) => o.tokenInfo.assetHash === ahash)
+      if (index > -1) {
+        retToken = app.tokenContract.tokens[index]
+      }
     }
   }
+  return retToken
 }
 
 const fetchGaiaData = function (commit, state, data) {
@@ -39,13 +40,12 @@ const fetchGaiaData = function (commit, state, data) {
     storage.getFile(data.gaiaFilename, options).then((file) => {
       const rootFile = JSON.parse(file)
       if (rootFile && rootFile.records && rootFile.records.length > -1) {
-        rootFile.records.forEach((asset) => {
-          const token = tokenFromHash(asset.assetHash)
+        rootFile.records.forEach((gaiaAsset) => {
+          const token = tokenFromHash(state, gaiaAsset.assetHash)
           if (token) {
-            asset.nftIndex = token.nftIndex
-            asset.saleData = token.saleData
-            commit('addGaiaAsset', asset)
+            Object.assign(gaiaAsset, token)
           }
+          commit('addGaiaAsset', gaiaAsset)
         })
       }
     }).catch((error) => {
@@ -67,7 +67,7 @@ const loadAssetsFromGaia = function (commit, state) {
   }
 }
 
-const subscribeApiNews = function (dispatch, state, commit, connectUrl, contractId) {
+const subscribeApiNews = function (state, commit, connectUrl, contractId) {
   if (!socket) socket = new SockJS(connectUrl + '/api-news')
   if (!stompClient) stompClient = Stomp.over(socket)
   stompClient.connect({}, function () {
@@ -97,11 +97,15 @@ const contractStore = {
     getApplication: state => {
       return state.application
     },
-    geGaiaAssets: state => {
+    getGaiaAssets: state => {
       return state.gaiaAssets
     },
-    geTokenFromHash: state => ahash => {
-      return tokenFromHash(state, ahash)
+    getGaiaAssetsByOwner: state => owner => {
+      return state.gaiaAssets.filter((o) => o.owner === owner)
+    },
+    getGaiaAssetByHash: state => ahash => {
+      const index = state.gaiaAssets.findIndex((o) => o.assetHash === ahash)
+      return state.gaiaAssets[index]
     }
   },
   mutations: {
@@ -129,7 +133,7 @@ const contractStore = {
         const contractId = STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
         const path = MESH_API_PATH + '/v2/appmap/' + contractId
         axios.get(path).then(response => {
-          subscribeApiNews(dispatch, state, commit, MESH_API_PATH, contractId)
+          subscribeApiNews(state, commit, MESH_API_PATH, contractId)
           commit('setApplication', response.data)
           loadAssetsFromGaia(dispatch, state)
           resolve(response.data)

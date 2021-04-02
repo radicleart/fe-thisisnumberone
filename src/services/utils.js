@@ -180,13 +180,13 @@ const utils = {
       if (res.value.data['sale-data']) {
         const saleData = res.value.data['sale-data']
         if (saleData.value) {
-          const tradeInfo = {}
-          tradeInfo.biddingEndTime = saleData.value.data['bidding-end-time'].value.toNumber()
-          tradeInfo.incrementPrice = this.fromMicroAmount(saleData.value.data['increment-stx'].value.toNumber())
-          tradeInfo.reservePrice = this.fromMicroAmount(saleData.value.data['reserve-stx'].value.toNumber())
-          tradeInfo.buyNowOrStartingPrice = this.fromMicroAmount(saleData.value.data['amount-stx'].value.toNumber())
-          tradeInfo.saleType = saleData.value.data['sale-type'].value.toNumber()
-          clarityAsset.tradeInfo = tradeInfo
+          const saleData = {}
+          saleData.biddingEndTime = saleData.value.data['bidding-end-time'].value.toNumber()
+          saleData.incrementPrice = this.fromMicroAmount(saleData.value.data['increment-stx'].value.toNumber())
+          saleData.reservePrice = this.fromMicroAmount(saleData.value.data['reserve-stx'].value.toNumber())
+          saleData.buyNowOrStartingPrice = this.fromMicroAmount(saleData.value.data['amount-stx'].value.toNumber())
+          saleData.saleType = saleData.value.data['sale-type'].value.toNumber()
+          clarityAsset.saleData = saleData
         }
       }
       if (res.value.data['token-info']) {

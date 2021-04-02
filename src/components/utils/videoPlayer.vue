@@ -1,6 +1,6 @@
 <template>
   <div>
-    <video ref="videoPlayer" class="video-js"></video>
+    <video :poster="poster()" ref="videoPlayer" class="border video-js vjs-theme-city vjs-big-play-centered"></video>
   </div>
 </template>
 
@@ -31,6 +31,13 @@ export default {
   beforeDestroy () {
     if (this.player) {
       this.player.dispose()
+    }
+  },
+  methods: {
+    poster: function () {
+      if (this.options.imageUrl) {
+        return this.options.imageUrl
+      }
     }
   }
 }

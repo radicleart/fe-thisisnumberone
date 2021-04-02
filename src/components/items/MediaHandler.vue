@@ -1,10 +1,10 @@
 <template>
 <div class="row" v-if="assetHash">
   <div class="col-md-4 col-sm-12 mb-4">
-    <media-item :dims="dims" :autoplay="false" :nftMedia="nftMedia" :targetItem="'artworkFile'"/>
+    <media-item :videoOptions="videoOptions" :dims="dims" :autoplay="false" :nftMedia="nftMedia" :targetItem="'artworkFile'"/>
   </div>
   <div class="col-md-4 col-sm-12 mb-4">
-    <media-item v-if="hasFile('artworkClip')" :dims="dims" :nftMedia="nftMedia" :targetItem="'artworkClip'" v-on="$listeners"/>
+    <media-item :videoOptions="videoOptions" v-if="hasFile('artworkClip')" :dims="dims" :nftMedia="nftMedia" :targetItem="'artworkClip'" v-on="$listeners"/>
     <media-upload v-else :myUploadId="'artworkClip'" :dims="dims" :contentModel="contentModelClip" :mediaFiles="mediaFilesMusicFile" :limit="1" :sizeLimit="4" :mediaTypes="'video'" @updateMedia="updateMedia($event)"/>
   </div>
   <div class="col-md-4 col-sm-12 mb-4">
@@ -75,6 +75,18 @@ export default {
     }
   },
   computed: {
+    videoOptions () {
+      const videoOptions = {
+        autoplay: false,
+        controls: true,
+        poster: (this.nftMedia.coverImage) ? this.nftMedia.coverImage.fileUrl : null,
+        sources: [
+          { src: this.nftMedia.artworkFile.fileUrl, type: this.nftMedia.artworkFile.type }
+        ],
+        fluid: true
+      }
+      return videoOptions
+    },
     mediaFilesCoverImage () {
       const files = []
       if (this.nftMedia.coverImage && this.nftMedia.coverImage.dataUrl) {
