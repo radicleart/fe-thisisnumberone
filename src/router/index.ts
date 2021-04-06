@@ -41,7 +41,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'home',
-    components: { default: Home, header: MainNavbar }
+    components: { default: Home, header: MainNavbar, footer: MainFooter }
   },
   {
     path: '/admin',
