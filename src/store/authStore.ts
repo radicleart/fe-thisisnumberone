@@ -12,8 +12,8 @@ const userSession = new UserSession({ appConfig })
 const NETWORK = process.env.VUE_APP_NETWORK
 const BLOCKSTACK_LOGIN = Number(process.env.VUE_APP_BLOCKSTACK_LOGIN)
 const authFinished = function (o) {
-  store.commit('authStore/setAuthResponse', o)
-  store.dispatch('authStore/fetchMyAccount')
+  store.commit('rpayAuthStore/setAuthResponse', o)
+  store.dispatch('rpayAuthStore/fetchMyAccount')
 }
 const authOptions = {
   sendToSignIn: false,

@@ -223,6 +223,40 @@ export default {
         return false
       }
     },
+    isAllowed (fileObject) {
+      let ksize = fileObject.size / 1000000
+      ksize = Math.round(ksize * 100) / 100
+      if (ksize > Number(this.sizeLimit)) {
+        this.internalError = 'This file (' + ksize + ' M) exceeds the size limit of ' + this.sizeLimit + ' M - try dropping in a of a file url - we can create the NFT from this and serve the content from the URL'
+        this.$emit('updateMedia', { errorMessage: this.internalError })
+        return false
+      }
+      let allowed = false
+      if (fileObject.type.indexOf('image') > -1) {
+        allowed = this.isImage(fileObject)
+      }
+      if (fileObject.type.indexOf('plain') > -1) {
+        allowed = allowed || this.isPlain(fileObject)
+      }
+      if (fileObject.type.indexOf('video') > -1) {
+        allowed = allowed || this.isVideo(fileObject)
+      }
+      if (fileObject.type.indexOf('audio') > -1) {
+        allowed = allowed || this.isAudio(fileObject)
+      }
+      if (fileObject.type.indexOf('doc') > -1) {
+        allowed = allowed || this.ispdf(fileObject)
+      }
+      if (fileObject.type.indexOf('mp3') > -1 || fileObject.type.indexOf('music') > -1 || fileObject.type.indexOf('audio') > -1) {
+        allowed = allowed || this.isMusic(fileObject)
+      }
+      if (!allowed) {
+        this.$emit('updateMedia', { errorMessage: 'Files of type ' + fileObject.type + ' are not allowed here.' })
+        this.internalError = 'Files of type ' + fileObject.type + ' are not allowed here.'
+        allowed = false
+      }
+      return allowed
+    },
     isValidUrl (url1) {
       try {
         return new URL(url1)
@@ -238,6 +272,7 @@ export default {
       const $self = this
       this.internalError = null
       let userFiles
+      if (!e) return
       if (this.directUrl || (e.dataTransfer && e.dataTransfer.getData)) {
         let data = this.directUrl
         if (!data) data = e.dataTransfer.getData('Text')
@@ -245,6 +280,7 @@ export default {
           this.$emit('updateMedia', { startLoad: 'Fetching file from ' + data })
           userFiles = data
           utils.readFileFromUrlToDataURL(data).then((fileObject) => {
+            if (!$self.isAllowed(fileObject)) return
             fileObject.id = $self.contentModel.id
             fileObject.storage = 'external'
             fileObject.fileUrl = data
@@ -255,6 +291,8 @@ export default {
             $self.$store.commit('setModalMessage', 'Error occurred processing transaction.')
             $self.result = error
           })
+          return
+        } else {
           return
         }
       }
@@ -269,6 +307,7 @@ export default {
           break
         }
         fileObject = userFiles[i]
+        $self.isAllowed(fileObject)
         const thisFile = {
           lastModified: fileObject.lastModified,
           lastModifiedDate: fileObject.lastModifiedDate,
@@ -277,37 +316,6 @@ export default {
           type: fileObject.type
         }
         this.$emit('updateMedia', { startLoad: 'Loading from file system ' + thisFile.name + ' size is ' + Math.round(thisFile.size * 100) / 100 + ' bytes' })
-        let ksize = fileObject.size / 1000000
-        ksize = Math.round(ksize * 100) / 100
-        if (ksize > Number($self.sizeLimit)) {
-          $self.internalError = 'This file (' + ksize + ' M) exceeds the size limit of ' + this.sizeLimit + ' M - try dropping in a of a file url - we can create the NFT from this and serve the content from the URL'
-          this.$emit('updateMedia', { errorMessage: $self.internalError })
-          return
-        }
-        let allowed = false
-        if ($self.mediaTypes.indexOf('image') > -1) {
-          allowed = $self.isImage(fileObject)
-        }
-        if ($self.mediaTypes.indexOf('plain') > -1) {
-          allowed = allowed || $self.isPlain(fileObject)
-        }
-        if ($self.mediaTypes.indexOf('video') > -1) {
-          allowed = allowed || $self.isVideo(fileObject)
-        }
-        if ($self.mediaTypes.indexOf('audio') > -1) {
-          allowed = allowed || $self.isAudio(fileObject)
-        }
-        if ($self.mediaTypes.indexOf('doc') > -1) {
-          allowed = allowed || $self.ispdf(fileObject)
-        }
-        if ($self.mediaTypes.indexOf('mp3') > -1 || $self.mediaTypes.indexOf('music') > -1) {
-          allowed = allowed || $self.isMusic(fileObject)
-        }
-        if (!allowed) {
-          this.$emit('updateMedia', { errorMessage: 'Files of type ' + fileObject.type + ' are not allowed here.' })
-          $self.internalError = 'Files of type ' + fileObject.type + ' are not allowed here.'
-          return
-        }
         const reader = new FileReader()
         reader.onload = function (e) {
           thisFile.dataUrl = e.target.result

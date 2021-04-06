@@ -89,9 +89,10 @@ const myItemStore = {
         }
       })
     },
-    deleteItem ({ state, dispatch }, item) {
+    deleteItem ({ state, dispatch, rootGetters }, item) {
       return new Promise((resolve, reject) => {
-        if (item.nftIndex > -1) {
+        const contractGaiaAsset = rootGetters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](item.assetHash)
+        if (contractGaiaAsset) {
           reject(new Error('Forbidden - item has been minted.'))
           return
         }

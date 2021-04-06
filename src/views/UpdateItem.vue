@@ -163,7 +163,7 @@ export default {
         return
       }
       this.showWaitingModal = true
-      this.$store.commit('setModalMessage', 'Uploading files - can take a while.. <a target="_blank" href="https://radiclesociety.medium.com/radicle-peer-to-peer-marketplaces-whats-the-deal-767960da195b">read why</a>')
+      this.$store.commit('setModalMessage', 'Uploading... once its saved you\'ll be able to mint this artwork - registering your ownership on the blockchain. Once registered you\'ll be able to prove you own it and be able to benefit from sales and from secondary sales.')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
       this.$store.dispatch('myItemStore/saveItem', this.item).then(() => {
         this.$root.$emit('bv::hide::modal', 'waiting-modal')

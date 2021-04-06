@@ -4,7 +4,7 @@
     <video-player :options="videoOptions"/>
     <div class="d-flex justify-content-between" v-if="!hideMeta">
       <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
-      <div @click="deleteMediaItem()" v-if="mediaItem().id === 'artworkClip'" class="text-small text-danger"><b-icon icon="trash"/></div>
+      <div @click="deleteMediaItem()" v-if="mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage'" class="text-small text-danger"><b-icon icon="trash"/></div>
     </div>
     <!-- <video id="video1" controls style="max-height: 250px;" @loadedmetadata="cover"> -->
   </div>

@@ -156,7 +156,7 @@ export default {
       this.$store.dispatch('myItemStore/saveItem', { item: this.item, musicFile: this.item.nftMedia.musicFile[0], coverImage: this.item.nftMedia.coverImage[0] }).then(() => {
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
         this.$root.$emit('bv::show::modal', 'success-modal')
-        this.$store.commit('setModalMessage', 'Your music is now uploaded to your personal cloud.')
+        this.$store.commit('setModalMessage', 'Uploading... once its saved you\'ll be able to mint this artowrk - registering your ownership on the blockchain. Once registered you\'ll be able to prove you own this artwork and be able to benefit not only from its sale but also from all secondary sales.')
       }).catch((error) => {
         this.$store.commit('setModalMessage', 'Error occurred processing transaction.')
         this.result = error

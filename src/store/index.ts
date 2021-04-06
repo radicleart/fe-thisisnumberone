@@ -6,10 +6,8 @@
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
-import authStore from './authStore'
 import myItemStore from './myItemStore'
 import assetGeneralStore from './assetGeneralStore'
-import contractStore from './contractStore'
 import contentStore from './contentStore'
 import publicItemsStore from './publicItemsStore'
 
@@ -28,6 +26,103 @@ const RISIDIO_STACKS_API = process.env.VUE_APP_API_STACKS
 const RISIDIO_WALLET_MAC = process.env.VUE_APP_WALLET_MAC
 const RISIDIO_WALLET_SKY = process.env.VUE_APP_WALLET_SKY
 
+const selling = {
+}
+const marketConfig = {
+  oneLayout: true,
+  searchMenu: false,
+  sideMenu: false,
+  projectId: 'ST1ESYCGJB5Z5NBHS39XPC70PGC14WAQK5XXNQYDW.thisisnumberone'
+}
+const beneficiariesDefault = [
+  {
+    username: 'donation.id',
+    role: 'Charitable Donation',
+    email: 'donation@thisisnumberone.com',
+    royalty: 10,
+    chainAddress: 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
+  },
+  {
+    username: 'environment.id',
+    role: 'Environment/Sustainabilty',
+    email: 'environment@thisisnumberone.com',
+    royalty: 5,
+    chainAddress: 'STMYA5EANW6C0HNS1S57VX52M0B795HHFDBW2XBE'
+  }
+]
+const payment = {
+  forceNew: false,
+  amountFiat: 0.5,
+  currency: 'GBP',
+  paymentCode: 'po-12324',
+  allowMultiples: true,
+  stxPaymentAddress: STX_PAYMENT_ADDRESS,
+  ethPaymentAddress: ETH_PAYMENT_ADDRESS,
+  paymentOption: 'ethereum',
+  paymentOptions: [
+    { allowFiat: true },
+    { allowBitcoin: true },
+    { allowLightning: true },
+    { allowStacks: true },
+    { allowLSAT: false },
+    { allowEthereum: true }
+  ],
+  creditAttributes: {
+    start: 4,
+    step: 2,
+    min: 2,
+    max: 20
+  },
+  squarePay: {
+    applicationId: APPLICATION_ID,
+    locationId: LOCATION_ID,
+    squareUrl: SQUARE_URL
+  }
+}
+const minter = {
+  preferredNetwork: 'stacks risidio',
+  networks: [
+    {
+      network: 'stacks risidio',
+      functionName: STX_MINT_FUNCTION,
+      enabled: true,
+      contractAddress: STX_CONTRACT_ADDRESS,
+      contractName: STX_CONTRACT_NAME
+    },
+    {
+      network: 'stacks connect',
+      enabled: true,
+      functionName: STX_MINT_FUNCTION,
+      contractAddress: STX_CONTRACT_ADDRESS,
+      contractName: STX_CONTRACT_NAME
+    },
+    {
+      network: 'ethereum',
+      enabled: true,
+      functionName: 'mint-token',
+      contractAddress: ETH_CONTRACT_ADDRESS
+    }
+  ],
+  enableRoyalties: true,
+  beneficiaries: beneficiariesDefault
+}
+
+const lookAndFeel = {
+  variant0: 'danger',
+  variant1: 'warning',
+  variant2: 'info',
+  variant3: 'light',
+  labels: {
+    title: 'Mint Your Item',
+    numberUnits: 'How many spins?',
+    quantityLabel: 'Tokens'
+  }
+}
+
+const gaiaAsset = {
+  saleData: {}
+}
+
 const setup = function (data) {
   if (!data.asset) data.asset = {}
   let risidioCardMode = 'payment-flow'
@@ -44,110 +139,16 @@ const setup = function (data) {
   } else if (location.href.indexOf('localhost') > -1) {
     // beneficiaries = state.beneficiariesLocalhost
   }
-  const lookAndFeel = {
-    variant0: 'danger',
-    variant1: 'warning',
-    variant2: 'info',
-    variant3: 'light',
-    labels: {
-      title: 'Mint Your Item',
-      numberUnits: 'How many spins?',
-      quantityLabel: 'Tokens'
-    }
-  }
-  const selling = {
-  }
-  const marketConfig = {
-    oneLayout: true,
-    searchMenu: false,
-    sideMenu: false,
-    projectId: 'ST1ESYCGJB5Z5NBHS39XPC70PGC14WAQK5XXNQYDW.thisisnumberone'
-  }
-  const beneficiariesDefault = [
-    {
-      username: 'donation.id',
-      role: 'Charitable Donation',
-      email: 'donation@thisisnumberone.com',
-      royalty: 10,
-      chainAddress: 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
-    },
-    {
-      username: 'environment.id',
-      role: 'Environment/Sustainabilty',
-      email: 'environment@thisisnumberone.com',
-      royalty: 5,
-      chainAddress: 'STMYA5EANW6C0HNS1S57VX52M0B795HHFDBW2XBE'
-    }
-  ]
-  const payment = {
-    forceNew: false,
-    amountFiat: 0.5,
-    currency: 'GBP',
-    paymentCode: 'po-12324',
-    allowMultiples: true,
-    stxPaymentAddress: STX_PAYMENT_ADDRESS,
-    ethPaymentAddress: ETH_PAYMENT_ADDRESS,
-    paymentOption: 'ethereum',
-    paymentOptions: [
-      { allowFiat: true },
-      { allowBitcoin: true },
-      { allowLightning: true },
-      { allowStacks: true },
-      { allowLSAT: false },
-      { allowEthereum: true }
-    ],
-    creditAttributes: {
-      start: 4,
-      step: 2,
-      min: 2,
-      max: 20
-    },
-    squarePay: {
-      applicationId: APPLICATION_ID,
-      locationId: LOCATION_ID,
-      squareUrl: SQUARE_URL
-    }
-  }
-  const minter = {
-    item: {
-      gaiaUsername: data.asset.owner,
-      assetHash: data.asset.assetHash,
-      name: data.asset.name,
-      imageUrl: data.asset.imageUrl
-    },
-    preferredNetwork: 'stacks risidio',
-    networks: [
-      {
-        network: 'stacks risidio',
-        functionName: STX_MINT_FUNCTION,
-        enabled: true,
-        contractAddress: STX_CONTRACT_ADDRESS,
-        contractName: STX_CONTRACT_NAME
-      },
-      {
-        network: 'stacks connect',
-        enabled: true,
-        functionName: STX_MINT_FUNCTION,
-        contractAddress: STX_CONTRACT_ADDRESS,
-        contractName: STX_CONTRACT_NAME
-      },
-      {
-        network: 'ethereum',
-        enabled: true,
-        functionName: 'mint-token',
-        contractAddress: ETH_CONTRACT_ADDRESS
-      }
-    ],
-    enableRoyalties: true,
-    beneficiaries: beneficiariesDefault
-  }
   const configuration = {
     lookAndFeel: lookAndFeel,
+    gaiaAppDomains: ['localhost:8080', 'localhost:8081', 'localhost:8082'],
+    gaiaAsset: (data.asset) ? data.asset : gaiaAsset,
     payment: payment,
     marketConfig: marketConfig,
     selling: selling,
     minter: minter,
     network: useNetwork,
+    risidioProjectId: STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
     risidioBaseApi: risidioBaseApi,
     risidioStacksApi: RISIDIO_STACKS_API,
     risidioWalletMac: RISIDIO_WALLET_MAC,
@@ -162,9 +163,7 @@ export default new Vuex.Store({
   modules: {
     assetGeneralStore,
     contentStore,
-    contractStore,
     myItemStore,
-    authStore,
     publicItemsStore
   },
   state: {
@@ -199,7 +198,7 @@ export default new Vuex.Store({
   actions: {
     initApplication ({ dispatch }) {
       return new Promise(resolve => {
-        dispatch('authStore/fetchMyAccount').then(profile => {
+        dispatch('rpayAuthStore/fetchMyAccount').then(profile => {
           if (profile.loggedIn) {
             dispatch('myItemStore/initSchema').then(rootFile => {
               resolve(rootFile)

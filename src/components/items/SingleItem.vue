@@ -7,11 +7,11 @@
         <router-link :to="assetUrl"><b-icon class="mr-2" icon="arrow-up-right-square"/></router-link>{{item.name}}
       </div>
       <div>
-        <router-link v-if="isAllowed('delete')" class="mr-2" :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"></b-icon></router-link>
-        <a v-if="isAllowed('delete')" href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
+        <router-link v-if="!contractGaiaAsset" class="mr-2" :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"></b-icon></router-link>
+        <a v-if="!contractGaiaAsset" href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
       </div>
     </div>
-    <item-mint-info :item="item" />
+    <item-mint-info :item="item" :contractGaiaAsset="contractGaiaAsset" />
   </div>
 </div>
 </template>
@@ -58,13 +58,22 @@ export default {
     }
   },
   computed: {
+    contractGaiaAsset () {
+      const asset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
+      return asset
+    },
     videoOptions () {
+      let file = this.item.nftMedia.artworkFile
+      if (!file) {
+        file = this.item.nftMedia.artworkClip
+      }
+      if (!file) return {}
       const videoOptions = {
         autoplay: false,
         controls: true,
         poster: (this.item.nftMedia.coverImage) ? this.item.nftMedia.coverImage.fileUrl : null,
         sources: [
-          { src: this.item.nftMedia.artworkFile.fileUrl, type: this.item.nftMedia.artworkFile.type }
+          { src: file.fileUrl, type: file.type }
         ],
         fluid: true
       }

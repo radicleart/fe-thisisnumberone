@@ -1,15 +1,15 @@
 <template>
 <div  class="mt-3">
-  <div class="text-white d-flex justify-content-between" v-if="minted()">
+  <div class="text-white d-flex justify-content-between" v-if="contractGaiaAsset">
     <!-- <div><a :href="risidioAuctionsUrl" target="_blank">NFT #{{item.nftIndex}}</a></div>
     <div>minted on: {{mintedDate}}</div>
     -->
     <div class="text-small">
-      <b-button class="" variant="success">Minted at #{{item.nftIndex}}</b-button>
+      <b-button class="" variant="success">Minted at #{{contractGaiaAsset.nftIndex}}</b-button>
     </div>
   </div>
   <div class="d-flex justify-content-between" v-else-if="isValid">
-    <div class="text-small" v-if="isValid && !mintedDate">
+    <div class="text-small">
       <b-button class="" variant="danger" @click.prevent="mintToken()">Mint Item</b-button>
     </div>
   </div>
@@ -41,7 +41,7 @@ export default {
   components: {
     RisidioPay
   },
-  props: ['item'],
+  props: ['item', 'contractGaiaAsset'],
   data: function () {
     return {
       showRpay: false,
@@ -51,6 +51,8 @@ export default {
   },
   mounted () {
     const $self = this
+    const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+    this.item.gaiaUsername = profile.username
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: this.item })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
@@ -103,6 +105,10 @@ export default {
         return RISIDIO_ASSET_URL + this.item.assetHash
       }
       return null
+    },
+    token () {
+      const configuration = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH]
+      return configuration
     },
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]

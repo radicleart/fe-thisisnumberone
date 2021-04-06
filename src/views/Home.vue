@@ -1,5 +1,5 @@
 <template>
-<section id="home-section" v-if="slices">
+<section id="home-section" v-if="resultSet">
   <div class="">
     <result-grid :resultSet="resultSet"/>
   </div>
@@ -9,6 +9,9 @@
 <script>
 import ResultGrid from '@/components/marketplace/ResultGrid'
 import { APP_CONSTANTS } from '@/app-constants'
+
+const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
+const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 
 export default {
   name: 'Home',
@@ -22,14 +25,15 @@ export default {
     }
   },
   mounted () {
-    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'marketplace-flow' })
+    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'config-flow' })
     this.showRpay = true
   },
   methods: {
   },
   computed: {
     resultSet () {
-      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_ASSETS_BY_CONTRACT_ID](STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME)
+      if (!resultSet) return
       const numbs = resultSet.length
       if (numbs < 4) {
         return resultSet.slice(1)

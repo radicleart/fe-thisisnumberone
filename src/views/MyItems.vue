@@ -38,8 +38,7 @@ export default {
   },
   computed: {
     myItems () {
-      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      const myItems = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS_BY_OWNER](profile.username)
+      const myItems = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEMS]
       if (myItems) return myItems
       return []
     }

@@ -76,7 +76,7 @@ export default {
       return (this.$route.name === 'home' || this.$route.name === 'login' || this.$route.name === 'how-it-works') ? '' : 'header-class'
     },
     logout () {
-      this.$store.dispatch('authStore/startLogout').then(() => {
+      this.$store.dispatch('rpayAuthStore/startLogout').then(() => {
         localStorage.clear()
         sessionStorage.clear()
       })
@@ -86,7 +86,7 @@ export default {
       return profile.username
     },
     startLogin () {
-      this.$store.dispatch('authStore/startLogin')
+      this.$store.dispatch('rpayAuthStore/startLogin')
     }
   },
   computed: {
