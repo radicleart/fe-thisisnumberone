@@ -4,6 +4,7 @@ const contentStore = {
     content: {
       artists: [],
       charities: [],
+      mainFooter: null,
       navigation: null,
       homepage: null,
       howItWorks: null
@@ -36,6 +37,9 @@ const contentStore = {
     getHomepage: state => {
       return state.content.homepage
     },
+    getMainFooter: state => {
+      return state.content.mainFooter
+    },
     getNavbar: state => {
       return state.content.navigation
     },
@@ -46,6 +50,9 @@ const contentStore = {
   mutations: {
     addHomeContent (state, o) {
       state.content.homepage = o
+    },
+    addMainFooter (state, o) {
+      state.content.mainFooter = o
     },
     addNavigationContent (state, o) {
       state.content.navigation = o

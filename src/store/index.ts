@@ -13,6 +13,7 @@ import publicItemsStore from './publicItemsStore'
 
 Vue.use(Vuex)
 
+const RISIDIO_API_PATH = process.env.VUE_APP_RISIDIO_API
 const APPLICATION_ID = process.env.VUE_APP_SQUARE_APPLICATION_ID
 const LOCATION_ID = process.env.VUE_APP_SQUARE_LOCATION_ID
 const SQUARE_URL = process.env.VUE_APP_VUE_APP_SQUARE_URL
@@ -131,14 +132,7 @@ const setup = function (data) {
   }
   const useNetwork = 'testnet'
   // let beneficiaries = []
-  let risidioBaseApi = 'http://api.risidio.local'
-  if (location.href.indexOf('https://one.risidio.com') > -1 || location.href.indexOf('https://test.loopbomb.com') > -1) {
-    risidioBaseApi = 'https://tapi.risidio.com'
-  } else if (location.href.indexOf('https://loopbomb.com') > -1) {
-    risidioBaseApi = 'https://api.risidio.com'
-  } else if (location.href.indexOf('localhost') > -1) {
-    // beneficiaries = state.beneficiariesLocalhost
-  }
+  const risidioBaseApi = RISIDIO_API_PATH
   const configuration = {
     lookAndFeel: lookAndFeel,
     gaiaAppDomains: ['localhost:8080', 'localhost:8081', 'localhost:8082'],

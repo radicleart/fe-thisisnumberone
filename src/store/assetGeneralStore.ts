@@ -1,5 +1,5 @@
 import axios from 'axios'
-const MESH_API_PATH = process.env.VUE_APP_API_MESH
+const MESH_API_PATH = process.env.VUE_APP_RISIDIO_API + '/mesh'
 
 const assetGeneralStore = {
   namespaced: true,
