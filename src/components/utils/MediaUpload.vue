@@ -223,10 +223,10 @@ export default {
         return false
       }
     },
-    isAllowed (fileObject) {
+    isAllowed (fileObject, checkLimit) {
       let ksize = fileObject.size / 1000000
       ksize = Math.round(ksize * 100) / 100
-      if (ksize > Number(this.sizeLimit)) {
+      if (checkLimit && ksize > Number(this.sizeLimit)) {
         this.internalError = 'This file (' + ksize + ' M) exceeds the size limit of ' + this.sizeLimit + ' M - try dropping in a of a file url - we can create the NFT from this and serve the content from the URL'
         this.$emit('updateMedia', { errorMessage: this.internalError })
         return false
@@ -272,15 +272,14 @@ export default {
       const $self = this
       this.internalError = null
       let userFiles
-      if (!e) return
-      if (this.directUrl || (e.dataTransfer && e.dataTransfer.getData)) {
+      if (this.directUrl || (e && e.dataTransfer && e.dataTransfer.getData)) {
         let data = this.directUrl
         if (!data) data = e.dataTransfer.getData('Text')
         if (this.isValidUrl(data)) {
           this.$emit('updateMedia', { startLoad: 'Fetching file from ' + data })
           userFiles = data
           utils.readFileFromUrlToDataURL(data).then((fileObject) => {
-            if (!$self.isAllowed(fileObject)) return
+            if (!$self.isAllowed(fileObject, false)) return
             fileObject.id = $self.contentModel.id
             fileObject.storage = 'external'
             fileObject.fileUrl = data
@@ -307,7 +306,7 @@ export default {
           break
         }
         fileObject = userFiles[i]
-        $self.isAllowed(fileObject)
+        $self.isAllowed(fileObject, true)
         const thisFile = {
           lastModified: fileObject.lastModified,
           lastModifiedDate: fileObject.lastModifiedDate,

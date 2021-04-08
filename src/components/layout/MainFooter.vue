@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="content">
 
     <div class="title">
       <h1>{{ content.title[0].text }}</h1>
@@ -10,7 +10,7 @@
         <div v-for="(item,index) of content.column_about" :key="index">
           <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
           <div v-else-if="item.title_of_the_link[0].type === 'image'">
-            <a :href=item.link.url><img :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+            <a :href=item.link.url><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
           </div>
         </div>
       </div>
@@ -19,7 +19,7 @@
         <div v-for="(item,index) of content.column__1" :key="index">
           <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
           <div v-else-if="item.title_of_the_link[0].type === 'image'">
-            <a :href=item.link.url><img :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+            <a :href=item.link.url><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
           </div>
         </div>
       </div>
@@ -28,7 +28,7 @@
         <div v-for="(item,index) of content.news_column" :key="index">
           <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
           <div v-else-if="item.title_of_the_link[0].type === 'image'">
-            <a :href=item.link.url><img :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+            <a :href=item.link.url><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
           </div>
         </div>
       </div>
@@ -37,7 +37,7 @@
         <div v-for="(item,index) of content.partners_column" :key="index">
           <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
           <div v-else-if="item.title_of_the_link[0].type === 'image'">
-            <a :href=item.link.url><img :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+            <a :href=item.link.url><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
           </div>
         </div>
       </div>
@@ -62,20 +62,15 @@ export default {
   name: 'MainFooter',
   data () {
     return {
-      content: {}
     }
   },
   methods: {
-    getContent () {
-      this.$prismic.client.getSingle('mainfooter')
-        .then((document) => {
-          this.content = document.data
-          console.log(this.content)
-        })
-    }
   },
-  created () {
-    this.getContent()
+  computed: {
+    content () {
+      const content = this.$store.getters['contentStore/getMainFooter']
+      return content
+    }
   }
 }
 </script>

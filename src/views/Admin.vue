@@ -24,7 +24,7 @@ export default {
       loading: true,
       contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
       contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
-      risidioAPI: process.env.VUE_APP_API_MESH
+      risidioAPI: process.env.VUE_APP_RISIDIO_API + '/mesh'
     }
   },
   methods: {
