@@ -12,9 +12,9 @@ export const APP_CONSTANTS = {
   KEY_CONTENT_CHARITY_BY_ID: 'contentStore/getCharityById',
   KEY_CONTENT_ARTIST_BY_ID: 'contentStore/getArtistById',
 
+  KEY_GAIA_ASSET_BY_HASH: 'rpayStacksContractStore/getGaiaAssetByHash',
   KEY_GAIA_ASSETS: 'rpayStacksContractStore/getGaiaAssets',
   KEY_GAIA_ASSETS_BY_OWNER: 'rpayStacksContractStore/getGaiaAssetsByOwner',
-
   KEY_REGISTRY: 'rpayStacksContractStore/getRegistry',
   KEY_REGISTRY_CONTRACT_ID: 'rpayStacksContractStore/getRegistryContractId',
   KEY_TRADE_INFO_FROM_HASH: 'rpayStacksContractStore/getTradeInfoFromHash',

@@ -1,11 +1,11 @@
 <template>
 <div  class="mt-3">
-  <div class="text-white d-flex justify-content-between" v-if="contractGaiaAsset">
+  <div class="text-white d-flex justify-content-between" v-if="contractAsset">
     <!-- <div><a :href="risidioAuctionsUrl" target="_blank">NFT #{{item.nftIndex}}</a></div>
     <div>minted on: {{mintedDate}}</div>
     -->
     <div class="text-small">
-      <b-button class="" variant="success">Minted at #{{contractGaiaAsset.nftIndex}}</b-button>
+      <b-button class="" variant="success">Minted at #{{contractAsset.nftIndex}}</b-button>
     </div>
   </div>
   <div class="d-flex justify-content-between" v-else-if="isValid">
@@ -41,7 +41,7 @@ export default {
   components: {
     RisidioPay
   },
-  props: ['item', 'contractGaiaAsset'],
+  props: ['item', 'contractAsset'],
   data: function () {
     return {
       showRpay: false,
@@ -105,10 +105,6 @@ export default {
         return RISIDIO_ASSET_URL + this.item.assetHash
       }
       return null
-    },
-    token () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH]
-      return configuration
     },
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]

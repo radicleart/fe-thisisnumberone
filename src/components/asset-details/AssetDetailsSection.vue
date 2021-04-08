@@ -87,13 +87,14 @@ export default {
   },
   methods: {
     purchaseButtonText () {
-      if (this.gaiaAsset.token.saleData.saleType === 0) {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      if (!contractAsset || !contractAsset.saleData || contractAsset.saleData.saleType === 0) {
         return 'NOT FOR SALE'
-      } else if (this.gaiaAsset.token.saleData.saleType === 1) {
+      } else if (contractAsset.saleData.saleType === 1) {
         return 'BUY NOW'
-      } else if (this.gaiaAsset.token.saleData.saleType === 2) {
+      } else if (contractAsset.saleData.saleType === 2) {
         return 'PLACE BID'
-      } else if (this.gaiaAsset.token.saleData.saleType === 3) {
+      } else if (contractAsset.saleData.saleType === 3) {
         return 'MAKE AN OFFER'
       }
     },
