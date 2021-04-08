@@ -43,6 +43,7 @@ export default {
       const videoOptions = {
         autoplay: false,
         controls: true,
+        aspectRatio: '1:1',
         poster: (this.result.nftMedia.coverImage) ? this.result.nftMedia.coverImage.fileUrl : null,
         sources: [
           { src: this.result.nftMedia.artworkFile.fileUrl, type: this.result.nftMedia.artworkFile.type }

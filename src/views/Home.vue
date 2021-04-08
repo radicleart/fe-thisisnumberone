@@ -1,17 +1,12 @@
 <template>
-<section id="home-section" v-if="resultSet">
-  <div class="">
-    <result-grid :resultSet="resultSet"/>
-  </div>
+<section id="home-section" class="container text-center" v-if="resultSet" style="min-height: 100vh;">
+    <result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/>
 </section>
 </template>
 
 <script>
 import ResultGrid from '@/components/marketplace/ResultGrid'
 import { APP_CONSTANTS } from '@/app-constants'
-
-const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
-const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 
 export default {
   name: 'Home',
@@ -20,6 +15,7 @@ export default {
   },
   data () {
     return {
+      componentKey: 0,
       loading: true,
       showRpay: false
     }
@@ -32,15 +28,8 @@ export default {
   },
   computed: {
     resultSet () {
-      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_ASSETS_BY_CONTRACT_ID](STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME)
-      if (!resultSet) return
-      const numbs = resultSet.length
-      if (numbs < 4) {
-        return resultSet.slice(1)
-      } else if (numbs < 9) {
-        return resultSet.slice(4)
-      }
-      return resultSet.slice(9)
+      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      return resultSet
     },
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]

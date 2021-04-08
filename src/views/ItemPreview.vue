@@ -13,7 +13,10 @@
       <div>
         <div class="mb-2 d-flex justify-content-between">
           <div class="">{{item.name}}</div>
-          <div class=""><router-link :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"/></router-link></div>
+          <div class="">
+            <router-link v-if="!contractAsset" class="mr-2" :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"></b-icon></router-link>
+            <a v-if="!contractAsset" href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
+          </div>
         </div>
         <div class="text-small">Uploaded by : {{item.uploader}}</div>
       </div>
@@ -22,7 +25,7 @@
       <div class="mb-2 text-bold">Editions {{item.editions}}</div>
       <span class="text-small mr-1" v-for="(kw, index) in item.keywords" :key="index">#{{kw.name}}</span>
       <div class="text-small">{{item.description}}</div>
-      <item-mint-info :item="item" :contractGaiaAsset="contractGaiaAsset" />
+      <item-mint-info :item="item" :contractAsset="contractAsset" />
     </div>
   </div>
 </div>
@@ -73,9 +76,9 @@ export default {
       }
       return videoOptions
     },
-    contractGaiaAsset () {
-      const asset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
-      return asset
+    contractAsset () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
+      return contractAsset
     },
     item () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)

@@ -91,8 +91,8 @@ const myItemStore = {
     },
     deleteItem ({ state, dispatch, rootGetters }, item) {
       return new Promise((resolve, reject) => {
-        const contractGaiaAsset = rootGetters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](item.assetHash)
-        if (contractGaiaAsset) {
+        const contractAsset = rootGetters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](item.assetHash)
+        if (contractAsset) {
           reject(new Error('Forbidden - item has been minted.'))
           return
         }
