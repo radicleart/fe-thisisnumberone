@@ -1,17 +1,17 @@
 <template>
-<div id="one-nav" class="px-5" @mouseover="transme" @mouseout="transbackme">
-<b-navbar toggleable="lg" variant="transparent">
-    <b-navbar-brand href="#">
-      <div class="">
-        <router-link to="/" class="navbar-brand"><img :src="logo"/></router-link>
-      </div>
-    </b-navbar-brand>
-    <b-navbar-toggle class="" target="nav-collapse">
-      <template v-slot:default="{ expanded }">
-        <b-icon class="text-white" width="40px" height="40px" v-if="expanded" icon="grid-fill"></b-icon>
-        <b-icon class="text-white" width="40px" height="40px" v-else icon="grid"></b-icon>
-      </template>
-    </b-navbar-toggle>
+<div id="one-nav" class="px-2" @mouseover="transme" @mouseout="transbackme">
+<b-navbar variant="transparent">
+  <b-navbar-brand href="#">
+    <div class="">
+      <router-link to="/" class="navbar-brand"><img :src="logo"/></router-link>
+    </div>
+  </b-navbar-brand>
+  <b-navbar-nav class="ml-auto toggle-icon">
+    <b-nav-item v-b-toggle.collapse v-on:click="collapsed = !collapsed">
+      <b-icon class="text-white" width="40px" height="40px" :icon="toggleIcon"></b-icon>
+    </b-nav-item>
+  </b-navbar-nav>
+
 <!--
     <b-collapse id="nav-collapse" is-nav align="end">
         <b-navbar-nav class="ml-auto" is-nav>
@@ -26,24 +26,47 @@
         </b-navbar-nav>
     </b-collapse>
     -->
-    <b-collapse id="nav-collapse" is-nav align="end">
-        <b-navbar-nav class="ml-auto" is-nav>
-          <b-nav-item><router-link class="text-white" to="/how-it-works">How It Works</router-link></b-nav-item>
-          <b-nav-item><router-link class="text-white" to="/upload-item">Protect Your Music</router-link></b-nav-item>
-          <b-dropdown right v-if="loggedIn" size="lg"  variant="link" toggle-class="text-decoration-none" no-caret>
-            <template #button-content>
-              <b-icon scale="1.5" class="text-white" icon="person"/><span class="sr-only">Account</span>
-            </template>
-            <b-dropdown-item>{{username()}}</b-dropdown-item>
-            <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item><router-link class="text-dark" to="/profile">My Profile</router-link></b-dropdown-item>
-            <b-dropdown-item><router-link class="text-dark" to="/my-items">My Items</router-link></b-dropdown-item>
-            <b-dropdown-item><router-link class="text-dark" to="/admin">Admin</router-link></b-dropdown-item>
-            <b-dropdown-item><span @click="logout()">Logout</span></b-dropdown-item>
-          </b-dropdown>
-          <b-nav-item v-else><b-button variant="light" @click.prevent="startLogin()">Login</b-button></b-nav-item>
-        </b-navbar-nav>
+
+    <b-collapse id="collapse">
+      <b-navbar-nav class="top-content">
+        <b-navbar-brand class="mr-0" href="#">
+          <div class="">
+            <router-link to="/" class="navbar-brand mr-0"><img :src="logo"/></router-link>
+          </div>
+        </b-navbar-brand>
+        <b-nav-item><router-link to="/how-it-works">How It Works</router-link></b-nav-item>
+        <b-nav-item><router-link to="/upload-item">Protect Your Music</router-link></b-nav-item>
+        <b-dropdown right v-if="loggedIn" size="lg"  variant="link" toggle-class="text-decoration-none" no-caret>
+          <template #button-content>
+            <b-icon scale="1.5" icon="person"/><span class="sr-only">Account</span>
+          </template>
+          <b-dropdown-item>{{username()}}</b-dropdown-item>
+          <b-dropdown-divider></b-dropdown-divider>
+          <b-dropdown-item><router-link class="text-dark" to="/profile">My Profile</router-link></b-dropdown-item>
+          <b-dropdown-item><router-link class="text-dark" to="/my-items">My Items</router-link></b-dropdown-item>
+          <b-dropdown-item><router-link class="text-dark" to="/admin">Admin</router-link></b-dropdown-item>
+          <b-dropdown-item><span @click="logout()">Logout</span></b-dropdown-item>
+        </b-dropdown>
+        <b-nav-item v-else><b-button variant="light" @click.prevent="startLogin()">Login</b-button></b-nav-item>
+      </b-navbar-nav>
+
+      <b-navbar-nav class="bottom-content">
+        <div class="bottom-content--container">
+          <b-nav-item><router-link to="#">Collaborate</router-link></b-nav-item>
+          <b-nav-item><router-link to="#">Get In Touch</router-link></b-nav-item>
+        </div>
+        <div class="bottom-content--container">
+          <b-nav-item><b-icon width="27px" height="27px" icon="facebook"></b-icon></b-nav-item>
+          <b-nav-item><b-icon width="27px" height="27px" icon="instagram"></b-icon></b-nav-item>
+          <b-nav-item><b-icon width="27px" height="27px" icon="square-fill"></b-icon></b-nav-item>
+        </div>
+        <div class="bottom-content--container">
+          <b-nav-item><router-link to="#">Stacks Foundation</router-link></b-nav-item>
+          <b-nav-item><router-link to="#">Risidio</router-link></b-nav-item>
+        </div>
+      </b-navbar-nav>
     </b-collapse>
+
   </b-navbar>
 </div>
 </template>
@@ -59,7 +82,8 @@ export default {
     return {
       toggler: require('@/assets/img/navbar/Icon_ionic-md-options.svg'),
       // logo: require('@/assets/img/sticksnstones_logo.png'),
-      logo: 'https://images.prismic.io/risidio-journal/b4154a9e-2f1e-433e-b95f-fbd403dc866a_risidio_white1.png?auto=compress,format'
+      logo: 'https://images.prismic.io/risidio-journal/b4154a9e-2f1e-433e-b95f-fbd403dc866a_risidio_white1.png?auto=compress,format',
+      collapsed: true
     }
   },
   methods: {
@@ -106,6 +130,9 @@ export default {
     loggedIn () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile.loggedIn
+    },
+    toggleIcon () {
+      return this.collapsed ? 'grid' : 'grid-fill'
     }
   }
 }
@@ -116,24 +143,78 @@ export default {
 .navbar-light .navbar-nav .nav-link {
     color: #fff;
 }
-/**
-#nav-collapse {
+
+.navbar-nav {
+  z-index: 4;
+}
+
+#one-nav .toggle-icon .nav-link {
+  padding: 0;
+}
+
+.collapse:not(.show) {
+  flex: 0;
+}
+
+.collapse.show {
+  transition: all 0.3s ease-out;
+  flex: 1;
+}
+
+#collapse {
   position: absolute;
-  height: 80vh;
-  width: 1000px;
-  left: -100px;
-  right: 100px;
-  margin-left: calc(-100vw / 2 + 940px / 2);
-  margin-right: calc(-100vw / 2 + 940px / 2);
-  background-color: rgb(223, 166, 82);
-  color: #fff !important;
-  top: 100px;
-  padding: 50px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  background-color: #000000;
+  color: #ffffff;
+  top: 0px;
   text-align: center;
   z-index: 3;
 }
-#nav-collapse a {
-  color: #000;
+#collapse a {
+  color: #ffffff;
 }
-**/
+#collapse .top-content li {
+  list-style: none;
+  padding-top: 50px;
+}
+#collapse .top-content {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  padding-top: 91px;
+}
+#collapse .bottom-content {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  padding: 50px 0;
+}
+#collapse .bottom-content--container {
+  display: flex;
+  font-size: 14px;
+}
+#collapse .bottom-content--container .nav-item:not(:last-child) {
+  padding-right: 20px;
+}
+
+@media only screen and (max-width: 700px) {
+  #collapse .bottom-content {
+    width: 90%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    padding: 20px 0;
+  }
+  #collapse .bottom-content--container:not(:last-child) {
+    padding-bottom: 20px;
+  }
+}
 </style>
