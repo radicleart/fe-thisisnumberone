@@ -77,7 +77,7 @@ const routes: Array<RouteConfig> = [
     path: '/assets/:assetHash',
     name: 'asset-by-hash',
     components: { default: AssetDetails, header: MainNavbar, footer: MainFooter },
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: false }
   },
   {
     path: '/edit-item/:assetHash',
