@@ -68,6 +68,10 @@ const myItemStore = {
   mutations: {
     rootFile (state: any, rootFile: any) {
       state.rootFile = rootFile
+    },
+    setMintTxId (state: any, item: any) {
+      const index = state.rootFile.records.findIndex((o) => o.assetHash === item.assetHash)
+      state.rootFile.records[index] = item
     }
   },
   actions: {

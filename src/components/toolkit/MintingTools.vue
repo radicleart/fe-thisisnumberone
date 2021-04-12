@@ -1,15 +1,23 @@
 <template>
-<div  class="mt-3">
+<div id="minting-tools" class="mt-3">
   <div class="text-white">
     <div class="w-100 text-small">
-      <b-alert v-if="contractAsset" show variant="success">Minted : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</b-alert>
-      <b-alert v-else-if="isValid" show variant="danger"><b-button class="" variant="danger" @click.prevent="mintToken()">Mint this item now.</b-button></b-alert>
+      <b-alert v-if="contractAsset" show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</b-alert>
+      <b-alert v-else-if="isValid" show variant="danger">
+        <div v-if="!item.mintTxId">Minting - <a :href="trackingUrl()" target="_blank">track progress here...</a></div>
+        <b-button v-else style="width: 100%;" variant="danger" @click.prevent="mintToken()">Mint this item now.</b-button>
+      </b-alert>
       <b-alert v-else show variant="danger">not valid - fields required</b-alert>
     </div>
 
-    <div>
-      <b-tabs content-class="mt-3">
-        <b-tab title="Sales" active>
+    <div v-if="contractAsset">
+      <b-tabs justified content-class="mt-3">
+        <b-tab title="Transfer" active>
+          <div>
+            <transfer-nft :assetHash="assetHash"/>
+          </div>
+        </b-tab>
+        <b-tab title="Sales" class="text-white">
           <div>
             <div class="">{{saleDataText}}</div>
             <a href="#" @click.prevent="openSaleDataDialog()">Review the sale information</a>
@@ -54,17 +62,19 @@ import { APP_CONSTANTS } from '@/app-constants'
 import RisidioPay from 'risidio-pay'
 import utils from '@/services/utils'
 import AcceptOffer from '@/components/toolkit/AcceptOffer'
+import TransferNft from '@/components/toolkit/TransferNft'
 
-const RISIDIO_ASSET_URL = process.env.VUE_APP_RISIDIO_ASSET_URL
+const STACKS_API = process.env.VUE_APP_STACKS_API
 const NETWORK = process.env.VUE_APP_NETWORK
 
 export default {
   name: 'MintingTools',
   components: {
     RisidioPay,
-    AcceptOffer
+    AcceptOffer,
+    TransferNft
   },
-  props: ['item'],
+  props: ['assetHash'],
   data: function () {
     return {
       offerData: null,
@@ -77,8 +87,10 @@ export default {
   mounted () {
     const $self = this
     const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-    this.item.gaiaUsername = profile.username
-    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: this.item })
+    const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+    if (item.uploader !== profile.username) throw new Error('Unexpected NFT ownership error')
+    item.gaiaUsername = item.uploader
+    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: item })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
         $self.mintResult = data.message
@@ -101,38 +113,40 @@ export default {
         } else if (data.opcode === 'stx-contract-data') {
           $self.showRpay = false
           $self.$bvModal.hide('rpay-modal')
-          $self.$bvModal.hide('rpay-modal')
           $self.mintResult = 'Contract called'
           $self.mintResultTxId = data.txId
           $self.$bvModal.show('result-modal')
-        } else {
-          // $self.$bvModal.hide('rpay-modal')
-          // $self.showRpay = false
-          // $self.mintResult = data.message
-          // $self.mintTitle = 'Not Minted'
-          // $self.$bvModal.show('result-modal')
+        } else if (data.opcode === 'cancel-minting') {
+          $self.showRpay = false
+          $self.$bvModal.hide('rpay-modal')
         }
       })
     }
   },
   methods: {
     openSaleDataDialog: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
-      this.item.saleData = contractAsset.saleData
-      this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'selling-flow', asset: this.item })
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
+      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      item.saleData = contractAsset.saleData
+      this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'selling-flow', asset: item })
       this.showRpay = true
       this.$bvModal.show('rpay-modal')
     },
+    trackingUrl: function () {
+      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      return STACKS_API + 'extended/v1/tx/' + item.mintTxId
+    },
     mintToken: function () {
+      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       this.$bvModal.show('rpay-modal')
-      this.mintTitle = 'Mint: ' + this.item.name
+      this.mintTitle = 'Mint: ' + item.name
       this.showRpay = true
     },
     downable: function () {
       return this.uploadState > 2
     },
     acceptOffer: function (offer, index) {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
       this.offerData = {
         offer: offer,
         owner: contractAsset.owner,
@@ -158,8 +172,12 @@ export default {
     }
   },
   computed: {
+    item () {
+      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      return item
+    },
     saleDataText () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
       if (!contractAsset || !contractAsset.saleData || contractAsset.saleData.saleType === 0) {
         return 'NOT FOR SALE'
       } else if (contractAsset.saleData.saleType === 1) {
@@ -171,12 +189,6 @@ export default {
       } else {
         return 'Unknown sale type?'
       }
-    },
-    risidioAuctionsUrl () {
-      if (this.item && this.item.nftIndex && typeof this.item.nftIndex === 'number' && this.item.nftIndex >= 0) {
-        return RISIDIO_ASSET_URL + this.item.assetHash
-      }
-      return null
     },
     contractAsset () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
@@ -225,5 +237,13 @@ export default {
 #rpay-modal .footer-container {
   background: transparent !important;
 }
-
+#minting-tools  .nav-link.active {
+  color: #000;
+}
+#minting-tools .nav-link {
+  color: #fff;
+}
+#minting-tools .nav-link:hover {
+  color: #ccc;
+}
 </style>

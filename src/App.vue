@@ -56,6 +56,18 @@ export default {
             $self.configured = true
             // })
           })
+        } else if (data.opcode === 'stx-transaction-mint') {
+          const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
+          item.mintTxId = data.txId
+          // commit it straight away to avoid double clicks on the minting button
+          $self.$store.commit('myItemStore/setMintTxId', item)
+          $self.$store.dispatch('myItemStore/saveItem', item)
+        } else if (data.opcode === 'stx-transaction-mint-error') {
+          const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
+          item.mintTxId = null
+          // commit it straight away to avoid double clicks on the minting button
+          $self.$store.commit('myItemStore/setMintTxId', item)
+          $self.$store.dispatch('myItemStore/saveItem', item)
         } else if (data.opcode === 'configured-logged-in') {
           $self.$store.commit('rpayAuthStore/setAuthResponse', data.session)
           $self.$store.dispatch('rpayAuthStore/fetchMyAccount')

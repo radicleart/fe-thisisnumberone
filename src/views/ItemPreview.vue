@@ -27,7 +27,7 @@
         <span class="text-small mr-1" v-for="(kw, index) in item.keywords" :key="index">#{{kw.name}}</span>
       -->
       <div class="text-small">{{item.description}}</div>
-      <minting-tools class="w-100" :item="item" />
+      <minting-tools class="w-100" :assetHash="item.assetHash" />
     </div>
   </div>
 </div>
