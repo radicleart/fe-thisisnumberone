@@ -178,11 +178,14 @@ p {
   font-weight: 300;
   letter-spacing: 0px;
 }
-
-.no-scroll {
-  overflow: hidden;
+a:hover {
+  text-decoration: none !important;
 }
 
+.no-scroll {
+  //overflow: hidden;
+  //position: fixed;
+}
 
 .form-control {
   width: 100%;
