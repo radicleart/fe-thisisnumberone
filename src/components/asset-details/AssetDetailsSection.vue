@@ -13,6 +13,7 @@
           <b-col cols="12" align-self="end">
             <h1>Artist {{getArtist()}}</h1>
             <h2>{{gaiaAsset.name}}</h2>
+            <p>{{owner}}</p>
             <p class="border-top text-small">{{gaiaAsset.description}}</p>
             <div class="mb-5 d-flex justify-content-between">
               <div class=""><router-link :to="'/charity/' + gaiaAsset.assetHash">Find out more</router-link></div>
@@ -28,7 +29,22 @@
     </b-row>
   </b-container>
   <asset-updates-modal :assetHash="assetHash" @registerForUpdates="registerForUpdates"/>
-  <risidio-pay v-if="showRpay" :configuration="configuration"/>
+  <b-modal size="lg" id="asset-offer-modal">
+    <risidio-pay v-if="showRpay" :configuration="configuration"/>
+    <template #modal-header>
+    </template>
+    <template #modal-footer>
+      <div class="w-100 d-flex justify-content-between">
+      </div>
+    </template>
+  </b-modal>
+  <b-modal id="result-modal">
+    <div>Contract called: <a :href="transactionUrl(mintResultTxId)" target="_blank">check transaction</a></div>
+    <template #modal-footer class="text-center">
+      <div class="w-100">
+      </div>
+    </template>
+  </b-modal>
 </section>
 </template>
 
@@ -37,7 +53,9 @@ import Vue from 'vue'
 import AssetUpdatesModal from './AssetUpdatesModal'
 import RisidioPay from 'risidio-pay'
 import { APP_CONSTANTS } from '@/app-constants'
-import moment from 'moment'
+import utils from '@/services/utils'
+
+const NETWORK = process.env.VUE_APP_NETWORK
 
 export default {
   name: 'AssetDetailsSection',
@@ -53,30 +71,33 @@ export default {
       videoHeight: 0,
       showHash: false,
       assetHash: null,
+      mintResult: null,
+      mintResultTxId: null,
       message: 'No item available...'
     }
   },
   mounted () {
     this.assetHash = this.$route.params.assetHash
     const $self = this
+    const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+    this.gaiaAsset.saleData = contractAsset.saleData
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'purchase-flow', asset: this.gaiaAsset })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
         $self.mintResult = data.message
-        if (data.opcode === 'stx-purchase-success' || data.opcode === 'eth-mint-success') {
+        if (data.opcode === 'stx-contract-data') {
           $self.showRpay = false
+          $self.$bvModal.hide('asset-offer-modal')
           $self.$bvModal.hide('minting-modal')
+          $self.mintResult = 'Contract called'
+          $self.mintResultTxId = data.txId
           $self.$bvModal.show('result-modal')
-          const item = $self.$store.getters['myItemStore/myItem']($self.item.assetHash)
-          item.tokenId = data.tokenId
-          item.nftIndex = data.nftIndex
-          item.network = data.network
-          item.mintedDate = moment({}).valueOf()
-          $self.$store.dispatch('myItemStore/saveItem', item).then((item) => {
-            $self.mintResult = item.name + ' (#' + item.nftIndex + ') has been saved to your storage'
-          })
         } else {
-          $self.mintResult = data.message
+          // $self.$bvModal.hide('minting-modal')
+          // $self.showRpay = false
+          // $self.mintResult = data.message
+          // $self.mintTitle = 'Not Minted'
+          // $self.$bvModal.show('result-modal')
         }
       })
     }
@@ -98,6 +119,9 @@ export default {
         return 'MAKE AN OFFER'
       }
     },
+    transactionUrl: function (txId) {
+      return 'https://explorer.stacks.co/txid/' + txId + '?chain=' + NETWORK
+    },
     poster: function () {
       if (this.gaiaAsset.nftMedia.coverImage) {
         return this.gaiaAsset.nftMedia.coverImage.fileUrl
@@ -117,6 +141,7 @@ export default {
     },
     openPurchaceDialog: function () {
       this.showRpay = true
+      this.$bvModal.show('asset-offer-modal')
     },
     registerForUpdates: function (email) {
       const data = {
@@ -141,6 +166,11 @@ export default {
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
       return configuration
+    },
+    owner () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      // const address = utils.convertAddress(contractAsset.owner) // 22 for mainnet
+      return contractAsset.owner
     }
   }
 }

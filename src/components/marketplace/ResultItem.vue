@@ -1,6 +1,6 @@
 <template>
-<div :style="dimensions()" class="text-right">
-  <router-link style="position: relative; top: 25px; right: 10px; z-index: 100" :to="assetUrl"><b-icon icon="arrow-right-circle"/></router-link>
+<div :style="dimensions()" class="">
+  <div><router-link style="padding: 3px; position: relative; top: 50px; right: 2px; z-index: 100; width: 40px; height: 40px;" :to="assetUrl"><b-icon style="width: 40px; height: 40px;" icon="arrow-right-circle"/></router-link></div>
   <media-item :videoOptions="videoOptions" :hideMeta="true" :nftMedia="result.nftMedia" :targetItem="'artworkFile'"/>
 </div>
 </template>
@@ -18,7 +18,7 @@ export default {
   data () {
     return {
       height: 300,
-      dims: { width: 300, height: 300 },
+      dims: { width: '100%', height: '100%' },
       likeIconTurquoise: require('@/assets/img/Favorite_button_turquoise_empty.png'),
       likeIconPurple: require('@/assets/img/Favorite_button_purple_empty.png')
     }
@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     dimensions () {
-      return 'width: ' + this.dims.width + 'px; height: ' + this.dims.width + ';'
+      return 'width: ' + this.dims.width + '; height: ' + this.dims.width + ';'
     }
   },
   computed: {

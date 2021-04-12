@@ -2,7 +2,7 @@
 <section v-if="content" class="container-fluid p-5 hundred-vh bg-white text-black">
   <b-container>
     <b-row>
-      <div id="video-column" class="col-md-6 col-sm-12">
+      <div id="video-column" class="col-md-6 col-sm-12" v-if="content && content.image">
         <img :src="content.image.url" width="100%"/>
       </div>
       <div class="col-md-6 col-sm-12">

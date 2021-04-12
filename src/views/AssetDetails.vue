@@ -1,8 +1,5 @@
 <template>
 <div>
-  <div class="mt-3" v-if="loading">
-    {{message}}
-  </div>
   <div class="mt-3" v-if="gaiaAsset">
     <asset-details-section :gaiaAsset="gaiaAsset" />
     <artist-section />
@@ -26,8 +23,6 @@ export default {
   },
   data: function () {
     return {
-      loading: true,
-      message: 'loading siite...'
     }
   },
   mounted () {

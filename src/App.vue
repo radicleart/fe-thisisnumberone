@@ -48,15 +48,26 @@ export default {
     this.loading = false
 
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'config-flow' })
-    const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
         if (data.opcode === 'configured') {
           $self.$store.dispatch('initApplication').then(() => {
-            $self.$store.dispatch('rpayStacksContractStore/fetchContractData', configuration).then(() => {
-              $self.configured = true
-            })
+            // $self.$store.dispatch('rpayStacksContractStore/fetchContractData', configuration).then(() => {
+            $self.configured = true
+            // })
           })
+        } else if (data.opcode === 'stx-transaction-mint') {
+          const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
+          item.mintTxId = data.txId
+          // commit it straight away to avoid double clicks on the minting button
+          $self.$store.commit('myItemStore/setMintTxId', item)
+          $self.$store.dispatch('myItemStore/saveItem', item)
+        } else if (data.opcode === 'stx-transaction-mint-error') {
+          const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
+          item.mintTxId = null
+          // commit it straight away to avoid double clicks on the minting button
+          $self.$store.commit('myItemStore/setMintTxId', item)
+          $self.$store.dispatch('myItemStore/saveItem', item)
         } else if (data.opcode === 'configured-logged-in') {
           $self.$store.commit('rpayAuthStore/setAuthResponse', data.session)
           $self.$store.dispatch('rpayAuthStore/fetchMyAccount')

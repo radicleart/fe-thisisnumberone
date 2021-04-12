@@ -63,6 +63,7 @@ const utils = {
       return 0
     }
   },
+  /**
   fromOnChainAmount: function (amountMicroStx) {
     try {
       amountMicroStx = parseInt(amountMicroStx, 16)
@@ -76,6 +77,7 @@ const utils = {
       return 0
     }
   },
+  **/
   toOnChainAmount: function (amount) {
     try {
       amount = amount * precision

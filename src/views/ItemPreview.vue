@@ -5,11 +5,13 @@
 </div>
 <div class="mt-3 text-white" v-else>
   <div class="row">
-    <div class="col-md-9 col-sm-12">
+    <div class="col-md-7 col-sm-12">
       <div id="result-item" class="mb-4">
         <media-item :videoOptions="videoOptions" :nftMedia="nftMedia" :targetItem="'artworkFile'" :dims="dims"/>
       </div>
 
+    </div>
+    <div class="col-md-5 col-sm-12">
       <div>
         <div class="mb-2 d-flex justify-content-between">
           <div class="">{{item.name}}</div>
@@ -18,14 +20,14 @@
             <a v-if="!contractAsset" href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
           </div>
         </div>
-        <div class="text-small">Uploaded by : {{item.uploader}}</div>
+        <h6 class="text-small">By : {{item.artist}}</h6>
       </div>
-    </div>
-    <div class="col-md-3 col-sm-12">
-      <div class="mb-2 text-bold">Editions {{item.editions}}</div>
-      <span class="text-small mr-1" v-for="(kw, index) in item.keywords" :key="index">#{{kw.name}}</span>
+      <!--
+        <div class="mb-2 text-bold">Editions {{item.editions}}</div>
+        <span class="text-small mr-1" v-for="(kw, index) in item.keywords" :key="index">#{{kw.name}}</span>
+      -->
       <div class="text-small">{{item.description}}</div>
-      <item-mint-info :item="item" :contractAsset="contractAsset" />
+      <minting-tools class="w-100" :assetHash="item.assetHash" />
     </div>
   </div>
 </div>
@@ -33,14 +35,14 @@
 </template>
 
 <script>
-import ItemMintInfo from '@/components/items/ItemMintInfo'
+import MintingTools from '@/components/toolkit/MintingTools'
 import MediaItem from '@/components/utils/MediaItem'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'ItemPreview',
   components: {
-    ItemMintInfo,
+    MintingTools,
     MediaItem
   },
   data: function () {
