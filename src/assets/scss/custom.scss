@@ -184,7 +184,11 @@ a:hover {
 
 .no-scroll {
   overflow: hidden;
-  position: fixed;
+}
+@media only screen and (max-width: 475px) {
+  .no-scroll {
+    position: fixed;
+  }
 }
 
 .form-control {
