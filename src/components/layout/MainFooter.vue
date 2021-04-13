@@ -62,13 +62,15 @@
         </div>
 
         <div class="footer-bottom--right">
-          {{ content.right_bottom_corner[0].text }}
+          <a href="#">Term of use</a>
+          <a href="#">Privacy policy</a>
         </div>
       </div>
 
       <div class="d-block d-sm-none text-center footer-bottom">
         <div class="footer-bottom--left mb-1">
-          {{ content.right_bottom_corner[0].text }}
+          <a href="#">Term of use</a>
+          <a href="#">Privacy policy</a>
         </div>
 
         <div class="footer-bottom--right">
@@ -113,13 +115,13 @@ export default {
   padding: 90px 24px 24px;
   color: #ffffff;
 }
+.footer-container a, .footer-container a:hover {
+  color: #ffffff;
+}
 
 /* FOOTER TOP ROW STYLE */
 .footer-top--content {
   text-align: center;
-}
-.footer-top--content a, .footer-top--content a:hover {
-  color: #ffffff;
 }
 .footer-top--content div:not(:last-child) {
   margin-bottom: 15px;
@@ -149,6 +151,9 @@ export default {
 .footer-bottom {
   margin-top: 50px;
 }
+.footer-bottom a:first-child {
+  margin-right: 27px;
+}
 
 /* MOBILE STYLE */
 @media only screen and (min-width: 992px) {
@@ -161,6 +166,18 @@ export default {
   }
   .footer-top--content {
     text-align: left;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .social-links {
+    display: flex;
+    flex-flow: column;
+    margin-top: 0;
+  }
+  .social-links a:not(:last-child){
+    margin-right: 0;
+    margin-bottom: 15px;
   }
 }
 </style>

@@ -8,7 +8,7 @@
   </b-navbar-brand>
   <b-navbar-nav class="ml-auto toggle-icon">
     <b-nav-item v-b-toggle.collapse @click="collapsed = !collapsed, noScroll()">
-      <b-icon class="text-white" width="40px" height="40px" :icon="toggleIcon"></b-icon>
+      <img style="width: 40px; height: 40px;" :src="toggleIcon">
     </b-nav-item>
   </b-navbar-nav>
 
@@ -85,6 +85,8 @@ export default {
       logo: require('@/assets/img/navbar-footer/logo.svg'),
       background: require('@/assets/img/navbar-footer/main-navbar-BG.svg'),
       line: require('@/assets/img/navbar-footer/break-line.svg'),
+      grid: require('@/assets/img/navbar-footer/grid.svg'),
+      cross: require('@/assets/img/navbar-footer/cross.svg'),
       collapsed: true
     }
   },
@@ -137,7 +139,7 @@ export default {
       return profile.loggedIn
     },
     toggleIcon () {
-      return this.collapsed ? 'grid' : 'grid-fill'
+      return this.collapsed ? this.grid : this.cross
     }
   }
 }
