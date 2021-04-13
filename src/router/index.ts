@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import MainNavbar from '@/components/layout/MainNavbar.vue'
+import AdminNavbar from '@/components/layout/AdminNavbar.vue'
 import MainFooter from '@/components/layout/MainFooter.vue'
 import Login from '../views/Login.vue'
 // import Profile from '../views/Profile.vue'
@@ -44,9 +45,18 @@ const routes: Array<RouteConfig> = [
     components: { default: Home, header: MainNavbar }
   },
   {
+    path: '/create',
+    name: 'create',
+    components: { default: UploadItem, header: AdminNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
     path: '/admin',
     name: 'admin',
-    components: { default: Admin, header: MainNavbar, footer: MainFooter },
+    components: { default: Admin, header: AdminNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -60,7 +70,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/login',
     name: 'login',
-    components: { default: Login, header: MainNavbar }
+    components: { default: Login, header: AdminNavbar }
   },
   {
     path: '/profile',
@@ -70,7 +80,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/item-preview/:assetHash',
     name: 'item-preview',
-    components: { default: ItemPreview, header: MainNavbar, footer: MainFooter },
+    components: { default: ItemPreview, header: AdminNavbar, footer: MainFooter },
     meta: { requiresAuth: true }
   },
   {
@@ -82,19 +92,19 @@ const routes: Array<RouteConfig> = [
   {
     path: '/edit-item/:assetHash',
     name: 'edit-item',
-    components: { default: UpdateItem, header: MainNavbar, footer: MainFooter },
+    components: { default: UpdateItem, header: AdminNavbar, footer: MainFooter },
     meta: { requiresAuth: true }
   },
   {
     path: '/upload-item',
     name: 'upload-item',
-    components: { default: UploadItem, header: MainNavbar, footer: MainFooter },
+    components: { default: UploadItem, header: AdminNavbar, footer: MainFooter },
     meta: { requiresAuth: true }
   },
   {
     path: '/my-items',
     name: 'my-items',
-    components: { default: MyItems, header: MainNavbar, footer: MainFooter },
+    components: { default: MyItems, header: AdminNavbar, footer: MainFooter },
     meta: { requiresAuth: true }
   },
   {

@@ -37,7 +37,7 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import VideoPlayer from './videoPlayer'
+import VideoPlayer from './VideoPlayer'
 
 export default {
   name: 'MediaItem',

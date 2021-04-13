@@ -14,8 +14,8 @@
       </div>
     </div>
   </div>
-  <div v-else class="m-5">
-    Nothing to see here so far - <b-button to="/upload-item" variant="outline-danger">Get Started</b-button>
+  <div v-else class="text-center text-white my-5">
+    Nothing to see here so far - <router-link class="text-success" to="/upload-item">Create NFT</router-link>
   </div>
 </div>
 </template>
