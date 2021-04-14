@@ -126,7 +126,7 @@ const gaiaAsset = {
 
 const setup = function (data) {
   if (!data.asset) data.asset = {}
-  let risidioCardMode = 'payment-flow'
+  let risidioCardMode = 'marketplace-flow'
   if (data.flow) {
     risidioCardMode = data.flow
   }

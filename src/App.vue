@@ -5,10 +5,10 @@
   </b-row>
 </b-container>
 <div id="app" v-else>
-  <div>
+  <div v-if="!configured">
     <risidio-pay :configuration="configuration"/>
   </div>
-  <div :key="componentKey" v-if="configured">
+  <div :key="componentKey" v-else>
     <div></div>
     <router-view name="header"/>
     <router-view class="" style="min-height: 50vh;"/>
@@ -43,11 +43,10 @@ export default {
     }
   },
   mounted () {
+    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'config-flow', asset: this.gaiaAsset })
     const $self = this
     let resizeTimer
     this.loading = false
-
-    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'config-flow' })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
         if (data.opcode === 'configured') {

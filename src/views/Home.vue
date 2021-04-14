@@ -22,13 +22,8 @@ export default {
     return {
       componentKey: 0,
       loading: true,
-      showRpay: false,
       useSearchIndex: true
     }
-  },
-  mounted () {
-    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'config-flow' })
-    this.showRpay = true
   },
   methods: {
   },

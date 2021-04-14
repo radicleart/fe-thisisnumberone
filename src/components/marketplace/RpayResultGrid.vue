@@ -9,7 +9,7 @@
     </div>
   </div>
   -->
-    <risidio-pay v-if="showRpay" :configuration="configuration"/>
+  <risidio-pay v-if="showRpay" :configuration="configuration"/>
 </div>
 </template>
 
@@ -25,16 +25,14 @@ export default {
   props: ['resultSet'],
   data () {
     return {
+      showRpay: false,
       gridSize: 2
     }
   },
   mounted () {
     const $self = this
-    const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-    const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-    if (item.uploader !== profile.username) throw new Error('Unexpected NFT ownership error')
-    item.gaiaUsername = item.uploader
-    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'marketplace-flow', asset: item })
+    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'marketplace-flow' })
+    this.showRpay = true
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
         $self.mintResult = data.message
@@ -65,6 +63,10 @@ export default {
     }
   },
   computed: {
+    configuration () {
+      const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
+      return configuration
+    },
     assets1 () {
       return this.resultSet.slice(0, 2)
     },
