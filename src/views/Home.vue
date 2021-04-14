@@ -1,23 +1,29 @@
 <template>
-<section id="home-section" class="container text-center" v-if="resultSet" style="min-height: 100vh;">
+<section id="home-section" class="container text-center" v-if="!useSearchIndex && resultSet" style="min-height: 100vh;">
     <result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/>
+</section>
+<section id="home-section" class="container text-center" v-else style="min-height: 100vh;">
+    <rpay-result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/>
 </section>
 </template>
 
 <script>
+import RpayResultGrid from '@/components/marketplace/RpayResultGrid'
 import ResultGrid from '@/components/marketplace/ResultGrid'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'Home',
   components: {
-    ResultGrid
+    ResultGrid,
+    RpayResultGrid
   },
   data () {
     return {
       componentKey: 0,
       loading: true,
-      showRpay: false
+      showRpay: false,
+      useSearchIndex: true
     }
   },
   mounted () {
@@ -28,6 +34,10 @@ export default {
   },
   computed: {
     resultSet () {
+      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      return resultSet
+    },
+    resultSetFromIndex () {
       const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
       return resultSet
     },

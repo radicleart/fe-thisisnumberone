@@ -23,9 +23,9 @@ const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 const STX_MINT_FUNCTION = process.env.VUE_APP_STACKS_MINT_FUNCTION
 const ETH_CONTRACT_ADDRESS = process.env.VUE_APP_NFT_CONTRACT_ADDRESS
-const RISIDIO_STACKS_API = process.env.VUE_APP_API_STACKS
 const RISIDIO_WALLET_MAC = process.env.VUE_APP_WALLET_MAC
 const RISIDIO_WALLET_SKY = process.env.VUE_APP_WALLET_SKY
+const RISIDIO_STACKS_API = process.env.VUE_APP_STACKS_API
 
 const selling = {
 }
@@ -163,7 +163,8 @@ export default new Vuex.Store({
   state: {
     configuration: setup({}),
     windims: { innerWidth: window.innerWidth, innerHeight: window.innerHeight },
-    modalMessage: 'Your request is being processed'
+    modalMessage: 'Your request is being processed',
+    stacksPath: 'extended/v1/tx/'
   },
   getters: {
     getRpayConfiguration: state => {
@@ -174,6 +175,9 @@ export default new Vuex.Store({
     },
     getModalMessage: state => {
       return state.modalMessage
+    },
+    getTrackingUrl: state => txId => {
+      return RISIDIO_STACKS_API + state.stacksPath + txId
     }
   },
   mutations: {

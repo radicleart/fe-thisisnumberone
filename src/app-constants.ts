@@ -1,6 +1,7 @@
 export const APP_CONSTANTS = {
   KEY_RPAY_CONFIGURATION: 'getRpayConfiguration',
   SET_RPAY_FLOW: 'setRpayFlow',
+  KEY_TRACKING_URL: 'getTrackingUrl',
 
   KEY_MY_ITEMS: 'myItemStore/getMyItems',
   KEY_MY_ITEM: 'myItemStore/myItem',

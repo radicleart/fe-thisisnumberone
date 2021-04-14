@@ -57,6 +57,24 @@ const searchIndexService = {
     })
   },
 
+  indexRootFile: function (rootFile: any) {
+    return new Promise(function (resolve, reject) {
+      if (rootFile) {
+        axios.post(SEARCH_API_PATH + '/indexJsonRootFile', { jsonRootFile: JSON.stringify(rootFile) }).then((result) => {
+          resolve(result.data)
+        }).catch((error) => {
+          reject(new Error('Unable index record: ' + error))
+        })
+      } else {
+        axios.post(SEARCH_API_PATH + '/indexRootFile', rootFile).then((result) => {
+          resolve(result.data)
+        }).catch((error) => {
+          reject(new Error('Unable index record: ' + error))
+        })
+      }
+    })
+  },
+
   addRecord: function (asset: any) {
     return new Promise(function (resolve, reject) {
       const indexable: any = {}

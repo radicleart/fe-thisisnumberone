@@ -17,7 +17,8 @@ const myItemStore = {
   namespaced: true,
   state: {
     rootFile: null,
-    gaiaUrl: null
+    gaiaUrl: null,
+    indexResult: null
   },
   getters: {
     getMyItems: state => {
@@ -68,6 +69,9 @@ const myItemStore = {
   mutations: {
     rootFile (state: any, rootFile: any) {
       state.rootFile = rootFile
+    },
+    indexResult (state: any, indexResult: any) {
+      state.indexResult = indexResult
     },
     setMintTxId (state: any, item: any) {
       const index = state.rootFile.records.findIndex((o) => o.assetHash === item.assetHash)
@@ -153,6 +157,26 @@ const myItemStore = {
         }).catch((error) => {
           reject(error)
         })
+      })
+    },
+    indexRootFile ({ state, commit }) {
+      return new Promise((resolve) => {
+        searchIndexService.indexRootFile(state.rootFile).then((result) => {
+          commit('indexResult', result)
+          resolve(result)
+        }).catch((error) => {
+          console.log(error)
+        })
+        /**
+        state.rootFile.records.forEach((record) => {
+          searchIndexService.addRecord(record).then((result) => {
+            commit('indexResult', result)
+            resolve(result)
+          }).catch((error) => {
+            console.log(error)
+          })
+        })
+        **/
       })
     },
     findItemByAssetHash ({ state }, assetHash: string) {

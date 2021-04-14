@@ -3,7 +3,7 @@
   <div class="container" :key="componentKey">
     <div class="row mt-4">
       <div class="col-12">
-        <h4>{{contextTitle()}}</h4>
+        <h4 class="text-white">{{contextTitle()}}</h4>
       </div>
       <div class="col-md-12">
         <media-handler :uploadState="uploadState" :nftMedia="item.nftMedia" @updateMedia="updateMedia"/>
@@ -139,7 +139,7 @@ export default {
       })
     },
     contextTitle: function () {
-      if (this.uploadState === 0) return 'Choose how to upload'
+      if (this.uploadState === 0) return 'Upload artwork'
       else if (this.uploadState === 1) return 'Upload your music'
       else if (this.uploadState === 2) return 'Add cover art'
       else if (this.uploadState === 3) return 'Help people find it..'
