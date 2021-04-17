@@ -178,6 +178,9 @@ export default new Vuex.Store({
     },
     getTrackingUrl: state => txId => {
       return RISIDIO_STACKS_API + state.stacksPath + txId
+    },
+    getSectionHeight: state => {
+      return (state.windims.innerHeight)
     }
   },
   mutations: {

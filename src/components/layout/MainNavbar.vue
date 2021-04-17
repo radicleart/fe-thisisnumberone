@@ -1,9 +1,9 @@
 <template>
 <div id="one-nav" class="px-2" @mouseover="transme" @mouseout="transbackme">
-<b-navbar variant="transparent">
+<b-navbar class="p-4" variant="transparent">
   <b-navbar-brand href="#">
     <div class="">
-      <router-link to="/" class="navbar-brand"><img :src="logo" alt="logo"/></router-link>
+      <router-link to="/" class="navbar-brand"><img height="36px" :src="getLogo()" alt="logo"/></router-link>
     </div>
   </b-navbar-brand>
   <b-navbar-nav class="ml-auto toggle-icon">
@@ -11,22 +11,6 @@
       <img style="width: 40px; height: 40px;" :src="toggleIcon">
     </b-nav-item>
   </b-navbar-nav>
-
-<!--
-    <b-collapse id="nav-collapse" is-nav align="end">
-        <b-navbar-nav class="ml-auto" is-nav>
-          <b-nav vertical>
-            <b-nav-item class="mb-5"><router-link class="text-black" to="/how-it-works">How It Works</router-link></b-nav-item>
-            <b-nav-item class="mb-5"><router-link class="text-black" to="/upload-item">Protect Your Music</router-link></b-nav-item>
-            <b-nav-item class="mb-5" v-if="loggedIn"><router-link class="text-black" to="/profile">My Profile</router-link></b-nav-item>
-            <b-nav-item class="mb-5" v-if="loggedIn"><router-link class="text-black" to="/my-items">My Items</router-link></b-nav-item>
-            <b-nav-item class="mb-5" v-if="loggedIn"><span @click="logout()">Logout</span></b-nav-item>
-            <b-nav-item class="mb-5" v-if="!loggedIn"><b-button variant="light" @click.prevent="startLogin()">Login</b-button></b-nav-item>
-        </b-nav>
-        </b-navbar-nav>
-    </b-collapse>
-    -->
-
     <b-collapse id="collapse" :style="'background-image: url(' + background + ')'">
       <b-navbar-nav class="top-content">
         <b-navbar-brand v-b-toggle.collapse @click="noScroll()" class="mr-0" href="#">
@@ -34,8 +18,10 @@
             <router-link to="/" class="navbar-brand mr-0"><img :src="logo" alt="logo"/></router-link>
           </div>
         </b-navbar-brand>
-        <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/how-it-works">About</router-link></b-nav-item>
-        <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/upload-item">News</router-link></b-nav-item>
+        <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/about">About</router-link></b-nav-item>
+        <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/gallery"><img :src="hollowWhiteOne"/></router-link></b-nav-item>
+        <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/news">News</router-link></b-nav-item>
+        <!--
         <b-dropdown right v-if="loggedIn" size="lg"  variant="link" toggle-class="text-decoration-none" no-caret>
           <template #button-content>
             <b-icon scale="1.5" icon="person"/><span class="sr-only">Account</span>
@@ -48,6 +34,7 @@
           <b-dropdown-item v-b-toggle.collapse @click="noScroll()"><span @click="logout()">Logout</span></b-dropdown-item>
         </b-dropdown>
         <b-nav-item v-else><b-button variant="light" @click.prevent="startLogin()">Login</b-button></b-nav-item>
+        -->
       </b-navbar-nav>
 
       <div class="break-line"><img :src="line"></div>
@@ -83,6 +70,8 @@ export default {
   data () {
     return {
       logo: require('@/assets/img/navbar-footer/logo.svg'),
+      hollowWhiteOne: require('@/assets/img/Group 97.svg'),
+      rainbowOne: require('@/assets/img/Group 76.svg'),
       background: require('@/assets/img/navbar-footer/main-navbar-BG.svg'),
       line: require('@/assets/img/navbar-footer/break-line.svg'),
       grid: require('@/assets/img/navbar-footer/grid.svg'),
@@ -92,6 +81,10 @@ export default {
   },
   methods: {
     // test methods - just anticipating the design...
+    getLogo () {
+      if (this.$route.name === 'about') return this.rainbowOne
+      return this.logo
+    },
     transme () {
       const nav = document.getElementById('one-nav')
       if (nav) nav.style.depth = '100px'

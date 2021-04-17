@@ -4,14 +4,14 @@
     <b-col><b-button class="main-navigation-button" variant="primary">#1</b-button></b-col>
   </b-row>
 </b-container>
-<div id="app" v-else :style="'background-image: url(' + background + ')'">
+<div id="app" v-else :style="'min-height: 90vh; background-image: url(' + background + ')'">
   <div v-if="!configured">
     <risidio-pay :configuration="configuration"/>
   </div>
   <div :key="componentKey" v-else>
     <div></div>
     <router-view name="header"/>
-    <router-view class="" style="min-height: 50vh;"/>
+    <router-view class="" style="min-height: 72vh;"/>
     <router-view name="footer"/>
     <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
     <waiting-modal/>
@@ -50,9 +50,8 @@ export default {
       window.eventBus.$on('rpayEvent', function (data) {
         if (data.opcode === 'configured') {
           $self.$store.dispatch('initApplication').then(() => {
-            $self.$store.dispatch('rpaySearchStore/fetchContractData')
+            // $self.$store.dispatch('rpaySearchStore/fetchContractData')
             $self.configured = true
-            // })
           })
         } else if (data.opcode === 'stx-transaction-mint') {
           const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
@@ -73,14 +72,16 @@ export default {
       })
     }
     window.addEventListener('resize', function () {
+      $self.loading = true
       const currentComponent = $self.$route.name
-      if (currentComponent === 'home' || currentComponent === 'upload-item' || currentComponent === 'edit-item') {
+      if (currentComponent === 'upload-item' || currentComponent === 'edit-item') {
         return
       }
       clearTimeout(resizeTimer)
       resizeTimer = setTimeout(function () {
         $self.$store.commit('setWinDims')
         $self.componentKey += 1
+        $self.loading = false
       }, 400)
     })
     this.$prismic.client.getSingle('homepage').then(document => {
@@ -88,9 +89,9 @@ export default {
         this.$store.commit('contentStore/addHomeContent', document.data)
       }
     })
-    this.$prismic.client.getSingle('how-it-works').then(document => {
+    this.$prismic.client.getSingle('about').then(document => {
       if (document) {
-        this.$store.commit('contentStore/addHowItWorks', document.data)
+        this.$store.commit('contentStore/addAboutContent', document.data)
       }
     })
     this.$prismic.client.getSingle('mainfooter').then((document) => {

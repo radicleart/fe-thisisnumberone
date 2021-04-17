@@ -2,6 +2,9 @@ export const APP_CONSTANTS = {
   KEY_RPAY_CONFIGURATION: 'getRpayConfiguration',
   SET_RPAY_FLOW: 'setRpayFlow',
   KEY_TRACKING_URL: 'getTrackingUrl',
+  KEY_SECTION_HEIGHT: 'getSectionHeight',
+
+  KEY_CONTENT_ABOUT: 'contentStore/getAbout',
 
   KEY_MY_ITEMS: 'myItemStore/getMyItems',
   KEY_MY_ITEM: 'myItemStore/myItem',
@@ -13,6 +16,8 @@ export const APP_CONSTANTS = {
   KEY_WAITING_IMAGE: 'contentStore/getWaitingCSS',
   KEY_CONTENT_CHARITY_BY_ID: 'contentStore/getCharityById',
   KEY_CONTENT_ARTIST_BY_ID: 'contentStore/getArtistById',
+  KEY_CONTENT_ARTISTS: 'contentStore/getArtists',
+  KEY_CONTENT_CHARITIES: 'contentStore/getCharities',
 
   KEY_GAIA_ASSET_BY_HASH: 'rpayStacksContractStore/getGaiaAssetByHash',
   KEY_GAIA_ASSETS: 'rpayStacksContractStore/getGaiaAssets',

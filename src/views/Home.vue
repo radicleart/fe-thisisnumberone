@@ -1,16 +1,21 @@
 <template>
-<section id="home-section" class="container text-center" v-if="!useSearchIndex && resultSet" style="min-height: 100vh;">
+<div v-if="resultSet" class="">
+  <section id="home-section" class="container text-center" v-if="!useSearchIndex">
     <result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/>
-</section>
-<section id="home-section" class="container text-center" v-else style="min-height: 100vh;">
-    <rpay-result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/>
-</section>
+  </section>
+  <section id="home-section" class="p-0 container text-center" :style="getWidth()" v-else>
+    <rpay-result-grid class="text-center" :key="componentKey" :resultSet="resultSet"/>
+  </section>
+</div>
 </template>
 
 <script>
 import RpayResultGrid from '@/components/marketplace/RpayResultGrid'
 import ResultGrid from '@/components/marketplace/ResultGrid'
 import { APP_CONSTANTS } from '@/app-constants'
+
+const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
+const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 
 export default {
   name: 'Home',
@@ -30,16 +35,17 @@ export default {
   },
   methods: {
     findAssets () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      let searchKey = 'rpaySearchStore/findBySearchTerm'
-      let arg = Object.assign({}, this.$route.query)
-      if (configuration.risidioProjectId) {
-        searchKey = 'rpaySearchStore/findByProjectId'
-        arg = configuration.risidioProjectId
-      }
-      this.$store.dispatch(searchKey, arg).then((results) => {
+      this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {
         this.results = results
       })
+    },
+    getWidth () {
+      if (window.innerWidth < 1000) {
+        return 'width: 100%'
+      } else if (window.innerWidth < 1100) {
+        return 'width: 70%; height: 50vh;'
+      }
+      return 'width: 50%'
     }
   },
   computed: {

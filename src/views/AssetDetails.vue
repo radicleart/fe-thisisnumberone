@@ -2,7 +2,7 @@
 <div>
   <div class="mt-3" v-if="gaiaAsset">
     <asset-details-section :gaiaAsset="gaiaAsset" />
-    <artist-section />
+    <artist-section :artistId="getArtistPrismicId(gaiaAsset.artist)" />
     <charity-section />
   </div>
 </div>
@@ -30,6 +30,9 @@ export default {
     this.findAssets()
   },
   methods: {
+    getArtistPrismicId (artist) {
+      return artist.toLowerCase().replace(/ /g, '')
+    },
     findAssets () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
       let searchKey = 'rpaySearchStore/findBySearchTerm'
