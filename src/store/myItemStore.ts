@@ -79,9 +79,9 @@ const myItemStore = {
     }
   },
   actions: {
-    initSchema ({ state, commit }, forced: boolean) {
+    initSchema ({ state, commit, rootGetters }, forced: boolean) {
       return new Promise((resolve) => {
-        const profile = store.getters[APP_CONSTANTS.KEY_PROFILE]
+        const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
         if (state.rootFile && !forced) {
           resolve(state.rootFile)
         } else {
@@ -148,9 +148,9 @@ const myItemStore = {
         })
       })
     },
-    fetchItems ({ commit }) {
+    fetchItems ({ commit, rootGetters }) {
       return new Promise((resolve, reject) => {
-        const profile = store.getters[APP_CONSTANTS.KEY_PROFILE]
+        const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
         myItemService.fetchMyItems(profile).then((rootFile: any) => {
           commit('rootFile', rootFile)
           resolve(rootFile.records)

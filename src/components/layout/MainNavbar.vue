@@ -105,8 +105,8 @@ export default {
     },
     logout () {
       this.$store.dispatch('rpayAuthStore/startLogout').then(() => {
-        localStorage.clear()
-        sessionStorage.clear()
+        // localStorage.clear()
+        // sessionStorage.clear()
       })
     },
     username () {

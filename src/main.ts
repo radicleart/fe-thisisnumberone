@@ -8,7 +8,6 @@ import Notifications from 'vue-notification'
 import PrismicVue from 'prismic-vue'
 import linkResolver from './prismic/link-resolver'
 import htmlSerializer from './prismic/html-serializer'
-import vb from 'vue-babylonjs'
 import RisidioPay from 'risidio-pay'
 import '@/assets/scss/custom.scss'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -17,7 +16,6 @@ import './assets/scss/rpay-pay-card.css'
 
 Vue.config.productionTip = false
 
-Vue.use(vb)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(Notifications, { closeOnClick: true, duration: 6000 })

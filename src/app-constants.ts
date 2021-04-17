@@ -7,6 +7,7 @@ export const APP_CONSTANTS = {
   KEY_MY_ITEM: 'myItemStore/myItem',
   KEY_MODAL_MESSAGE: 'getModalMessage',
   KEY_PROFILE: 'rpayAuthStore/getMyProfile',
+  KEY_GAIA_STORAGE: 'rpayAuthStore/getMyProfile',
   KEY_ITEM_VALIDITY: 'myItemStore/getItemValidity',
 
   KEY_WAITING_IMAGE: 'contentStore/getWaitingCSS',
@@ -24,9 +25,9 @@ export const APP_CONSTANTS = {
   KEY_ASSETS_BY_CONTRACT_ID: 'rpayStacksContractStore/getAssetsByContractId',
   KEY_ASSETS_BY_CONTRACT_ID_AND_OWNER: 'rpayStacksContractStore/getAssetsByContractIdAndOwner',
 
-  SET_CURRENT_SEARCH: 'searchStore/setCurrentSearch',
-  KEY_CURRENT_SEARCH: 'searchStore/getCurrentSearch',
-  KEY_ASSET: 'searchStore/getAsset',
-  KEY_SEARCH_RESULTS: 'searchStore/getSearchResults'
+  SET_CURRENT_SEARCH: 'rpaySearchStore/setCurrentSearch',
+  KEY_CURRENT_SEARCH: 'rpaySearchStore/getCurrentSearch',
+  KEY_ASSET: 'rpaySearchStore/getAsset',
+  KEY_SEARCH_RESULTS: 'rpaySearchStore/getSearchResults'
 
 }

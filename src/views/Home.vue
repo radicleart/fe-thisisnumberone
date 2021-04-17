@@ -25,7 +25,22 @@ export default {
       useSearchIndex: true
     }
   },
+  mounted () {
+    this.findAssets()
+  },
   methods: {
+    findAssets () {
+      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
+      let searchKey = 'rpaySearchStore/findBySearchTerm'
+      let arg = Object.assign({}, this.$route.query)
+      if (configuration.risidioProjectId) {
+        searchKey = 'rpaySearchStore/findByProjectId'
+        arg = configuration.risidioProjectId
+      }
+      this.$store.dispatch(searchKey, arg).then((results) => {
+        this.results = results
+      })
+    }
   },
   computed: {
     resultSet () {

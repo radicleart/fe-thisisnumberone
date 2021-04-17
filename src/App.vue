@@ -4,7 +4,7 @@
     <b-col><b-button class="main-navigation-button" variant="primary">#1</b-button></b-col>
   </b-row>
 </b-container>
-<div id="app" v-else>
+<div id="app" v-else :style="'background-image: url(' + background + ')'">
   <div v-if="!configured">
     <risidio-pay :configuration="configuration"/>
   </div>
@@ -35,11 +35,10 @@ export default {
   },
   data () {
     return {
+      background: require('@/assets/img/navbar-footer/main-navbar-BG.svg'),
       loading: true,
       configured: false,
-      componentKey: 0,
-      manWithGuitar: 'https://images.prismic.io/radsoc/dcda9455-1a85-4dd2-a172-7c07dd8a71dc_Download+%284%29.png?auto=compress,format',
-      background: 'https://images.prismic.io/radsoc/acaba7f7-b0b7-4149-948e-d4814a8ca873_bg_img.png?auto=compress,format'
+      componentKey: 0
     }
   },
   mounted () {
@@ -51,7 +50,7 @@ export default {
       window.eventBus.$on('rpayEvent', function (data) {
         if (data.opcode === 'configured') {
           $self.$store.dispatch('initApplication').then(() => {
-            // $self.$store.dispatch('rpayStacksContractStore/fetchContractData', configuration).then(() => {
+            $self.$store.dispatch('rpaySearchStore/fetchContractData')
             $self.configured = true
             // })
           })
@@ -75,7 +74,7 @@ export default {
     }
     window.addEventListener('resize', function () {
       const currentComponent = $self.$route.name
-      if (currentComponent === 'upload-item' || currentComponent === 'edit-item') {
+      if (currentComponent === 'home' || currentComponent === 'upload-item' || currentComponent === 'edit-item') {
         return
       }
       clearTimeout(resizeTimer)

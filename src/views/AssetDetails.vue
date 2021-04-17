@@ -27,12 +27,26 @@ export default {
   },
   mounted () {
     this.assetHash = this.$route.params.assetHash
+    this.findAssets()
   },
   methods: {
+    findAssets () {
+      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
+      let searchKey = 'rpaySearchStore/findBySearchTerm'
+      let arg = Object.assign({}, this.$route.query)
+      if (configuration.risidioProjectId) {
+        searchKey = 'rpaySearchStore/findByProjectId'
+        arg = configuration.risidioProjectId
+      }
+      this.$store.dispatch(searchKey, arg).then((results) => {
+        this.results = results
+      })
+    }
   },
   computed: {
     gaiaAsset () {
-      const gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.$route.params.assetHash)
+      let gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.$route.params.assetHash)
+      if (!gaiaAsset) gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET](this.$route.params.assetHash)
       return gaiaAsset
     }
   }
