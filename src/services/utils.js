@@ -3,8 +3,10 @@ import dataUriToBuffer from 'data-uri-to-buffer'
 import {
   hexToCV
 } from '@stacks/transactions'
+import { c32address } from 'c32check'
 
 const precision = 1000000
+const NETWORK = process.env.VUE_APP_NETWORK
 
 const utils = {
   buildHash: function (hashable) {
@@ -53,6 +55,12 @@ const utils = {
         }, 300)
       }, 300)
     }, 300)
+  },
+  convertAddress: function (b160Address) {
+    let version = 26
+    if (NETWORK === 'mainnet') version = 22
+    const address = c32address(version, b160Address) // 22 for mainnet
+    return address
   },
   fromMicroAmount: function (amountMicroStx) {
     try {

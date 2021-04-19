@@ -2,13 +2,14 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import MainNavbar from '@/components/layout/MainNavbar.vue'
 import AdminNavbar from '@/components/layout/AdminNavbar.vue'
+import HomeFooter from '@/components/layout/HomeFooter.vue'
 import MainFooter from '@/components/layout/MainFooter.vue'
 import Login from '../views/Login.vue'
 // import Profile from '../views/Profile.vue'
 import Home from '../views/Home.vue'
 import AssetDetails from '../views/AssetDetails.vue'
 import Admin from '../views/Admin.vue'
-import Donate from '../views/Donate.vue'
+import About from '../views/About.vue'
 import ItemPreview from '../views/ItemPreview.vue'
 import UploadItem from '../views/UploadItem.vue'
 import UpdateItem from '../views/UpdateItem.vue'
@@ -43,7 +44,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'home',
-    components: { default: Home, header: MainNavbar }
+    components: { default: Home, header: MainNavbar, footer: HomeFooter }
   },
   {
     path: '/create',
@@ -64,9 +65,9 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: '/donate',
-    name: 'donate',
-    components: { default: Donate, header: MainNavbar, footer: MainFooter }
+    path: '/about',
+    name: 'about',
+    components: { default: About, header: MainNavbar, footer: MainFooter }
   },
   {
     path: '/login',

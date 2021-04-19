@@ -1,23 +1,20 @@
 <template>
-<section v-if="content" class="container-fluid p-5 hundred-vh bg-white text-black">
+<section v-if="content" :class="'theme-' + content.uid" class="container-fluid p-5 hundred-vh">
   <b-container>
     <b-row>
-      <div id="video-column" class="col-md-6 col-sm-12" v-if="content && content.image">
-        <img :src="content.image.url" width="100%"/>
-      </div>
-      <div class="col-md-6 col-sm-12">
-        <b-row align-v="stretch" :style="'height:' + videoHeight + 'px;'">
-          <b-col cols="12"><router-link to="/"><b-icon icon="chevron-left" shift-h="-4" variant="danger"></b-icon> Back</router-link></b-col>
-          <b-col cols="12" align-self="end">
-            <b-col cols="12">
-              <prismic-items :prismicItems="content.description"></prismic-items>
-            </b-col>
-            <b-col cols="12" align-self="end">
-              <social-links :socialLinks="content['social_links']" />
-            </b-col>
-          </b-col>
-        </b-row>
-      </div>
+      <b-col cols="12" class="text-right">
+        <p class="spaced-name">{{content.data.description[0].text}}</p>
+      </b-col>
+    </b-row>
+    <b-row style="text-align: center; height: 50vh" class="text-center">
+      <b-col cols="6">
+        <img style="width: 100%;" :src="content.data.image.url"/>
+      </b-col>
+      <b-col cols="6" align-self="center" class="text-left">
+        <h1>{{content.data.description[1].text}}</h1>
+        <div>{{content.data.description[2].text}}</div>
+        <social-links class="mt-4" :themeClass="'theme-' + content.uid" :socialLinks="content.data['social_links']" />
+      </b-col>
     </b-row>
   </b-container>
 </section>
@@ -25,16 +22,15 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import PrismicItems from '@/components/prismic/PrismicItems'
 import SocialLinks from './SocialLinks'
 import Vue from 'vue'
 
 export default {
   name: 'ArtistSection',
   components: {
-    PrismicItems,
     SocialLinks
   },
+  props: ['artistId', 'parentPage'],
   data: function () {
     return {
       assetHash: null,
@@ -52,16 +48,29 @@ export default {
   },
   computed: {
     content () {
-      const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
-      if (!item) return
-      let prismicId = 'caravaggio'
-      if (item.prismicId) prismicId = item.prismicId
-      const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_ARTIST_BY_ID](prismicId)
-      return (content && content.data) ? content.data : {}
+      const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_ARTIST_BY_ID](this.artistId)
+      return (content && content.data) ? content : null
     }
   }
 }
 </script>
 
 <style scoped>
+.theme-chemicalx {
+  background-color: #C92E11;
+  color: #fff;
+}
+.spaced-name {
+  position: relative;
+  right: -180px;
+  top: -90px;
+  text-align: right;
+  font-family: 'Bungee Hairline';
+  font-size: 6rem;
+  font-weight: normal;
+  letter-spacing: 10px;
+  color: #FFFFFF;
+  opacity: 1;
+  text-transform: uppercase;
+}
 </style>

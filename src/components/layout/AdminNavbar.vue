@@ -17,7 +17,6 @@
         <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/my-items">NFT Library</router-link></b-nav-item>
         <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/upload-item">Create NFT</router-link></b-nav-item>
         <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/admin">Admin</router-link></b-nav-item>
-        <b-nav-item v-if="loggedIn"><span @click="logout()">Logout</span></b-nav-item>
         <b-dropdown right v-if="loggedIn" size="lg"  variant="link" toggle-class="text-decoration-none" no-caret>
           <template #button-content>
             <b-icon scale="1.5" class="text-white" icon="person"/><span class="sr-only">Account</span>
@@ -63,8 +62,8 @@ export default {
     },
     logout () {
       this.$store.dispatch('rpayAuthStore/startLogout').then(() => {
-        localStorage.clear()
-        sessionStorage.clear()
+        // localStorage.clear()
+        // sessionStorage.clear()
       })
     },
     username () {

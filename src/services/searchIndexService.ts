@@ -49,7 +49,7 @@ const searchIndexService = {
 
   addTradeInfo: function (asset: any) {
     return new Promise(function (resolve, reject) {
-      axios.post(SEARCH_API_PATH + '/v1/trade-info/' + asset.assetHash, asset.saleData).then((result) => {
+      axios.post(SEARCH_API_PATH + '/v1/trade-info/' + asset.assetHash, asset.contractAsset.saleData).then((result) => {
         resolve(result.data)
       }).catch((error) => {
         reject(new Error('Unable index record: ' + error))
@@ -57,13 +57,29 @@ const searchIndexService = {
     })
   },
 
+  indexRootFile: function (rootFile: any) {
+    return new Promise(function (resolve, reject) {
+      if (rootFile) {
+        axios.post(SEARCH_API_PATH + '/indexJsonRootFile', { jsonRootFile: JSON.stringify(rootFile) }).then((result) => {
+          resolve(result.data)
+        }).catch((error) => {
+          reject(new Error('Unable index record: ' + error))
+        })
+      } else {
+        axios.post(SEARCH_API_PATH + '/indexRootFile', rootFile).then((result) => {
+          resolve(result.data)
+        }).catch((error) => {
+          reject(new Error('Unable index record: ' + error))
+        })
+      }
+    })
+  },
+
   addRecord: function (asset: any) {
     return new Promise(function (resolve, reject) {
       const indexable: any = {}
       indexable.assetHash = asset.assetHash
-      indexable.tokenId = asset.tokenId
       indexable.objType = asset.objType
-      indexable.nftIndex = asset.nftIndex
       indexable.privacy = asset.privacy
       indexable.projectId = asset.projectId
       indexable.imageUrl = asset.imageUrl
@@ -72,7 +88,7 @@ const searchIndexService = {
       indexable.owner = asset.owner
       indexable.description = asset.description
       indexable.artist = asset.owner
-      indexable.mintedOn = asset.mintedOn
+      indexable.nftMedia = asset.nftMedia
       indexable.domain = location.hostname
       indexable.objType = 'artwork'
       if (asset.objType) {
@@ -87,13 +103,6 @@ const searchIndexService = {
         }
       } else {
         indexable.category = asset.category
-      }
-      indexable.saleData = {
-        saleType: (asset.saleData) ? asset.saleData.saleType : 0,
-        buyNowOrStartingPrice: (asset.saleData) ? asset.saleData.buyNowOrStartingPrice : 0,
-        reservePrice: (asset.saleData) ? asset.saleData.reservePrice : 0,
-        biddingEndTime: (asset.saleData) ? asset.saleData.biddingEndTime : 0,
-        incrementPrice: (asset.saleData) ? asset.saleData.incrementPrice : 0
       }
       axios.post(SEARCH_API_PATH + '/addRecord', indexable).then((result) => {
         resolve(result)
@@ -209,8 +218,6 @@ const searchIndexService = {
   findAssetByHash: function (assetHash: string) {
     return new Promise(function (resolve, reject) {
       axios.get(SEARCH_API_PATH + '/v1/asset/' + assetHash).then((asset: any) => {
-        if (asset.nftIndex === 'null') asset.nftIndex = null
-        if (asset.tokenId === 'null') asset.tokenId = null
         resolve(asset)
       }).catch((error) => {
         reject(new Error('Unable index record: ' + error))

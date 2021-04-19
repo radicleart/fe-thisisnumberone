@@ -4,14 +4,14 @@
     <b-col><b-button class="main-navigation-button" variant="primary">#1</b-button></b-col>
   </b-row>
 </b-container>
-<div id="app" v-else>
-  <div>
+<div id="app" v-else :style="'min-height: 90vh; background-image: url(' + background + ')'">
+  <div v-if="!configured">
     <risidio-pay :configuration="configuration"/>
   </div>
-  <div :key="componentKey" v-if="configured">
+  <div :key="componentKey" v-else>
     <div></div>
     <router-view name="header"/>
-    <router-view class="" style="min-height: 50vh;"/>
+    <router-view class="" style="min-height: 72vh;"/>
     <router-view name="footer"/>
     <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
     <waiting-modal/>
@@ -35,26 +35,23 @@ export default {
   },
   data () {
     return {
+      background: require('@/assets/img/main-navbar-bg.svg'),
       loading: true,
       configured: false,
-      componentKey: 0,
-      manWithGuitar: 'https://images.prismic.io/radsoc/dcda9455-1a85-4dd2-a172-7c07dd8a71dc_Download+%284%29.png?auto=compress,format',
-      background: 'https://images.prismic.io/radsoc/acaba7f7-b0b7-4149-948e-d4814a8ca873_bg_img.png?auto=compress,format'
+      componentKey: 0
     }
   },
   mounted () {
+    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'config-flow', asset: this.gaiaAsset })
     const $self = this
     let resizeTimer
     this.loading = false
-
-    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'config-flow' })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
         if (data.opcode === 'configured') {
           $self.$store.dispatch('initApplication').then(() => {
-            // $self.$store.dispatch('rpayStacksContractStore/fetchContractData', configuration).then(() => {
+            // $self.$store.dispatch('rpaySearchStore/fetchContractData')
             $self.configured = true
-            // })
           })
         } else if (data.opcode === 'stx-transaction-mint') {
           const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
@@ -75,6 +72,7 @@ export default {
       })
     }
     window.addEventListener('resize', function () {
+      $self.loading = true
       const currentComponent = $self.$route.name
       if (currentComponent === 'upload-item' || currentComponent === 'edit-item') {
         return
@@ -83,6 +81,7 @@ export default {
       resizeTimer = setTimeout(function () {
         $self.$store.commit('setWinDims')
         $self.componentKey += 1
+        $self.loading = false
       }, 400)
     })
     this.$prismic.client.getSingle('homepage').then(document => {
@@ -90,9 +89,9 @@ export default {
         this.$store.commit('contentStore/addHomeContent', document.data)
       }
     })
-    this.$prismic.client.getSingle('how-it-works').then(document => {
+    this.$prismic.client.getSingle('about').then(document => {
       if (document) {
-        this.$store.commit('contentStore/addHowItWorks', document.data)
+        this.$store.commit('contentStore/addAboutContent', document.data)
       }
     })
     this.$prismic.client.getSingle('mainfooter').then((document) => {

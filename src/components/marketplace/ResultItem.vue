@@ -1,13 +1,14 @@
 <template>
 <div :style="dimensions()" class="">
   <div><router-link style="padding: 3px; position: relative; top: 50px; right: 2px; z-index: 100; width: 40px; height: 40px;" :to="assetUrl"><b-icon style="width: 40px; height: 40px;" icon="arrow-right-circle"/></router-link></div>
-  <media-item :videoOptions="videoOptions" :hideMeta="true" :nftMedia="result.nftMedia" :targetItem="'artworkFile'"/>
+  <media-item :videoOptions="videoOptions" :hideMeta="true" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
 </div>
 </template>
 
 <script>
 import Vue from 'vue'
 import MediaItem from '@/components/utils/MediaItem'
+import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'ResultItem',
@@ -34,6 +35,9 @@ export default {
     }, this)
   },
   methods: {
+    targetItem: function () {
+      return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.result)
+    },
     dimensions () {
       return 'width: ' + this.dims.width + '; height: ' + this.dims.width + ';'
     }
@@ -41,6 +45,7 @@ export default {
   computed: {
     videoOptions () {
       const videoOptions = {
+        assetHash: this.result.assetHash,
         autoplay: false,
         controls: true,
         aspectRatio: '1:1',
@@ -54,8 +59,8 @@ export default {
     },
     assetUrl () {
       let assetUrl = '/assets/' + this.result.assetHash
-      if (this.$route.name === 'my-assets') {
-        assetUrl = '/my-assets/' + this.result.assetHash
+      if (this.$route.name === 'my-items') {
+        assetUrl = '/my-items/' + this.result.assetHash
       }
       return assetUrl
     }

@@ -3,10 +3,10 @@
   <div class="container" :key="componentKey">
     <div class="row mt-4">
       <div class="col-12">
-        <h4>{{contextTitle()}}</h4>
+        <h4 class="text-white">{{contextTitle()}}</h4>
       </div>
       <div class="col-md-12">
-        <media-handler :uploadState="uploadState" :nftMedia="item.nftMedia" @updateMedia="updateMedia"/>
+        <media-handler :videoOptions="videoOptions()" :uploadState="uploadState" :nftMedia="item.nftMedia" @updateMedia="updateMedia"/>
       </div>
     </div>
     <div class="row mt-4">
@@ -67,7 +67,7 @@ export default {
       },
       result: 'Saving data to your storage - back in a mo!',
       doValidate: true,
-      defaultBadge: require('@/assets/img/risidio_collection_logo.svg'),
+      defaultBadge: require('@/assets/img/risidio_white.png'),
       defaultBadgeData: null
     }
   },
@@ -80,6 +80,21 @@ export default {
     this.loaded = true
   },
   methods: {
+    videoOptions () {
+      const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      if (!myAsset) return
+      const videoOptions = {
+        assetHash: this.assetHash,
+        autoplay: false,
+        controls: true,
+        poster: (myAsset.nftMedia.coverImage) ? myAsset.nftMedia.coverImage.fileUrl : null,
+        sources: [
+          { src: myAsset.nftMedia.artworkFile.fileUrl, type: myAsset.nftMedia.artworkFile.type }
+        ],
+        fluid: true
+      }
+      return videoOptions
+    },
     setHandler: function (data) {
       this.handler = data.handler
       this.uploadState = 1
@@ -98,12 +113,12 @@ export default {
         const $self = this
         this.$store.commit('setModalMessage', 'Fetched. Saving file info to library.')
         this.$store.dispatch('myItemStore/saveNftMediaObject', { assetHash: data.media.dataHash, nftMedia: data.media }).then((nftMedia) => {
-          const localItem = {
+          const myAsset = {
             assetHash: data.media.dataHash,
             nftMedia: {}
           }
-          localItem.nftMedia[nftMedia.id] = data.media
-          $self.$store.dispatch('myItemStore/saveItem', localItem).then(() => {
+          myAsset.nftMedia[nftMedia.id] = data.media
+          $self.$store.dispatch('myItemStore/saveItem', myAsset).then(() => {
             $self.$store.commit('setModalMessage', 'Saved artwork file.')
             this.$root.$emit('bv::hide::modal', 'waiting-modal')
             $self.$router.push('/edit-item/' + data.media.dataHash)
@@ -139,7 +154,7 @@ export default {
       })
     },
     contextTitle: function () {
-      if (this.uploadState === 0) return 'Choose how to upload'
+      if (this.uploadState === 0) return 'Upload artwork'
       else if (this.uploadState === 1) return 'Upload your music'
       else if (this.uploadState === 2) return 'Add cover art'
       else if (this.uploadState === 3) return 'Help people find it..'
@@ -164,6 +179,10 @@ export default {
     }
   },
   computed: {
+    myAsset: function () {
+      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      return item
+    },
     itemSummary () {
       return {
         uploadState: this.uploadState,

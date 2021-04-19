@@ -53,7 +53,11 @@ body a:hover {
 
 .no-scroll {
   overflow: hidden;
-  position: fixed;
+}
+@media only screen and (max-width: 475px) {
+  .no-scroll {
+    position: fixed;
+  }
 }
 
 .form-control {
@@ -128,4 +132,26 @@ body a:hover {
 }
 .hundred-vh {
   min-height: 100vh !important;
+}
+.button-plus {
+  background: transparent;
+  width: 100px;
+  height: 61px;
+  border: 1px solid #FFFFFF;
+  opacity: 1;
+}
+.button-plus:hover {
+  background: transparent;
+  opacity: 0.7;
+}
+.button-info {
+  background: transparent;
+  width: 200px;
+  height: 61px;
+  border: 1px solid #FFFFFF;
+  opacity: 1;
+}
+.button-info:hover {
+  background: transparent;
+  opacity: 0.7;
 }

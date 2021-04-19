@@ -7,6 +7,7 @@ const contentStore = {
       mainFooter: null,
       navigation: null,
       homepage: null,
+      about: null,
       howItWorks: null
     },
     waitingImage: 'https://images.prismic.io/radsoc/f60d92d0-f733-46e2-9cb7-c59e33a15fc1_download.jpeg?auto=compress,format'
@@ -31,11 +32,20 @@ const contentStore = {
     getCharityById: state => id => {
       return state.content.charities.find((o) => o.uid === id)
     },
+    getCharities: state => {
+      return state.content.charities
+    },
+    getArtists: state => {
+      return state.content.artists
+    },
     getArtistById: state => id => {
       return state.content.artists.find((o) => o.uid === id)
     },
     getHomepage: state => {
       return state.content.homepage
+    },
+    getAbout: state => {
+      return state.content.about
     },
     getMainFooter: state => {
       return state.content.mainFooter
@@ -51,14 +61,14 @@ const contentStore = {
     addHomeContent (state, o) {
       state.content.homepage = o
     },
+    addAboutContent (state, o) {
+      state.content.about = o
+    },
     addMainFooter (state, o) {
       state.content.mainFooter = o
     },
     addNavigationContent (state, o) {
       state.content.navigation = o
-    },
-    addHowItWorks (state, o) {
-      state.content.howItWorks = o
     },
     addCharities (state, o) {
       state.content.charities = o

@@ -53,7 +53,6 @@ import Vue from 'vue'
 import AssetUpdatesModal from './AssetUpdatesModal'
 import RisidioPay from 'risidio-pay'
 import { APP_CONSTANTS } from '@/app-constants'
-import utils from '@/services/utils'
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
@@ -85,7 +84,7 @@ export default {
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
         $self.mintResult = data.message
-        if (data.opcode === 'stx-contract-data') {
+        if (data.opcode === 'stx-transaction-finished') {
           $self.showRpay = false
           $self.$bvModal.hide('asset-offer-modal')
           $self.$bvModal.hide('minting-modal')

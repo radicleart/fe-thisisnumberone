@@ -11,7 +11,7 @@
           <b-button style="width: 80%;" variant="light" v-html="contentModel.buttonName" @click="chooseFiles()"></b-button>
         </div>
         <div style="width: 100%;" class="text-left mt-4 mb-3" role="group">
-          <label for="item-name">Or Paste Download URL</label>
+          <label for="item-name">or paste a link</label>
           <b-form-input
             id="item-name"
             v-model="directUrl"
@@ -111,9 +111,6 @@ export default {
     },
     columns  () {
       return 'col-' + this.size
-    },
-    hasMedia () {
-      return this.mediaFiles && this.mediaFiles.length > 0
     }
   },
   methods: {

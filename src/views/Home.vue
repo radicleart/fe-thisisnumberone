@@ -1,45 +1,59 @@
 <template>
-<section id="home-section" class="" v-if="resultSet" :style="'background-image: url(' + background + ')'">
-    <!--  <result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/> -->
-    <div class="main-content-container ">
-      <div class="d-flex justify-content-center">
-        <div class="artist-image"><a href="#"><img :src="content.body[0].items[0].artist_image.url" :alt="content.body[0].items[0].artist_image.alt"></a></div>
-        <div class="artist-image"><a href="#"><img :src="content.body[0].items[1].artist_image.url" :alt="content.body[0].items[1].artist_image.alt"></a></div>
-      </div>
-      <div class="d-flex justify-content-center">
-        <div class="artist-image"><a href="#"><img :src="content.body[0].items[2].artist_image.url" :alt="content.body[0].items[2].artist_image.alt"></a></div>
-        <div class="artist-image"><a href="#"><img :src="content.body[0].items[3].artist_image.url" :alt="content.body[0].items[3].artist_image.alt"></a></div>
-      </div>
-    </div>
-    <div class="bottom-logo-container"><img :src="content.logo.url" :alt="content.logo.alt"></div>
-</section>
+<div v-if="resultSet" class="">
+  <section id="home-section" class="container text-center" v-if="!useSearchIndex">
+    <result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/>
+  </section>
+  <section id="home-section" class="p-0 container text-center" :style="getWidth()" v-else>
+    <rpay-result-grid class="text-center" :key="componentKey" :resultSet="resultSet"/>
+  </section>
+</div>
 </template>
 
 <script>
-// import ResultGrid from '@/components/marketplace/ResultGrid'
+import RpayResultGrid from '@/components/marketplace/RpayResultGrid'
+import ResultGrid from '@/components/marketplace/ResultGrid'
 import { APP_CONSTANTS } from '@/app-constants'
+
+const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
+const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 
 export default {
   name: 'Home',
   components: {
-    // ResultGrid
+    ResultGrid,
+    RpayResultGrid
   },
   data () {
     return {
       componentKey: 0,
       loading: true,
-      showRpay: false,
-      background: require('@/assets/img/navbar-footer/main-navbar-BG.svg')
+      useSearchIndex: true
     }
   },
   mounted () {
-    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'config-flow' })
-    this.showRpay = true
+    this.findAssets()
   },
   methods: {
+    findAssets () {
+      this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {
+        this.results = results
+      })
+    },
+    getWidth () {
+      if (window.innerWidth < 1000) {
+        return 'width: 100%'
+      } else if (window.innerWidth < 1100) {
+        return 'width: 70%; height: 50vh;'
+      }
+      return 'width: 50%'
+    }
   },
   computed: {
     resultSet () {
+      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      return resultSet
+    },
+    resultSetFromIndex () {
       const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
       return resultSet
     },

@@ -1,10 +1,10 @@
 <template>
 <div>
   <div id="video-demo-container" v-if="isVideo(mediaItem())">
-    <video-player :options="videoOptions"/>
+    <video-player :options="videoOptions" :style="dimensions()"/>
     <div class="d-flex justify-content-between" v-if="!hideMeta">
       <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
-      <div @click="deleteMediaItem()" v-if="mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage'" class="text-small text-danger"><b-icon icon="trash"/></div>
+      <div @click="deleteMediaItem()" v-if="!contractAsset && (mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></div>
     </div>
     <!-- <video id="video1" controls style="max-height: 250px;" @loadedmetadata="cover"> -->
   </div>
@@ -15,7 +15,7 @@
     </audio>
     <div class="d-flex justify-content-between">
       <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
-      <div @click="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></div>
+      <div v-if="!contractAsset" @click="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></div>
     </div>
  </div>
 
@@ -28,7 +28,7 @@
     <img :src="mediaItem().fileUrl" :alt="mediaItem().name" :style="dimensions()">
     <div class="d-flex justify-content-between">
       <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
-      <div @click="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></div>
+      <div v-if="!contractAsset" @click="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></div>
     </div>
   </div>
 </div>
@@ -45,7 +45,7 @@ export default {
     VideoPlayer
     // BFormFile
   },
-  props: ['videoOptions', 'targetItem', 'nftMedia', 'dims', 'autoplay', 'hideMeta'],
+  props: ['videoOptions', 'targetItem', 'nftMedia', 'dims', 'hideMeta'],
   data () {
     return {
       mediaObjects: [],
@@ -54,6 +54,10 @@ export default {
     }
   },
   computed: {
+    contractAsset () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.videoOptions.assetHash)
+      return contractAsset
+    },
     bannerImage () {
       if (this.nftMedia) {
         const item = this.$store.getters['myItemStore/myItem'](this.nftMedia.artworkFile.dataHash)
@@ -68,7 +72,8 @@ export default {
     },
     dimensions: function () {
       if (this.dims) {
-        return 'width: ' + this.dims.width + 'px; height: ' + this.dims.height + 'px;'
+        // return 'width: ' + this.dims.width + 'px; height: ' + this.dims.height + 'px;'
+        return 'width: 100%; height: auto;'
       }
       return 'width: 100%; height: auto'
     },

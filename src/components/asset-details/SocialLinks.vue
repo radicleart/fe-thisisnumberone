@@ -1,7 +1,7 @@
 <template>
-<div class="d-flex justify-content-around">
+<div :class="themeClass" class="w-50 d-flex justify-content-around">
   <div v-for="(link, index) in socialLinks" :key="index">
-    <a :href="target(link)" target="_blank"><b-icon :icon="icon(link)"/></a>
+    <b-link router-tag="span" :to="target(link)" target="_blank"><b-icon style="width: 20px; height: 20px;" :icon="icon(link)"/></b-link>
   </div>
 </div>
 </template>
@@ -12,7 +12,7 @@ export default {
   name: 'SocialLinks',
   components: {
   },
-  props: ['socialLinks'],
+  props: ['socialLinks', 'themeClass'],
   data: function () {
     return {
     }
@@ -48,4 +48,8 @@ export default {
 </script>
 
 <style scoped>
+.theme-chemicalx {
+  background-color: #C92E11;
+  color: #fff !important;
+}
 </style>

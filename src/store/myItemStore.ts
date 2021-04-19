@@ -17,7 +17,8 @@ const myItemStore = {
   namespaced: true,
   state: {
     rootFile: null,
-    gaiaUrl: null
+    gaiaUrl: null,
+    indexResult: null
   },
   getters: {
     getMyItems: state => {
@@ -69,15 +70,18 @@ const myItemStore = {
     rootFile (state: any, rootFile: any) {
       state.rootFile = rootFile
     },
+    indexResult (state: any, indexResult: any) {
+      state.indexResult = indexResult
+    },
     setMintTxId (state: any, item: any) {
       const index = state.rootFile.records.findIndex((o) => o.assetHash === item.assetHash)
       state.rootFile.records[index] = item
     }
   },
   actions: {
-    initSchema ({ state, commit }, forced: boolean) {
+    initSchema ({ state, commit, rootGetters }, forced: boolean) {
       return new Promise((resolve) => {
-        const profile = store.getters[APP_CONSTANTS.KEY_PROFILE]
+        const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
         if (state.rootFile && !forced) {
           resolve(state.rootFile)
         } else {
@@ -144,15 +148,35 @@ const myItemStore = {
         })
       })
     },
-    fetchItems ({ commit }) {
+    fetchItems ({ commit, rootGetters }) {
       return new Promise((resolve, reject) => {
-        const profile = store.getters[APP_CONSTANTS.KEY_PROFILE]
+        const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
         myItemService.fetchMyItems(profile).then((rootFile: any) => {
           commit('rootFile', rootFile)
           resolve(rootFile.records)
         }).catch((error) => {
           reject(error)
         })
+      })
+    },
+    indexRootFile ({ state, commit }) {
+      return new Promise((resolve) => {
+        searchIndexService.indexRootFile(state.rootFile).then((result) => {
+          commit('indexResult', result)
+          resolve(result)
+        }).catch((error) => {
+          console.log(error)
+        })
+        /**
+        state.rootFile.records.forEach((record) => {
+          searchIndexService.addRecord(record).then((result) => {
+            commit('indexResult', result)
+            resolve(result)
+          }).catch((error) => {
+            console.log(error)
+          })
+        })
+        **/
       })
     },
     findItemByAssetHash ({ state }, assetHash: string) {

@@ -2,19 +2,39 @@
 <div id="minting-tools" class="mt-3">
   <div class="text-white">
     <div class="w-100 text-small">
-      <b-alert v-if="contractAsset" show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</b-alert>
-      <b-alert v-else-if="isValid" show variant="danger">
+      <div v-if="contractAsset">
         <div v-if="!item.mintTxId">Minting - <a :href="trackingUrl()" target="_blank">track progress here...</a></div>
-        <b-button v-else style="width: 100%;" variant="danger" @click.prevent="mintToken()">Mint this item now.</b-button>
+        <b-alert show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</b-alert>
+      </div>
+      <b-alert v-else-if="isValid" show variant="danger">
+        <b-button style="width: 100%;" variant="danger" @click.prevent="mintToken()">Mint this item now.</b-button>
       </b-alert>
-      <b-alert v-else show variant="danger">not valid - fields required</b-alert>
+      <b-alert v-else show variant="danger">not valid - information required</b-alert>
     </div>
 
     <div v-if="contractAsset">
       <b-tabs justified content-class="mt-3">
-        <b-tab title="Transfer" active>
-          <div>
-            <transfer-nft :assetHash="assetHash"/>
+        <b-tab title="General" active>
+          <div class="row">
+            <div class="col-12">
+              <p>owned by:<br/>
+              {{contractAsset.owner}}
+              </p>
+            </div>
+            <div class="col-12 mb-5">
+              <div class="">{{saleDataText}}</div>
+            </div>
+            <b-tabs justified content-class="p-4 ">
+              <b-tab title="Beneficiaries" active>
+                <beneficiaries :assetHash="assetHash"/>
+              </b-tab>
+              <b-tab title="Transfers">
+                <transfer-nft :assetHash="assetHash"/>
+              </b-tab>
+              <b-tab title="Gaia">
+                <gaia-hub-relay :assetHash="assetHash"/>
+              </b-tab>
+            </b-tabs>
           </div>
         </b-tab>
         <b-tab title="Sales" class="text-white">
@@ -47,7 +67,7 @@
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal id="result-modal">
-    <div>Contract called: <a :href="transactionUrl(mintResultTxId)" target="_blank">check transaction</a></div>
+    <div v-html="mintResult"></div>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="md" id="rpay-modal">
@@ -63,8 +83,9 @@ import RisidioPay from 'risidio-pay'
 import utils from '@/services/utils'
 import AcceptOffer from '@/components/toolkit/AcceptOffer'
 import TransferNft from '@/components/toolkit/TransferNft'
+import Beneficiaries from '@/components/toolkit/Beneficiaries'
+import GaiaHubRelay from '@/components/toolkit/GaiaHubRelay'
 
-const STACKS_API = process.env.VUE_APP_STACKS_API
 const NETWORK = process.env.VUE_APP_NETWORK
 
 export default {
@@ -72,15 +93,19 @@ export default {
   components: {
     RisidioPay,
     AcceptOffer,
-    TransferNft
+    TransferNft,
+    Beneficiaries,
+    GaiaHubRelay
   },
   props: ['assetHash'],
   data: function () {
     return {
+      showTransfers: false,
+      showBeneficiaries: false,
       offerData: null,
       showRpay: false,
       mintResult: null,
-      mintResultTxId: null,
+      trackingMessage: 'Blockchain called - answer will be back shortly. You can <a href="____" target="_blank">track the transaction here</a> and the data on this page should refresh automatically.',
       mintTitle: ''
     }
   },
@@ -108,13 +133,21 @@ export default {
           $self.$store.dispatch('myItemStore/saveItem', item).then((item) => {
             $self.mintResult = item.name + ' (#' + item.nftIndex + ') has been saved to your storage'
           })
-        } else if (data.opcode === 'save-mint-data') {
-          console.log(data.opcode)
-        } else if (data.opcode === 'stx-contract-data') {
+        } else if (data.opcode === 'stx-update-mint-data') {
+          // $self.showRpay = false
+          // $self.$bvModal.hide('rpay-modal')
+        } else if (data.opcode === 'stx-save-and-close-mint-data') {
+          // $self.showRpay = false
+          // $self.$bvModal.hide('rpay-modal')
+        } else if (data.opcode === 'stx-transaction-sent') {
           $self.showRpay = false
           $self.$bvModal.hide('rpay-modal')
-          $self.mintResult = 'Contract called'
-          $self.mintResultTxId = data.txId
+          $self.mintResult = $self.trackingMessage.replace('____', $self.transactionUrl(data.txId))
+          $self.$bvModal.show('result-modal')
+        } else if (data.opcode === 'stx-transaction-finished') {
+          $self.showRpay = false
+          $self.$bvModal.hide('rpay-modal')
+          $self.mintResult = $self.trackingMessage.replace('____', $self.transactionUrl(data.txId))
           $self.$bvModal.show('result-modal')
         } else if (data.opcode === 'cancel-minting') {
           $self.showRpay = false
@@ -134,7 +167,7 @@ export default {
     },
     trackingUrl: function () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-      return STACKS_API + 'extended/v1/tx/' + item.mintTxId
+      return this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](item.mintTxId)
     },
     mintToken: function () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
@@ -181,11 +214,11 @@ export default {
       if (!contractAsset || !contractAsset.saleData || contractAsset.saleData.saleType === 0) {
         return 'NOT FOR SALE'
       } else if (contractAsset.saleData.saleType === 1) {
-        return 'Buy now for ' + utils.fromMicroAmount(contractAsset.saleData.buyNowOrStartingPrice)
+        return 'Buy now for ' + (contractAsset.saleData.buyNowOrStartingPrice)
       } else if (contractAsset.saleData.saleType === 2) {
-        return 'Place a bid current highest bid is ' + utils.fromMicroAmount(contractAsset.saleData.buyNowOrStartingPrice)
+        return 'Place a bid current highest bid is ' + (contractAsset.saleData.buyNowOrStartingPrice)
       } else if (contractAsset.saleData.saleType === 3) {
-        return 'Offers over ' + utils.fromMicroAmount(contractAsset.saleData.reservePrice) + ' STX will be considered'
+        return 'Offers over ' + (contractAsset.saleData.reservePrice) + ' STX will be considered'
       } else {
         return 'Unknown sale type?'
       }
