@@ -1,7 +1,7 @@
 <template>
 <b-row style="height: 80vh">
   <b-col cols="12" class="text-center p-0 m-0" align-self="center" v-if="resultSet" >
-    <result-grid style="max-height: 30%" class="container text-center" :key="componentKey" :resultSet="resultSet"/>
+    <result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/>
   </b-col>
 </b-row>
 </template>

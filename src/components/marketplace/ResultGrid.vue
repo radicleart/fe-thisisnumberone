@@ -9,11 +9,18 @@
     </div>
   </div>
   -->
+<b-row>
+  <b-col cols="3" :offset="getOffset(index)" class="text-right p-0" v-for="(index) in numbEntries()" :key="index">
+    <result-item :result="getResult(index)" />
+  </b-col>
+</b-row>
+<!--
       <div class="row p-0 m-0">
-        <div class="col-sm-6 col-xs-12 p-0 m-0" v-for="(result, index) in assets" :key="index">
-          <result-item style="width: 100%; height: 100%;" :result="result" />
+        <div class="col-sm-6 col-xs-12 p-0 m-0" style="max-width: 50%; max-height: 50%; width: 100%; height: 100%;" v-for="(result, index) in assets" :key="index">
+          <div class="w-100 text-right"><result-item style="width: 100%; height: 100%;" :result="result" /></div>
         </div>
       </div>
+-->
 </div>
 </template>
 
@@ -42,6 +49,15 @@ export default {
     }
   },
   methods: {
+    numbEntries: function () {
+      return this.resultSet.length
+    },
+    getResult: function (index) {
+      return this.resultSet[index - 1]
+    },
+    getOffset: function (index) {
+      return ((index - 1) % 2 === 0) ? 3 : 0
+    },
     breakLine: function (index) {
       return (index % 2 === 1) ? '<br/>' : ''
     },
@@ -62,12 +78,6 @@ export default {
     }
   },
   computed: {
-    assets () {
-      return this.resultSet
-    },
-    assets2 () {
-      return this.resultSet.slice(2)
-    }
   }
 }
 </script>

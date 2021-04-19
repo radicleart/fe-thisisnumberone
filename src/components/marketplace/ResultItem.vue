@@ -1,5 +1,5 @@
 <template>
-<div @mouseover="transme()" @mouseout="transbackme()" :style="dimensions()" class="">
+<div @mouseover="transme()" @mouseout="transbackme()" :style="dimensions" class="text-right">
   <router-link :style="'opacity: ' + opacity + ';'" style="padding: 3px; position: absolute; top: 5px; right: 25px; z-index: 100; width: 40px; height: 40px;" :to="assetUrl"><b-icon style="width: 40px; height: 40px;" icon="arrow-right-circle"/></router-link>
   <media-item class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
 </div>
@@ -44,12 +44,12 @@ export default {
     },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.result)
-    },
-    dimensions () {
-      return 'width: ' + this.dims.width + '; height: ' + this.dims.width + ';'
     }
   },
   computed: {
+    dimensions () {
+      return 'max-width: ' + this.dims.height + '; max-height: ' + this.dims.height + ';'
+    },
     videoOptions () {
       const videoOptions = {
         assetHash: this.result.assetHash,

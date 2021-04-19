@@ -166,7 +166,6 @@ export default {
     },
     owner () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      // const address = utils.convertAddress(contractAsset.owner) // 22 for mainnet
       return contractAsset.owner
     }
   }

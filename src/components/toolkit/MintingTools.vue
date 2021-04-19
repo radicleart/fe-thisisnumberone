@@ -24,17 +24,19 @@
             <div class="col-12 mb-5">
               <div class="">{{saleDataText}}</div>
             </div>
-            <b-tabs justified content-class="p-4 ">
-              <b-tab title="Beneficiaries" active>
-                <beneficiaries :assetHash="assetHash"/>
-              </b-tab>
-              <b-tab title="Transfers">
-                <transfer-nft :assetHash="assetHash"/>
-              </b-tab>
-              <b-tab title="Gaia">
-                <gaia-hub-relay :assetHash="assetHash"/>
-              </b-tab>
-            </b-tabs>
+            <div class="col-12 mb-5">
+              <b-tabs  content-class="p-4">
+                <b-tab title="Beneficiaries" active>
+                  <beneficiaries :assetHash="assetHash"/>
+                </b-tab>
+                <b-tab title="Transfers">
+                  <transfer-nft :assetHash="assetHash"/>
+                </b-tab>
+                <b-tab title="Gaia">
+                  <gaia-hub-relay :assetHash="assetHash"/>
+                </b-tab>
+              </b-tabs>
+            </div>
           </div>
         </b-tab>
         <b-tab title="Sales" class="text-white">
@@ -80,7 +82,6 @@
 import moment from 'moment'
 import { APP_CONSTANTS } from '@/app-constants'
 import RisidioPay from 'risidio-pay'
-import utils from '@/services/utils'
 import AcceptOffer from '@/components/toolkit/AcceptOffer'
 import TransferNft from '@/components/toolkit/TransferNft'
 import Beneficiaries from '@/components/toolkit/Beneficiaries'
@@ -188,7 +189,7 @@ export default {
       this.$bvModal.show('accept-offer-modal')
     },
     offerAmount: function (amount) {
-      return utils.fromMicroAmount(amount)
+      return (amount)
     },
     offerMade: function (madeData) {
       return moment(madeData).format('DD-MM hh:mm')

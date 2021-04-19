@@ -28,7 +28,6 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import utils from '@/services/utils'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
@@ -49,10 +48,6 @@ export default {
     }
   },
   methods: {
-    fromMicroAmount: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      return utils.fromMicroAmount(contractAsset.saleData.reservePrice)
-    },
     transferNft: function () {
       this.transferring = 'transfer started...'
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
