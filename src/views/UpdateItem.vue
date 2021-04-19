@@ -6,7 +6,7 @@
         <h4>{{contextTitle()}}</h4>
       </div>
     </div>
-    <media-handler :uploadState="uploadState" :nftMedia="item.nftMedia" @updateMedia="updateMedia" @deleteMediaItem="deleteMediaItem"/>
+    <media-handler :videoOptions="videoOptions()" :uploadState="uploadState" :nftMedia="item.nftMedia" @updateMedia="updateMedia" @deleteMediaItem="deleteMediaItem"/>
     <div class="row mt-4">
       <div class="col-md-6 offset-md-3 col-sm-12">
         <h2>NFT Info</h2>
@@ -70,7 +70,7 @@ export default {
         }
       },
       doValidate: true,
-      defaultBadge: require('@/assets/img/risidio_collection_logo.svg')
+      defaultBadge: require('@/assets/img/risidio_white.png')
     }
   },
   mounted () {
@@ -96,6 +96,20 @@ export default {
     })
   },
   methods: {
+    videoOptions () {
+      const localItem = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      const videoOptions = {
+        assetHash: this.assetHash,
+        autoplay: false,
+        controls: true,
+        poster: (localItem.nftMedia.coverImage) ? localItem.nftMedia.coverImage.fileUrl : null,
+        sources: [
+          { src: localItem.nftMedia.artworkFile.fileUrl, type: localItem.nftMedia.artworkFile.type }
+        ],
+        fluid: true
+      }
+      return videoOptions
+    },
     deleteMediaItem: function (mediaId) {
       this.$store.dispatch('myItemStore/deleteMediaItem', { item: this.item, id: mediaId }).then(() => {
         this.$emit('delete-cover')

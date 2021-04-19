@@ -6,7 +6,7 @@
         <h4 class="text-white">{{contextTitle()}}</h4>
       </div>
       <div class="col-md-12">
-        <media-handler :uploadState="uploadState" :nftMedia="item.nftMedia" @updateMedia="updateMedia"/>
+        <media-handler :videoOptions="videoOptions()" :uploadState="uploadState" :nftMedia="item.nftMedia" @updateMedia="updateMedia"/>
       </div>
     </div>
     <div class="row mt-4">
@@ -67,7 +67,7 @@ export default {
       },
       result: 'Saving data to your storage - back in a mo!',
       doValidate: true,
-      defaultBadge: require('@/assets/img/risidio_collection_logo.svg'),
+      defaultBadge: require('@/assets/img/risidio_white.png'),
       defaultBadgeData: null
     }
   },
@@ -80,6 +80,20 @@ export default {
     this.loaded = true
   },
   methods: {
+    videoOptions () {
+      const localItem = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      const videoOptions = {
+        assetHash: this.assetHash,
+        autoplay: false,
+        controls: true,
+        poster: (localItem.nftMedia.coverImage) ? localItem.nftMedia.coverImage.fileUrl : null,
+        sources: [
+          { src: localItem.nftMedia.artworkFile.fileUrl, type: localItem.nftMedia.artworkFile.type }
+        ],
+        fluid: true
+      }
+      return videoOptions
+    },
     setHandler: function (data) {
       this.handler = data.handler
       this.uploadState = 1

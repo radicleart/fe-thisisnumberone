@@ -1,6 +1,6 @@
 <template>
 <div v-if="item && item.nftMedia" class="mt-1">
-  <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="item.nftMedia" :targetItem="'artworkFile'"/>
+  <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="item.nftMedia" :targetItem="targetItem()"/>
   <div class="">
     <div class="mt-5 mb-2 d-flex justify-content-between">
       <div class="text-bold">
@@ -34,6 +34,9 @@ export default {
     }
   },
   methods: {
+    targetItem: function () {
+      return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.item)
+    },
     hoverIn (index) {
       this.dHover[index] = true
       this.componentKey += 1
@@ -66,6 +69,7 @@ export default {
       }
       if (!file) return {}
       const videoOptions = {
+        assetHash: this.item.assetHash,
         autoplay: false,
         aspectRatio: '1:1',
         controls: true,

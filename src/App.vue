@@ -35,7 +35,7 @@ export default {
   },
   data () {
     return {
-      background: require('@/assets/img/navbar-footer/main-navbar-BG.svg'),
+      background: require('@/assets/img/main-navbar-bg.svg'),
       loading: true,
       configured: false,
       componentKey: 0

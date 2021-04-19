@@ -72,7 +72,7 @@ export default {
       logo: require('@/assets/img/navbar-footer/logo.svg'),
       hollowWhiteOne: require('@/assets/img/Group 97.svg'),
       rainbowOne: require('@/assets/img/Group 76.svg'),
-      background: require('@/assets/img/navbar-footer/main-navbar-BG.svg'),
+      background: require('@/assets/img/main-navbar-bg.svg'),
       line: require('@/assets/img/navbar-footer/break-line.svg'),
       grid: require('@/assets/img/navbar-footer/grid.svg'),
       cross: require('@/assets/img/navbar-footer/cross.svg'),

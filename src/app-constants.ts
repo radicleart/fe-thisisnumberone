@@ -9,8 +9,6 @@ export const APP_CONSTANTS = {
   KEY_MY_ITEMS: 'myItemStore/getMyItems',
   KEY_MY_ITEM: 'myItemStore/myItem',
   KEY_MODAL_MESSAGE: 'getModalMessage',
-  KEY_PROFILE: 'rpayAuthStore/getMyProfile',
-  KEY_GAIA_STORAGE: 'rpayAuthStore/getMyProfile',
   KEY_ITEM_VALIDITY: 'myItemStore/getItemValidity',
 
   KEY_WAITING_IMAGE: 'contentStore/getWaitingCSS',
@@ -19,6 +17,10 @@ export const APP_CONSTANTS = {
   KEY_CONTENT_ARTISTS: 'contentStore/getArtists',
   KEY_CONTENT_CHARITIES: 'contentStore/getCharities',
 
+  KEY_PROFILE: 'rpayAuthStore/getMyProfile',
+  KEY_GAIA_STORAGE: 'rpayAuthStore/getMyProfile',
+
+  KEY_TARGET_FILE_FOR_DISPLAY: 'rpayStacksContractStore/getTargetFileForDisplay',
   KEY_GAIA_ASSET_BY_HASH: 'rpayStacksContractStore/getGaiaAssetByHash',
   KEY_GAIA_ASSETS: 'rpayStacksContractStore/getGaiaAssets',
   KEY_GAIA_ASSETS_BY_OWNER: 'rpayStacksContractStore/getGaiaAssetsByOwner',
