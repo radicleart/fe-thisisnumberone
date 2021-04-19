@@ -1,5 +1,5 @@
 <template>
-<div v-if="resultSet" class="">
+<div v-if="resultSet" class="mt-5">
   <section id="home-section" class="container text-center" v-if="!useSearchIndex">
     <result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/>
   </section>
@@ -75,25 +75,6 @@ export default {
 </script>
 
 <style>
-#home-section {
-  height: 100vh;
-  width: 100%;
-  margin-top: -60px;
-  padding: 0 24px;
-  display: flex;
-  flex-flow: column;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.main-content-container {
-  height: 100%;
-  width: 100%;
-  padding-top: 60px;
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-}
 
 .bottom-logo-container {
   text-align: right;
