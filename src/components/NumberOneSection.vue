@@ -52,7 +52,6 @@
 </template>
 
 <script>
-import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'NumberOneSection',
@@ -60,7 +59,7 @@ export default {
   },
   data () {
     return {
-      background: require('@/assets/img/navbar-footer/main-navbar-BG.svg'),
+      background: require('@/assets/img/main-navbar-bg.svg'),
       logo: require('@/assets/img/logo-rainbow.svg'),
       artist: 0
     }
