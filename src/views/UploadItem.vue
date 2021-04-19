@@ -81,14 +81,15 @@ export default {
   },
   methods: {
     videoOptions () {
-      const localItem = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      if (!myAsset) return
       const videoOptions = {
         assetHash: this.assetHash,
         autoplay: false,
         controls: true,
-        poster: (localItem.nftMedia.coverImage) ? localItem.nftMedia.coverImage.fileUrl : null,
+        poster: (myAsset.nftMedia.coverImage) ? myAsset.nftMedia.coverImage.fileUrl : null,
         sources: [
-          { src: localItem.nftMedia.artworkFile.fileUrl, type: localItem.nftMedia.artworkFile.type }
+          { src: myAsset.nftMedia.artworkFile.fileUrl, type: myAsset.nftMedia.artworkFile.type }
         ],
         fluid: true
       }
@@ -112,12 +113,12 @@ export default {
         const $self = this
         this.$store.commit('setModalMessage', 'Fetched. Saving file info to library.')
         this.$store.dispatch('myItemStore/saveNftMediaObject', { assetHash: data.media.dataHash, nftMedia: data.media }).then((nftMedia) => {
-          const localItem = {
+          const myAsset = {
             assetHash: data.media.dataHash,
             nftMedia: {}
           }
-          localItem.nftMedia[nftMedia.id] = data.media
-          $self.$store.dispatch('myItemStore/saveItem', localItem).then(() => {
+          myAsset.nftMedia[nftMedia.id] = data.media
+          $self.$store.dispatch('myItemStore/saveItem', myAsset).then(() => {
             $self.$store.commit('setModalMessage', 'Saved artwork file.')
             this.$root.$emit('bv::hide::modal', 'waiting-modal')
             $self.$router.push('/edit-item/' + data.media.dataHash)
@@ -178,6 +179,10 @@ export default {
     }
   },
   computed: {
+    myAsset: function () {
+      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      return item
+    },
     itemSummary () {
       return {
         uploadState: this.uploadState,

@@ -1,5 +1,5 @@
 <template>
-<div id="update-item" class="text-white" v-if="loaded">
+<div id="update-item" class="text-white" v-if="loaded && myAsset">
   <div class="container" :key="componentKey">
     <div class="row mt-4">
       <div class="col-12">
@@ -97,14 +97,14 @@ export default {
   },
   methods: {
     videoOptions () {
-      const localItem = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       const videoOptions = {
         assetHash: this.assetHash,
         autoplay: false,
         controls: true,
-        poster: (localItem.nftMedia.coverImage) ? localItem.nftMedia.coverImage.fileUrl : null,
+        poster: (myAsset.nftMedia.coverImage) ? myAsset.nftMedia.coverImage.fileUrl : null,
         sources: [
-          { src: localItem.nftMedia.artworkFile.fileUrl, type: localItem.nftMedia.artworkFile.type }
+          { src: myAsset.nftMedia.artworkFile.fileUrl, type: myAsset.nftMedia.artworkFile.type }
         ],
         fluid: true
       }
@@ -137,9 +137,9 @@ export default {
         const $self = this
         this.$store.commit('setModalMessage', 'Fetched. Saving file info to library.')
         this.$store.dispatch('myItemStore/saveNftMediaObject', { assetHash: this.assetHash, nftMedia: data.media }).then((nftMedia) => {
-          const localItem = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-          localItem.nftMedia[nftMedia.id] = nftMedia
-          $self.$store.dispatch('myItemStore/saveItem', localItem).then((item) => {
+          const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+          myAsset.nftMedia[nftMedia.id] = nftMedia
+          $self.$store.dispatch('myItemStore/saveItem', myAsset).then((item) => {
             $self.item = item
             $self.$store.commit('setModalMessage', '')
             $self.$root.$emit('bv::hide::modal', 'waiting-modal')
@@ -191,6 +191,10 @@ export default {
     }
   },
   computed: {
+    myAsset: function () {
+      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      return item
+    },
     invalidItems: function () {
       const invalidItems = this.$store.getters[APP_CONSTANTS.KEY_ITEM_VALIDITY](this.item)
       return invalidItems
