@@ -1,194 +1,59 @@
 @import 'my_variables.scss';
 @import 'node_modules/bootstrap/scss/bootstrap.scss';
 @import 'node_modules/bootstrap-vue/src/index.scss';
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaina+2:wght@400;700&display=swap');
 
-$font-dir: "/fonts/";
-
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-Black.ttf") format("truetype");
-  font-style: normal;
-  font-weight: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-BlackItalic.ttf") format("truetype");
-  font-style: italic;
-  font-weight: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-Bold.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-BoldItalic.ttf") format("truetype");
-  font-style: italic;
-  font-weight: 700;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-ExtraBold.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-ExtraBoldItalic.ttf") format("truetype");
-  font-style: italic;
-  font-weight: 800;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-ExtraLight.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 200;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-ExtraLightItalic.ttf") format("truetype");
-  font-style: italic;
-  font-weight: 200;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-Italic.ttf") format("truetype");
-  font-style: italic;
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-Light.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-LightItalic.ttf") format("truetype");
-  font-style: italic;
-  font-weight: 300;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-Medium.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-MediumItalic.ttf") format("truetype");
-  font-style: italic;
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-Regular.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-SemiBold.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-SemiBoldItalic.ttf") format("truetype");
-  font-style: italic;
-  font-weight: 600;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-Thin.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 100;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat-ThinItalic.ttf") format("truetype");
-  font-style: italic;
-  font-weight: 100;
-  font-display: swap;
-}
 html {
   /* 1rem = 10px */
-  font-size: 100%;
+  font-size: 62.5%;
 }
 body {
   /* default font-size set back to 16px */
-  font-size: 1rem;
+  font-size: 1.6rem;
   margin: 0;
-  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+  font-family: 'Baloo Bhaina 2', Arial, Helvetica, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
+  width: 100%;
   background-color: #fff;
   color: #000;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
-}
-h1 {
-  font-size: 2rem;
-  font-weight: 200;
-  letter-spacing: 0px;
-  text-transform: capitalize;
-}
-h2 {
-  font-size: 2.8rem;
+body h1 {
+  color:#ffffff;
+  font-size: 4rem;
   font-weight: 400;
-  letter-spacing: 0px;
-  text-transform: capitalize;
-  white-space: normal;
+  margin-bottom: 0;
 }
-h3 {
-  font-size: 1.6rem;
-  font-weight: 500;
-  letter-spacing: 0px;
+body h2 {
+  color: #FF9900;
+  font-size: 2.7rem;
+  font-weight: 400;
+  margin-bottom: 15px;
 }
-h4 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 0px;
+body h3 {
+  color:#ffffff;
+  font-size: 3rem;
+  font-weight: 400;
 }
-p {
+body p {
+  color:#ffffff;
   text-align: left;
-  font-size: 1.0rem;
-  font-weight: 300;
-  letter-spacing: 0px;
+  font-size: 1.4rem;
+  font-weight: 400;
 }
-a:hover {
+body a {
+  color: #ffffff;
+  font-size: 1.4rem;
+}
+body a:hover {
   text-decoration: none !important;
 }
 
 .no-scroll {
   overflow: hidden;
-}
-@media only screen and (max-width: 475px) {
-  .no-scroll {
-    position: fixed;
-  }
+  position: fixed;
 }
 
 .form-control {

@@ -14,6 +14,7 @@ import UploadItem from '../views/UploadItem.vue'
 import UpdateItem from '../views/UpdateItem.vue'
 import MyItems from '../views/MyItems.vue'
 import HowItWorks from '../views/HowItWorks.vue'
+import NumberOne from '../views/NumberOne.vue'
 import store from '@/store'
 
 Vue.use(VueRouter)
@@ -111,6 +112,11 @@ const routes: Array<RouteConfig> = [
     path: '/how-it-works',
     name: 'how-it-works',
     components: { default: HowItWorks, header: MainNavbar, footer: MainFooter }
+  },
+  {
+    path: '/number-one',
+    name: 'number-one',
+    components: { default: NumberOne, header: MainNavbar, footer: MainFooter }
   }
 ]
 

@@ -35,7 +35,9 @@
           </div>
         </b-navbar-brand>
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/how-it-works">About</router-link></b-nav-item>
+        <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/number-one"><img :src="numberOne" alt="#1"/></router-link></b-nav-item>
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/upload-item">News</router-link></b-nav-item>
+        <!--
         <b-dropdown right v-if="loggedIn" size="lg"  variant="link" toggle-class="text-decoration-none" no-caret>
           <template #button-content>
             <b-icon scale="1.5" icon="person"/><span class="sr-only">Account</span>
@@ -48,6 +50,7 @@
           <b-dropdown-item v-b-toggle.collapse @click="noScroll()"><span @click="logout()">Logout</span></b-dropdown-item>
         </b-dropdown>
         <b-nav-item v-else><b-button variant="light" @click.prevent="startLogin()">Login</b-button></b-nav-item>
+        -->
       </b-navbar-nav>
 
       <div class="break-line"><img :src="line"></div>
@@ -87,6 +90,7 @@ export default {
       line: require('@/assets/img/navbar-footer/break-line.svg'),
       grid: require('@/assets/img/navbar-footer/grid.svg'),
       cross: require('@/assets/img/navbar-footer/cross.svg'),
+      numberOne: require('@/assets/img/navbar-footer/n1.svg'),
       collapsed: true
     }
   },
@@ -147,6 +151,9 @@ export default {
 
 <style lang="scss">
 /* NAVBAR GENERAL STYLE */
+#one-nav nav {
+  height: 60px;
+}
 .navbar-light .navbar-nav .nav-link {
     color: #fff;
 }
@@ -187,14 +194,16 @@ export default {
 #collapse .top-content li {
   list-style: none;
   padding-top: 50px;
-  font-size: 35px;
+}
+#collapse .top-content li a {
+  font-size: 3.5rem;
 }
 #collapse .top-content {
   height: 100%;
   display: flex;
   flex-flow: column;
-  align-items: center;
-  padding-top: 91px;
+  justify-content: center;
+  padding-top: 60px;
 }
 
 /* Bottom collapse section style */
@@ -206,7 +215,6 @@ export default {
 }
 #collapse .bottom-content--container {
   display: flex;
-  font-size: 14px;
 }
 #collapse .bottom-content--container .nav-item:not(:last-child) {
   padding-right: 20px;
@@ -239,9 +247,6 @@ export default {
   #collapse .bottom-content--container:not(:last-child) {
     padding-bottom: 0;
   }
-  #collapse .top-content {
-    padding-top: 60px;
-  }
 }
 
 @media only screen and (max-width: 376px) {
@@ -256,7 +261,7 @@ export default {
   }
   #collapse .top-content li {
     padding-top: 20px;
-    font-size: 30px;
+    font-size: 3rem;
   }
 }
 
