@@ -1,26 +1,26 @@
 <template>
 <div>
-  <!--
   <div class="d-flex justify-content-center" v-for="(n, i) in gridSize" :key="i">
-    <div v-for="(result, index) in results(i)" :key="index">
+    <div v-for="(result, index) in resultSet" :key="index">
       <div class="100vh flex-column align-items-center d-flex justify-content-center">
         <result-item :result="result" />
       </div>
     </div>
   </div>
-  -->
+  <!--
   <risidio-pay v-if="showRpay" :configuration="configuration"/>
+  -->
 </div>
 </template>
 
 <script>
-import RisidioPay from 'risidio-pay'
+// import RisidioPay from 'risidio-pay'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'RpayResultGrid',
   components: {
-    RisidioPay
+    // RisidioPay
   },
   props: ['resultSet'],
   data () {

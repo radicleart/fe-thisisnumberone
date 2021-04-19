@@ -83,7 +83,6 @@ export default {
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'purchase-flow', asset: this.gaiaAsset })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
-        $self.mintResult = data.message
         if (data.opcode === 'stx-transaction-finished') {
           $self.showRpay = false
           $self.$bvModal.hide('asset-offer-modal')
@@ -94,7 +93,6 @@ export default {
         } else {
           // $self.$bvModal.hide('minting-modal')
           // $self.showRpay = false
-          // $self.mintResult = data.message
           // $self.mintTitle = 'Not Minted'
           // $self.$bvModal.show('result-modal')
         }

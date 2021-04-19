@@ -4,14 +4,14 @@
     <b-col><b-button class="main-navigation-button" variant="primary">#1</b-button></b-col>
   </b-row>
 </b-container>
-<div id="app" v-else :style="'min-height: 90vh; background-image: url(' + background + ')'">
+<div id="app" v-else :style="'min-height: 100vh; background-image: url(' + background + ')'">
   <div v-if="!configured">
     <risidio-pay :configuration="configuration"/>
   </div>
   <div :key="componentKey" v-else>
     <div></div>
     <router-view name="header"/>
-    <router-view class="" style="min-height: 72vh;"/>
+    <router-view class=""/>
     <router-view name="footer"/>
     <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
     <waiting-modal/>

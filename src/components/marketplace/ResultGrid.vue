@@ -9,18 +9,11 @@
     </div>
   </div>
   -->
-    <div class="flex-column align-items-center">
-      <div class="row" style="width: 100%;">
-        <div class="col-6 text-right" v-for="(result, index) in assets1" :key="index">
-          <result-item :result="result" />
+      <div class="row p-0 m-0">
+        <div class="col-sm-6 col-xs-12 p-0 m-0" v-for="(result, index) in assets" :key="index">
+          <result-item style="width: 100%; height: 100%;" :result="result" />
         </div>
       </div>
-      <div class="row" style="width: 100%;">
-        <div class="col-6 text-right" v-for="(result, index) in assets2" :key="index">
-          <result-item :result="result" />
-        </div>
-      </div>
-    </div>
 </div>
 </template>
 
@@ -69,8 +62,8 @@ export default {
     }
   },
   computed: {
-    assets1 () {
-      return this.resultSet.slice(0, 2)
+    assets () {
+      return this.resultSet
     },
     assets2 () {
       return this.resultSet.slice(2)

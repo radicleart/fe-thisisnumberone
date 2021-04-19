@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="options.dimensions">
     <video :poster="poster()" ref="videoPlayer" class="border video-js vjs-theme-city vjs-big-play-centered"></video>
   </div>
 </template>
@@ -45,4 +45,10 @@ export default {
 
 <style>
   @import '../../assets/scss/video-js.css';
+  .video-js {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+}
+
 </style>

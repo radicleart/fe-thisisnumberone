@@ -99,6 +99,7 @@ export default {
     videoOptions () {
       const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       const videoOptions = {
+        showMeta: true,
         assetHash: this.assetHash,
         autoplay: false,
         controls: true,

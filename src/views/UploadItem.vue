@@ -84,6 +84,7 @@ export default {
       const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       if (!myAsset) return
       const videoOptions = {
+        showMeta: true,
         assetHash: this.assetHash,
         autoplay: false,
         controls: true,

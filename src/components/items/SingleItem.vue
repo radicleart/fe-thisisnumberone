@@ -70,6 +70,7 @@ export default {
       if (!file) return {}
       const videoOptions = {
         assetHash: this.item.assetHash,
+        showMeta: false,
         autoplay: false,
         aspectRatio: '1:1',
         controls: true,

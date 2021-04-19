@@ -118,7 +118,6 @@ export default {
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: item })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
-        $self.mintResult = data.message
         if (data.opcode === 'save-selling-data') {
           $self.$bvModal.hide('rpay-modal')
         } else if (data.opcode === 'stx-mint-success' || data.opcode === 'eth-mint-success') {

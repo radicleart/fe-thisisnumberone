@@ -72,7 +72,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/login',
     name: 'login',
-    components: { default: Login, header: AdminNavbar }
+    components: { default: Login, header: AdminNavbar, footer: HomeFooter }
   },
   {
     path: '/profile',

@@ -1,7 +1,7 @@
 <template>
-<div :style="dimensions()" class="">
-  <div><router-link style="padding: 3px; position: relative; top: 50px; right: 2px; z-index: 100; width: 40px; height: 40px;" :to="assetUrl"><b-icon style="width: 40px; height: 40px;" icon="arrow-right-circle"/></router-link></div>
-  <media-item :videoOptions="videoOptions" :hideMeta="true" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
+<div @mouseover="transme()" @mouseout="transbackme()" :style="dimensions()" class="">
+  <router-link :style="'opacity: ' + opacity + ';'" style="padding: 3px; position: absolute; top: 5px; right: 25px; z-index: 100; width: 40px; height: 40px;" :to="assetUrl"><b-icon style="width: 40px; height: 40px;" icon="arrow-right-circle"/></router-link>
+  <media-item class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
 </div>
 </template>
 
@@ -19,6 +19,7 @@ export default {
   data () {
     return {
       height: 300,
+      opacity: 0,
       dims: { width: '100%', height: '100%' },
       likeIconTurquoise: require('@/assets/img/Favorite_button_turquoise_empty.png'),
       likeIconPurple: require('@/assets/img/Favorite_button_purple_empty.png')
@@ -35,6 +36,12 @@ export default {
     }, this)
   },
   methods: {
+    transme () {
+      this.opacity = 1
+    },
+    transbackme () {
+      this.opacity = 0
+    },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.result)
     },
@@ -48,6 +55,8 @@ export default {
         assetHash: this.result.assetHash,
         autoplay: false,
         controls: true,
+        showMeta: false,
+        dimensions: 'max-width: 100%; max-height: auto;',
         aspectRatio: '1:1',
         poster: (this.result.nftMedia.coverImage) ? this.result.nftMedia.coverImage.fileUrl : null,
         sources: [
