@@ -114,27 +114,27 @@ export default {
   }
 
   & .result__item--title {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     font-weight: 400;
   }
 
   & .result__item--amount {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     font-weight: 600;
   }
 
   & .result__item--by {
-    font-size: 1rem;
+    font-size: 1.3rem;
     font-weight: 300;
   }
 
   & .result__item--artist {
-    font-size: 1rem;
+    font-size: 1.3rem;
     font-weight: 700;
   }
 
   & .result__item--price {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     font-weight: 400;
   }
 
@@ -143,7 +143,7 @@ export default {
     top: 0;
     right: 0;
     color: #FFFFFF;
-    font-size: 1.3rem;
+    font-size: 1.7rem;
     background-color: #50B1B5;
     padding: 10px 13px;
     border-radius: 50%;
@@ -154,7 +154,7 @@ export default {
     top: 0;
     right: 0;
     color: #FFFFFF;
-    font-size: 13px;
+    font-size: 1.3rem;
     background-color: #9d50b5;
     padding: 10px 13px;
     border-radius: 50%;

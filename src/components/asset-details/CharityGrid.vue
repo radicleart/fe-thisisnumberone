@@ -1,13 +1,9 @@
 <template>
 <section v-if="content" :class="'theme-' + content.uid" class="container-fluid p-5 hundred-vh">
+  <div class="spaced-name">Charities</div>
   <b-container>
     <b-row>
-      <b-col cols="12" class="text-left">
-        <p class="spaced-name">Charities</p>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols-md="4" cols-sm="4" cols-xs="6" v-for="(charity, index) in content" :key="index">
+      <b-col class="text-center" cols="12" sm="6" md="4" v-for="(charity, index) in content" :key="index">
         <img class="charity-image" :src="charity.data.image.url"/>
         <p>{{charity.data.description[0].text}}</p>
       </b-col>
@@ -39,25 +35,63 @@ export default {
 </script>
 
 <style scoped>
+/* General style */
 .theme-chemicalx {
   background-color: #C92E11;
   color: #fff;
 }
 .spaced-name {
-  position: relative;
-  left: -170px;
-  top: -80px;
-  text-align: right;
+  margin: -3rem 0 8rem -4rem;
+  line-height: 0.6;
+  white-space: nowrap;
+  text-align: left;
   font-family: 'Bungee Hairline';
-  font-size: 6rem;
-  font-weight: normal;
-  letter-spacing: 10px;
-  color: #000000;
-  opacity: 1;
+  font-size: 15rem;
+  color: #888888;
   text-transform: uppercase;
 }
+p {
+  display: inline-block;
+  max-width: 333px;
+  width: 100%;
+  margin: 20px 0 40px;
+  font-size: 25px;
+  color: #000;
+}
+
+/* Images style */
 .charity-image {
-  max-width: 333px; height: 333px;
+  width: 100%;
+  max-width: 333px;
+  max-height: 333px;
   border: 1pt solid #000;
+}
+
+/* Spaced name responsive design */
+@media only screen and (max-width: 1023px) {
+  .spaced-name {
+    font-size: 10rem;
+  }
+}
+@media only screen and (max-width: 787px) {
+  .spaced-name {
+    font-size: 8rem;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .spaced-name {
+    font-size: 6rem;
+  }
+}
+@media only screen and (max-width: 475px) {
+  .spaced-name {
+    font-size: 5rem;
+    margin: -3rem 0 8rem -3rem;
+  }
+}
+@media only screen and (max-width: 350px) {
+  .spaced-name {
+    font-size: 4rem;
+  }
 }
 </style>

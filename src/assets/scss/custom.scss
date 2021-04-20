@@ -1,11 +1,13 @@
 @import 'my_variables.scss';
 @import 'node_modules/bootstrap/scss/bootstrap.scss';
 @import 'node_modules/bootstrap-vue/src/index.scss';
+@import '../../assets/scss/video-js.css';
 @import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaina+2:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Hairline&display=swap');
 
 html {
   /* 1rem = 10px */
-  font-size: 80.0%;
+  font-size: 62.5%;
 }
 body {
   /* default font-size set back to 16px */
@@ -21,7 +23,7 @@ body {
 }
 
 body h1 {
-    font-size: 4rem;
+  font-size: 4rem;
   font-weight: 400;
   margin-bottom: 0;
 }
@@ -77,7 +79,7 @@ body a:hover {
   border: none !important;
 }
 .footer-text {
-  font-size: 1.6rem;
+  font-size: 2rem;
   font-weight: 500;
 }
 .btn:focus {
@@ -91,15 +93,15 @@ body a:hover {
   background-color: #000;
 }
 .text-preview {
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 500;
 }
 .text-bold {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 700;
 }
 .text-small {
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 300;
 }
 .cover-image {

@@ -18,7 +18,7 @@ export default {
   margin-bottom: 2rem;
   display: inline-block;
   font-style: italic;
-  font-size: 24px;
+  font-size: 2.4rem;
 }
 .block-quotation:before {
   content: "« "
@@ -36,7 +36,7 @@ export default {
   .block-quotation {
     width: 130%;
     margin: 0 -15% 2rem -15%;
-    font-size: 30px;
+    font-size: 3rem;
     padding: 0;
   }
   .block-citation {

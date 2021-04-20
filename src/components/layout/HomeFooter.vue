@@ -30,7 +30,7 @@ export default {
 
 /* FOOTER GENERAL STYLE */
 .footer-container {
-  font-size: 14px;
+  font-size: 1.4rem;
   padding: 90px 24px 24px;
   color: #ffffff;
 }

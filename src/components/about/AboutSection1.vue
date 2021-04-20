@@ -37,6 +37,7 @@ export default {
 </script>
 
 <style scoped>
+/* General style */
 .link-panel--container {
   width: 100%;
   padding: 30px 0;
@@ -56,7 +57,13 @@ h1 {
   margin: 0 auto;
 }
 
-@media only screen and (max-width: 475px) {
+/* Link panel responsive design */
+@media only screen and (max-width: 768px) {
+  .link-panel--content {
+    width: 70%;
+  }
+}
+@media only screen and (max-width: 600px) {
   .link-panel--content {
     width: 100%;
   }

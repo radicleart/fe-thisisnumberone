@@ -371,7 +371,7 @@ export default {
 }
 .drop-label {
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   margin-bottom: 0;
 }
 select {

@@ -1,5 +1,5 @@
 <template>
-<div id="number-one-container" class="" :style="'background-image: url(' + getPixelBackground + ')'">
+<div id="number-one-container" class="">
   <div class="row w-100">
     <div class="col-6 d-flex flex-column justify-content-center align-items-center">
       <div class="d-flex justify-content-center">

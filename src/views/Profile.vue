@@ -36,7 +36,7 @@ export default {
 }
 #homeSection h2 {
   margin-bottom: 10px;
-  font-size: 3.4rem;
+  font-size: 4.4rem;
 }
 #homeSection h3 {
   margin-bottom: 50px;

@@ -96,7 +96,7 @@ img {
   display: block;
   text-align: center;
   font-style: italic;
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #949494;
 }
 /* Media Queries */

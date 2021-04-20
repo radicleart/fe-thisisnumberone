@@ -1,16 +1,12 @@
 <template>
-<section v-if="content" :class="'theme-' + content.uid" class="container-fluid p-5 hundred-vh">
+<section v-if="content" :class="'theme-' + content.uid" class="container-fluid p-5">
+  <div class="spaced-name">{{content.data.description[0].text}}</div>
   <b-container>
-    <b-row>
-      <b-col cols="12" class="text-right">
-        <p class="spaced-name">{{content.data.description[0].text}}</p>
-      </b-col>
-    </b-row>
-    <b-row class="">
-      <b-col cols="6" class="pr-5">
+    <b-row style="margin-bottom: 100px">
+      <b-col cols="12" lg="6" class="pr-lg-5 mb-lg-0 mb-5">
         <img style="width: 100%;" :src="content.data.image.url"/>
       </b-col>
-      <b-col cols="6" align-self="end" class="text-left pl-5">
+      <b-col cols="12" lg="6" align-self="end" class="text-left pl-lg-5">
         <h1 class="text-white">{{content.data.description[1].text}}</h1>
         <div class="artist-section--text">{{content.data.description[2].text}}</div>
         <social-links class="mt-4" :themeClass="'theme-' + content.uid" :socialLinks="content.data['social_links']" />
@@ -56,21 +52,26 @@ export default {
 </script>
 
 <style scoped>
+/* General style */
+section {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  min-height: 100vh;
+}
 .theme-chemicalx {
   background-color: #C92E11;
   color: #fff;
 }
 .spaced-name {
-  position: relative;
-  right: -180px;
-  top: -90px;
+  margin: -3rem -3rem 8rem auto;
+  line-height: 0.6;
+  max-width: 952px;
+  white-space: nowrap;
   text-align: right;
   font-family: 'Bungee Hairline';
-  font-size: 6rem;
-  font-weight: normal;
-  letter-spacing: 10px;
+  font-size: 15rem;
   color: #FFFFFF;
-  opacity: 1;
   text-transform: uppercase;
 }
 h1 {
@@ -79,5 +80,32 @@ h1 {
 }
 .artist-section--text {
   font-size: 1.4rem;
+}
+
+/* Spaced name responsive design */
+@media only screen and (max-width: 1023px) {
+  .spaced-name {
+    font-size: 10rem;
+  }
+}
+@media only screen and (max-width: 787px) {
+  .spaced-name {
+    font-size: 8rem;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .spaced-name {
+    font-size: 6rem;
+  }
+}
+@media only screen and (max-width: 475px) {
+  .spaced-name {
+    font-size: 5rem;
+  }
+}
+@media only screen and (max-width: 350px) {
+  .spaced-name {
+    font-size: 4rem;
+  }
 }
 </style>

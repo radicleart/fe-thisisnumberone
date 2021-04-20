@@ -54,8 +54,4 @@ export default {
 #deep-logos li {
   cursor: pointer;
 }
-.about-section {
-  padding: 20px 100px;
-  margin: 0px 0px;
-}
 </style>

@@ -26,7 +26,7 @@
   padding: 5px 15px;
   margin: 8px;
   text-transform: capitalize;
-  font-size: 12px;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 #rpay-pay-card .co-option-off {
@@ -36,7 +36,7 @@
   padding: 5px 15px;
   margin: 8px;
   text-transform: capitalize;
-  font-size: 12px;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
@@ -45,7 +45,7 @@
   padding: 5px 15px;
   margin: 8px;
   text-transform: capitalize;
-  font-size: 12px;
+  font-size: 1.2rem;
   font-weight: 700;
   min-width: 70%;
   border-radius: 18px;
@@ -63,7 +63,7 @@
   padding: 5px 15px;
   margin: 8px;
   text-transform: capitalize;
-  font-size: 12px;
+  font-size: 1.2rem;
   font-weight: 700;
   min-width: 70%;
   border-radius: 18px;
@@ -95,10 +95,10 @@
   box-shadow: none !important;
 }
 #rpay-pay-card .text-small {
-  font-size: 10px;
+  font-size: 1rem;
 }
 #rpay-pay-card a {
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: normal;
   color: #000000;
 }
@@ -114,11 +114,11 @@
 }
 #rpay-pay-card h1 {
   font-weight: 300;
-  font-size: 15px;
+  font-size: 1.5rem;
 }
 #rpay-pay-card .text-bold {
   font-weight: 700;
-  font-size: 12px;
+  font-size: 1.2rem;
 }
 #rpay-pay-card .text-300 {
   font-weight: 300;
@@ -148,7 +148,7 @@
 #rpay-pay-card .cp-btn-order {
   width: 100%;
   color: white;
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: 700;
   border-radius: 18px;
   height: 46px;
@@ -158,7 +158,7 @@
   top: 40px;
   width: 100%;
   color: white;
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: 700;
   border-radius: 18px;
   height: 46px;
@@ -168,10 +168,10 @@
   font-weight: 200;
 }
 #rpay-pay-card .rpay-text-secondary {
-  font-size: 12px;
+  font-size: 1.2rem;
 }
 #rpay-pay-card .text-h2 {
-  font-size: 24px;
+  font-size: 2.4rem;
   font-weight: 300;
 }
 #rpay-pay-card .rpay-sq-logo {
@@ -190,7 +190,7 @@
   position: relative;
   top: 0px;
   text-align: left;
-  font-size: 12px;
+  font-size: 1.2rem;
   font-weight: 200;
   letter-spacing: 0px;
   opacity: 1;

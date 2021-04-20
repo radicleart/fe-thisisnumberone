@@ -1,20 +1,13 @@
 <template>
-<section v-if="content" id="section1" :style="'min-height: 90vh; background-image: url(' + content.section5rtf1[0].url + ')'">
+<section v-if="content" id="about-section5" :style="'background-image: url(' + content.section5rtf1[0].url + ')'">
+  <div class="spaced-name">Environment</div>
   <b-container class="">
-    <b-row>
-      <b-col cols="12" class="text-right">
-        <p class="spaced-name">Environment</p>
-      </b-col>
-    </b-row>
-    <b-row style="height: 52vh" class="text-left">
+    <b-row style="margin-bottom: 100px" class="text-left">
       <b-col cols="12" align-self="end">
         <h1 class="mb-4 text-white">{{content.section5rtf1[1].text}}</h1>
-        <div class="text-white about-section5--text">{{content.section5rtf1[2].text}}</div>
-        <div class="mt-3">
-          <b-button-group class="text-white">
-            <b-button class="button-plus"><span class="text-info border" style="font-size: 1.2rem; color: #17a2b8; border: 1pt solid #17a2b8; padding: 6px">+</span></b-button>
-            <b-button class="button-info">Find out more</b-button>
-          </b-button-group>
+        <div class="text-white mb-5 about-section5--text">{{content.section5rtf1[2].text}}</div>
+        <div>
+          <square-button class="button-style" :label1="'Find out more'" :icon="'plus-square'" :route="'/home'"/>
         </div>
       </b-col>
     </b-row>
@@ -23,9 +16,13 @@
 </template>
 
 <script>
+import SquareButton from '@/components/utils/SquareButton'
 export default {
   name: 'AboutSection5',
   props: ['content'],
+  components: {
+    SquareButton
+  },
   data () {
     return {
     }
@@ -35,30 +32,72 @@ export default {
 }
 </script>
 
-<style scoped>
-.link-panel {
-  background-color: #fff !important;
-  border: 1pt solid #000;
+<style>
+/* General style */
+#about-section5 {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  min-height: 100vh;
 }
-.spaced-name {
-  position: relative;
-  right: -80px;
-  top: -40px;
+#about-section5 .spaced-name {
+  margin: 0 0 8rem auto;
+  line-height: 0.6;
+  max-width: 1050px;
+  white-space: nowrap;
   text-align: right;
   font-family: 'Bungee Hairline';
-  font-size: 6rem;
-  font-weight: normal;
-  letter-spacing: 10px;
-  color: #fff;
-  opacity: 1;
+  font-size: 13.5rem;
+  color: #FFFFFF;
   text-transform: uppercase;
 }
-h1 {
+#about-section5 h1 {
   font-size: 3rem;
 }
-.about-section5--text {
+#about-section5 .about-section5--text {
   font-size: 1.4rem;
   text-shadow: 0px 3px 6px #00000029;
   max-width: 500px;
+}
+
+/* Button style */
+#about-section5 .button-style button, .button-style button:hover {
+  border-color: #FFFFFF;
+}
+#about-section5 .button-style svg {
+  margin-bottom: 6px;
+  color: #129A9A;
+}
+
+/* Spaced name responsive design */
+@media only screen and (max-width: 1100px) {
+  #about-section5 .spaced-name {
+    font-size: 10rem;
+  }
+}
+@media only screen and (max-width: 900px) {
+  #about-section5 .spaced-name {
+    font-size: 7rem;
+  }
+}
+@media only screen and (max-width: 650px) {
+  #about-section5 .spaced-name {
+    font-size: 6rem;
+  }
+}
+@media only screen and (max-width: 530px) {
+  #about-section5 .spaced-name {
+    font-size: 4.5rem;
+  }
+}
+@media only screen and (max-width: 376px) {
+  #about-section5 .spaced-name {
+    font-size: 4rem;
+  }
+}
+@media only screen and (max-width: 350px) {
+  #about-section5 .spaced-name {
+    font-size: 3.5rem;
+  }
 }
 </style>

@@ -55,7 +55,6 @@ export default {
 </script>
 
 <style>
-  @import '../../assets/scss/video-js.css';
   .video-js {
     position: relative !important;
     width: 100% !important;

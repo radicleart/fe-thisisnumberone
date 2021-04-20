@@ -1,6 +1,6 @@
 <template>
   <b-button-group class="text-white">
-    <b-button class="btn-square"><span class=""><b-icon :icon="icon"/></span></b-button>
+    <b-button class="btn-square"><b-icon :icon="icon"/></b-button>
     <b-button class="text-white btn-rectangle"><b-link router-tag="span" :to="route">{{label1}}</b-link></b-button>
   </b-button-group>
 </template>
@@ -29,11 +29,14 @@ export default {
   background: transparent;
 }
 .btn-square {
-  width: 100px;
+  width: 61px;
   height: 61px;
+  font-size: 2rem;
 }
 .btn-rectangle {
-  width: 200px;
+  width: 170px;
   height: 61px;
+  font-size: 1.5rem;
+  text-transform: uppercase;
 }
 </style>
