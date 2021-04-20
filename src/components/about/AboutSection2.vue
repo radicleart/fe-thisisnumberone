@@ -7,7 +7,7 @@
       </b-col>
       <b-col cols-lg="6" cols-md="6" cols-sm="12" align-self="start">
         <h1 class="mb-4">{{content.section2rtf1[0].text}}</h1>
-        <div class="text-center">{{content.section2rtf1[1].text}}</div>
+        <div class="section2-text">{{content.section2rtf1[1].text}}</div>
       </b-col>
     </b-row>
   </b-container>
@@ -32,4 +32,13 @@ export default {
 </script>
 
 <style lang="scss">
+h1 {
+  color: #333333 !important;
+}
+.section2-text {
+  max-width: 700px;
+  color: #888888;
+  font-size: 1.5rem;
+  margin: 0 auto;
+}
 </style>

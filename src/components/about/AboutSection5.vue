@@ -7,9 +7,9 @@
       </b-col>
     </b-row>
     <b-row style="height: 52vh" class="text-left">
-      <b-col cols="8" offset="1" cols-sm="6" align-self="end">
+      <b-col cols="12" align-self="end">
         <h1 class="mb-4 text-white">{{content.section5rtf1[1].text}}</h1>
-        <div class="text-white">{{content.section5rtf1[2].text}}</div>
+        <div class="text-white about-section5--text">{{content.section5rtf1[2].text}}</div>
         <div class="mt-3">
           <b-button-group class="text-white">
             <b-button class="button-plus"><span class="text-info border" style="font-size: 1.2rem; color: #17a2b8; border: 1pt solid #17a2b8; padding: 6px">+</span></b-button>
@@ -52,5 +52,13 @@ export default {
   color: #fff;
   opacity: 1;
   text-transform: uppercase;
+}
+h1 {
+  font-size: 3rem;
+}
+.about-section5--text {
+  font-size: 1.4rem;
+  text-shadow: 0px 3px 6px #00000029;
+  max-width: 500px;
 }
 </style>

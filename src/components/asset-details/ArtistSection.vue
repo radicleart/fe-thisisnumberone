@@ -6,13 +6,13 @@
         <p class="spaced-name">{{content.data.description[0].text}}</p>
       </b-col>
     </b-row>
-    <b-row style="text-align: center; height: 50vh" class="text-center">
-      <b-col cols="6">
+    <b-row class="">
+      <b-col cols="6" class="pr-5">
         <img style="width: 100%;" :src="content.data.image.url"/>
       </b-col>
-      <b-col cols="6" align-self="center" class="text-left">
-        <h1>{{content.data.description[1].text}}</h1>
-        <div>{{content.data.description[2].text}}</div>
+      <b-col cols="6" align-self="end" class="text-left pl-5">
+        <h1 class="text-white">{{content.data.description[1].text}}</h1>
+        <div class="artist-section--text">{{content.data.description[2].text}}</div>
         <social-links class="mt-4" :themeClass="'theme-' + content.uid" :socialLinks="content.data['social_links']" />
       </b-col>
     </b-row>
@@ -72,5 +72,12 @@ export default {
   color: #FFFFFF;
   opacity: 1;
   text-transform: uppercase;
+}
+h1 {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+.artist-section--text {
+  font-size: 1.4rem;
 }
 </style>
