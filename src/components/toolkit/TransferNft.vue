@@ -72,7 +72,7 @@ export default {
     },
     trackingUrl () {
       if (!this.result || !this.result.txId) return
-      return this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.result.mintTxId)
+      return this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.result.txId)
     }
   }
 }

@@ -3,15 +3,15 @@
   <b-container>
     <b-row>
       <div id="video-column" class="col-md-6 col-sm-12">
-        <video :poster="poster()" controls style="width: 100%;">
-          <source :src="gaiaAsset.nftMedia.artworkFile.fileUrl" :type="gaiaAsset.nftMedia.artworkFile.type">
-        </video>
+        <div class="mx-5" :style="dimensions">
+          <media-item class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="gaiaAsset.nftMedia" :targetItem="targetItem()"/>
+        </div>
       </div>
       <div class="col-md-6 col-sm-12">
         <b-row align-v="stretch" :style="'height:' + videoHeight + 'px;'">
-          <b-col cols="12"><router-link to="/"><b-icon icon="chevron-left" shift-h="-4" variant="danger"></b-icon> Back</router-link></b-col>
-          <b-col cols="12" align-self="end">
-            <h1>Artist {{getArtist()}}</h1>
+          <b-col cols="12"><router-link to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="danger"></b-icon> Back</router-link></b-col>
+          <b-col cols="12" align-self="center">
+            <h4>{{gaiaAsset.artist}}</h4>
             <h2>{{gaiaAsset.name}}</h2>
             <p>{{owner}}</p>
             <p class="border-top text-small">{{gaiaAsset.description}}</p>
@@ -28,7 +28,7 @@
       </div>
     </b-row>
   </b-container>
-  <asset-updates-modal :assetHash="assetHash" @registerForUpdates="registerForUpdates"/>
+  <asset-updates-modal :assetHash="gaiaAsset.assetHash" @registerForUpdates="registerForUpdates"/>
   <b-modal size="lg" id="asset-offer-modal">
     <risidio-pay v-if="showRpay" :configuration="configuration"/>
     <template #modal-header>
@@ -53,6 +53,7 @@ import Vue from 'vue'
 import AssetUpdatesModal from './AssetUpdatesModal'
 import RisidioPay from 'risidio-pay'
 import { APP_CONSTANTS } from '@/app-constants'
+import MediaItem from '@/components/utils/MediaItem'
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
@@ -60,7 +61,8 @@ export default {
   name: 'AssetDetailsSection',
   components: {
     AssetUpdatesModal,
-    RisidioPay
+    RisidioPay,
+    MediaItem
   },
   props: ['gaiaAsset'],
   data: function () {
@@ -104,6 +106,13 @@ export default {
     }, this)
   },
   methods: {
+    targetItem: function () {
+      return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.gaiaAsset)
+    },
+    dimensions () {
+      const dims = { width: '100%', height: '100%' }
+      return 'max-width: ' + dims.height + '; max-height: ' + dims.height + ';'
+    },
     purchaseButtonText () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       if (!contractAsset || !contractAsset.saleData || contractAsset.saleData.saleType === 0) {
@@ -163,6 +172,22 @@ export default {
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
       return configuration
+    },
+    videoOptions () {
+      const videoOptions = {
+        assetHash: this.assetHash,
+        autoplay: true,
+        controls: true,
+        showMeta: false,
+        dimensions: 'max-width: 100%; max-height: auto;',
+        aspectRatio: '1:1',
+        poster: (this.gaiaAsset.nftMedia.coverImage) ? this.gaiaAsset.nftMedia.coverImage.fileUrl : null,
+        sources: [
+          { src: this.gaiaAsset.nftMedia.artworkFile.fileUrl, type: this.gaiaAsset.nftMedia.artworkFile.type }
+        ],
+        fluid: true
+      }
+      return videoOptions
     },
     owner () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)

@@ -1,6 +1,6 @@
 <template>
 <splash v-if="loading"/>
-<div id="app" v-else :style="'min-height: 100vh; background-size: cover; background-image: url(' + getPixelBackground + ')'">
+<div id="app" v-else :style="'min-height: 100vh; background-size: contain; background-image: url(' + getPixelBackground + ')'">
   <div v-if="!configured">
     <risidio-pay :configuration="configuration"/>
   </div>
@@ -52,13 +52,12 @@ export default {
           })
         } else if (data.opcode === 'stx-transaction-mint') {
           const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
-          item.mintTxId = data.txId
+          item.stacksTransactions.splice(0, 0, { txId: data.txId, type: 'mint-token' })
           // commit it straight away to avoid double clicks on the minting button
           $self.$store.commit('myItemStore/setMintTxId', item)
           $self.$store.dispatch('myItemStore/saveItem', item)
         } else if (data.opcode === 'stx-transaction-mint-error') {
           const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
-          item.mintTxId = null
           // commit it straight away to avoid double clicks on the minting button
           $self.$store.commit('myItemStore/setMintTxId', item)
           $self.$store.dispatch('myItemStore/saveItem', item)
