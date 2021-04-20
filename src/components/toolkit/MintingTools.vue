@@ -3,7 +3,7 @@
   <div class="text-white">
     <div class="w-100 text-small">
       <div v-if="contractAsset">
-        <div>Minting - <a :href="trackingUrl()" target="_blank">track progress here...</a></div>
+        <div v-if="minting()">Minting - <a :href="transactionUrl()" target="_blank">track progress here...</a></div>
         <b-alert show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</b-alert>
       </div>
       <b-alert v-else-if="isValid" show variant="danger">
@@ -107,7 +107,8 @@ export default {
       showRpay: false,
       mintResult: null,
       trackingMessage: 'Blockchain called - answer will be back shortly. You can <a href="____" target="_blank">track the transaction here</a> and the data on this page should refresh automatically.',
-      mintTitle: ''
+      mintTitle: '',
+      mintTxId: null
     }
   },
   mounted () {
@@ -119,6 +120,7 @@ export default {
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: item })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
+        if (data && data.txId) $self.mintTxId = data.txId
         if (data.opcode === 'save-selling-data') {
           $self.$bvModal.hide('rpay-modal')
         } else if (data.opcode === 'stx-mint-success' || data.opcode === 'eth-mint-success') {
@@ -142,12 +144,12 @@ export default {
         } else if (data.opcode === 'stx-transaction-sent') {
           $self.showRpay = false
           $self.$bvModal.hide('rpay-modal')
-          $self.mintResult = $self.trackingMessage.replace('____', $self.transactionUrl(data.txId))
+          $self.mintResult = $self.trackingMessage.replace('____', $self.transactionUrl())
           $self.$bvModal.show('result-modal')
         } else if (data.opcode === 'stx-transaction-finished') {
           $self.showRpay = false
           $self.$bvModal.hide('rpay-modal')
-          $self.mintResult = $self.trackingMessage.replace('____', $self.transactionUrl(data.txId))
+          $self.mintResult = $self.trackingMessage.replace('____', $self.transactionUrl())
           $self.$bvModal.show('result-modal')
         } else if (data.opcode === 'cancel-minting') {
           $self.showRpay = false
@@ -165,12 +167,8 @@ export default {
       this.showRpay = true
       this.$bvModal.show('rpay-modal')
     },
-    trackingUrl: function () {
-      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-      if (item.stacksTransactions && item.stacksTransactions.length > 0) {
-        return this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](item.stacksTransactions[0].txId)
-      }
-      return ''
+    minting: function () {
+      return this.mintTxId
     },
     mintToken: function () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
@@ -197,8 +195,8 @@ export default {
     offerMade: function (madeData) {
       return moment(madeData).format('DD-MM hh:mm')
     },
-    transactionUrl: function (txId) {
-      return 'https://explorer.stacks.co/txid/' + txId + '?chain=' + NETWORK
+    transactionUrl: function () {
+      return 'https://explorer.stacks.co/txid/' + this.mintTxId + '?chain=' + NETWORK
     },
     minted: function () {
       return this.item.nftIndex > -1

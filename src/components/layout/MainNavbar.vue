@@ -19,7 +19,7 @@
           </div>
         </b-navbar-brand>
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/about">About</router-link></b-nav-item>
-        <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/gallery"><img :src="hollowWhiteOne"/></router-link></b-nav-item>
+        <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/number-one"><img :src="hollowWhiteOne"/></router-link></b-nav-item>
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/news">News</router-link></b-nav-item>
       </b-navbar-nav>
 

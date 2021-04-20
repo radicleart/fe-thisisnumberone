@@ -33,13 +33,13 @@ export const APP_CONSTANTS = {
   KEY_ASSET_FROM_CONTRACT_BY_HASH: 'rpayStacksContractStore/getAssetFromContractByHash',
   KEY_ASSETS_BY_CONTRACT_ID: 'rpayStacksContractStore/getAssetsByContractId',
   KEY_ASSETS_BY_CONTRACT_ID_AND_OWNER: 'rpayStacksContractStore/getAssetsByContractIdAndOwner',
+  KEY_ASSET_TRANSACTIONS: 'rpayStacksContractStore/getAssetTransactions',
+  KEY_ASSET_LAST_TRANSACTION: 'rpayStacksContractStore/getAssetLastTransaction',
+  KEY_ASSET_TRANSACTION: 'rpayStacksContractStore/getAssetTransaction',
 
   SET_CURRENT_SEARCH: 'rpaySearchStore/setCurrentSearch',
   KEY_CURRENT_SEARCH: 'rpaySearchStore/getCurrentSearch',
   KEY_ASSET: 'rpaySearchStore/getAsset',
-  KEY_ASSET_LAST_TRANSACTION: 'rpaySearchStore/getAssetLastTransaction',
-  KEY_ASSET_TRANSACTION: 'rpaySearchStore/getAssetTransaction',
-  KEY_ASSET_TRANSACTIONS: 'rpaySearchStore/getAssetTransactions',
   KEY_SEARCH_RESULTS: 'rpaySearchStore/getSearchResults'
 
 }
