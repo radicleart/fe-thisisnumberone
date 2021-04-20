@@ -14,6 +14,9 @@ import ArtistSection from '@/components/asset-details/ArtistSection'
 import CharitySection from '@/components/asset-details/CharitySection'
 import { APP_CONSTANTS } from '@/app-constants'
 
+const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
+const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
+
 export default {
   name: 'AssetDetails',
   components: {
@@ -27,23 +30,11 @@ export default {
   },
   mounted () {
     this.assetHash = this.$route.params.assetHash
-    this.findAssets()
+    this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME)
   },
   methods: {
     getArtistPrismicId (artist) {
       return artist.toLowerCase().replace(/ /g, '')
-    },
-    findAssets () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      let searchKey = 'rpaySearchStore/findBySearchTerm'
-      let arg = Object.assign({}, this.$route.query)
-      if (configuration.risidioProjectId) {
-        searchKey = 'rpaySearchStore/findByProjectId'
-        arg = configuration.risidioProjectId
-      }
-      this.$store.dispatch(searchKey, arg).then((results) => {
-        this.results = results
-      })
     }
   },
   computed: {

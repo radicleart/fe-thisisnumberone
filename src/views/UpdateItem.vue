@@ -1,5 +1,5 @@
 <template>
-<div id="update-item" class="text-white" v-if="loaded && myAsset">
+<div id="update-item" class="text-white" v-if="loaded && myAsset" style="min-height: 85vh;">
   <div class="container" :key="componentKey">
     <div class="row mt-4">
       <div class="col-12">
@@ -99,6 +99,7 @@ export default {
     videoOptions () {
       const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       const videoOptions = {
+        showMeta: true,
         assetHash: this.assetHash,
         autoplay: false,
         controls: true,

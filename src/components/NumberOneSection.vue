@@ -1,5 +1,5 @@
 <template>
-<div id="number-one-container" class="" :style="'background-image: url(' + background + ')'">
+<div id="number-one-container" class="" :style="'background-image: url(' + getPixelBackground + ')'">
   <div class="row w-100">
     <div class="col-6 d-flex flex-column justify-content-center align-items-center">
       <div class="d-flex justify-content-center">
@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'NumberOneSection',
@@ -59,7 +60,6 @@ export default {
   },
   data () {
     return {
-      background: require('@/assets/img/main-navbar-bg.svg'),
       logo: require('@/assets/img/logo-rainbow.svg'),
       artist: 0
     }
@@ -67,6 +67,9 @@ export default {
   methods: {
   },
   computed: {
+    getPixelBackground () {
+      return this.$store.getters[APP_CONSTANTS.KEY_PIXEL_BACKGROUND]
+    },
     content () {
       const content = this.$store.getters['contentStore/getHomepage']
       return content

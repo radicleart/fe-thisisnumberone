@@ -6,6 +6,7 @@ import HomeFooter from '@/components/layout/HomeFooter.vue'
 import MainFooter from '@/components/layout/MainFooter.vue'
 import Login from '../views/Login.vue'
 // import Profile from '../views/Profile.vue'
+import Splash from '../views/Splash.vue'
 import Home from '../views/Home.vue'
 import AssetDetails from '../views/AssetDetails.vue'
 import Admin from '../views/Admin.vue'
@@ -43,6 +44,11 @@ const isPermitted = function (to, profile) {
 const routes: Array<RouteConfig> = [
   {
     path: '/',
+    name: 'splash',
+    components: { default: Splash }
+  },
+  {
+    path: '/home',
     name: 'home',
     components: { default: Home, header: MainNavbar, footer: HomeFooter }
   },
@@ -72,7 +78,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/login',
     name: 'login',
-    components: { default: Login, header: AdminNavbar }
+    components: { default: Login, header: AdminNavbar, footer: HomeFooter }
   },
   {
     path: '/profile',

@@ -16,6 +16,8 @@ export const APP_CONSTANTS = {
   KEY_CONTENT_ARTIST_BY_ID: 'contentStore/getArtistById',
   KEY_CONTENT_ARTISTS: 'contentStore/getArtists',
   KEY_CONTENT_CHARITIES: 'contentStore/getCharities',
+  KEY_BREAK_LINE: 'contentStore/getBreakLine',
+  KEY_PIXEL_BACKGROUND: 'contentStore/getPixelBackground',
 
   KEY_PROFILE: 'rpayAuthStore/getMyProfile',
   KEY_GAIA_STORAGE: 'rpayAuthStore/getMyProfile',

@@ -15,7 +15,6 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import utils from '@/services/utils'
 
 export default {
   name: 'Beneficiaries',
@@ -29,19 +28,15 @@ export default {
     }
   },
   methods: {
-    fromMicroAmount: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      return utils.fromMicroAmount(contractAsset.saleData.reservePrice)
-    },
     getAddress: function (address) {
       if (!address) return
-      return utils.convertAddress(address.valueHex)
+      return (address.valueHex)
     },
     getShare: function (index) {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
       const share = contractAsset.beneficiaries.shares[index]
       if (!share) return
-      return utils.fromMicroAmount(share.value)
+      return (share.value)
     }
   },
   computed: {

@@ -1,7 +1,7 @@
 <template>
-<div :style="dimensions()" class="">
-  <div><router-link style="padding: 3px; position: relative; top: 50px; right: 2px; z-index: 100; width: 40px; height: 40px;" :to="assetUrl"><b-icon style="width: 40px; height: 40px;" icon="arrow-right-circle"/></router-link></div>
-  <media-item :videoOptions="videoOptions" :hideMeta="true" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
+<div @mouseover="showMe()" @mouseout="hideMe()" :style="dimensions" class="text-right">
+  <router-link :style="'opacity: ' + opacity + ';'" style="padding: 3px; position: absolute; top: 5px; right: 25px; z-index: 100; width: 40px; height: 40px;" :to="assetUrl()"><b-icon style="width: 40px; height: 40px;" icon="arrow-right-circle"/></router-link>
+  <media-item @openAssetDetails="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
 </div>
 </template>
 
@@ -15,11 +15,11 @@ export default {
   components: {
     MediaItem
   },
-  props: ['result'],
+  props: ['result', 'dims'],
   data () {
     return {
       height: 300,
-      dims: { width: '100%', height: '100%' },
+      opacity: 0,
       likeIconTurquoise: require('@/assets/img/Favorite_button_turquoise_empty.png'),
       likeIconPurple: require('@/assets/img/Favorite_button_purple_empty.png')
     }
@@ -35,19 +35,37 @@ export default {
     }, this)
   },
   methods: {
+    showMe: function () {
+      this.opacity = 0
+    },
+    hideMe: function () {
+      this.opacity = 0
+    },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.result)
     },
-    dimensions () {
-      return 'width: ' + this.dims.width + '; height: ' + this.dims.width + ';'
+    openAssetDetails: function () {
+      this.$router.push(this.assetUrl())
+    },
+    assetUrl () {
+      let assetUrl = '/assets/' + this.result.assetHash
+      if (this.$route.name === 'my-items') {
+        assetUrl = '/my-items/' + this.result.assetHash
+      }
+      return assetUrl
     }
   },
   computed: {
+    dimensions () {
+      return 'max-width: ' + this.dims.height + '; max-height: ' + this.dims.height + ';'
+    },
     videoOptions () {
       const videoOptions = {
         assetHash: this.result.assetHash,
         autoplay: false,
         controls: true,
+        showMeta: false,
+        dimensions: 'max-width: 100%; max-height: auto;',
         aspectRatio: '1:1',
         poster: (this.result.nftMedia.coverImage) ? this.result.nftMedia.coverImage.fileUrl : null,
         sources: [
@@ -56,13 +74,6 @@ export default {
         fluid: true
       }
       return videoOptions
-    },
-    assetUrl () {
-      let assetUrl = '/assets/' + this.result.assetHash
-      if (this.$route.name === 'my-items') {
-        assetUrl = '/my-items/' + this.result.assetHash
-      }
-      return assetUrl
     }
   }
 }

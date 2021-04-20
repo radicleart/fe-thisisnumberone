@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click.prevent="clickedMe()" @mouseover="playMe()" @mouseout="pauseMe()" :style="options.dimensions">
     <video :poster="poster()" ref="videoPlayer" class="border video-js vjs-theme-city vjs-big-play-centered"></video>
   </div>
 </template>
@@ -27,6 +27,7 @@ export default {
     this.player = videojs(this.$refs.videoPlayer, this.options, function onPlayerReady () {
       console.log('onPlayerReady', this)
     })
+    this.player.controls(false)
   },
   beforeDestroy () {
     if (this.player) {
@@ -34,6 +35,16 @@ export default {
     }
   },
   methods: {
+    playMe: function () {
+      this.player.play()
+    },
+    pauseMe: function () {
+      this.player.pause()
+    },
+    clickedMe: function () {
+      this.player.pause()
+      this.$emit('openAssetDetails')
+    },
     poster: function () {
       if (this.options.imageUrl) {
         return this.options.imageUrl
@@ -45,4 +56,12 @@ export default {
 
 <style>
   @import '../../assets/scss/video-js.css';
+  .video-js {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+}
+.vjs-default-skin.vjs-paused .vjs-big-play-button {
+  display: none;
+}
 </style>

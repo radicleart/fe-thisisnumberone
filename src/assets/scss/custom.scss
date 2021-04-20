@@ -5,7 +5,7 @@
 
 html {
   /* 1rem = 10px */
-  font-size: 62.5%;
+  font-size: 80.0%;
 }
 body {
   /* default font-size set back to 16px */
@@ -21,8 +21,7 @@ body {
 }
 
 body h1 {
-  color:#ffffff;
-  font-size: 4rem;
+    font-size: 4rem;
   font-weight: 400;
   margin-bottom: 0;
 }
@@ -33,18 +32,15 @@ body h2 {
   margin-bottom: 15px;
 }
 body h3 {
-  color:#ffffff;
   font-size: 3rem;
   font-weight: 400;
 }
 body p {
-  color:#ffffff;
   text-align: left;
   font-size: 1.4rem;
   font-weight: 400;
 }
 body a {
-  color: #ffffff;
   font-size: 1.4rem;
 }
 body a:hover {
@@ -132,26 +128,4 @@ body a:hover {
 }
 .hundred-vh {
   min-height: 100vh !important;
-}
-.button-plus {
-  background: transparent;
-  width: 100px;
-  height: 61px;
-  border: 1px solid #FFFFFF;
-  opacity: 1;
-}
-.button-plus:hover {
-  background: transparent;
-  opacity: 0.7;
-}
-.button-info {
-  background: transparent;
-  width: 200px;
-  height: 61px;
-  border: 1px solid #FFFFFF;
-  opacity: 1;
-}
-.button-info:hover {
-  background: transparent;
-  opacity: 0.7;
 }

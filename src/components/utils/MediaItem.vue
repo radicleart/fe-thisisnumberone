@@ -1,8 +1,17 @@
 <template>
 <div>
-  <div id="video-demo-container" v-if="isVideo(mediaItem())">
-    <video-player :options="videoOptions" :style="dimensions()"/>
-    <div class="d-flex justify-content-between" v-if="!hideMeta">
+  <div :style="videoOptions.dimensions" id="video-demo-container" v-if="isThreed(mediaItem())">
+    <video-player v-on="$listeners" :style="videoOptions.dimensions" :options="videoOptions"/>
+    <div :style="videoOptions.dimensions" class="d-flex justify-content-between" v-if="videoOptions.showMeta">
+      <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
+      <div @click="deleteMediaItem()" v-if="!contractAsset && (mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></div>
+    </div>
+    <!-- <video id="video1" controls style="max-height: 250px;" @loadedmetadata="cover"> -->
+  </div>
+
+  <div :style="videoOptions.dimensions" id="video-demo-container" v-if="isVideo(mediaItem())">
+    <video-player v-on="$listeners" :style="videoOptions.dimensions" :options="videoOptions"/>
+    <div class="d-flex justify-content-between" v-if="videoOptions.showMeta">
       <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
       <div @click="deleteMediaItem()" v-if="!contractAsset && (mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></div>
     </div>
@@ -10,7 +19,7 @@
   </div>
 
   <div id="audio-demo-container" v-else-if="isAudio(mediaItem())">
-    <audio controls :src="mediaItem().fileUrl" :style="dimensions()">
+    <audio v-on="$listeners" controls :src="mediaItem().fileUrl" :style="dimensions()">
       Your browser does not support the <code>audio</code> element.
     </audio>
     <div class="d-flex justify-content-between">
@@ -20,12 +29,12 @@
  </div>
 
   <div v-if="ispdf(mediaItem())">
-    <img :src="missing" :alt="mediaItem().name" :title="mediaItem().name" :style="dimensions()">
+    <img v-on="$listeners" :src="missing" :alt="mediaItem().name" :title="mediaItem().name" :style="dimensions()">
     <div @click="deleteMediaItem()" class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
   </div>
 
   <div v-else-if="isImage(mediaItem())">
-    <img :src="mediaItem().fileUrl" :alt="mediaItem().name" :style="dimensions()">
+    <img v-on="$listeners" :src="mediaItem().fileUrl" :alt="mediaItem().name" :style="dimensions()">
     <div class="d-flex justify-content-between">
       <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
       <div v-if="!contractAsset" @click="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></div>
@@ -45,7 +54,7 @@ export default {
     VideoPlayer
     // BFormFile
   },
-  props: ['videoOptions', 'targetItem', 'nftMedia', 'dims', 'hideMeta'],
+  props: ['videoOptions', 'targetItem', 'nftMedia', 'dims'],
   data () {
     return {
       mediaObjects: [],
@@ -90,6 +99,13 @@ export default {
     ispdf (file) {
       try {
         return file.type.indexOf('pdf') > -1
+      } catch (err) {
+        return false
+      }
+    },
+    isThreed (file) {
+      try {
+        return !file.type === 'threed' || file.type.length === 0 || file.type === 'threed' || file.type.indexOf('gltf') > -1 || file.type.indexOf('glb') > -1
       } catch (err) {
         return false
       }
@@ -145,4 +161,5 @@ export default {
 }
 </script>
 <style scoped>
+
 </style>

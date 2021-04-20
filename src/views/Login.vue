@@ -1,5 +1,5 @@
 <template>
-<section id="homeSection">
+<section id="homeSection" style="min-height: 85vh;">
   <div class="container text-center home-content">
     <div class="row">
       <div class="col-12 text-white">

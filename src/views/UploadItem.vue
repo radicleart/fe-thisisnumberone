@@ -1,5 +1,5 @@
 <template>
-<div id="upload-item" v-if="loaded">
+<div id="upload-item" v-if="loaded" style="min-height: 85vh;">
   <div class="container" :key="componentKey">
     <div class="row mt-4">
       <div class="col-12">
@@ -84,6 +84,7 @@ export default {
       const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       if (!myAsset) return
       const videoOptions = {
+        showMeta: true,
         assetHash: this.assetHash,
         autoplay: false,
         controls: true,

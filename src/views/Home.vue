@@ -1,16 +1,12 @@
 <template>
-<div v-if="resultSet" class="mt-5">
-  <section id="home-section" class="container text-center" v-if="!useSearchIndex">
+<b-row class="my-xs-4" style="min-height: 85vh">
+  <b-col cols="12" class="text-center p-0 m-0" align-self="center" v-if="resultSet" >
     <result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/>
-  </section>
-  <section id="home-section" class="p-0 container text-center" :style="getWidth()" v-else>
-    <rpay-result-grid class="text-center" :key="componentKey" :resultSet="resultSet"/>
-  </section>
-</div>
+  </b-col>
+</b-row>
 </template>
 
 <script>
-import RpayResultGrid from '@/components/marketplace/RpayResultGrid'
 import ResultGrid from '@/components/marketplace/ResultGrid'
 import { APP_CONSTANTS } from '@/app-constants'
 
@@ -20,14 +16,13 @@ const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 export default {
   name: 'Home',
   components: {
-    ResultGrid,
-    RpayResultGrid
+    ResultGrid
   },
   data () {
     return {
       componentKey: 0,
       loading: true,
-      useSearchIndex: true
+      useSearchIndex: false
     }
   },
   mounted () {
@@ -38,19 +33,11 @@ export default {
       this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {
         this.results = results
       })
-    },
-    getWidth () {
-      if (window.innerWidth < 1000) {
-        return 'width: 100%'
-      } else if (window.innerWidth < 1100) {
-        return 'width: 70%; height: 50vh;'
-      }
-      return 'width: 50%'
     }
   },
   computed: {
     resultSet () {
-      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_SEARCH_RESULTS]
       return resultSet
     },
     resultSetFromIndex () {

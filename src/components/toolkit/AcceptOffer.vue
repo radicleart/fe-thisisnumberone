@@ -24,7 +24,6 @@
 <script>
 import moment from 'moment'
 import { APP_CONSTANTS } from '@/app-constants'
-import utils from '@/services/utils'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
@@ -56,7 +55,7 @@ export default {
       })
     },
     offerAmount: function (amount) {
-      return utils.fromMicroAmount(amount)
+      return (amount)
     },
     offerMade: function (madeData) {
       return moment(madeData).format('DD-MM-YY hh:mm')

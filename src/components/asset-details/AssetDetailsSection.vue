@@ -1,5 +1,5 @@
 <template>
-<section v-if="gaiaAsset" class="container-fluid p-5 hundred-vh bg-black text-white">
+<section v-if="gaiaAsset" class="container-fluid p-5 hundred-vh text-white">
   <b-container>
     <b-row>
       <div id="video-column" class="col-md-6 col-sm-12">
@@ -83,7 +83,6 @@ export default {
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'purchase-flow', asset: this.gaiaAsset })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
-        $self.mintResult = data.message
         if (data.opcode === 'stx-transaction-finished') {
           $self.showRpay = false
           $self.$bvModal.hide('asset-offer-modal')
@@ -94,7 +93,6 @@ export default {
         } else {
           // $self.$bvModal.hide('minting-modal')
           // $self.showRpay = false
-          // $self.mintResult = data.message
           // $self.mintTitle = 'Not Minted'
           // $self.$bvModal.show('result-modal')
         }
@@ -168,7 +166,6 @@ export default {
     },
     owner () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      // const address = utils.convertAddress(contractAsset.owner) // 22 for mainnet
       return contractAsset.owner
     }
   }

@@ -64,6 +64,7 @@ export default {
       this.$store.dispatch('rpayAuthStore/startLogout').then(() => {
         // localStorage.clear()
         // sessionStorage.clear()
+        this.$router.push('/')
       })
     },
     username () {
@@ -71,7 +72,9 @@ export default {
       return profile.username
     },
     startLogin () {
-      this.$store.dispatch('rpayAuthStore/startLogin')
+      this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
+        console.log(profile)
+      })
     }
   },
   computed: {
