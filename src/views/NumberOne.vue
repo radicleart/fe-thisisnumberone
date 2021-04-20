@@ -6,7 +6,6 @@
 
 <script>
 import NumberOneSection from '@/components/NumberOneSection'
-import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: '#1',

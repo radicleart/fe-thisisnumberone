@@ -1,6 +1,5 @@
 <template>
-<div @mouseover="showMe()" @mouseout="hideMe()" :style="dimensions" class="text-right">
-  <router-link :style="'opacity: ' + opacity + ';'" style="padding: 3px; position: absolute; top: 5px; right: 25px; z-index: 100; width: 40px; height: 40px;" :to="assetUrl()"><b-icon style="width: 40px; height: 40px;" icon="arrow-right-circle"/></router-link>
+<div :style="dimensions" class="text-right">
   <media-item @openAssetDetails="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
 </div>
 </template>
@@ -35,12 +34,6 @@ export default {
     }, this)
   },
   methods: {
-    showMe: function () {
-      this.opacity = 0
-    },
-    hideMe: function () {
-      this.opacity = 0
-    },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.result)
     },

@@ -16,7 +16,7 @@ const assetGeneralStore = {
   actions: {
     registerForUpdates ({ commit }, data: any) {
       return new Promise(function (resolve, reject) {
-        axios.post(MESH_API_PATH + '/v2/register', data).then((result) => {
+        axios.post(MESH_API_PATH + '/v2/register/email', data).then((result) => {
           commit('addRegisteredEmail', data)
           resolve(result)
         }).catch((error) => {

@@ -37,6 +37,9 @@ export const APP_CONSTANTS = {
   SET_CURRENT_SEARCH: 'rpaySearchStore/setCurrentSearch',
   KEY_CURRENT_SEARCH: 'rpaySearchStore/getCurrentSearch',
   KEY_ASSET: 'rpaySearchStore/getAsset',
+  KEY_ASSET_LAST_TRANSACTION: 'rpaySearchStore/getAssetLastTransaction',
+  KEY_ASSET_TRANSACTION: 'rpaySearchStore/getAssetTransaction',
+  KEY_ASSET_TRANSACTIONS: 'rpaySearchStore/getAssetTransactions',
   KEY_SEARCH_RESULTS: 'rpaySearchStore/getSearchResults'
 
 }

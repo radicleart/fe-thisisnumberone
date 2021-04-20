@@ -77,34 +77,24 @@ const searchIndexService = {
 
   addRecord: function (asset: any) {
     return new Promise(function (resolve, reject) {
-      const indexable: any = {}
-      indexable.assetHash = asset.assetHash
-      indexable.objType = asset.objType
-      indexable.privacy = asset.privacy
-      indexable.projectId = asset.projectId
-      indexable.imageUrl = asset.imageUrl
-      indexable.assetProjectUrl = asset.assetProjectUrl
-      indexable.name = asset.name
-      indexable.owner = asset.owner
-      indexable.description = asset.description
-      indexable.artist = asset.owner
-      indexable.nftMedia = asset.nftMedia
-      indexable.domain = location.hostname
-      indexable.objType = 'artwork'
-      if (asset.objType) {
-        indexable.objType = asset.objType
+      if (!asset.objType) {
+        asset.objType = 'artwork'
       }
-      indexable.metaData = asset.metaData
       if (!asset.category) {
-        indexable.category = {
+        asset.category = {
           id: 'zero',
           name: 'artwork',
           level: 1
         }
-      } else {
-        indexable.category = asset.category
       }
-      axios.post(SEARCH_API_PATH + '/addRecord', indexable).then((result) => {
+      if (!asset.keywords) {
+        asset.keywords = [{
+          id: 'zero',
+          name: 'artwork',
+          level: 1
+        }]
+      }
+      axios.post(SEARCH_API_PATH + '/addRecord', asset).then((result) => {
         resolve(result)
       }).catch((error) => {
         reject(new Error('Unable index record: ' + error))

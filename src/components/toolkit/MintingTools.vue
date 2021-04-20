@@ -3,7 +3,7 @@
   <div class="text-white">
     <div class="w-100 text-small">
       <div v-if="contractAsset">
-        <div v-if="!item.mintTxId">Minting - <a :href="trackingUrl()" target="_blank">track progress here...</a></div>
+        <div>Minting - <a :href="trackingUrl()" target="_blank">track progress here...</a></div>
         <b-alert show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</b-alert>
       </div>
       <b-alert v-else-if="isValid" show variant="danger">
@@ -167,7 +167,10 @@ export default {
     },
     trackingUrl: function () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-      return this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](item.mintTxId)
+      if (item.stacksTransactions && item.stacksTransactions.length > 0) {
+        return this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](item.stacksTransactions[0].txId)
+      }
+      return ''
     },
     mintToken: function () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)

@@ -1,6 +1,6 @@
 <template>
   <div @click.prevent="clickedMe()" @mouseover="playMe()" @mouseout="pauseMe()" :style="options.dimensions">
-    <video :poster="poster()" ref="videoPlayer" class="border video-js vjs-theme-city vjs-big-play-centered"></video>
+    <video :poster="poster()" ref="videoPlayer" class="video-js vjs-theme-city vjs-big-play-centered"></video>
   </div>
 </template>
 
@@ -28,6 +28,9 @@ export default {
       console.log('onPlayerReady', this)
     })
     this.player.controls(false)
+    if (this.options.autoplay) {
+      this.player.play()
+    }
   },
   beforeDestroy () {
     if (this.player) {
