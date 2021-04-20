@@ -32,6 +32,14 @@ const contentStore = {
     getCharityById: state => id => {
       return state.content.charities.find((o) => o.uid === id)
     },
+    getPixelBackground: state => {
+      if (!state.content.homepage) return
+      return state.content.homepage.pixelbackground.url
+    },
+    getBreakLine: state => {
+      if (!state.content.homepage) return
+      return state.content.homepage.breakline.url
+    },
     getCharities: state => {
       return state.content.charities
     },

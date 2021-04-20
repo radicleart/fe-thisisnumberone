@@ -1,5 +1,5 @@
 <template>
-<div id="update-item" class="text-white" v-if="loaded && myAsset">
+<div id="update-item" class="text-white" v-if="loaded && myAsset" style="min-height: 85vh;">
   <div class="container" :key="componentKey">
     <div class="row mt-4">
       <div class="col-12">

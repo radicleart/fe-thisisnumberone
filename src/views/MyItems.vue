@@ -1,6 +1,6 @@
 <template>
-<div class="container">
-  <div v-if="myItems && myItems.length > 0" class="mb-5" style="min-height: 100vh;">
+<div class="container" style="min-height: 85vh;">
+  <div v-if="myItems && myItems.length > 0" class="mb-5">
     <!--
     <div class="d-flex justify-content-end">
       <b-button class="ml-3" :variant="(filter === 'none') ? 'outline-danger' : 'outline-dark'" @click="filter = 'none'">All</b-button>

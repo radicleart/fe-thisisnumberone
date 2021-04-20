@@ -1,7 +1,7 @@
 <template>
-<div @mouseover="transme()" @mouseout="transbackme()" :style="dimensions" class="text-right">
-  <router-link :style="'opacity: ' + opacity + ';'" style="padding: 3px; position: absolute; top: 5px; right: 25px; z-index: 100; width: 40px; height: 40px;" :to="assetUrl"><b-icon style="width: 40px; height: 40px;" icon="arrow-right-circle"/></router-link>
-  <media-item class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
+<div @mouseover="showMe()" @mouseout="hideMe()" :style="dimensions" class="text-right">
+  <router-link :style="'opacity: ' + opacity + ';'" style="padding: 3px; position: absolute; top: 5px; right: 25px; z-index: 100; width: 40px; height: 40px;" :to="assetUrl()"><b-icon style="width: 40px; height: 40px;" icon="arrow-right-circle"/></router-link>
+  <media-item @openAssetDetails="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
 </div>
 </template>
 
@@ -15,12 +15,11 @@ export default {
   components: {
     MediaItem
   },
-  props: ['result'],
+  props: ['result', 'dims'],
   data () {
     return {
       height: 300,
       opacity: 0,
-      dims: { width: '100%', height: '100%' },
       likeIconTurquoise: require('@/assets/img/Favorite_button_turquoise_empty.png'),
       likeIconPurple: require('@/assets/img/Favorite_button_purple_empty.png')
     }
@@ -36,14 +35,24 @@ export default {
     }, this)
   },
   methods: {
-    transme () {
-      this.opacity = 1
+    showMe: function () {
+      this.opacity = 0
     },
-    transbackme () {
+    hideMe: function () {
       this.opacity = 0
     },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.result)
+    },
+    openAssetDetails: function () {
+      this.$router.push(this.assetUrl())
+    },
+    assetUrl () {
+      let assetUrl = '/assets/' + this.result.assetHash
+      if (this.$route.name === 'my-items') {
+        assetUrl = '/my-items/' + this.result.assetHash
+      }
+      return assetUrl
     }
   },
   computed: {
@@ -65,13 +74,6 @@ export default {
         fluid: true
       }
       return videoOptions
-    },
-    assetUrl () {
-      let assetUrl = '/assets/' + this.result.assetHash
-      if (this.$route.name === 'my-items') {
-        assetUrl = '/my-items/' + this.result.assetHash
-      }
-      return assetUrl
     }
   }
 }

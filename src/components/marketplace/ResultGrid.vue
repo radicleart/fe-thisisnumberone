@@ -1,26 +1,14 @@
 <template>
 <div>
-  <!--
-  <div class="d-flex justify-content-center" v-for="(n, i) in gridSize" :key="i">
-    <div v-for="(result, index) in results(i)" :key="index">
-      <div class="100vh flex-column align-items-center d-flex justify-content-center">
-        <result-item :result="result" />
-      </div>
-    </div>
-  </div>
-  -->
-<b-row>
-  <b-col cols="3" :offset="getOffset(index)" class="text-right p-0" v-for="(index) in numbEntries()" :key="index">
-    <result-item :result="getResult(index)" />
-  </b-col>
-</b-row>
-<!--
-      <div class="row p-0 m-0">
-        <div class="col-sm-6 col-xs-12 p-0 m-0" style="max-width: 50%; max-height: 50%; width: 100%; height: 100%;" v-for="(result, index) in assets" :key="index">
-          <div class="w-100 text-right"><result-item style="width: 100%; height: 100%;" :result="result" /></div>
-        </div>
-      </div>
--->
+  <b-row>
+    <b-col :cols="getOuterCols()" col-xs-6 :offset-md="getOuterOffset()" class="text-right p-0">
+      <b-row>
+        <b-col :cols="getCols()" col-xs-6 :offset-md="getOffset(index)" class="text-right p-0" v-for="(index) in numbEntries()" :key="index">
+          <result-item :dims="dims()" :result="getResult(index)" />
+        </b-col>
+      </b-row>
+    </b-col>
+  </b-row>
 </div>
 </template>
 
@@ -49,6 +37,30 @@ export default {
     }
   },
   methods: {
+    getOuterCols: function () {
+      const numbs = this.resultSet.length
+      return (numbs > 4) ? 6 : 12
+    },
+    getOuterOffset: function () {
+      const numbs = this.resultSet.length
+      return (numbs > 4) ? 3 : 0
+    },
+    dims: function () {
+      const numbs = this.resultSet.length
+      const dims100 = { width: '100%', height: '100%' }
+      const dims50 = { width: '100%', height: '100%' }
+      return (numbs > 4) ? dims50 : dims100
+    },
+    getCols: function () {
+      const numbs = this.resultSet.length
+      const breaking = this.getWidth()
+      if (breaking === 'xs') {
+        return (numbs > 4) ? 6 : 6
+      } else if (breaking === 'sm') {
+        return (numbs > 4) ? 4 : 3
+      }
+      return (numbs > 4) ? 4 : 3
+    },
     numbEntries: function () {
       return this.resultSet.length
     },
@@ -56,25 +68,22 @@ export default {
       return this.resultSet[index - 1]
     },
     getOffset: function (index) {
+      const breaking = this.getWidth()
+      if (breaking === 'xs') {
+        return 0
+      }
+      if (this.resultSet.length > 4) {
+        return ((index) % 3 === 0) ? 0 : 0
+      }
       return ((index - 1) % 2 === 0) ? 3 : 0
     },
-    breakLine: function (index) {
-      return (index % 2 === 1) ? '<br/>' : ''
-    },
-    cols: function () {
-      if (this.resultSet.length < 4) return 12
-      else if (this.resultSet.length < 9) return 6
-      else return 4
-    },
-    results (i) {
-      const results = this.resultSet
-      try {
-        const start = i * this.gridSize
-        const end = this.gridSize * (i + 1)
-        return results.slice(start, end)
-      } catch (e) {
-        return null
+    getWidth () {
+      if (window.innerWidth < 800) {
+        return 'xs'
+      } else if (window.innerWidth < 1100) {
+        return 'sm'
       }
+      return 'md'
     }
   },
   computed: {

@@ -1,5 +1,5 @@
 <template>
-<b-row style="height: 80vh">
+<b-row class="my-xs-4" style="min-height: 85vh">
   <b-col cols="12" class="text-center p-0 m-0" align-self="center" v-if="resultSet" >
     <result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/>
   </b-col>
@@ -33,14 +33,6 @@ export default {
       this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {
         this.results = results
       })
-    },
-    getWidth () {
-      if (window.innerWidth < 1000) {
-        return 'width: 100%'
-      } else if (window.innerWidth < 1100) {
-        return 'width: 70%; height: 50vh;'
-      }
-      return 'width: 50%'
     }
   },
   computed: {

@@ -11,7 +11,7 @@
       <img style="width: 40px; height: 40px;" :src="toggleIcon">
     </b-nav-item>
   </b-navbar-nav>
-    <b-collapse id="collapse" :style="'background-image: url(' + background + ')'">
+    <b-collapse id="collapse" :style="'background-image: url(' + getPixelBackground + ')'">
       <b-navbar-nav class="top-content">
         <b-navbar-brand v-b-toggle.collapse @click="noScroll()" class="mr-0" href="#">
           <div class="">
@@ -21,23 +21,9 @@
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/about">About</router-link></b-nav-item>
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/gallery"><img :src="hollowWhiteOne"/></router-link></b-nav-item>
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/news">News</router-link></b-nav-item>
-        <!--
-        <b-dropdown right v-if="loggedIn" size="lg"  variant="link" toggle-class="text-decoration-none" no-caret>
-          <template #button-content>
-            <b-icon scale="1.5" icon="person"/><span class="sr-only">Account</span>
-          </template>
-          <b-dropdown-item>{{username()}}</b-dropdown-item>
-          <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item v-b-toggle.collapse @click="noScroll()"><router-link class="text-dark" to="/profile">My Profile</router-link></b-dropdown-item>
-          <b-dropdown-item v-b-toggle.collapse @click="noScroll()"><router-link class="text-dark" to="/my-items">My Items</router-link></b-dropdown-item>
-          <b-dropdown-item v-b-toggle.collapse @click="noScroll()"><router-link class="text-dark" to="/admin">Admin</router-link></b-dropdown-item>
-          <b-dropdown-item v-b-toggle.collapse @click="noScroll()"><span @click="logout()">Logout</span></b-dropdown-item>
-        </b-dropdown>
-        <b-nav-item v-else><b-button variant="light" @click.prevent="startLogin()">Login</b-button></b-nav-item>
-        -->
       </b-navbar-nav>
 
-      <div class="break-line"><img :src="line"></div>
+      <div class="break-line"><img :src="getBreakLine"></div>
 
       <b-navbar-nav class="bottom-content">
         <div class="bottom-content--container">
@@ -72,8 +58,6 @@ export default {
       logo: require('@/assets/img/navbar-footer/logo.svg'),
       hollowWhiteOne: require('@/assets/img/Group 97.svg'),
       rainbowOne: require('@/assets/img/Group 76.svg'),
-      background: require('@/assets/img/main-navbar-bg.svg'),
-      line: require('@/assets/img/navbar-footer/break-line.svg'),
       grid: require('@/assets/img/navbar-footer/grid.svg'),
       cross: require('@/assets/img/navbar-footer/cross.svg'),
       numberOne: require('@/assets/img/navbar-footer/n1.svg'),
@@ -96,12 +80,6 @@ export default {
     },
     headerClass () {
       return (this.$route.name === 'home' || this.$route.name === 'login' || this.$route.name === 'how-it-works') ? '' : 'header-class'
-    },
-    logout () {
-      this.$store.dispatch('rpayAuthStore/startLogout').then(() => {
-        // localStorage.clear()
-        // sessionStorage.clear()
-      })
     },
     username () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
@@ -127,6 +105,12 @@ export default {
         }
       }
       return null
+    },
+    getPixelBackground () {
+      return this.$store.getters[APP_CONSTANTS.KEY_PIXEL_BACKGROUND]
+    },
+    getBreakLine () {
+      return this.$store.getters[APP_CONSTANTS.KEY_BREAK_LINE]
     },
     loggedIn () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]

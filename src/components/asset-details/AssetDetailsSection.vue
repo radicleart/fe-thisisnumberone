@@ -1,5 +1,5 @@
 <template>
-<section v-if="gaiaAsset" class="container-fluid p-5 hundred-vh bg-black text-white">
+<section v-if="gaiaAsset" class="container-fluid p-5 hundred-vh text-white">
   <b-container>
     <b-row>
       <div id="video-column" class="col-md-6 col-sm-12">

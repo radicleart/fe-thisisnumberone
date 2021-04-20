@@ -1,6 +1,6 @@
 <template>
   <div v-if="content">
-    <div class="footer-break-line" :style="'background-image: url(' + line + ')'"></div>
+    <div class="footer-break-line" :style="'background-image: url(' + getBreakLine + ')'"></div>
 
     <div class="footer-container">
 
@@ -83,18 +83,21 @@
 </template>
 
 <script>
+import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'MainFooter',
   data () {
     return {
-      logo: require('@/assets/img/navbar-footer/logo-footer.svg'),
-      line: require('@/assets/img/navbar-footer/break-line.svg')
+      logo: require('@/assets/img/navbar-footer/logo-footer.svg')
     }
   },
   methods: {
   },
   computed: {
+    getBreakLine () {
+      return this.$store.getters[APP_CONSTANTS.KEY_BREAK_LINE]
+    },
     content () {
       const content = this.$store.getters['contentStore/getMainFooter']
       return content

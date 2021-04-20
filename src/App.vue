@@ -1,17 +1,13 @@
 <template>
-<b-container v-if="loading">
-  <b-row class="splash-screen vh-100 text-center" align-v="center">
-    <b-col><b-button class="main-navigation-button" variant="primary">#1</b-button></b-col>
-  </b-row>
-</b-container>
-<div id="app" v-else :style="'min-height: 100vh; background-image: url(' + background + ')'">
+<splash v-if="loading"/>
+<div id="app" v-else :style="'min-height: 100vh; background-size: cover; background-image: url(' + getPixelBackground + ')'">
   <div v-if="!configured">
     <risidio-pay :configuration="configuration"/>
   </div>
   <div :key="componentKey" v-else>
     <div></div>
     <router-view name="header"/>
-    <router-view class=""/>
+    <router-view />
     <router-view name="footer"/>
     <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
     <waiting-modal/>
@@ -21,6 +17,7 @@
 </template>
 
 <script>
+import Splash from '@/views/Splash'
 import SuccessModal from '@/components/utils/SuccessModal'
 import WaitingModal from '@/components/utils/WaitingModal'
 import RisidioPay from 'risidio-pay'
@@ -29,13 +26,13 @@ import { APP_CONSTANTS } from '@/app-constants'
 export default {
   name: 'App',
   components: {
+    Splash,
     SuccessModal,
     WaitingModal,
     RisidioPay
   },
   data () {
     return {
-      background: require('@/assets/img/main-navbar-bg.svg'),
       loading: true,
       configured: false,
       componentKey: 0
@@ -120,6 +117,9 @@ export default {
     }
   },
   computed: {
+    getPixelBackground () {
+      return this.$store.getters[APP_CONSTANTS.KEY_PIXEL_BACKGROUND]
+    },
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
       return configuration
