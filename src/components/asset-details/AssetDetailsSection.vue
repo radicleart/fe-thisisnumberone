@@ -28,8 +28,8 @@
               <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
             </div>
             <div class="d-flex justify-content-between">
-              <SquareButton :label1="'MAKE AN OFFER'" :svgImage="hammer" @click="openPurchaceDialog()" class="mr-1 w-50" variant="light">{{purchaseButtonText()}}</SquareButton>
-              <SquareButton :label1="'GET UPDATES'" :icon="'eye'" @click="openUpdates()" class="ml-1 w-50" variant="dark">GET UPDATES</SquareButton>
+              <div @click="openPurchaceDialog()"><SquareButton :label1="'MAKE AN OFFER'" :svgImage="hammer" class="mr-1 w-50" variant="light">{{purchaseButtonText()}}</SquareButton></div>
+              <div @click="openUpdates()"><SquareButton :label1="'GET UPDATES'" :icon="'eye'" class="ml-1 w-50" variant="dark">GET UPDATES</SquareButton></div>
             </div>
           </b-col>
         </b-row>

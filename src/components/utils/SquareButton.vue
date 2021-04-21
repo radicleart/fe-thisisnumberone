@@ -33,6 +33,7 @@ export default {
   background: transparent;
   border: 1pt solid #ffffff !important;
   color: #ffffff !important;
+  white-space: nowrap;
 }
 .btn-group > .btn:hover {
   background: transparent;
