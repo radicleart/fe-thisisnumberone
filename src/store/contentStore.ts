@@ -8,6 +8,7 @@ const contentStore = {
       navigation: null,
       homepage: null,
       about: null,
+      tooltips: null,
       howItWorks: null
     },
     waitingImage: 'https://images.prismic.io/radsoc/f60d92d0-f733-46e2-9cb7-c59e33a15fc1_download.jpeg?auto=compress,format'
@@ -40,6 +41,10 @@ const contentStore = {
       if (!state.content.homepage) return
       return state.content.homepage.breakline.url
     },
+    getTooltip: state => tooltipId => {
+      if (!state.content.tooltips || !state.content.tooltips[tooltipId]) return
+      return state.content.tooltips[tooltipId]
+    },
     getCharities: state => {
       return state.content.charities
     },
@@ -66,6 +71,9 @@ const contentStore = {
     }
   },
   mutations: {
+    addTooltips (state, o) {
+      state.content.tooltips = o
+    },
     addHomeContent (state, o) {
       state.content.homepage = o
     },

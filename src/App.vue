@@ -80,6 +80,11 @@ export default {
         $self.loading = false
       }, 400)
     })
+    this.$prismic.client.getSingle('tooltips').then(document => {
+      if (document) {
+        this.$store.commit('contentStore/addTooltips', document.data)
+      }
+    })
     this.$prismic.client.getSingle('homepage').then(document => {
       if (document) {
         this.$store.commit('contentStore/addHomeContent', document.data)

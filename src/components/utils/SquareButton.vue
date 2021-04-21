@@ -1,7 +1,7 @@
 <template>
   <b-button-group class="text-white">
-    <b-button class="btn-square"><span class=""><b-icon :icon="icon"/></span></b-button>
-    <b-button class="text-white btn-rectangle"><b-link router-tag="span" :to="route">{{label1}}</b-link></b-button>
+    <b-button class="btn-square"><span class=""><b-icon class="text-warning" :icon="icon"/></span></b-button>
+    <b-button class="btn-rectangle"><b-link class="text-white" router-tag="span" :to="route">{{label1}}</b-link></b-button>
   </b-button-group>
 </template>
 
@@ -24,6 +24,8 @@ export default {
 <style lang="scss" scoped>
 .btn-group > .btn {
   background: transparent;
+  border: 1pt solid #ffffff !important;
+  color: #ffffff !important;
 }
 .btn-group > .btn:hover {
   background: transparent;

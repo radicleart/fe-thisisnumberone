@@ -2,8 +2,8 @@
 <div>
   <div class="mt-3" v-if="gaiaAsset">
     <asset-details-section :gaiaAsset="gaiaAsset" />
-    <artist-section :artistId="getArtistPrismicId(gaiaAsset.artist)" />
-    <charity-section />
+    <artist-section id="artist-section" :artistId="getArtistPrismicId(gaiaAsset.artist)" />
+    <charity-section id="charity-section" />
   </div>
 </div>
 </template>

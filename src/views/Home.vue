@@ -47,51 +47,10 @@ export default {
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
       return configuration
-    },
-    content () {
-      const content = this.$store.getters['contentStore/getHomepage']
-      return content
-    },
-    buttonLabel () {
-      const content = this.$store.getters['contentStore/getHomepage']
-      if (!content) return null
-      return content.credits[0].text
     }
   }
 }
 </script>
 
 <style>
-
-.bottom-logo-container {
-  text-align: right;
-  margin-top: auto;
-  margin-bottom: 24px;
-}
-
-/*
-.market-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 200px;
-  background-color: rgb(2, 0, 0) !important;
-  text-align: center;
-}
-
-.home-content {
-  position: relative;
-  top: 140px;
-}
-#homeSection h2 {
-  margin-bottom: 10px;
-  font-size: 3.4rem;
-}
-#homeSection h3 {
-  margin-bottom: 50px;
-}
-#homeSection p {
-  margin-bottom: 20px;
-}
-*/
 </style>
