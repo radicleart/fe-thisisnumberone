@@ -28,7 +28,7 @@
               <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
             </div>
             <div class="d-flex justify-content-between">
-              <SquareButton :label1="'MAKE AN OFFER'" :icon="'hammer'" @click="openPurchaceDialog()" class="mr-1 w-50" variant="light">{{purchaseButtonText()}}</SquareButton>
+              <SquareButton :label1="'MAKE AN OFFER'" :svgImage="hammer" @click="openPurchaceDialog()" class="mr-1 w-50" variant="light">{{purchaseButtonText()}}</SquareButton>
               <SquareButton :label1="'GET UPDATES'" :icon="'eye'" @click="openUpdates()" class="ml-1 w-50" variant="dark">GET UPDATES</SquareButton>
             </div>
           </b-col>
@@ -78,6 +78,7 @@ export default {
   props: ['gaiaAsset'],
   data: function () {
     return {
+      hammer: require('@/assets/img/auction.svg'),
       showRpay: false,
       dims: { width: 768, height: 768 },
       videoHeight: 0,

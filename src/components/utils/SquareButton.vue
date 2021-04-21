@@ -1,6 +1,13 @@
 <template>
   <b-button-group class="text-white">
-    <b-button class="btn-square"><span class=""><b-icon class="text-warning" :icon="icon"/></span></b-button>
+    <b-button class="btn-square">
+      <span class="" v-if="icon">
+        <b-icon class="text-warning" style="width: 40px; height: 40px;" :icon="icon"/>
+      </span>
+      <span class="" v-else>
+        <img class="text-warning" style="width: 40px; height: 40px;" :src="svgImage"/>
+      </span>
+    </b-button>
     <b-button class="btn-rectangle"><b-link class="text-white" router-tag="span" :to="route">{{label1}}</b-link></b-button>
   </b-button-group>
 </template>
@@ -10,7 +17,7 @@ export default {
   name: 'SquareButton',
   components: {
   },
-  props: ['label1', 'icon', 'route'],
+  props: ['label1', 'icon', 'route', 'svgImage'],
   data () {
     return {
     }
