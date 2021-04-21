@@ -9,9 +9,9 @@ import PrismicVue from 'prismic-vue'
 import linkResolver from './prismic/link-resolver'
 import htmlSerializer from './prismic/html-serializer'
 import RisidioPay from 'risidio-pay'
-import '@/assets/scss/custom.scss'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import '@/assets/scss/custom.scss'
 import './assets/scss/rpay-pay-card.css'
 
 Vue.config.productionTip = false

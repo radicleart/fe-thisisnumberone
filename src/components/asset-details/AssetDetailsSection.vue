@@ -9,7 +9,15 @@
       </div>
       <div class="col-md-6 col-sm-12">
         <b-row align-v="stretch" :style="'height:' + videoHeight + 'px;'">
-          <b-col cols="12"><router-link to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="danger"></b-icon> Back</router-link></b-col>
+          <b-col cols="12">
+            <div class="d-flex justify-content-between">
+              <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
+              <div class="d-flex justify-content-between">
+                <b-icon icon="question-circle" variant="white"></b-icon>
+                <div class="text-center on-auction-text ml-3 p-2 bg-warning text-white"><div>ON AUCTION</div><div>{{offersEnd()}}</div></div>
+              </div>
+            </div>
+          </b-col>
           <b-col cols="12" align-self="center">
             <h4>{{gaiaAsset.artist}}</h4>
             <h2>{{gaiaAsset.name}}</h2>
@@ -54,6 +62,7 @@ import AssetUpdatesModal from './AssetUpdatesModal'
 import RisidioPay from 'risidio-pay'
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaItem from '@/components/utils/MediaItem'
+import moment from 'moment'
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
@@ -106,6 +115,10 @@ export default {
     }, this)
   },
   methods: {
+    offersEnd: function () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      return moment(contractAsset.saleData.biddingEnds).format('DD-MM-YY')
+    },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.gaiaAsset)
     },
@@ -198,4 +211,9 @@ export default {
 </script>
 
 <style scoped>
+.on-auction-text {
+  text-transform: capitalize;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
 </style>
