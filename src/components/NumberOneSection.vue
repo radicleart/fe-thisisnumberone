@@ -2,21 +2,10 @@
 <div id="number-one-container" class="">
   <div class="row w-100">
     <div class="col-6 d-flex flex-column justify-content-center align-items-center">
-      <div class="d-flex justify-content-center">
-        <div @mouseover="artist = 1" class="artist-image"><a href="#"><img :src="content.body[0].items[0].artist_image.url" :alt="content.body[0].items[0].artist_image.alt"></a></div>
-        <div @mouseover="artist = 2" class="artist-image"><a href="#"><img :src="content.body[0].items[1].artist_image.url" :alt="content.body[0].items[1].artist_image.alt"></a></div>
-      </div>
-      <div class="d-flex justify-content-center">
-        <div @mouseover="artist = 3" class="artist-image"><a href="#"><img :src="content.body[0].items[2].artist_image.url" :alt="content.body[0].items[2].artist_image.alt"></a></div>
-        <div @mouseover="artist = 4" class="artist-image"><a href="#"><img :src="content.body[0].items[3].artist_image.url" :alt="content.body[0].items[3].artist_image.alt"></a></div>
-      </div>
+      <!-- @mouseover="artist = 1" -->
+       <result-grid class="container text-center" :key="componentKey" :resultSet="resultSet"/>
     </div>
     <div class="col-6">
-      <div class="filters">
-        <div> <span>Filter 1</span><b-icon icon="chevron-down"></b-icon></div>
-        <div><span>Filter 2</span><b-icon icon="chevron-down"></b-icon></div>
-        <div><span>Filter 3</span><b-icon icon="chevron-down"></b-icon></div>
-      </div>
       <div class="d-flex flex-column justify-content-center align-items-center h-100">
         <transition name="fade" mode="out-in">
           <div v-if="artist === 0" key="default" class="preview-section--default"><img :src="logo" alt="logo"></div>
@@ -53,26 +42,44 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
+import ResultGrid from '@/components/marketplace/ResultGrid'
+
+const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
+const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 
 export default {
   name: 'NumberOneSection',
   components: {
+    ResultGrid
   },
   data () {
     return {
       logo: require('@/assets/img/logo-rainbow.svg'),
-      artist: 0
+      artist: 0,
+      componentKey: 1
     }
   },
+  mounted () {
+    this.findAssets()
+  },
   methods: {
+    findAssets () {
+      this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {
+        this.results = results
+      })
+    }
   },
   computed: {
     getPixelBackground () {
       return this.$store.getters[APP_CONSTANTS.KEY_PIXEL_BACKGROUND]
     },
-    content () {
-      const content = this.$store.getters['contentStore/getHomepage']
-      return content
+    resultSet () {
+      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_SEARCH_RESULTS]
+      return resultSet
+    },
+    resultSetFromIndex () {
+      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      return resultSet
     }
   }
 }
@@ -134,19 +141,5 @@ export default {
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
-}
-
-.filters {
-  width: 427px;
-  display: flex;
-  color: #ffffff;
-  font-size: 1.4rem;
-  margin: 0 auto;
-}
-.filters div:not(:last-child) {
-  margin-right: 40px;
-}
-.filters div span {
-  margin-right: 15px;
 }
 </style>

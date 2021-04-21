@@ -1,6 +1,6 @@
 <template>
 <section id="number-one-section" class="">
-  <NumberOneSection></NumberOneSection>
+  <number-one-section />
 </section>
 </template>
 
