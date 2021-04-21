@@ -1,15 +1,14 @@
 <template>
 <section v-if="gaiaAsset" class="container-fluid p-5 hundred-vh text-white">
-  <b-container>
     <b-row>
       <div id="video-column" class="col-md-6 col-sm-12">
-        <div class="mx-5" :style="dimensions">
+        <div class="mb-5" :style="dimensions">
           <media-item class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="gaiaAsset.nftMedia" :targetItem="targetItem()"/>
         </div>
       </div>
       <div class="col-md-6 col-sm-12">
-        <b-row align-v="stretch" :style="'height:' + videoHeight * 1.5 + 'px;'">
-          <b-col cols="12">
+        <b-row align-v="stretch" :style="'height:' + videoHeight * .5 + 'px;'">
+          <b-col cols="12 mb-md-5">
             <div class="d-flex justify-content-between">
               <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
               <div class="d-flex justify-content-between">
@@ -35,7 +34,6 @@
         </b-row>
       </div>
     </b-row>
-  </b-container>
   <asset-updates-modal :assetHash="gaiaAsset.assetHash" @registerForUpdates="registerForUpdates"/>
   <b-modal size="lg" id="asset-offer-modal">
     <risidio-pay v-if="showRpay" :configuration="configuration"/>

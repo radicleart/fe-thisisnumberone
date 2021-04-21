@@ -30,8 +30,10 @@ const contentStore = {
         border: '1pt solid #ccc'
       }
     },
-    getCharityById: state => id => {
-      return state.content.charities.find((o) => o.uid === id)
+    getCharityByArtistId: state => id => {
+      const charity = state.content.charities.find((o) => o.uid === id)
+      if (!charity) return state.content.charities[0]
+      return charity
     },
     getPixelBackground: state => {
       if (!state.content.homepage) return

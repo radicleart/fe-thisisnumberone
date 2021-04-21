@@ -12,7 +12,7 @@ export const APP_CONSTANTS = {
   KEY_ITEM_VALIDITY: 'myItemStore/getItemValidity',
 
   KEY_WAITING_IMAGE: 'contentStore/getWaitingCSS',
-  KEY_CONTENT_CHARITY_BY_ID: 'contentStore/getCharityById',
+  KEY_CONTENT_CHARITY_BY_ARTIST_ID: 'contentStore/getCharityByArtistId',
   KEY_CONTENT_ARTIST_BY_ID: 'contentStore/getArtistById',
   KEY_CONTENT_ARTISTS: 'contentStore/getArtists',
   KEY_CONTENT_CHARITIES: 'contentStore/getCharities',

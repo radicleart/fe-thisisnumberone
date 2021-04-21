@@ -68,11 +68,11 @@ export default {
       })
     }
     window.addEventListener('resize', function () {
-      $self.loading = true
       const currentComponent = $self.$route.name
-      if (currentComponent === 'upload-item' || currentComponent === 'edit-item') {
+      if (currentComponent === 'asset-by-hash' || currentComponent === 'upload-item' || currentComponent === 'edit-item') {
         return
       }
+      $self.loading = true
       clearTimeout(resizeTimer)
       resizeTimer = setTimeout(function () {
         $self.$store.commit('setWinDims')
