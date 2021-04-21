@@ -2,8 +2,8 @@
 <div>
   <div class="mt-3" v-if="gaiaAsset">
     <asset-details-section :gaiaAsset="gaiaAsset" />
-    <artist-section :artistId="getArtistPrismicId(gaiaAsset.artist)" />
-    <charity-section />
+    <artist-section id="artist-section" :artistId="getArtistPrismicId(gaiaAsset.artist)" />
+    <charity-section id="charity-section" />
   </div>
 </div>
 </template>
@@ -39,8 +39,8 @@ export default {
   },
   computed: {
     gaiaAsset () {
-      let gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.$route.params.assetHash)
-      if (!gaiaAsset) gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET](this.$route.params.assetHash)
+      const gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.$route.params.assetHash)
+      // if (!gaiaAsset) gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET](this.$route.params.assetHash)
       return gaiaAsset
     }
   }

@@ -8,20 +8,28 @@
         </div>
       </div>
       <div class="col-md-6 col-sm-12">
-        <b-row align-v="stretch" :style="'height:' + videoHeight + 'px;'">
-          <b-col cols="12"><router-link to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="danger"></b-icon> Back</router-link></b-col>
+        <b-row align-v="stretch" :style="'height:' + videoHeight * 1.5 + 'px;'">
+          <b-col cols="12">
+            <div class="d-flex justify-content-between">
+              <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
+              <div class="d-flex justify-content-between">
+                <b-link router-tag="span" v-b-tooltip.click :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
+                <div class="text-center on-auction-text ml-3 p-2 bg-warning text-white"><div>ON AUCTION</div><div>{{offersEnd()}}</div></div>
+              </div>
+            </div>
+          </b-col>
           <b-col cols="12" align-self="center">
-            <h4>{{gaiaAsset.artist}}</h4>
+            <h1>{{gaiaAsset.artist}}</h1>
             <h2>{{gaiaAsset.name}}</h2>
             <p>{{owner}}</p>
-            <p class="border-top text-small">{{gaiaAsset.description}}</p>
-            <div class="mb-5 d-flex justify-content-between">
-              <div class=""><router-link :to="'/charity/' + gaiaAsset.assetHash">Find out more</router-link></div>
-              <div class=""><router-link :to="'/charity/' + gaiaAsset.assetHash">Charity</router-link></div>
+            <p class="border-top pt-4" style="font-size: 1.2rem;">{{gaiaAsset.description}}</p>
+            <div class="w-50 mb-5 d-flex justify-content-between">
+              <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
+              <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
             </div>
             <div class="d-flex justify-content-between">
-              <b-button @click="openPurchaceDialog()" class="mr-1 w-50" variant="light">{{purchaseButtonText()}}</b-button>
-              <b-button @click="openUpdates()" class="ml-1 w-50" variant="dark">GET UPDATES</b-button>
+              <SquareButton :label1="'MAKE AN OFFER'" :svgImage="hammer" @click="openPurchaceDialog()" class="mr-1 w-50" variant="light">{{purchaseButtonText()}}</SquareButton>
+              <SquareButton :label1="'GET UPDATES'" :icon="'eye'" @click="openUpdates()" class="ml-1 w-50" variant="dark">GET UPDATES</SquareButton>
             </div>
           </b-col>
         </b-row>
@@ -54,6 +62,8 @@ import AssetUpdatesModal from './AssetUpdatesModal'
 import RisidioPay from 'risidio-pay'
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaItem from '@/components/utils/MediaItem'
+import SquareButton from '@/components/utils/SquareButton'
+import moment from 'moment'
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
@@ -62,11 +72,13 @@ export default {
   components: {
     AssetUpdatesModal,
     RisidioPay,
-    MediaItem
+    MediaItem,
+    SquareButton
   },
   props: ['gaiaAsset'],
   data: function () {
     return {
+      hammer: require('@/assets/img/auction.svg'),
       showRpay: false,
       dims: { width: 768, height: 768 },
       videoHeight: 0,
@@ -106,6 +118,10 @@ export default {
     }, this)
   },
   methods: {
+    offersEnd: function () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      return moment(contractAsset.saleData.biddingEnds).format('DD-MM-YY')
+    },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.gaiaAsset)
     },
@@ -169,6 +185,10 @@ export default {
     }
   },
   computed: {
+    ttOnAuction () {
+      const tooltip = this.$store.getters['contentStore/getTooltip']('tt-on-auction')
+      return (tooltip) ? tooltip[0].text : ''
+    },
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
       return configuration
@@ -198,4 +218,9 @@ export default {
 </script>
 
 <style scoped>
+.on-auction-text {
+  text-transform: capitalize;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
 </style>
