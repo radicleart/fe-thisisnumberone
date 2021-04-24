@@ -10,7 +10,7 @@
     </b-row>
     <b-row>
       <b-col cols="6" offset="3" class="mt-5" align-self="center">
-        <div><square-button :label1="'Enter Website'" :icon="'arrow-right'" :route="'/home'"/></div>
+        <div><square-button @clickButton="$router.push('/home')" :theme="'light'" :label1="'Enter Website'" :icon="'arrow-right'"/></div>
       </b-col>
     </b-row>
   </b-col>

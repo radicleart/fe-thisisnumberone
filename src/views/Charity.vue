@@ -1,35 +1,24 @@
 <template>
 <div>
   <div class="mt-3" v-if="gaiaAsset">
-    <asset-details-section :gaiaAsset="gaiaAsset" />
-    <artist-section id="artist-section" :parentPage="'about'" :artistId="getArtistPrismicId(gaiaAsset.artist)" />
     <charity-section id="charity-section" :artistId="getArtistPrismicId(gaiaAsset.artist)" />
-    <section id="number-one-section" class="">
-      <number-one-section />
-    </section>
   </div>
 </div>
 </template>
 
 <script>
-import AssetDetailsSection from '@/components/asset-details/AssetDetailsSection'
-import ArtistSection from '@/components/asset-details/ArtistSection'
 import CharitySection from '@/components/asset-details/CharitySection'
-import NumberOneSection from '@/components/asset-details/NumberOneSection'
 import { APP_CONSTANTS } from '@/app-constants'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 
 export default {
-  name: 'AssetDetails',
+  name: 'Charity',
   components: {
-    AssetDetailsSection,
-    CharitySection,
-    ArtistSection,
-    NumberOneSection
+    CharitySection
   },
-  data: function () {
+  data () {
     return {
     }
   },
@@ -53,5 +42,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+#deep-logos li {
+  cursor: pointer;
+}
 </style>

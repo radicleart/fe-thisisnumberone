@@ -1,6 +1,6 @@
 <template>
 <div :style="dimensions" class="text-right">
-  <media-item @openAssetDetails="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
+  <media-item v-on="$listeners" @openAssetDetails="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
 </div>
 </template>
 
@@ -14,7 +14,7 @@ export default {
   components: {
     MediaItem
   },
-  props: ['result', 'dims'],
+  props: ['result', 'dims', 'outerOptions'],
   data () {
     return {
       height: 300,
@@ -54,8 +54,11 @@ export default {
     },
     videoOptions () {
       const videoOptions = {
+        emitOnHover: true,
+        playOnHover: true,
         assetHash: this.result.assetHash,
         autoplay: false,
+        muted: true,
         controls: true,
         showMeta: false,
         dimensions: 'max-width: 100%; max-height: auto;',
@@ -65,6 +68,9 @@ export default {
           { src: this.result.nftMedia.artworkFile.fileUrl, type: this.result.nftMedia.artworkFile.type }
         ],
         fluid: true
+      }
+      if (this.outerOptions) {
+        Object.assign(videoOptions, this.outerOptions)
       }
       return videoOptions
     }

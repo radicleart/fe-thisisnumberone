@@ -1,15 +1,11 @@
 <template>
-<div>
-  <b-row>
-    <b-col :cols="getOuterCols()" col-xs-6 :offset-md="getOuterOffset()" class="text-right p-0">
-      <b-row>
-        <b-col :cols="getCols()" col-xs-6 :offset-md="getOffset(index)" class="text-right p-0" v-for="(index) in numbEntries()" :key="index">
-          <result-item :dims="dims()" :result="getResult(index)" />
-        </b-col>
-      </b-row>
+<b-container v-if="loaded">
+  <b-row class="center">
+    <b-col cols="4" class="p-0 m-0" v-for="(result, index) in paddedResults" :key="index">
+      <result-item v-on="$listeners" :result="result" :dims="dims100" :outerOptions="outerOptions"/>
     </b-col>
   </b-row>
-</div>
+</b-container>
 </template>
 
 <script>
@@ -20,70 +16,27 @@ export default {
   components: {
     ResultItem
   },
-  props: ['resultSet'],
+  props: ['resultSet', 'outsiderCols', 'outerOptions'],
   data () {
     return {
-      gridSize: 2
+      loaded: false,
+      paddedResults: [],
+      dims100: { width: '100%', height: '100%' }
     }
   },
   mounted () {
+    this.paddedResults = this.resultSet
     const numbs = this.resultSet.length
-    if (numbs <= 4) {
-      this.gridSize = 2
-    } else if (numbs <= 9) {
-      this.gridSize = 3
-    } else if (numbs <= 16) {
-      this.gridSize = 4
+    for (let i = numbs; i < 10; i++) {
+      if (this.paddedResults.length < 9) {
+        this.paddedResults.push(this.resultSet[i - numbs])
+      }
     }
+    this.loaded = true
   },
   methods: {
-    getOuterCols: function () {
-      const numbs = this.resultSet.length
-      return (numbs > 4) ? 6 : 12
-    },
-    getOuterOffset: function () {
-      const numbs = this.resultSet.length
-      return (numbs > 4) ? 3 : 0
-    },
-    dims: function () {
-      const numbs = this.resultSet.length
-      const dims100 = { width: '100%', height: '100%' }
-      const dims50 = { width: '100%', height: '100%' }
-      return (numbs > 4) ? dims50 : dims100
-    },
-    getCols: function () {
-      const numbs = this.resultSet.length
-      const breaking = this.getWidth()
-      if (breaking === 'xs') {
-        return (numbs > 4) ? 6 : 6
-      } else if (breaking === 'sm') {
-        return (numbs > 4) ? 4 : 3
-      }
-      return (numbs > 4) ? 4 : 3
-    },
     numbEntries: function () {
       return this.resultSet.length
-    },
-    getResult: function (index) {
-      return this.resultSet[index - 1]
-    },
-    getOffset: function (index) {
-      const breaking = this.getWidth()
-      if (breaking === 'xs') {
-        return 0
-      }
-      if (this.resultSet.length > 4) {
-        return ((index) % 3 === 0) ? 0 : 0
-      }
-      return ((index - 1) % 2 === 0) ? 3 : 0
-    },
-    getWidth () {
-      if (window.innerWidth < 800) {
-        return 'xs'
-      } else if (window.innerWidth < 1100) {
-        return 'sm'
-      }
-      return 'md'
     }
   },
   computed: {
@@ -91,4 +44,15 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.center {
+  margin: auto;
+  width: 70%;
+  border: 0px solid green;
+  padding: 10px;
+}
+@media only screen and (max-width: 900px) {
+  .center {
+    width: 85%;
+  }
+}
 </style>

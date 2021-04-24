@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import NumberOneSection from '@/components/NumberOneSection'
+import NumberOneSection from '@/components/asset-details/NumberOneSection'
 
 export default {
-  name: '#1',
+  name: 'NumberOne',
   components: {
     NumberOneSection
   },
@@ -24,9 +24,4 @@ export default {
 </script>
 
 <style>
-#number-one-section {
-  height: 100vh;
-  width: 100%;
-  margin-top: -71px;
-}
 </style>

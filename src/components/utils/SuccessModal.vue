@@ -1,6 +1,6 @@
 <template>
   <b-modal size="lg" id="success-modal">
-    <b-container class="text-white" fluid>
+    <b-container class="" fluid>
     <div class="row">
       <div class="col-12 my-1">
       </div>
@@ -11,9 +11,9 @@
           <img width="113px" height="113px" :src="vote"/>
         </div>
       </template>
-      <template #modal-footer class="text-white text-center">
+      <template #modal-footer class="text-center">
         <div class="w-100">
-          <p class="footer-text text-white" v-html="modalMessage"></p>
+          <p class="footer-text" v-html="modalMessage"></p>
         </div>
       </template>
   </b-modal>

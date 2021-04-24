@@ -12,10 +12,18 @@ const utils = {
   buildHash: function (hashable) {
     return crypto.createHash('sha256').update(hashable).digest('hex')
   },
+  toDecimals: function (amount, precision) {
+    if (!precision) precision = 100
+    if (!amount) return
+    if (typeof amount === 'string') {
+      amount = Number(amount)
+    }
+    return Math.round(amount * precision) / precision // amount.toFixed(2)
+  },
   getFileExtension: function (filename, type) {
     if (filename && filename.lastIndexOf('.') > 0) {
       const index = filename.lastIndexOf('.')
-      return filename.substring(index)
+      return filename.substring(index + 1)
     } else {
       const index = type.lastIndexOf('/') + 1
       return '.' + type.substring(index)

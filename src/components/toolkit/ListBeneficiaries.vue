@@ -17,7 +17,7 @@
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
-  name: 'Beneficiaries',
+  name: 'ListBeneficiaries',
   components: {
   },
   props: ['assetHash'],

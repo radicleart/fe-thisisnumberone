@@ -1,6 +1,6 @@
 <template>
   <b-modal size="lg" id="waiting-modal">
-    <b-container class="text-white" fluid>
+    <b-container class="" fluid>
     <div class="row">
       <div class="col-12 my-1" v-html="modalMessage">
       </div>
@@ -10,7 +10,7 @@
       </template>
       <template #modal-footer class="text-center">
         <div class="w-100">
-          <p class="footer-text text-white"></p>
+          <p class="footer-text"></p>
         </div>
       </template>
   </b-modal>

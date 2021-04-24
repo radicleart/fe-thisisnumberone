@@ -72,9 +72,12 @@ export default {
     videoOptions () {
       const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
       const videoOptions = {
+        emitOnHover: true,
+        playOnHover: true,
         assetHash: this.assetHash,
         showMeta: true,
         autoplay: false,
+        muted: false,
         controls: true,
         poster: (item.nftMedia.coverImage) ? item.nftMedia.coverImage.fileUrl : null,
         sources: [

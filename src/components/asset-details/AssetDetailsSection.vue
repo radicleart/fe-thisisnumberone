@@ -1,6 +1,6 @@
 <template>
-<section v-if="gaiaAsset" class="container-fluid p-5 hundred-vh text-white">
-    <b-row>
+<section v-if="gaiaAsset" class="mx-md-5 px-md-5 mb-5 p-5 text-white" style="min-height: 120vh;">
+    <b-row class="mx-md-5 px-md-5 p-5">
       <div id="video-column" class="col-md-6 col-sm-12">
         <div class="mb-5" :style="dimensions">
           <media-item class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="gaiaAsset.nftMedia" :targetItem="targetItem()"/>
@@ -13,30 +13,30 @@
               <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
               <div class="d-flex justify-content-between">
                 <b-link router-tag="span" v-b-tooltip.click :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
-                <div class="text-center on-auction-text ml-3 p-2 bg-warning text-white"><div>ON AUCTION</div><div>{{offersEnd()}}</div></div>
+                <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white"><div>{{salesBadgeLabel()}}</div><div v-if="showEndTime()">{{biddingEndTime()}}</div></div>
               </div>
             </div>
           </b-col>
           <b-col cols="12" align-self="center">
             <h1>{{gaiaAsset.artist}}</h1>
             <h2>{{gaiaAsset.name}}</h2>
-            <p>{{owner}}</p>
+            <p>{{owner}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
             <p class="border-top pt-4" style="font-size: 1.2rem;">{{gaiaAsset.description}}</p>
-            <div class="w-50 mb-5 d-flex justify-content-between">
+            <div class="w-50 my-5 d-flex justify-content-between">
               <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
               <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
             </div>
-            <div class="d-flex justify-content-between">
-              <div @click="openPurchaceDialog()"><SquareButton :label1="'MAKE AN OFFER'" :svgImage="hammer" class="mr-1 w-50" variant="light">{{purchaseButtonText()}}</SquareButton></div>
-              <div @click="openUpdates()"><SquareButton :label1="'GET UPDATES'" :icon="'eye'" class="ml-1 w-50" variant="dark">GET UPDATES</SquareButton></div>
+            <div class="d-flex justify-content-start">
+              <square-button v-if="getSaleType() > 0" class="mr-4" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel()" :svgImage="hammer"/>
+              <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'"/>
             </div>
           </b-col>
         </b-row>
       </div>
     </b-row>
   <asset-updates-modal :assetHash="gaiaAsset.assetHash" @registerForUpdates="registerForUpdates"/>
-  <b-modal size="lg" id="asset-offer-modal">
-    <risidio-pay v-if="showRpay" :configuration="configuration"/>
+  <b-modal size="lg" id="asset-offer-modal" class="text-left">
+    <purchase-flow v-if="showRpay" :gaiaAsset="gaiaAsset" @offerSent="offerSent"/>
     <template #modal-header>
     </template>
     <template #modal-footer>
@@ -44,8 +44,17 @@
       </div>
     </template>
   </b-modal>
-  <b-modal id="result-modal">
-    <div>Contract called: <a :href="transactionUrl(mintResultTxId)" target="_blank">check transaction</a></div>
+  <b-modal id="result-modal" class="" v-if="confirmOfferDialog">
+    <b-row>
+      <b-col cols="12" class="w-50">
+        <h1>{{confirmOfferDialog[0].text}}</h1>
+        <h4 class="text-center mb-5">{{confirmOfferDialog[1].text}}</h4>
+        <h4 class="text-center mb-5"><a :href="transactionUrl(mintResultTxId)" target="_blank">Transaction sent to Stacks Blockchain</a></h4>
+        <p class="text-center mx-md-5 px-md-5 mb-5">{{confirmOfferDialog[2].text}}</p>
+        <div class="mt-5"><a href="#" @click.prevent="back()"><b-icon icon="chevron-left"/> {{confirmOfferDialog[3].text}}</a></div>
+      </b-col>
+    </b-row>
+    <div></div>
     <template #modal-footer class="text-center">
       <div class="w-100">
       </div>
@@ -56,8 +65,8 @@
 
 <script>
 import Vue from 'vue'
-import AssetUpdatesModal from './AssetUpdatesModal'
-import RisidioPay from 'risidio-pay'
+import AssetUpdatesModal from './offers/AssetUpdatesModal'
+import PurchaseFlow from './offers/PurchaseFlow'
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaItem from '@/components/utils/MediaItem'
 import SquareButton from '@/components/utils/SquareButton'
@@ -69,7 +78,7 @@ export default {
   name: 'AssetDetailsSection',
   components: {
     AssetUpdatesModal,
-    RisidioPay,
+    PurchaseFlow,
     MediaItem,
     SquareButton
   },
@@ -95,13 +104,15 @@ export default {
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'purchase-flow', asset: this.gaiaAsset })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
-        if (data.opcode === 'stx-transaction-finished') {
+        const txResult = $self.$store.getters[APP_CONSTANTS.KEY_TRANSACTION_DIALOG_MESSAGE]({ dKey: data.opcode, txId: data.txId })
+        $self.$store.commit('setModalMessage', txResult)
+        if (data.opcode.indexOf('stx-transaction-') > -1) {
           $self.showRpay = false
+          $self.$bvModal.hide('result-modal')
           $self.$bvModal.hide('asset-offer-modal')
-          $self.$bvModal.hide('minting-modal')
-          $self.mintResult = 'Contract called'
-          $self.mintResultTxId = data.txId
-          $self.$bvModal.show('result-modal')
+          $self.$bvModal.hide('rpay-modal')
+          $self.mintResult = txResult
+          $self.$root.$emit('bv::show::modal', 'success-modal')
         } else {
           // $self.$bvModal.hide('minting-modal')
           // $self.showRpay = false
@@ -116,9 +127,19 @@ export default {
     }, this)
   },
   methods: {
-    offersEnd: function () {
+    back: function () {
+      this.$bvModal.hide('result-modal')
+    },
+    offerSent: function () {
+      // local notification
+    },
+    showEndTime: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return moment(contractAsset.saleData.biddingEnds).format('DD-MM-YY')
+      return contractAsset.saleData.saleType === 2 || contractAsset.saleData.saleType === 3
+    },
+    biddingEndTime: function () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      return moment(contractAsset.saleData.biddingEndTime).format('DD-MM-YY hh:mm')
     },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.gaiaAsset)
@@ -127,17 +148,13 @@ export default {
       const dims = { width: '100%', height: '100%' }
       return 'max-width: ' + dims.height + '; max-height: ' + dims.height + ';'
     },
-    purchaseButtonText () {
+    salesButtonLabel () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      if (!contractAsset || !contractAsset.saleData || contractAsset.saleData.saleType === 0) {
-        return 'NOT FOR SALE'
-      } else if (contractAsset.saleData.saleType === 1) {
-        return 'BUY NOW'
-      } else if (contractAsset.saleData.saleType === 2) {
-        return 'PLACE BID'
-      } else if (contractAsset.saleData.saleType === 3) {
-        return 'MAKE AN OFFER'
-      }
+      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
+    },
+    salesBadgeLabel () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
     },
     transactionUrl: function (txId) {
       return 'https://explorer.stacks.co/txid/' + txId + '?chain=' + NETWORK
@@ -159,7 +176,15 @@ export default {
     openUpdates: function () {
       this.$bvModal.show('asset-updates-modal', { assetHash: this.assetHash })
     },
+    getSaleType: function () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      return contractAsset.saleData.saleType
+    },
     openPurchaceDialog: function () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      if (contractAsset.saleData.saleType === 0) {
+        return
+      }
       this.showRpay = true
       this.$bvModal.show('asset-offer-modal')
     },
@@ -183,8 +208,24 @@ export default {
     }
   },
   computed: {
+    confirmOfferDialog () {
+      const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('confirm-offer')
+      return dialog
+    },
     ttOnAuction () {
-      const tooltip = this.$store.getters['contentStore/getTooltip']('tt-on-auction')
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      let tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-not-selling')
+      if (contractAsset.saleData.saleType === 1) {
+        tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-buy-now')
+      } else if (contractAsset.saleData.saleType === 2) {
+        tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-on-auction')
+      } else if (contractAsset.saleData.saleType === 3) {
+        tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-make-offer')
+      }
+      return (tooltip) ? tooltip[0].text : ''
+    },
+    ttStacksAddress () {
+      const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-stacks-address')
       return (tooltip) ? tooltip[0].text : ''
     },
     configuration () {
@@ -193,8 +234,11 @@ export default {
     },
     videoOptions () {
       const videoOptions = {
+        emitOnHover: true,
+        playOnHover: true,
         assetHash: this.assetHash,
-        autoplay: true,
+        autoplay: false,
+        muted: false,
         controls: true,
         showMeta: false,
         dimensions: 'max-width: 100%; max-height: auto;',
@@ -215,10 +259,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .on-auction-text {
   text-transform: capitalize;
   font-weight: 700;
   font-size: 1.1rem;
 }
+#asset-offer-modal .modal-content {
+  text-align: left !important;
+}
+
 </style>

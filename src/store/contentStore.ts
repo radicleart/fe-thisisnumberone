@@ -1,3 +1,4 @@
+
 const contentStore = {
   namespaced: true,
   state: {
@@ -5,12 +6,14 @@ const contentStore = {
       artists: [],
       charities: [],
       mainFooter: null,
+      information: null,
       navigation: null,
       homepage: null,
       about: null,
       tooltips: null,
       howItWorks: null
     },
+    defaultArtist: 'chemicalx',
     waitingImage: 'https://images.prismic.io/radsoc/f60d92d0-f733-46e2-9cb7-c59e33a15fc1_download.jpeg?auto=compress,format'
   },
   getters: {
@@ -47,6 +50,23 @@ const contentStore = {
       if (!state.content.tooltips || !state.content.tooltips[tooltipId]) return
       return state.content.tooltips[tooltipId]
     },
+    getTransactionDialogMessage: (state, getters) => data => {
+      let dKey = data.dKey
+      if (data.dKey === 'stx-transaction-finished') dKey = 'tx-success'
+      else if (data.dKey === 'stx-transaction-error') dKey = 'tx-failed'
+      else if (data.dKey === 'stx-transaction-sent') dKey = 'tx-pending'
+      const key = 'getDialog'
+      const dialog = getters[key](dKey)
+      if (!dialog || dialog.length < 3) return 'Dialog content missing for key: ' + data.dKey
+      let msg = '<h1>' + dialog[0].text + '</h1>'
+      msg += '<h2 class="my-5">' + dialog[1].text + '</h2>'
+      if (data.txId) msg += '<h2><a href="https://explorer.stacks.co/txid/' + data.txId + '?chain=' + process.env.VUE_APP_NETWORK + '" target="_blank">' + dialog[2].text + '</h2>'
+      return msg
+    },
+    getDialog: state => dialogId => {
+      if (!state.content.dialogs || !state.content.dialogs[dialogId]) return
+      return state.content.dialogs[dialogId]
+    },
     getCharities: state => {
       return state.content.charities
     },
@@ -55,6 +75,16 @@ const contentStore = {
     },
     getArtistById: state => id => {
       return state.content.artists.find((o) => o.uid === id)
+    },
+    getInformationById: state => id => {
+      return state.content.information.find((o) => o.uid === id)
+    },
+    getArtistId: state => artist => {
+      try {
+        return artist.toLowerCase().replace(/ /g, '')
+      } catch (e) {
+        return state.defaultArtist
+      }
     },
     getHomepage: state => {
       return state.content.homepage
@@ -76,6 +106,9 @@ const contentStore = {
     addTooltips (state, o) {
       state.content.tooltips = o
     },
+    addDialogs (state, o) {
+      state.content.dialogs = o
+    },
     addHomeContent (state, o) {
       state.content.homepage = o
     },
@@ -90,6 +123,9 @@ const contentStore = {
     },
     addCharities (state, o) {
       state.content.charities = o
+    },
+    addInformation (state, o) {
+      state.content.information = o
     },
     addArtists (state, o) {
       state.content.artists = o

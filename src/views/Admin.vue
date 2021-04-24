@@ -1,30 +1,21 @@
 <template>
-<section id="adminSection">
+<section id="adminSection" style="min-height: 100vh;">
   <div class="text-white container">
-    <div class="row">
-      <div class="col-md-2">Contract Address</div>
-      <div class="col-md-10">{{contractAddress}}</div>
-      <div class="col-md-2">Contract Name</div>
-      <div class="col-md-10">{{contractName}}</div>
-      <div class="col-md-2">Risidio API</div>
-      <div class="col-md-10">{{risidioAPI}}</div>
-    </div>
+    <registry/>
   </div>
 </section>
 </template>
 
 <script>
+import Registry from '@/components/admin/Registry'
 
 export default {
   name: 'Admin',
   components: {
+    Registry
   },
   data () {
     return {
-      loading: true,
-      contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
-      contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
-      risidioAPI: process.env.VUE_APP_RISIDIO_API + '/mesh'
     }
   },
   methods: {

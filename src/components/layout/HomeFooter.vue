@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="py-4 mr-5 d-flex justify-content-end" style="position: relative; top: -50px; ">
-    <div><img width="80px" height="50px" :src="solidWhiteOne"/></div>
+    <div><b-link to="/home"><img width="80px" height="50px" :src="solidWhiteOne"/></b-link></div>
   </div>
 </div>
 </template>

@@ -3,7 +3,7 @@
 <b-navbar class="p-4" variant="transparent">
   <b-navbar-brand href="#">
     <div class="">
-      <router-link to="/" class="navbar-brand"><img height="36px" :src="getLogo()" alt="logo"/></router-link>
+      <router-link to="/home" class="navbar-brand"><img height="36px" :src="getLogo()" alt="logo"/></router-link>
     </div>
   </b-navbar-brand>
   <b-navbar-nav class="ml-auto toggle-icon">
@@ -15,29 +15,29 @@
       <b-navbar-nav class="top-content">
         <b-navbar-brand v-b-toggle.collapse @click="noScroll()" class="mr-0" href="#">
           <div class="">
-            <router-link to="/" class="navbar-brand mr-0"><img :src="logo" alt="logo"/></router-link>
+            <router-link to="/home" class="navbar-brand mr-0"><img :src="logo" alt="logo"/></router-link>
           </div>
         </b-navbar-brand>
-        <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/about">About</router-link></b-nav-item>
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/number-one"><img :src="hollowWhiteOne"/></router-link></b-nav-item>
-        <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/news">News</router-link></b-nav-item>
+        <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/about">About</router-link></b-nav-item>
+        <!-- <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/news">News</router-link></b-nav-item> -->
       </b-navbar-nav>
 
       <div class="break-line"><img :src="getBreakLine"></div>
 
       <b-navbar-nav class="bottom-content">
         <div class="bottom-content--container">
-          <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="#">Collaborate</router-link></b-nav-item>
-          <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="#">Get In Touch</router-link></b-nav-item>
+          <b-nav-item v-b-toggle.collapse @click="gotoLink('https://www.chemicalx.co.uk/')"><router-link to="#">Chemical X</router-link></b-nav-item>
+          <b-nav-item v-b-toggle.collapse @click="gotoLink('https://discord.com/')"><router-link to="#">Get In Touch</router-link></b-nav-item>
         </div>
         <div class="bottom-content--container">
-          <b-nav-item><b-icon width="27px" height="27px" icon="facebook"></b-icon></b-nav-item>
-          <b-nav-item><b-icon width="27px" height="27px" icon="instagram"></b-icon></b-nav-item>
-          <b-nav-item><b-icon width="27px" height="27px" icon="twitter"></b-icon></b-nav-item>
+          <b-nav-item><b-icon @click="gotoLink('https://facebook.com/')" width="27px" height="27px" icon="facebook"></b-icon></b-nav-item>
+          <b-nav-item><b-icon @click="gotoLink('https://instagram.com/')" width="27px" height="27px" icon="instagram"></b-icon></b-nav-item>
+          <b-nav-item><b-icon @click="gotoLink('https://twitter.com/')" width="27px" height="27px" icon="twitter"></b-icon></b-nav-item>
         </div>
         <div class="bottom-content--container">
-          <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="#">Stacks Foundation</router-link></b-nav-item>
-          <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="#">Risidio</router-link></b-nav-item>
+          <b-nav-item v-b-toggle.collapse @click="gotoLink('https://stacks.org/')"><router-link to="#">Stacks Foundation</router-link></b-nav-item>
+          <b-nav-item v-b-toggle.collapse @click="gotoLink('https://tchange.risidio.com/')"><router-link to="#">Risidio Xchange</router-link></b-nav-item>
         </div>
       </b-navbar-nav>
     </b-collapse>
@@ -66,6 +66,9 @@ export default {
   },
   methods: {
     // test methods - just anticipating the design...
+    gotoLink (link) {
+      window.open(link)
+    },
     getLogo () {
       if (this.$route.name === 'about') return this.rainbowOne
       return this.logo

@@ -5,9 +5,8 @@
     <risidio-pay :configuration="configuration"/>
   </div>
   <div :key="componentKey" v-else>
-    <div></div>
     <router-view name="header"/>
-    <router-view />
+    <router-view style="min-height: 90vh;" />
     <router-view name="footer"/>
     <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
     <waiting-modal/>
@@ -39,81 +38,100 @@ export default {
     }
   },
   mounted () {
-    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'config-flow', asset: this.gaiaAsset })
-    const $self = this
-    let resizeTimer
-    this.loading = false
-    if (window.eventBus && window.eventBus.$on) {
-      window.eventBus.$on('rpayEvent', function (data) {
-        if (data.opcode === 'configured') {
-          $self.$store.dispatch('initApplication').then(() => {
-            // $self.$store.dispatch('rpaySearchStore/fetchContractData')
-            $self.configured = true
-          })
-        } else if (data.opcode === 'stx-transaction-mint') {
-          const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
-          item.stacksTransactions.splice(0, 0, { txId: data.txId, type: 'mint-token' })
-          // commit it straight away to avoid double clicks on the minting button
-          $self.$store.commit('myItemStore/setMintTxId', item)
-          $self.$store.dispatch('myItemStore/saveItem', item)
-        } else if (data.opcode === 'stx-transaction-mint-error') {
-          const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
-          // commit it straight away to avoid double clicks on the minting button
-          $self.$store.commit('myItemStore/setMintTxId', item)
-          $self.$store.dispatch('myItemStore/saveItem', item)
-        } else if (data.opcode === 'configured-logged-in') {
-          $self.$store.commit('rpayAuthStore/setAuthResponse', data.session)
-          $self.$store.dispatch('rpayAuthStore/fetchMyAccount')
-        }
-      })
-    }
-    window.addEventListener('resize', function () {
-      const currentComponent = $self.$route.name
-      if (currentComponent === 'asset-by-hash' || currentComponent === 'upload-item' || currentComponent === 'edit-item') {
-        return
-      }
-      $self.loading = true
-      clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(function () {
-        $self.$store.commit('setWinDims')
-        $self.componentKey += 1
-        $self.loading = false
-      }, 400)
-    })
-    this.$prismic.client.getSingle('tooltips').then(document => {
-      if (document) {
-        this.$store.commit('contentStore/addTooltips', document.data)
-      }
-    })
-    this.$prismic.client.getSingle('homepage').then(document => {
-      if (document) {
-        this.$store.commit('contentStore/addHomeContent', document.data)
-      }
-    })
-    this.$prismic.client.getSingle('about').then(document => {
-      if (document) {
-        this.$store.commit('contentStore/addAboutContent', document.data)
-      }
-    })
-    this.$prismic.client.getSingle('mainfooter').then((document) => {
-      if (document) {
-        this.$store.commit('contentStore/addMainFooter', document.data)
-      }
-    })
-    this.$prismic.client.query(
-      this.$prismic.Predicates.at('document.type', 'charity'),
-      { pageSize: 20, page: 1 }
-    ).then((response) => {
-      this.$store.commit('contentStore/addCharities', response.results)
-    })
-    this.$prismic.client.query(
-      this.$prismic.Predicates.at('document.type', 'artist'),
-      { pageSize: 20, page: 1 }
-    ).then((response) => {
-      this.$store.commit('contentStore/addArtists', response.results)
-    })
+    this.setupEventListener()
+    this.resizeContainers()
+    this.readPrismicContent()
   },
   methods: {
+    setupEventListener () {
+      this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'config-flow', asset: this.gaiaAsset })
+      const $self = this
+      this.loading = false
+      if (window.eventBus && window.eventBus.$on) {
+        window.eventBus.$on('rpayEvent', function (data) {
+          if (data.opcode === 'configured') {
+            $self.$store.dispatch('initApplication').then(() => {
+              // $self.$store.dispatch('rpaySearchStore/fetchContractData')
+              $self.configured = true
+            })
+          } else if (data.opcode === 'stx-transaction-finished') {
+            const txResult = $self.$store.getters[APP_CONSTANTS.KEY_TRANSACTION_DIALOG_MESSAGE]({ dKey: data.opcode, txId: data.txId })
+            $self.$store.commit('setModalMessage', txResult)
+          } else if (data.opcode === 'stx-transaction-sent') {
+            const txResult = $self.$store.getters[APP_CONSTANTS.KEY_TRANSACTION_DIALOG_MESSAGE]({ dKey: data.opcode, txId: data.txId })
+            $self.$store.commit('setModalMessage', txResult)
+          } else if (data.opcode === 'stx-transaction-error') {
+            const txResult = $self.$store.getters[APP_CONSTANTS.KEY_TRANSACTION_DIALOG_MESSAGE]({ dKey: data.opcode, txId: data.txId })
+            $self.$store.commit('setModalMessage', txResult)
+          } else if (data.opcode === 'configured-logged-in') {
+            $self.$store.commit('rpayAuthStore/setAuthResponse', data.session)
+            $self.$store.dispatch('rpayAuthStore/fetchMyAccount')
+          }
+        })
+      }
+    },
+    readPrismicContent () {
+      this.$prismic.client.getSingle('tooltips').then(document => {
+        if (document) {
+          this.$store.commit('contentStore/addTooltips', document.data)
+        }
+      })
+      this.$prismic.client.getSingle('dialogs').then(document => {
+        if (document) {
+          this.$store.commit('contentStore/addDialogs', document.data)
+        }
+      })
+      this.$prismic.client.getSingle('homepage').then(document => {
+        if (document) {
+          this.$store.commit('contentStore/addHomeContent', document.data)
+        }
+      })
+      this.$prismic.client.getSingle('about').then(document => {
+        if (document) {
+          this.$store.commit('contentStore/addAboutContent', document.data)
+        }
+      })
+      this.$prismic.client.getSingle('mainfooter').then((document) => {
+        if (document) {
+          this.$store.commit('contentStore/addMainFooter', document.data)
+        }
+      })
+      this.$prismic.client.query(
+        this.$prismic.Predicates.at('document.type', 'information_page'),
+        { pageSize: 40, page: 1 }
+      ).then((response) => {
+        this.$store.commit('contentStore/addInformation', response.results)
+      })
+      this.$prismic.client.query(
+        this.$prismic.Predicates.at('document.type', 'charity'),
+        { pageSize: 20, page: 1 }
+      ).then((response) => {
+        this.$store.commit('contentStore/addCharities', response.results)
+      })
+      this.$prismic.client.query(
+        this.$prismic.Predicates.at('document.type', 'artist'),
+        { pageSize: 20, page: 1 }
+      ).then((response) => {
+        this.$store.commit('contentStore/addArtists', response.results)
+      })
+    },
+    resizeContainers () {
+      let resizeTimer
+      const $self = this
+      window.addEventListener('resize', function () {
+        const resizable = $self.$route.meta.resizable
+        if (!resizable) {
+          return
+        }
+        $self.loading = true
+        clearTimeout(resizeTimer)
+        resizeTimer = setTimeout(function () {
+          $self.$store.commit('setWinDims')
+          $self.componentKey += 1
+          $self.loading = false
+        }, 400)
+      })
+    },
     scrollMeTo (data) {
       const element = document.getElementById(data.refName)
       const top = element.offsetTop

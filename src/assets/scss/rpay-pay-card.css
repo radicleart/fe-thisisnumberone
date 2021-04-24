@@ -2,8 +2,35 @@
   color: #000;
   background: #FFFFFF 0% 0% no-repeat padding-box;
   box-shadow: 0px 3px 20px #00000029;
-  border-radius: 14px;
+  border-radius: 0px;
 }
+#rpay-modal .modal-content {
+  border: none !important;
+  background-color: transparent !important;
+}
+#rpay-modal .modal-content {
+  border-radius: 0px;
+  min-height: 200px;
+  color: #000;
+  border: none;
+}
+#rpay-modal .modal-header {
+  display: none;
+  border-bottom: 0px solid #dee2e6;
+  border-radius: 0px;
+}
+#rpay-modal .modal-footer {
+  display: none;
+  border-top: 0px solid #dee2e6;
+  border-radius: 0px;
+}
+#rpay-modal .card-text {
+  text-align: center;
+}
+#rpay-modal .footer-container {
+  background: transparent !important;
+}
+
 #rpay-pay-card .footer-container {
   height: 80px;
 }
@@ -26,18 +53,28 @@
   padding: 5px 15px;
   margin: 8px;
   text-transform: capitalize;
-  font-size: 1.2rem;
-  font-weight: 700;
+}
+#rpay-pay-card .btn {
+  text-transform: capitalize;
+  font-size: 1.5rem;
+  font-weight: 7500;
+  border: none;
+}
+#rpay-pay-card label {
+  text-align: left;
+}
+#rpay-pay-card .btn-danger {
+  background-color: #000;
+  border: 1pt solid #000 !important;
+  color: #fff;
 }
 #rpay-pay-card .co-option-off {
   color: #000000;
-  border: #cccccc;
-  background-color: #cccccc;
+  border: 1pt solid #000 !important;
+  background-color: #fff;
   padding: 5px 15px;
   margin: 8px;
   text-transform: capitalize;
-  font-size: 1.2rem;
-  font-weight: 700;
 }
 
 #rpay-pay-card .no-option-on {
@@ -51,7 +88,7 @@
   border-radius: 18px;
 }
 #rpay-pay-card .round-btn {
-  border-radius: 18px;
+  border-radius: 0px;
   width: 50% !important;
   white-space: 'nowrap';
 }
@@ -150,7 +187,6 @@
   color: white;
   font-size: 1.4rem;
   font-weight: 700;
-  border-radius: 18px;
   height: 46px;
 }
 #rpay-pay-card .sq-btn-order {
@@ -160,7 +196,6 @@
   color: white;
   font-size: 1.4rem;
   font-weight: 700;
-  border-radius: 18px;
   height: 46px;
 }
 

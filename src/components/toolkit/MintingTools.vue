@@ -6,9 +6,9 @@
         <div v-if="minting()">Minting - <a :href="transactionUrl()" target="_blank">track progress here...</a></div>
         <b-alert show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</b-alert>
       </div>
-      <b-alert v-else-if="isValid" show variant="danger">
-        <b-button style="width: 100%;" variant="danger" @click.prevent="mintToken()">Mint this item now.</b-button>
-      </b-alert>
+      <div v-else-if="isValid" show variant="danger">
+        <square-button @clickButton="mintToken()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
+      </div>
       <b-alert v-else show variant="danger">not valid - information required</b-alert>
     </div>
 
@@ -27,7 +27,7 @@
             <div class="col-12 mb-5">
               <b-tabs  content-class="p-4">
                 <b-tab title="Beneficiaries" active>
-                  <beneficiaries :assetHash="assetHash"/>
+                  <list-beneficiaries :assetHash="assetHash"/>
                 </b-tab>
                 <b-tab title="Transfers">
                   <transfer-nft :assetHash="assetHash"/>
@@ -41,8 +41,8 @@
         </b-tab>
         <b-tab title="Sales" class="text-white">
           <div>
-            <div class="">{{saleDataText}}</div>
-            <a href="#" @click.prevent="openSaleDataDialog()">Review the sale information</a>
+            <div class="my-5">{{saleDataText}}</div>
+            <square-button @clickButton="openSaleDataDialog()" :theme="'light'" :label1="'UPDATE SALE INFO'" :icon="'eye'"/>
           </div>
         </b-tab>
         <b-tab :title="contractAsset.offerCounter + ' Offers'">
@@ -72,19 +72,26 @@
     <div v-html="mintResult"></div>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
-  <b-modal size="md" id="rpay-modal">
+  <b-modal size="md" id="minting-modal">
+    <minting-flow :assetHash="assetHash" />
+    <template #modal-footer class="text-center"><div class="w-100"></div></template>
+  </b-modal>
+  <b-modal size="md" id="selling-modal">
     <risidio-pay v-if="showRpay" :configuration="configuration"/>
+    <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
 </div>
 </template>
 
 <script>
+import MintingFlow from './mint-setup/MintingFlow'
+import SquareButton from '@/components/utils/SquareButton'
+import RisidioPay from 'risidio-pay'
 import moment from 'moment'
 import { APP_CONSTANTS } from '@/app-constants'
-import RisidioPay from 'risidio-pay'
 import AcceptOffer from '@/components/toolkit/AcceptOffer'
 import TransferNft from '@/components/toolkit/TransferNft'
-import Beneficiaries from '@/components/toolkit/Beneficiaries'
+import ListBeneficiaries from '@/components/toolkit/ListBeneficiaries'
 import GaiaHubRelay from '@/components/toolkit/GaiaHubRelay'
 
 const NETWORK = process.env.VUE_APP_NETWORK
@@ -92,21 +99,22 @@ const NETWORK = process.env.VUE_APP_NETWORK
 export default {
   name: 'MintingTools',
   components: {
+    MintingFlow,
     RisidioPay,
     AcceptOffer,
     TransferNft,
-    Beneficiaries,
-    GaiaHubRelay
+    ListBeneficiaries,
+    GaiaHubRelay,
+    SquareButton
   },
   props: ['assetHash'],
   data: function () {
     return {
+      showRpay: false,
       showTransfers: false,
       showBeneficiaries: false,
       offerData: null,
-      showRpay: false,
       mintResult: null,
-      trackingMessage: 'Blockchain called - answer will be back shortly. You can <a href="____" target="_blank">track the transaction here</a> and the data on this page should refresh automatically.',
       mintTitle: '',
       mintTxId: null
     }
@@ -121,39 +129,23 @@ export default {
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
         if (data && data.txId) $self.mintTxId = data.txId
+        const txResult = $self.$store.getters[APP_CONSTANTS.KEY_TRANSACTION_DIALOG_MESSAGE]({ dKey: data.opcode, txId: data.txId })
         if (data.opcode === 'save-selling-data') {
-          $self.$bvModal.hide('rpay-modal')
-        } else if (data.opcode === 'stx-mint-success' || data.opcode === 'eth-mint-success') {
-          $self.showRpay = false
-          $self.$bvModal.hide('rpay-modal')
+          $self.$bvModal.hide('minting-modal')
+        } else if (data.opcode === 'stx-transaction-finished' || data.opcode === 'eth-mint-success') {
+          $self.$bvModal.hide('minting-modal')
+          $self.mintResult = txResult
           $self.$bvModal.show('result-modal')
-          const item = $self.$store.getters['myItemStore/myItem']($self.item.assetHash)
-          item.tokenId = data.tokenId
-          item.nftIndex = data.nftIndex
-          item.network = data.network
-          item.mintedDate = moment({}).valueOf()
-          $self.$store.dispatch('myItemStore/saveItem', item).then((item) => {
-            $self.mintResult = item.name + ' (#' + item.nftIndex + ') has been saved to your storage'
-          })
         } else if (data.opcode === 'stx-update-mint-data') {
-          // $self.showRpay = false
-          // $self.$bvModal.hide('rpay-modal')
+          // $self.$bvModal.hide('minting-modal')
         } else if (data.opcode === 'stx-save-and-close-mint-data') {
-          // $self.showRpay = false
-          // $self.$bvModal.hide('rpay-modal')
+          // $self.$bvModal.hide('minting-modal')
         } else if (data.opcode === 'stx-transaction-sent') {
-          $self.showRpay = false
-          $self.$bvModal.hide('rpay-modal')
-          $self.mintResult = $self.trackingMessage.replace('____', $self.transactionUrl())
-          $self.$bvModal.show('result-modal')
-        } else if (data.opcode === 'stx-transaction-finished') {
-          $self.showRpay = false
-          $self.$bvModal.hide('rpay-modal')
-          $self.mintResult = $self.trackingMessage.replace('____', $self.transactionUrl())
+          $self.$bvModal.hide('minting-modal')
+          $self.mintResult = txResult
           $self.$bvModal.show('result-modal')
         } else if (data.opcode === 'cancel-minting') {
-          $self.showRpay = false
-          $self.$bvModal.hide('rpay-modal')
+          $self.$bvModal.hide('minting-modal')
         }
       })
     }
@@ -165,16 +157,15 @@ export default {
       item.saleData = contractAsset.saleData
       this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'selling-flow', asset: item })
       this.showRpay = true
-      this.$bvModal.show('rpay-modal')
+      this.$bvModal.show('selling-modal')
     },
     minting: function () {
       return this.mintTxId
     },
     mintToken: function () {
-      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-      this.$bvModal.show('rpay-modal')
-      this.mintTitle = 'Mint: ' + item.name
-      this.showRpay = true
+      this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: this.item })
+      this.$store.commit('rpayStore/setDisplayCard', 100)
+      this.$bvModal.show('minting-modal')
     },
     downable: function () {
       return this.uploadState > 2
@@ -206,6 +197,10 @@ export default {
     }
   },
   computed: {
+    configuration () {
+      const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
+      return configuration
+    },
     item () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       return item
@@ -228,10 +223,6 @@ export default {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
       return contractAsset
     },
-    configuration () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
-      return configuration
-    },
     isValid: function () {
       const invalidItems = this.$store.getters[APP_CONSTANTS.KEY_ITEM_VALIDITY](this.item)
       return invalidItems.length === 0
@@ -247,30 +238,6 @@ export default {
 </script>
 
 <style>
-#rpay-modal .modal-content {
-  border: none !important;
-  background-color: #fff !important;
-}
-#rpay-modal .modal-content {
-  background-color: transparent !important;
-  border-radius: 20px;
-  min-height: 200px;
-  color: #fff;
-  border: none;
-}
-#rpay-modal .modal-header {
-  display: none;
-  border-bottom: 0px solid #dee2e6;
-  border-radius: 20px;
-}
-#rpay-modal .modal-footer {
-  display: none;
-  border-top: 0px solid #dee2e6;
-  border-radius: 20px;
-}
-#rpay-modal .footer-container {
-  background: transparent !important;
-}
 #minting-tools  .nav-link.active {
   color: #000;
 }

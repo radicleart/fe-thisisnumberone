@@ -37,7 +37,9 @@ export default {
   },
   computed: {
     resultSet () {
-      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_SEARCH_RESULTS]
+      const results = this.$store.getters[APP_CONSTANTS.KEY_SEARCH_RESULTS]
+      if (!results) return
+      const resultSet = results.filter((o) => o.nftMedia.artworkFile.type.indexOf('video') > -1)
       return resultSet
     },
     resultSetFromIndex () {

@@ -7,15 +7,15 @@
       <div class="row footer-top">
 
         <div class="footer-logo col-12 col-lg-4">
-          <img :src="logo" alt="logo"/>
+          <b-link to="/home"><img :src="logo" alt="logo"/></b-link>
         </div>
 
         <div class="col-3 col-lg-2 footer-top--content">
           <div class="column-header">About</div>
           <div v-for="(item,index) of content.column_about" :key="index">
-            <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+            <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href="item.link.url" target="_blank">{{ item.title_of_the_link[0].text }}</a></div>
             <div v-else-if="item.title_of_the_link[0].type === 'image'">
-              <a :href=item.link.url><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+              <a :href="item.link.url" target="_blank"><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
             </div>
           </div>
         </div>
@@ -23,9 +23,9 @@
         <div class="col-3 col-lg-2 footer-top--content">
           <div class="column-header">#1</div>
           <div v-for="(item,index) of content.column__1" :key="index">
-            <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+            <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href="item.link.url" target="_blank">{{ item.title_of_the_link[0].text }}</a></div>
             <div v-else-if="item.title_of_the_link[0].type === 'image'">
-              <a :href=item.link.url><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+              <a :href="item.link.url" target="_blank" ><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
             </div>
           </div>
         </div>
@@ -33,9 +33,9 @@
         <div class="col-3 col-lg-2 footer-top--content">
           <div class="column-header">News</div>
           <div v-for="(item,index) of content.news_column" :key="index">
-            <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+            <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href="item.link.url" target="_blank">{{ item.title_of_the_link[0].text }}</a></div>
             <div v-else-if="item.title_of_the_link[0].type === 'image'">
-              <a :href=item.link.url><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+              <a :href="item.link.url" target="_blank"><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
             </div>
           </div>
           <div class="social-links">
@@ -48,9 +48,9 @@
         <div class="col-3 col-lg-2 footer-top--content">
           <div class="column-header">Partners</div>
           <div v-for="(item,index) of content.partners_column" :key="index">
-            <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href=item.link.url>{{ item.title_of_the_link[0].text }}</a></div>
+            <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href="item.link.url" target="_blank">{{ item.title_of_the_link[0].text }}</a></div>
             <div v-else-if="item.title_of_the_link[0].type === 'image'">
-              <a :href=item.link.url><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
+              <a :href="item.link.url" target="_blank"><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
             </div>
           </div>
         </div>
@@ -62,15 +62,16 @@
         </div>
 
         <div class="footer-bottom--right">
-          <a href="#">Term of use</a>
-          <a href="#">Privacy policy</a>
+          <b-link to="/information/info-terms">Term of use</b-link>
+          <b-link to="/information/info-privacy-policy">Privacy policy</b-link>
         </div>
       </div>
 
       <div class="d-block d-sm-none text-center footer-bottom">
         <div class="footer-bottom--left mb-1">
           <a href="#">Term of use</a>
-          <a href="#">Privacy policy</a>
+          <b-link to="/information/info-terms">Term of use</b-link>
+          <b-link to="/information/info-privacy-policy">Privacy policy</b-link>
         </div>
 
         <div class="footer-bottom--right">

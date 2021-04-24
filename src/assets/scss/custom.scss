@@ -11,7 +11,7 @@ html {
 }
 body {
   /* default font-size set back to 16px */
-  font-size: 1.6rem;
+  font-size: 2.0rem;
   margin: 0;
   font-family: 'Baloo Bhaina 2', Arial, Helvetica, sans-serif !important;
   -webkit-font-smoothing: antialiased;
@@ -64,12 +64,19 @@ body a:hover {
   box-shadow: 0px 3px 6px #00000029;
   border-radius: 0px;
 }
+.modal-dialog {
+  max-width: 100vw;
+  padding: 50px auto;
+  margin: 100px;
+}
 .modal-content {
+  text-align: center;
+  min-width: 80vw;
   border: none !important;
-  background-color: rgb(163, 145, 145) !important;
   border-radius: 0px !important;
   min-height: 200px;
   color: rgb(7, 0, 0);
+  padding: 50px;
 }
 .modal-header {
   border: none !important;
@@ -93,7 +100,7 @@ body a:hover {
   background-color: #000;
 }
 .text-preview {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 500;
 }
 .text-bold {
@@ -101,7 +108,11 @@ body a:hover {
   font-weight: 700;
 }
 .text-small {
-  font-size: 1rem;
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+.tooltip-inner {
+  font-size: 1.4rem;
   font-weight: 300;
 }
 .cover-image {

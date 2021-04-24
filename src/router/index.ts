@@ -6,6 +6,8 @@ import HomeFooter from '@/components/layout/HomeFooter.vue'
 import MainFooter from '@/components/layout/MainFooter.vue'
 import Login from '../views/Login.vue'
 // import Profile from '../views/Profile.vue'
+import Information from '../views/Information.vue'
+import Charity from '../views/Charity.vue'
 import Splash from '../views/Splash.vue'
 import Home from '../views/Home.vue'
 import AssetDetails from '../views/AssetDetails.vue'
@@ -30,15 +32,6 @@ const isPermitted = function (to, profile) {
   } else {
     return true
   }
-  if (to.matched.some(record => record.meta.requiresAdmin)) {
-    if (profile.superAdmin) {
-      return true
-    } else {
-      return false
-    }
-  } else {
-    return true
-  }
 }
 
 const routes: Array<RouteConfig> = [
@@ -50,7 +43,8 @@ const routes: Array<RouteConfig> = [
   {
     path: '/home',
     name: 'home',
-    components: { default: Home, header: MainNavbar, footer: HomeFooter }
+    components: { default: Home, header: MainNavbar, footer: HomeFooter },
+    meta: { resizable: false }
   },
   {
     path: '/create',
@@ -92,10 +86,19 @@ const routes: Array<RouteConfig> = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/information/:infoId',
+    name: 'info-page',
+    components: { default: Information, header: MainNavbar, footer: MainFooter }
+  },
+  {
+    path: '/charity/:charityId',
+    name: 'charity-page',
+    components: { default: Charity, header: MainNavbar, footer: MainFooter }
+  },
+  {
     path: '/assets/:assetHash',
     name: 'asset-by-hash',
-    components: { default: AssetDetails, header: MainNavbar, footer: MainFooter },
-    meta: { requiresAuth: false }
+    components: { default: AssetDetails, header: MainNavbar, footer: MainFooter }
   },
   {
     path: '/edit-item/:assetHash',
