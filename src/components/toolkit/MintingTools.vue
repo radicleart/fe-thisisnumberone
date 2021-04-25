@@ -131,8 +131,10 @@ export default {
         if (data && data.txId) $self.mintTxId = data.txId
         const txResult = $self.$store.getters[APP_CONSTANTS.KEY_TRANSACTION_DIALOG_MESSAGE]({ dKey: data.opcode, txId: data.txId })
         if (data.opcode === 'save-selling-data') {
+          $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
         } else if (data.opcode === 'stx-transaction-finished' || data.opcode === 'eth-mint-success') {
+          $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
           $self.mintResult = txResult
           $self.$bvModal.show('result-modal')
@@ -141,10 +143,12 @@ export default {
         } else if (data.opcode === 'stx-save-and-close-mint-data') {
           // $self.$bvModal.hide('minting-modal')
         } else if (data.opcode === 'stx-transaction-sent') {
+          $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
           $self.mintResult = txResult
           $self.$bvModal.show('result-modal')
         } else if (data.opcode === 'cancel-minting') {
+          $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
         }
       })
@@ -238,6 +242,14 @@ export default {
 </script>
 
 <style>
+#selling-modal .modal-content {
+  border: none !important;
+  background-color: transparent !important;
+}
+#minting-modal .modal-content {
+  border: none !important;
+  background-color: transparent !important;
+}
 #minting-tools  .nav-link.active {
   color: #000;
 }

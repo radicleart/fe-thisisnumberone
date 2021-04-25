@@ -8,6 +8,8 @@ export const APP_CONSTANTS = {
   KEY_CONTENT_ABOUT: 'contentStore/getAbout',
 
   KEY_MY_ITEMS: 'myItemStore/getMyItems',
+  KEY_MY_MINTED_ITEMS: 'myItemStore/getMyMintedItems',
+  KEY_MY_PURCHASED_ITEMS: 'myItemStore/getMyPurchasedItems',
   KEY_MY_ITEM: 'myItemStore/myItem',
   KEY_MODAL_MESSAGE: 'getModalMessage',
   KEY_ITEM_VALIDITY: 'myItemStore/getItemValidity',

@@ -144,7 +144,7 @@ router.beforeEach((to, from, next) => {
       if (isPermitted(to, myProfile)) {
         return next()
       } else {
-        return next({ path: '/404', query: { redirect: to.fullPath } })
+        return next({ path: '/home', query: { redirect: to.fullPath } })
       }
     } else {
       setTimeout(function () {
@@ -153,7 +153,7 @@ router.beforeEach((to, from, next) => {
           if (isPermitted(to, myProfile)) {
             return next()
           } else {
-            return next({ path: '/404', query: { redirect: to.fullPath } })
+            return next({ path: '/home', query: { redirect: to.fullPath } })
           }
         } else {
           return next({

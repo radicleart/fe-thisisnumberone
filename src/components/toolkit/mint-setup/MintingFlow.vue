@@ -1,18 +1,14 @@
 <template>
 <div class="d-flex justify-content-center" v-if="!loading">
   <div class="mx-auto">
-    <royalty-screen :errorMessage="errorMessage" :item="item" @editBeneficiary="editBeneficiary" @removeBeneficiary="removeBeneficiary" @updateBeneficiary="updateBeneficiary" @addNewBeneficiary="addNewBeneficiary" :beneficiaries="beneficiaries" v-if="!isMinted && displayCard === 100"/>
+    <royalty-screen :errorMessage="errorMessage" :item="item" @mintToken="mintToken" @editBeneficiary="editBeneficiary" @removeBeneficiary="removeBeneficiary" @updateBeneficiary="updateBeneficiary" @addNewBeneficiary="addNewBeneficiary" :beneficiaries="beneficiaries" v-if="!isMinted && displayCard !== 102"/>
     <add-beneficiary-screen :eBen="eBen" @addBeneficiary="addBeneficiary" :beneficiaries="beneficiaries" :item="item" v-if="!isMinted && displayCard === 102"/>
-    <pending-screen :item="item" v-if="!isMinted && displayCard === 104"/>
-    <success-screen :item="item" v-if="isMinted || displayCard === 106"/>
   </div>
 </div>
 </template>
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import SuccessScreen from './minting-screens/SuccessScreen'
-import PendingScreen from './minting-screens/PendingScreen'
 import RoyaltyScreen from './minting-screens/RoyaltyScreen'
 import AddBeneficiaryScreen from './minting-screens/AddBeneficiaryScreen'
 
@@ -20,8 +16,6 @@ export default {
   name: 'MintingFlow',
   components: {
     RoyaltyScreen,
-    PendingScreen,
-    SuccessScreen,
     AddBeneficiaryScreen
   },
   props: ['assetHash'],
@@ -34,26 +28,43 @@ export default {
     }
   },
   mounted () {
+    const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+    if (item.beneficiaries && item.beneficiaries.length > 0) {
+      this.beneficiaries = item.beneficiaries
+    } else {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      this.beneficiaries = [
+        {
+          username: profile.username,
+          role: 'Seller',
+          owner: true,
+          email: profile.username,
+          royalty: 100,
+          chainAddress: profile.stxAddress
+        }
+      ]
+      this.updateItem()
+    }
     this.setPage()
-    const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-    this.beneficiaries = [
-      {
-        username: profile.username,
-        role: 'Owner',
-        owner: true,
-        email: profile.username,
-        royalty: 100,
-        chainAddress: profile.stxAddress
-      }
-    ]
-    const $self = this
-    window.eventBus.$on('rpayEvent', function (data) {
-      if (data.opcode.indexOf('-mint-success') > -1) {
-        $self.$store.commit('rpayStore/setDisplayCard', 106)
-      }
-    })
   },
   methods: {
+    mintToken: function () {
+      this.errorMessage = 'Minting non fungible token - takes a minute or so..'
+      const methos = (process.env.VUE_APP_NETWORK === 'local') ? 'callContractRisidio' : 'callContractBlockstack'
+      const data = {
+        assetHash: this.item.assetHash,
+        gaiaUsername: this.item.gaiaUsername,
+        beneficiaries: this.item.beneficiaries,
+        editions: this.item.editions,
+        action: methos,
+        contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
+        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
+        functionName: 'mint-token'
+      }
+      this.$store.dispatch('rpayStacksStore/mintToken', data).then((result) => {
+        this.result = result
+      })
+    },
     addNewBeneficiary: function () {
       this.eBen = null
       this.$store.commit('rpayStore/setDisplayCard', 102)
@@ -66,12 +77,16 @@ export default {
       const index = this.beneficiaries.findIndex((obj) => obj.chainAddress === beneficiary.chainAddress)
       if (index > -1) {
         this.beneficiaries.splice(index, 1)
+        this.setBaseRoyalty()
+        this.updateItem()
       }
     },
     updateBeneficiary: function (beneficiary) {
       const index = this.beneficiaries.findIndex((obj) => obj.chainAddress === beneficiary.chainAddress)
       if (index > -1) {
         this.beneficiaries.splice(index, 1, beneficiary)
+        this.setBaseRoyalty()
+        this.updateItem()
       }
     },
     addBeneficiary: function (beneficiary) {
@@ -95,6 +110,7 @@ export default {
         }
       }
       this.setBaseRoyalty()
+      this.updateItem()
       this.$store.commit('rpayStore/setDisplayCard', 100)
     },
     setBaseRoyalty () {
@@ -112,6 +128,13 @@ export default {
       if (sum !== 100) {
         this.errorMessage = 'Royalties must add up to 100%'
       }
+    },
+    updateItem () {
+      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      item.beneficiaries = this.beneficiaries
+      this.$store.dispatch('myItemStore/saveItem', item).then((item) => {
+        this.beneficiaries = item.beneficiaries
+      })
     },
     setPage () {
       this.loading = false

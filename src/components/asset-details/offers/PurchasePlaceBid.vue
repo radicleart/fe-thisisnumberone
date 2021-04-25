@@ -1,5 +1,5 @@
 <template>
-<div v-if="buyNowDialog">
+<div v-if="buyNowDialog && saleData">
   <b-row>
     <b-col cols="12">
       <h1>{{buyNowDialog[0].text}}</h1>
@@ -14,11 +14,11 @@
     </b-col>
     <b-col md="5" sm="6" style="border-right: 1pt solid #000;">
       <div>
-        <h3><span class="mr-5 text-black">Buy Now</span> {{saleData.buyNowOrStartingPrice}} STX</h3>
+        <h3><span class="mr-5 text-black">Current Bid</span> {{saleData.buyNowOrStartingPrice}} STX</h3>
       </div>
     </b-col>
     <b-col md="3" sm="6" style="font-size: 0.8em;">
-      <div class="mb-3 pb-3 border-bottom">Buy now for {{saleData.buyNowOrStartingPrice}} STX</div>
+      <div class="mb-3 pb-3 border-bottom">Place bid for {{saleData.buyNowOrStartingPrice}} STX</div>
       <div class="pl-0">
         <div v-for="(rate, index) in rates" :key="index" class="border-bottom py-1 d-flex justify-content-between">
           <div style="min-width: 100px;" class="text-right mr-4">{{rate.value}}</div>
@@ -33,7 +33,7 @@
         <div class="d-flex justify-content-between">
           <div class="" style="width: 79%; border-bottom: 1pt solid #000000;"></div>
           <div style="position: relative; top: 25px;">
-            <square-button :theme="'dark'" @clickButton="$emit('buyNow')" :label1="'BUY NOW'" :svgImage="icon" :usePixelBg="true"/>
+            <square-button :theme="'dark'" @clickButton="$emit('buyNow')" :label1="'BID NOW: ' + bidAmount + ' STX'" :svgImage="hammer" :usePixelBg="true"/>
           </div>
         </div>
       </div>
@@ -55,6 +55,7 @@ export default {
   props: ['saleData', 'offerData'],
   data () {
     return {
+      hammer: require('@/assets/img/auction.svg'),
       icon: require('@/assets/img/check-square.svg'),
       loading: true,
       formSubmitted: false,
@@ -73,6 +74,14 @@ export default {
     }
   },
   computed: {
+    bidAmount () {
+      return this.saleData.buyNowOrStartingPrice + this.saleData.incrementPrice
+    },
+    reserveMet () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
+      const saleData = contractAsset.saleData
+      return saleData.buyNowOrStartingPrice >= saleData.reservePrice
+    },
     buyNowDialog () {
       const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('place-bid')
       return dialog

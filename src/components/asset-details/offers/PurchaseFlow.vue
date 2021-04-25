@@ -119,6 +119,7 @@ export default {
       const buyNowData = {
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,
+        sendAsSky: true,
         nftIndex: contractAsset.nftIndex,
         amount: contractAsset.saleData.buyNowOrStartingPrice,
         owner: contractAsset.owner,

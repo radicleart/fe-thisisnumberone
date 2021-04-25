@@ -7,8 +7,8 @@
   <div class="row border-bottom mb-3 pb-2">
     <div class="col-12"><h3>Environment Variables</h3></div>
     <div class="col-md-2">RISIDIO_API</div><div class="col-md-10">{{RISIDIO_API}}</div>
-    <div class="col-md-2">STACKS_CONTRACT_ADDRESS</div><div class="col-md-10">{{STACKS_CONTRACT_ADDRESS}}</div>
-    <div class="col-md-2">STACKS_CONTsRACT_NAME</div><div class="col-md-10">{{STACKS_CONTRACT_NAME}}</div>
+    <div class="col-md-2">Address</div><div class="col-md-10">{{STACKS_CONTRACT_ADDRESS}}</div>
+    <div class="col-md-2">Name</div><div class="col-md-10">{{STACKS_CONTRACT_NAME}}</div>
     <div class="col-md-2">Mac</div><div class="col-md-10">{{mac}}</div>
     <div class="col-md-2">Sky</div><div class="col-md-10">{{sky}}</div>
   </div>
@@ -38,10 +38,20 @@
           <div class="col-2">Edition</div><div class="col-10">{{token.tokenInfo.edition}} / {{token.tokenInfo.maxEditions}}</div>
           <div class="col-2">SHA(256)</div><div class="col-10">{{token.tokenInfo.assetHash}}</div>
           <div class="col-2">Owner</div><div class="col-10">{{token.owner}}</div>
-          <div class="col-2">Sale Data</div><div class="col-10">Type={{token.saleData.saleType}}, Amount={{token.saleData.buyNowOrStartingPrice}} Reserve={{token.saleData.reservePrice}} Increment={{token.saleData.incrementPrice}}</div>
+          <div class="col-2">Sale Data</div><div class="col-10">Type={{token.saleData.saleType}} Cycle={{token.saleData.saleCycleIndex}}, Amount={{token.saleData.buyNowOrStartingPrice}} Reserve={{token.saleData.reservePrice}} Increment={{token.saleData.incrementPrice}}</div>
           <div class="col-2">End time</div><div class="col-10">{{formatDate(token.saleData.biddingEndTime)}}</div>
           <div class="col-2">Block-height</div><div class="col-10">{{token.tokenInfo.date}}</div>
+          <div class="col-2">Transfer Count</div><div class="col-10">{{token.transferCounter}}</div>
+          <div class="col-2">Transfer History</div><div class="col-10">{{token.transferHistoryMap}}</div>
           <div class="col-2">Original</div><div class="col-10">{{token.tokenInfo.seriesOriginal}}</div>
+          <div class="col-2">Royalties:</div>
+          <div class="col-10">
+            <div class="row" v-for="(beneficiary, index) in token.beneficiaries" :key="index">
+              <div class="col-2">{{beneficiary.username}}</div>
+              <div class="col-2">{{beneficiary.royalty}}</div>
+              <div class="col-8">{{beneficiary.chainAddress}}</div>
+            </div>
+          </div>
           <div class="col-2">Offers</div><div class="col-10">{{token.offerCounter}}</div>
           <div class="col-2"></div>
           <div class="col-10">

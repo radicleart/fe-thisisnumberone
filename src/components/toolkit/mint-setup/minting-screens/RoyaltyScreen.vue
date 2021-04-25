@@ -55,35 +55,7 @@ export default {
       window.eventBus.$emit('rpayEvent', configuration)
     },
     mintToken: function () {
-      this.errorMessage = 'Minting non fungible token - takes a minute or so..'
-      this.$store.commit('rpayStore/setDisplayCard', 104)
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      const networkConfig = this.$store.getters[APP_CONSTANTS.KEY_PREFERRED_NETWORK]
-      networkConfig.assetHash = configuration.gaiaAsset.assetHash
-      networkConfig.editions = configuration.gaiaAsset.editions
-      networkConfig.gaiaUsername = configuration.gaiaAsset.gaiaUsername
-      networkConfig.beneficiaries = configuration.minter.beneficiaries
-      if (networkConfig.network === 'stacks connect') {
-        networkConfig.action = 'callContractBlockstack'
-        this.mintTokenStacks(networkConfig)
-      } else if (networkConfig.network === 'stacks risidio') {
-        networkConfig.action = 'callContractRisidio'
-        this.mintTokenStacks(networkConfig)
-      } else {
-        this.mintTokenEthereum(networkConfig)
-      }
-    },
-    mintTokenStacks: function (data) {
-      this.$store.dispatch('rpayStacksStore/mintToken', data)
-    },
-    mintTokenEthereum: function (networkConfig) {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      const mintConfig = {
-        opcode: 'mint-token',
-        ethContractAddress: networkConfig.contractAddress,
-        assetHash: configuration.gaiaAsset.assetHash
-      }
-      this.$store.dispatch('rpayEthereumStore/transact', mintConfig)
+      this.$emit('mintToken')
     }
   },
   computed: {

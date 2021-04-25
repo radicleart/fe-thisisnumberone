@@ -38,8 +38,6 @@
 </template>
 
 <script>
-import { APP_CONSTANTS } from '@/app-constants'
-
 export default {
   name: 'Beneficiary',
   components: {

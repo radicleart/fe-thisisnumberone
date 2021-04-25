@@ -18,11 +18,19 @@ const myItemStore = {
   state: {
     rootFile: null,
     gaiaUrl: null,
-    indexResult: null
+    indexResult: null,
+    mintedRecords: null,
+    purchasedRecords: null
   },
   getters: {
     getMyItems: state => {
       return (state.rootFile) ? state.rootFile.records : []
+    },
+    getMyMintedItems: state => {
+      return (state.mintedRecords) ? state.mintedRecords : []
+    },
+    getMyPurchasedItems: state => {
+      return (state.purchasedRecords) ? state.purchasedRecords : []
     },
     getItemParamValidity: state => (item, param) => {
       if (!state.rootFile) return
@@ -70,6 +78,12 @@ const myItemStore = {
     rootFile (state: any, rootFile: any) {
       state.rootFile = rootFile
     },
+    mintedRecords (state: any, mintedRecords: any) {
+      state.mintedRecords = mintedRecords
+    },
+    purchasedRecords (state: any, purchasedRecords: any) {
+      state.purchasedRecords = purchasedRecords
+    },
     indexResult (state: any, indexResult: any) {
       state.indexResult = indexResult
     },
@@ -79,22 +93,82 @@ const myItemStore = {
     }
   },
   actions: {
-    initSchema ({ state, commit, rootGetters }, forced: boolean) {
+    initSchema ({ dispatch, state, rootGetters }, forced: boolean) {
       return new Promise((resolve) => {
         const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
         if (state.rootFile && !forced) {
           resolve(state.rootFile)
         } else {
-          myItemService.fetchMyItems(profile).then((rootFile: object) => {
-            commit('rootFile', rootFile)
+          dispatch('fetchItems').then((rootFile: object) => {
             resolve(rootFile)
           }).catch(() => {
-            myItemService.initItemSchema(profile).then((rootFile: object) => {
-              commit('rootFile', rootFile)
-              resolve(rootFile)
-            })
+            myItemService.initItemSchema(profile)
           })
         }
+      })
+    },
+    fetchItems ({ dispatch, commit, rootGetters }) {
+      return new Promise((resolve, reject) => {
+        const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
+        myItemService.fetchMyItems(profile).then((rootFile: any) => {
+          const unmintedRecords = []
+          const mintedRecords = []
+          rootFile.records.forEach((o) => {
+            const contractAsset = rootGetters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](o.assetHash)
+            if (!contractAsset) unmintedRecords.push(o)
+            else {
+              o.contractAsset = contractAsset
+              mintedRecords.push(o)
+            }
+          })
+          rootFile.records = unmintedRecords
+          // note ownership (on-chain) can be changing hands as we speak!
+          commit('mintedRecords', mintedRecords)
+          commit('rootFile', rootFile)
+          dispatch('fetchPurchasedItems')
+          resolve(rootFile)
+        }).catch((error) => {
+          reject(error)
+        })
+      })
+    },
+    fetchPurchasedItems ({ commit, rootGetters }) {
+      return new Promise((resolve) => {
+        const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
+        const contractId = STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
+        const myContractAssets = rootGetters[APP_CONSTANTS.KEY_ASSETS_BY_CONTRACT_ID_AND_OWNER]({ contractId: contractId, stxAddress: profile.stxAddress })
+        if (!myContractAssets) return
+        const purchasedRecords = []
+        myContractAssets.forEach((contractAsset) => {
+          const gaiaAsset = rootGetters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](contractAsset.tokenInfo.assetHash)
+          if (gaiaAsset && contractAsset) {
+            gaiaAsset.contractAsset = contractAsset
+            purchasedRecords.push(gaiaAsset)
+          }
+        })
+        // note ownership (on-chain) can be changing hands as we speak!
+        commit('purchasedRecords', purchasedRecords)
+        resolve(purchasedRecords)
+      })
+    },
+    indexRootFile ({ state, commit }) {
+      return new Promise((resolve) => {
+        searchIndexService.indexRootFile(state.rootFile).then((result) => {
+          commit('indexResult', result)
+          resolve(result)
+        }).catch((error) => {
+          console.log(error)
+        })
+        /**
+        state.rootFile.records.forEach((record) => {
+          searchIndexService.addRecord(record).then((result) => {
+            commit('indexResult', result)
+            resolve(result)
+          }).catch((error) => {
+            console.log(error)
+          })
+        })
+        **/
       })
     },
     deleteItem ({ state, dispatch, rootGetters }, item) {
@@ -148,37 +222,6 @@ const myItemStore = {
         })
       })
     },
-    fetchItems ({ commit, rootGetters }) {
-      return new Promise((resolve, reject) => {
-        const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
-        myItemService.fetchMyItems(profile).then((rootFile: any) => {
-          commit('rootFile', rootFile)
-          resolve(rootFile.records)
-        }).catch((error) => {
-          reject(error)
-        })
-      })
-    },
-    indexRootFile ({ state, commit }) {
-      return new Promise((resolve) => {
-        searchIndexService.indexRootFile(state.rootFile).then((result) => {
-          commit('indexResult', result)
-          resolve(result)
-        }).catch((error) => {
-          console.log(error)
-        })
-        /**
-        state.rootFile.records.forEach((record) => {
-          searchIndexService.addRecord(record).then((result) => {
-            commit('indexResult', result)
-            resolve(result)
-          }).catch((error) => {
-            console.log(error)
-          })
-        })
-        **/
-      })
-    },
     findItemByAssetHash ({ state }, assetHash: string) {
       return new Promise((resolve) => {
         const index = state.rootFile.records.findIndex((o) => o.assetHash === assetHash)
@@ -213,6 +256,7 @@ const myItemStore = {
           reject(new Error('Unable to save your data...'))
           return
         }
+        if (item.contractAsset) item.contractAsset = null
         if (typeof item.nftIndex === 'undefined') item.nftIndex = -1
         if (item.nftMedia && item.nftMedia.coverImage && item.nftMedia.coverImage.fileUrl) {
           const mintedUrl = encodeURI(item.nftMedia.coverImage.fileUrl)
