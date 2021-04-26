@@ -33,33 +33,40 @@
         <div class="col-2">administrator</div><div class="col-10">{{application.tokenContract.administrator}}</div>
         <div class="col-2">Platform Fee</div><div class="col-10">{{application.tokenContract.platformFee}}</div>
         <div class="col-2">Mint Fee</div><div class="col-10">{{application.tokenContract.mintCounter}}</div>
-        <div class="row ml-4 py-5 border-top" v-for="(token, index) in application.tokenContract.tokens" :key="index">
-          <div class="col-2">NFT</div><div class="col-10">#{{token.nftIndex}}</div>
-          <div class="col-2">Edition</div><div class="col-10">{{token.tokenInfo.edition}} / {{token.tokenInfo.maxEditions}}</div>
-          <div class="col-2">SHA(256)</div><div class="col-10">{{token.tokenInfo.assetHash}}</div>
-          <div class="col-2">Owner</div><div class="col-10">{{token.owner}}</div>
-          <div class="col-2">Sale Data</div><div class="col-10">Type={{token.saleData.saleType}} Cycle={{token.saleData.saleCycleIndex}}, Amount={{token.saleData.buyNowOrStartingPrice}} Reserve={{token.saleData.reservePrice}} Increment={{token.saleData.incrementPrice}}</div>
-          <div class="col-2">End time</div><div class="col-10">{{formatDate(token.saleData.biddingEndTime)}}</div>
-          <div class="col-2">Block-height</div><div class="col-10">{{token.tokenInfo.date}}</div>
-          <div class="col-2">Transfer Count</div><div class="col-10">{{token.transferCounter}}</div>
-          <div class="col-2">Transfer History</div><div class="col-10">{{token.transferHistoryMap}}</div>
-          <div class="col-2">Original</div><div class="col-10">{{token.tokenInfo.seriesOriginal}}</div>
-          <div class="col-2">Royalties:</div>
-          <div class="col-10">
-            <div class="row" v-for="(beneficiary, index) in token.beneficiaries" :key="index">
-              <div class="col-2">{{beneficiary.username}}</div>
-              <div class="col-2">{{beneficiary.royalty}}</div>
-              <div class="col-8">{{beneficiary.chainAddress}}</div>
+        <div class="ml-4 py-5 border-top" v-for="(token, index) in application.tokenContract.tokens" :key="index">
+          <div class="row">
+            <div class="col-2 my-4"><div v-if="gaiaAsset(token.tokenInfo.assetHash)"><img width="100px" :src="gaiaAsset(token.tokenInfo.assetHash).imageUrl"/></div></div>
+            <div class="col-10 my-4" v-if="gaiaAsset(token.tokenInfo.assetHash)">
+              <div>{{gaiaAsset(token.tokenInfo.assetHash).name}}</div>
+              <div>[#{{token.nftIndex}}] : Edition {{token.tokenInfo.edition}} / {{token.tokenInfo.maxEditions}}</div>
+              <div>Uploaded by:     {{gaiaAsset(token.tokenInfo.assetHash).owner}}</div>
+              <div>Gaia user:       {{token.tokenInfo.gaiaUsername}}</div>
             </div>
-          </div>
-          <div class="col-2">Offers</div><div class="col-10">{{token.offerCounter}}</div>
-          <div class="col-2"></div>
-          <div class="col-10">
-            <div v-for="(offer, index1) in token.offerHistory" :key="index1">
-              <div>{{offer.amount}}</div>
-              <div>{{offer.offerer}}</div>
-              <div>{{offer.saleCycle}}</div>
-              <div>{{formatDate(offer.madeDate)}}</div>
+            <div class="col-2">SHA(256)</div><div class="col-10">{{token.tokenInfo.assetHash}}</div>
+            <div class="col-2">Owner</div><div class="col-10">{{token.owner}}</div>
+            <div class="col-2">Sale Data</div><div class="col-10">Type={{token.saleData.saleType}} Cycle={{token.saleData.saleCycleIndex}}, Amount={{token.saleData.buyNowOrStartingPrice}} Reserve={{token.saleData.reservePrice}} Increment={{token.saleData.incrementPrice}}</div>
+            <div class="col-2">End time</div><div class="col-10">{{formatDate(token.saleData.biddingEndTime)}}</div>
+            <div class="col-2">Block-height</div><div class="col-10">{{token.tokenInfo.date}}</div>
+            <div class="col-2">Transfer Count</div><div class="col-10">{{token.transferCounter}}</div>
+            <div class="col-2">Transfer History</div><div class="col-10">{{token.transferHistory}}</div>
+            <div class="col-2">Original</div><div class="col-10">{{token.tokenInfo.seriesOriginal}}</div>
+            <div class="col-2">Royalties:</div>
+            <div class="col-10">
+              <div class="row" v-for="(beneficiary, index) in token.beneficiaries" :key="index">
+                <div class="col-2">{{beneficiary.username}}</div>
+                <div class="col-2">{{beneficiary.royalty}}</div>
+                <div class="col-8">{{beneficiary.chainAddress}}</div>
+              </div>
+            </div>
+            <div class="col-2">Offers</div><div class="col-10">{{token.offerCounter}}</div>
+            <div class="col-2"></div>
+            <div class="col-10">
+              <div v-for="(offer, index1) in token.offerHistory" :key="index1">
+                <div>{{offer.amount}}</div>
+                <div>{{offer.offerer}}</div>
+                <div>{{offer.saleCycle}}</div>
+                <div>{{formatDate(offer.madeDate)}}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -94,6 +101,10 @@ export default {
     formatDate: function (date) {
       const loaclEndM = moment(date)
       return loaclEndM.format('DD-MM-YY hh:mm')
+    },
+    gaiaAsset (hash) {
+      const gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](hash)
+      return gaiaAsset
     }
   },
   computed: {

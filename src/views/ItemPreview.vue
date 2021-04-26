@@ -58,7 +58,7 @@ export default {
     this.assetHash = this.$route.params.assetHash
     this.$store.dispatch('myItemStore/findItemByAssetHash', this.assetHash).then((item) => {
       if (!item) {
-        this.$router.push('/404')
+        this.$router.push('/my-items')
       }
     })
   },

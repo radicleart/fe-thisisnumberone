@@ -14,7 +14,7 @@
     </b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav align="end">
       <b-navbar-nav class="ml-auto" is-nav>
-        <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/my-items">NFT Library</router-link></b-nav-item>
+        <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/my-items/all">NFT Library</router-link></b-nav-item>
         <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/upload-item">Create NFT</router-link></b-nav-item>
         <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/admin">Admin</router-link></b-nav-item>
         <b-dropdown right v-if="loggedIn" size="lg"  variant="link" toggle-class="text-decoration-none" no-caret>

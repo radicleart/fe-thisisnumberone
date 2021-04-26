@@ -63,6 +63,7 @@ export default {
       }
       this.$store.dispatch('rpayStacksStore/mintToken', data).then((result) => {
         this.result = result
+        this.$store.dispatch('myItemStore/initSchema', true)
       })
     },
     addNewBeneficiary: function () {

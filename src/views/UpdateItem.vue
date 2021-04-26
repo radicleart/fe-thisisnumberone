@@ -78,7 +78,7 @@ export default {
     this.$store.dispatch('myItemStore/findItemByAssetHash', this.assetHash).then((item) => {
       // this.uploadState++
       if (!item) {
-        this.$router.push('/404')
+        this.$router.push('/my-items')
         return
       }
       this.item = item

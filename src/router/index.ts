@@ -119,6 +119,12 @@ const routes: Array<RouteConfig> = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/my-items/:filter',
+    name: 'my-items-filter',
+    components: { default: MyItems, header: AdminNavbar, footer: MainFooter },
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/how-it-works',
     name: 'how-it-works',
     components: { default: HowItWorks, header: MainNavbar, footer: MainFooter }

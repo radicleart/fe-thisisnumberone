@@ -1,19 +1,17 @@
 <template>
 <div class="container" style="min-height: 85vh;">
-  <div v-if="filteredItems" class="mb-5">
+  <div class="mb-5" :key="componentKey">
     <div class="d-flex justify-content-end">
-      <b-button class="ml-3" :variant="(filter === 'pending') ? 'info' : 'light'" @click="filter = 'pending'">Pending</b-button>
-      <b-button class="ml-3" :variant="(filter === 'minted') ? 'info' : 'light'" @click="filter = 'minted'">Minted</b-button>
-      <b-button class="ml-3" :variant="(filter === 'purchased') ? 'info' : 'light'" @click="filter = 'purchased'">Purchased</b-button>
+      <b-button class="ml-3" :variant="(filter === 'pending') ? 'info' : 'light'" @click="updateFilter('pending')">Pending</b-button>
+      <b-button class="ml-3" :variant="(filter === 'minted') ? 'info' : 'light'" @click="updateFilter('minted')">Minted</b-button>
+      <b-button class="ml-3" :variant="(filter === 'purchased') ? 'info' : 'light'" @click="updateFilter('purchased')">Purchased</b-button>
+      <b-button class="ml-3" :variant="(filter === 'all') ? 'info' : 'light'" @click="updateFilter('all')">All</b-button>
     </div>
-    <div class="row mb-4">
+    <div :key="componentKey" class="row mb-4" v-if="filteredItems && filteredItems.length > 0">
       <div v-for="(item, index) in filteredItems" :key="index" class="mt-5 col-md-4 col-sm-4 col-6">
         <single-item class="mb-2" :item="item"/>
       </div>
     </div>
-  </div>
-  <div v-else class="text-center text-white my-5">
-    Nothing to see here so far - <router-link class="text-info" to="/upload-item">Create NFT</router-link>
   </div>
 </div>
 </template>
@@ -29,16 +27,39 @@ export default {
   },
   data () {
     return {
-      filter: 'pending'
+      filter: 'pending',
+      componentKey: 0
     }
   },
+  mounted () {
+    this.filter = this.$route.params.filter
+    if (!this.filter) this.$router.push('/my-items/pending')
+  },
   methods: {
+    updateFilter (filter) {
+      this.filter = filter
+      if (filter !== this.$route.params.filter) {
+        this.$router.push('/my-items/' + filter)
+        this.componentKey++
+      }
+    }
   },
   computed: {
     filteredItems () {
-      if (this.filter === 'pending') return this.myPendingItems
-      else if (this.filter === 'minted') return this.myMintedItems
-      else return this.myPurchasedItems
+      if (this.filter === 'all') {
+        return this.$store.getters[APP_CONSTANTS.KEY_MY_ITEMS]
+      } else if (this.filter === 'minted') {
+        return this.$store.getters[APP_CONSTANTS.KEY_MY_MINTED_ITEMS]
+      } else if (this.filter === 'pending') {
+        return this.$store.getters[APP_CONSTANTS.KEY_MY_UNMINTED_ITEMS]
+      } else {
+        return this.$store.getters[APP_CONSTANTS.KEY_MY_PURCHASED_ITEMS]
+      }
+    },
+    myItems () {
+      const myItems = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEMS]
+      if (myItems) return myItems
+      return []
     },
     myPurchasedItems () {
       const myItems = this.$store.getters[APP_CONSTANTS.KEY_MY_PURCHASED_ITEMS]
@@ -51,7 +72,7 @@ export default {
       return []
     },
     myPendingItems () {
-      const myItems = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEMS]
+      const myItems = this.$store.getters[APP_CONSTANTS.KEY_MY_UNMINTED_ITEMS]
       if (myItems) return myItems
       return []
     }

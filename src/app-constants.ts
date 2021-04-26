@@ -8,6 +8,7 @@ export const APP_CONSTANTS = {
   KEY_CONTENT_ABOUT: 'contentStore/getAbout',
 
   KEY_MY_ITEMS: 'myItemStore/getMyItems',
+  KEY_MY_UNMINTED_ITEMS: 'myItemStore/getMyUnmintedItems',
   KEY_MY_MINTED_ITEMS: 'myItemStore/getMyMintedItems',
   KEY_MY_PURCHASED_ITEMS: 'myItemStore/getMyPurchasedItems',
   KEY_MY_ITEM: 'myItemStore/myItem',

@@ -20,7 +20,8 @@ const myItemStore = {
     gaiaUrl: null,
     indexResult: null,
     mintedRecords: null,
-    purchasedRecords: null
+    purchasedRecords: null,
+    unmintedRecords: null
   },
   getters: {
     getMyItems: state => {
@@ -28,6 +29,9 @@ const myItemStore = {
     },
     getMyMintedItems: state => {
       return (state.mintedRecords) ? state.mintedRecords : []
+    },
+    getMyUnmintedItems: state => {
+      return (state.unmintedRecords) ? state.unmintedRecords : []
     },
     getMyPurchasedItems: state => {
       return (state.purchasedRecords) ? state.purchasedRecords : []
@@ -78,6 +82,9 @@ const myItemStore = {
     rootFile (state: any, rootFile: any) {
       state.rootFile = rootFile
     },
+    unmintedRecords (state: any, unmintedRecords: any) {
+      state.unmintedRecords = unmintedRecords
+    },
     mintedRecords (state: any, mintedRecords: any) {
       state.mintedRecords = mintedRecords
     },
@@ -121,8 +128,8 @@ const myItemStore = {
               mintedRecords.push(o)
             }
           })
-          rootFile.records = unmintedRecords
           // note ownership (on-chain) can be changing hands as we speak!
+          commit('unmintedRecords', unmintedRecords)
           commit('mintedRecords', mintedRecords)
           commit('rootFile', rootFile)
           dispatch('fetchPurchasedItems')
