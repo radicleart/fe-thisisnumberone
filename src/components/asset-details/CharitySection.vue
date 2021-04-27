@@ -14,7 +14,7 @@
         <div class="artist-section--text" :class="getArtistText2()" v-if="content.data.description[5]">{{content.data.description[5].text}}</div>
         <social-links class="mt-4" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
         <div>
-          <square-button :theme="'light'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + content.data.artist_id[0].text"/>
+          <square-button :theme="'dark'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + content.data.artist_id[0].text"/>
         </div>
       </b-col>
     </b-row>

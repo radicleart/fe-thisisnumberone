@@ -62,8 +62,8 @@ export default {
   border: 1pt solid #ccc !important;
 }
 .btn-dark:hover {
-  color: #fff !important;
-  background: #ccc !important;
+  color: #000 !important;
+  background: transparent !important;
   border: none;
 }
 .btn-light {
@@ -72,6 +72,6 @@ export default {
 }
 .btn-light:hover {
   color: #fff !important;
-  background: #cecece !important;
+  background: transparent !important;
 }
 </style>

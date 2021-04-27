@@ -1,11 +1,11 @@
 <template>
 <b-container fluid id="number-one-container" style="min-height: 91vh">
   <b-row align-h="center" style="min-height: 91vh" v-if="resultSet">
-    <b-col cols="8" align-self="center">
+    <b-col md="8" sm="12" align-self="center">
       <result-grid @videoHoverOut="resetContainer" @videoHover="updateContainer" class="container text-center" :outerOptions="videoOptions" :outsiderCols="12" :resultSet="resultSet"/>
     </b-col>
-    <b-col cols="4" align-self="center" style="position: relative; left: -80px;">
-      <div v-if="!artistId" id="one-box" class="box1 d-flex flex-column justify-content-center align-items-center" :style="'height:' + oneBoxHeight + 'px'" style="min-width: 200px; width: 100%;">
+    <b-col md="4" sm="6" align-self="center" :style="getOffset" class="mb-5">
+      <div v-if="!artistId" id="one-box" class="box1 " :style="'height:' + oneBoxHeight + 'px'" style="min-width: 200px; width: 100%;">
         <div><img :src="logo" alt="logo"></div>
       </div>
       <div v-else id="one-box" class="box2 text-white d-flex flex-column justify-content-end align-items-center" :style="'height:' + oneBoxHeight + 'px'" style="min-width: 200px; width: 100%;">
@@ -13,10 +13,10 @@
           <b-col cols="12" align-self="start" class="p-0 m-0 text-right w-100">
             <img width="100px" :src="logo" alt="logo">
           </b-col>
-          <b-col v-if="gaiaAsset" cols="12" align-self="end" class="p-5 m-0" :key="componentKey">
+          <b-col class=" p-5 m-0" v-if="gaiaAsset" cols="12" align-self="end" :key="componentKey">
             <h1>{{gaiaAsset.artist}}</h1>
             <h2>{{gaiaAsset.name}}</h2>
-            <p v-if="gaiaAsset.contractAsset">{{gaiaAsset.contractAsset.owner}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
+            <p class="" v-if="gaiaAsset.contractAsset">{{getOwningAddress}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
             <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
           </b-col>
         </b-row>
@@ -79,6 +79,7 @@ export default {
       })
     },
     updateContainer (vo) {
+      if (!vo || !vo.assetHash) return
       this.gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](vo.assetHash)
       this.artistId = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_ARTIST_ID](this.gaiaAsset.artist)
       this.componentKey++
@@ -88,6 +89,22 @@ export default {
     }
   },
   computed: {
+    getOffset () {
+      if (window.innerWidth > 800) {
+        return 'position: relative; left: -70px;'
+      }
+      return ''
+    },
+    getOwningAddress () {
+      if (this.gaiaAsset && this.gaiaAsset.contractAsset && this.gaiaAsset.contractAsset.owner) {
+        const address = this.gaiaAsset.contractAsset.owner
+        if (window.innerWidth > 1100) {
+          return address
+        }
+        return address.substring(0, 5) + '...' + address.substring(address.length - 5)
+      }
+      return ''
+    },
     resultSet () {
       const results = this.$store.getters[APP_CONSTANTS.KEY_SEARCH_RESULTS]
       if (!results) return
@@ -106,4 +123,16 @@ export default {
   background-color: #333333;
   border: 1pt solid #707070;
 }
+.center {
+  margin: auto;
+  width: 70%;
+  border: 0px solid green;
+  padding: 10px;
+}
+@media only screen and (max-width: 900px) {
+  .center {
+    width: 85%;
+  }
+}
+
 </style>

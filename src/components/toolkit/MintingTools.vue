@@ -71,8 +71,8 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-6"><a class="text-info" href="#" @click.prevent="closeBidding(1)">refund and close</a></div>
-            <div class="col-6"><a class="text-info" href="#" @click.prevent="closeBidding(2)">transfer and close</a></div>
+            <div class="col-6"><a class="text-white" href="#" @click.prevent="closeBidding(1)">refund and close</a></div>
+            <div class="col-6"><a class="text-white" href="#" @click.prevent="closeBidding(2)">transfer and close</a></div>
           </div>
         </b-tab>
       </b-tabs>

@@ -242,34 +242,18 @@ export default {
       }
     },
     isForbidden (type) {
-      let forbidden = false
-      const found = this.mediaTypes.split(',').find((o) => type.indexOf(o.trim() > -1))
-      forbidden = !found
-      /**
-      if (fileObject.type.indexOf('image') > -1) {
-        allowed = this.isImage(fileObject)
+      let allowed = false
+      const types = this.mediaTypes.split(',').find((o) => type.indexOf(o.trim() > -1))
+      for (let i = 0; i < types.length; i++) {
+        if (types[i] === type) {
+          allowed = true
+        }
       }
-      if (fileObject.type.indexOf('plain') > -1) {
-        allowed = allowed || this.isPlain(fileObject)
-      }
-      if (fileObject.type.indexOf('video') > -1) {
-        allowed = allowed || this.isVideo(fileObject)
-      }
-      if (fileObject.type.indexOf('audio') > -1) {
-        allowed = allowed || this.isAudio(fileObject)
-      }
-      if (fileObject.type.indexOf('doc') > -1) {
-        allowed = allowed || this.ispdf(fileObject)
-      }
-      if (fileObject.type.indexOf('mp3') > -1 || fileObject.type.indexOf('music') > -1 || fileObject.type.indexOf('audio') > -1) {
-        allowed = allowed || this.isMusic(fileObject)
-      }
-      **/
-      if (forbidden) {
+      if (!allowed) {
         this.$emit('updateMedia', { errorMessage: 'Files of type ' + type + ' are not allowed here.' })
         this.internalError = 'Files of type ' + type + ' are not allowed here.'
       }
-      return forbidden
+      return !allowed
     },
     isValidUrl (url1) {
       try {
@@ -347,7 +331,7 @@ export default {
                 if (this.width !== this.height) {
                   const msg = 'Your image must be a square and not ' + this.width + 'x' + this.height
                   $self.$notify({ type: 'error', title: 'Logo Upload', text: msg })
-                  $self.$emit('updateMedia', { media: thisFile })
+                  // $self.$emit('updateMedia', { media: thisFile })
                 } else {
                   this.width = '250px'
                   this.height = '250px'

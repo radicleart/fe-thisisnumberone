@@ -1,5 +1,5 @@
 <template>
-<div class="container" style="min-height: 85vh;">
+<div class="container" style="min-height: 85vh;" v-if="loaded">
   <div class="mb-5" :key="componentKey">
     <div class="d-flex justify-content-end">
       <b-button class="ml-3" :variant="(filter === 'pending') ? 'info' : 'light'" @click="updateFilter('pending')">Pending</b-button>
@@ -28,12 +28,18 @@ export default {
   data () {
     return {
       filter: 'pending',
-      componentKey: 0
+      componentKey: 0,
+      backupItems: null,
+      loaded: false
     }
   },
   mounted () {
     this.filter = this.$route.params.filter
-    if (!this.filter) this.$router.push('/my-items/pending')
+    this.$store.dispatch('myItemStore/fetchItems').then((items) => {
+      if (!this.filter) this.$router.push('/my-items/pending')
+      this.backupItems = items
+      this.loaded = true
+    })
   },
   methods: {
     updateFilter (filter) {
@@ -55,26 +61,6 @@ export default {
       } else {
         return this.$store.getters[APP_CONSTANTS.KEY_MY_PURCHASED_ITEMS]
       }
-    },
-    myItems () {
-      const myItems = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEMS]
-      if (myItems) return myItems
-      return []
-    },
-    myPurchasedItems () {
-      const myItems = this.$store.getters[APP_CONSTANTS.KEY_MY_PURCHASED_ITEMS]
-      if (myItems) return myItems
-      return []
-    },
-    myMintedItems () {
-      const myItems = this.$store.getters[APP_CONSTANTS.KEY_MY_MINTED_ITEMS]
-      if (myItems) return myItems
-      return []
-    },
-    myPendingItems () {
-      const myItems = this.$store.getters[APP_CONSTANTS.KEY_MY_UNMINTED_ITEMS]
-      if (myItems) return myItems
-      return []
     }
   }
 }

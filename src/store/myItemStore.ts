@@ -13,6 +13,42 @@ import utils from '@/services/utils'
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 
+const filterItems = function (state, rootGetters, filter) {
+  const filteredRecords = []
+  state.rootFile.records.forEach((o) => {
+    const contractAsset = rootGetters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](o.assetHash)
+    if (filter === 'minted') {
+      if (contractAsset) {
+        o.contractAsset = contractAsset
+        filteredRecords.push(o)
+      }
+    } else if (filter === 'unminted') {
+      if (!contractAsset) {
+        filteredRecords.push(o)
+      }
+    }
+  })
+  return filteredRecords
+}
+
+const purchasedItems = function (rootGetters) {
+  const purchasedRecords = []
+  const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
+  const contractId = STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
+  const myContractAssets = rootGetters[APP_CONSTANTS.KEY_ASSETS_BY_CONTRACT_ID_AND_OWNER]({ contractId: contractId, stxAddress: profile.stxAddress })
+  if (myContractAssets) {
+    myContractAssets.forEach((contractAsset) => {
+      const gaiaAsset = rootGetters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](contractAsset.tokenInfo.assetHash)
+      if (gaiaAsset && contractAsset) {
+        gaiaAsset.contractAsset = contractAsset
+        purchasedRecords.push(gaiaAsset)
+      }
+    })
+  }
+  // note ownership (on-chain) can be changing hands as we speak!
+  return purchasedRecords
+}
+
 const myItemStore = {
   namespaced: true,
   state: {
@@ -27,14 +63,14 @@ const myItemStore = {
     getMyItems: state => {
       return (state.rootFile) ? state.rootFile.records : []
     },
-    getMyMintedItems: state => {
-      return (state.mintedRecords) ? state.mintedRecords : []
+    getMyMintedItems: (state, getters, rootState, rootGetters) => {
+      return filterItems(state, rootGetters, 'minted')
     },
-    getMyUnmintedItems: state => {
-      return (state.unmintedRecords) ? state.unmintedRecords : []
+    getMyUnmintedItems: (state, getters, rootState, rootGetters) => {
+      return filterItems(state, rootGetters, 'unminted')
     },
-    getMyPurchasedItems: state => {
-      return (state.purchasedRecords) ? state.purchasedRecords : []
+    getMyPurchasedItems: (state, getters, rootState, rootGetters) => {
+      return purchasedItems(rootGetters)
     },
     getItemParamValidity: state => (item, param) => {
       if (!state.rootFile) return
@@ -82,15 +118,6 @@ const myItemStore = {
     rootFile (state: any, rootFile: any) {
       state.rootFile = rootFile
     },
-    unmintedRecords (state: any, unmintedRecords: any) {
-      state.unmintedRecords = unmintedRecords
-    },
-    mintedRecords (state: any, mintedRecords: any) {
-      state.mintedRecords = mintedRecords
-    },
-    purchasedRecords (state: any, purchasedRecords: any) {
-      state.purchasedRecords = purchasedRecords
-    },
     indexResult (state: any, indexResult: any) {
       state.indexResult = indexResult
     },
@@ -114,48 +141,15 @@ const myItemStore = {
         }
       })
     },
-    fetchItems ({ dispatch, commit, rootGetters }) {
+    fetchItems ({ commit, rootGetters }) {
       return new Promise((resolve, reject) => {
         const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
         myItemService.fetchMyItems(profile).then((rootFile: any) => {
-          const unmintedRecords = []
-          const mintedRecords = []
-          rootFile.records.forEach((o) => {
-            const contractAsset = rootGetters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](o.assetHash)
-            if (!contractAsset) unmintedRecords.push(o)
-            else {
-              o.contractAsset = contractAsset
-              mintedRecords.push(o)
-            }
-          })
-          // note ownership (on-chain) can be changing hands as we speak!
-          commit('unmintedRecords', unmintedRecords)
-          commit('mintedRecords', mintedRecords)
           commit('rootFile', rootFile)
-          dispatch('fetchPurchasedItems')
           resolve(rootFile)
         }).catch((error) => {
           reject(error)
         })
-      })
-    },
-    fetchPurchasedItems ({ commit, rootGetters }) {
-      return new Promise((resolve) => {
-        const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
-        const contractId = STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
-        const myContractAssets = rootGetters[APP_CONSTANTS.KEY_ASSETS_BY_CONTRACT_ID_AND_OWNER]({ contractId: contractId, stxAddress: profile.stxAddress })
-        if (!myContractAssets) return
-        const purchasedRecords = []
-        myContractAssets.forEach((contractAsset) => {
-          const gaiaAsset = rootGetters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](contractAsset.tokenInfo.assetHash)
-          if (gaiaAsset && contractAsset) {
-            gaiaAsset.contractAsset = contractAsset
-            purchasedRecords.push(gaiaAsset)
-          }
-        })
-        // note ownership (on-chain) can be changing hands as we speak!
-        commit('purchasedRecords', purchasedRecords)
-        resolve(purchasedRecords)
       })
     },
     indexRootFile ({ state, commit }) {
@@ -166,16 +160,6 @@ const myItemStore = {
         }).catch((error) => {
           console.log(error)
         })
-        /**
-        state.rootFile.records.forEach((record) => {
-          searchIndexService.addRecord(record).then((result) => {
-            commit('indexResult', result)
-            resolve(result)
-          }).catch((error) => {
-            console.log(error)
-          })
-        })
-        **/
       })
     },
     deleteItem ({ state, dispatch, rootGetters }, item) {

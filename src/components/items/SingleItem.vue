@@ -11,8 +11,8 @@
         <a v-if="!contractAsset" href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
       </div>
     </div>
-      <div class="text-right">
-        <div>{{salesButtonLabel()}}</div>
+      <div class="text-small text-right">
+        <div><b-link router-tag="a" :to="assetUrl">{{salesButtonLabel()}}</b-link></div>
       </div>
   </div>
 </div>
@@ -110,4 +110,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+a {
+  color: #fff;
+}
 </style>
