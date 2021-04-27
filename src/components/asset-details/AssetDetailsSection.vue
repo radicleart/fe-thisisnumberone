@@ -13,21 +13,26 @@
               <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
               <div class="d-flex justify-content-between">
                 <b-link router-tag="span" v-b-tooltip.click :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
-                <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white"><div>{{salesBadgeLabel()}}</div><div v-if="showEndTime()">{{biddingEndTime()}}</div></div>
+                <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white"><div>{{salesBadgeLabel}}</div><div v-if="showEndTime()">{{biddingEndTime()}}</div></div>
               </div>
             </div>
           </b-col>
           <b-col cols="12" align-self="center">
-            <h1>{{gaiaAsset.artist}}</h1>
-            <h2>{{gaiaAsset.name}}</h2>
+            <h1>{{gaiaAsset.name}}</h1>
+            <h2>{{gaiaAsset.artist}}</h2>
             <p>{{owner}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
             <p class="border-top pt-4" style="font-size: 1.2rem;">{{gaiaAsset.description}}</p>
             <div class="w-50 my-5 d-flex justify-content-between">
               <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
               <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
             </div>
+            <!--
             <div class="d-flex justify-content-start">
-              <square-button v-if="getSaleType() > 0" class="mr-4" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel()" :svgImage="hammer"/>
+              {{salesInfoText}}
+            </div>
+            -->
+            <div class="d-flex justify-content-start">
+              <square-button v-if="getSaleType() > 0" class="mr-4" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer"/>
               <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'"/>
             </div>
           </b-col>
@@ -148,17 +153,6 @@ export default {
       const dims = { width: '100%', height: '100%' }
       return 'max-width: ' + dims.height + '; max-height: ' + dims.height + ';'
     },
-    salesButtonLabel () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
-    },
-    salesBadgeLabel () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
-    },
-    transactionUrl: function (txId) {
-      return 'https://explorer.stacks.co/txid/' + txId + '?chain=' + NETWORK
-    },
     poster: function () {
       if (this.gaiaAsset.nftMedia.coverImage) {
         return this.gaiaAsset.nftMedia.coverImage.fileUrl
@@ -179,6 +173,9 @@ export default {
     getSaleType: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       return contractAsset.saleData.saleType
+    },
+    transactionUrl: function (txId) {
+      return 'https://explorer.stacks.co/txid/' + txId + '?chain=' + NETWORK
     },
     openPurchaceDialog: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
@@ -208,6 +205,18 @@ export default {
     }
   },
   computed: {
+    salesButtonLabel () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
+    },
+    salesBadgeLabel () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BADGE_LABEL](contractAsset.saleData.saleType)
+    },
+    salesInfoText () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      return this.$store.getters[APP_CONSTANTS.KEY_SALES_INFO_TEXT](contractAsset)
+    },
     confirmOfferDialog () {
       const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('confirm-offer')
       return dialog

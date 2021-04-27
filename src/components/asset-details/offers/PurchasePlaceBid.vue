@@ -1,9 +1,9 @@
 <template>
-<div v-if="buyNowDialog && saleData">
+<div v-if="buyNowDialog && biddingData">
   <b-row>
     <b-col cols="12">
       <h1>{{buyNowDialog[0].text}}</h1>
-      <h4 class="mb-5">{{buyNowDialog[1].text}} <b>{{offerData.biddingEndTime}}</b></h4>
+      <h4 class="mb-5">{{buyNowDialog[1].text}} <b>{{biddingData.fbet}}</b></h4>
     </b-col>
   </b-row>
   <b-row class="row mt-2">
@@ -14,11 +14,15 @@
     </b-col>
     <b-col md="5" sm="6" style="border-right: 1pt solid #000;">
       <div>
-        <h3><span class="mr-5 text-black">Current Bid</span> {{saleData.buyNowOrStartingPrice}} STX</h3>
+        <h3>
+          <span v-if="biddingData.bidCounter > 0" class="">Current Bid:</span>
+          <span v-else class="">Opening Bid:</span>
+          <span class="text-warning">{{biddingData.currentBid.amount}}</span> STX
+        </h3>
       </div>
     </b-col>
     <b-col md="3" sm="6" style="font-size: 0.8em;">
-      <div class="mb-3 pb-3 border-bottom">Place bid for {{saleData.buyNowOrStartingPrice}} STX</div>
+      <div class="mb-3 pb-3 border-bottom">Place bid for {{bidAmount}} STX</div>
       <div class="pl-0">
         <div v-for="(rate, index) in rates" :key="index" class="border-bottom py-1 d-flex justify-content-between">
           <div style="min-width: 100px;" class="text-right mr-4">{{rate.value}}</div>
@@ -33,7 +37,7 @@
         <div class="d-flex justify-content-between">
           <div class="" style="width: 79%; border-bottom: 1pt solid #000000;"></div>
           <div style="position: relative; top: 25px;">
-            <square-button :theme="'dark'" @clickButton="$emit('buyNow')" :label1="'BID NOW: ' + bidAmount + ' STX'" :svgImage="hammer" :usePixelBg="true"/>
+            <square-button :theme="'dark'" @clickButton="$emit('placeBid')" :label1="'BID NOW: ' + bidAmount + ' STX'" :svgImage="hammer" :usePixelBg="true"/>
           </div>
         </div>
       </div>
@@ -52,7 +56,7 @@ export default {
   components: {
     SquareButton
   },
-  props: ['saleData', 'offerData'],
+  props: ['biddingData'],
   data () {
     return {
       hammer: require('@/assets/img/auction.svg'),
@@ -75,12 +79,10 @@ export default {
   },
   computed: {
     bidAmount () {
-      return this.saleData.buyNowOrStartingPrice + this.saleData.incrementPrice
+      return this.biddingData.nextBid.amount
     },
     reserveMet () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      const saleData = contractAsset.saleData
-      return saleData.buyNowOrStartingPrice >= saleData.reservePrice
+      return this.biddingData.currentBid.reserveMet
     },
     buyNowDialog () {
       const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('place-bid')
@@ -107,17 +109,17 @@ export default {
       const stxToBtc = tickerRates[0].stxPrice / tickerRates[0].last
       options.push({
         text: 'BTC',
-        value: utils.toDecimals(stxToBtc * this.saleData.buyNowOrStartingPrice, 100000)
+        value: utils.toDecimals(stxToBtc * this.biddingData.nextBidAmount, 100000)
       })
       const stxToETh = tickerRates[0].stxPrice / tickerRates[0].ethPrice
       options.push({
         text: 'ETH',
-        value: utils.toDecimals(stxToETh * this.saleData.buyNowOrStartingPrice, 100000)
+        value: utils.toDecimals(stxToETh * this.biddingData.nextBidAmount, 100000)
       })
       tickerRates.forEach((rate) => {
         options.push({
           text: rate.currency,
-          value: utils.toDecimals(rate.stxPrice * this.saleData.buyNowOrStartingPrice)
+          value: utils.toDecimals(rate.stxPrice * this.biddingData.nextBidAmount)
         })
       })
       return options

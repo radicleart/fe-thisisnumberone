@@ -61,7 +61,7 @@ export default {
         contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
         functionName: 'mint-token'
       }
-      this.$store.dispatch('rpayStacksStore/mintToken', data).then((result) => {
+      this.$store.dispatch('rpayPurchaseStore/mintToken', data).then((result) => {
         this.result = result
         this.$store.dispatch('myItemStore/initSchema', true)
       })

@@ -8,7 +8,7 @@
   <b-row class="row mt-5">
     <b-col align-v="stretch" cols="4">
       <h1>{{sendOfferDialog[1].text}}</h1>
-      <p class="text-small text-bold">{{sendOfferDialog[2].text}} {{offerData.biddingEndTime}}</p>
+      <p class="text-small text-bold">{{sendOfferDialog[2].text}} {{offerData.fbet}}</p>
       <p v-if="sendOfferDialog[3]">{{sendOfferDialog[3].text}}</p>
       <p v-if="sendOfferDialog[4]">{{sendOfferDialog[4].text}}</p>
       <p v-if="sendOfferDialog[5]">{{sendOfferDialog[5].text}}</p>

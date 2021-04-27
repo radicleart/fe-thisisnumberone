@@ -3,7 +3,7 @@
   <b-row>
     <b-col cols="12">
       <h1>{{buyNowDialog[0].text}}</h1>
-      <h4 class="mb-5">{{buyNowDialog[1].text}} <b>{{offerData.biddingEndTime}}</b></h4>
+      <h4 class="mb-5">{{buyNowDialog[1].text}} <b>{{offerData.fbet}}</b></h4>
     </b-col>
   </b-row>
   <b-row class="row mt-2">

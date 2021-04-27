@@ -6,7 +6,7 @@
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
     <div v-if="contractAsset.saleData.saleType === 2">
-      <purchase-place-bid :offerData="offerData" :saleData="contractAsset.saleData" @placeBid="placeBid"/>
+      <purchase-place-bid :biddingData="biddingData" :saleData="contractAsset.saleData" @placeBid="placeBid"/>
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
     <div v-if="contractAsset.saleData.saleType === 3">
@@ -28,6 +28,12 @@ import PurchaseOfferAmount from './PurchaseOfferAmount'
 import PurchasePlaceBid from './PurchasePlaceBid'
 import PurchaseOfferEmail from './PurchaseOfferEmail'
 import moment from 'moment'
+import {
+  makeContractSTXPostCondition,
+  FungibleConditionCode
+} from '@stacks/transactions'
+import utils from '@/services/utils'
+import BigNum from 'bn.js'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
@@ -47,6 +53,7 @@ export default {
       loading: true,
       offerStage: 0,
       offerData: {},
+      biddingData: {},
       biddingEndTime: null
     }
   },
@@ -55,7 +62,8 @@ export default {
     this.$store.commit('rpayCategoryStore/setModalMessage', '')
     this.$store.dispatch('rpayStacksStore/fetchMacSkyWalletInfo').then(() => {
       this.$store.commit('rpayStore/setDisplayCard', 100)
-      this.setLocalSaleData()
+      this.setOfferData()
+      this.setBiddingData()
       this.loading = false
     }).catch(() => {
       this.loading = false
@@ -68,26 +76,24 @@ export default {
     })
   },
   methods: {
-    setLocalSaleData: function () {
+    setBiddingData () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      this.biddingData.currentBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_CURRENT_BID](contractAsset)
+      this.biddingData.nextBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](contractAsset)
+      this.biddingData.biddingEndTime = contractAsset.saleData.biddingEndTime
+      this.biddingData.fbet = this.getFormattedBiddingEndTime(contractAsset)
+    },
+    setOfferData: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       this.minimumOffer = (contractAsset.saleData.reservePrice)
       this.offerData.minimumOffer = this.minimumOffer
+      this.offerData.fbet = this.getFormattedBiddingEndTime(contractAsset)
       if (!this.offerData.offerAmount) {
         this.offerData.offerAmount = this.minimumOffer
       }
-      if (contractAsset.saleData && contractAsset.saleData.biddingEndTime) {
-        let loaclEndM = moment(contractAsset.saleData.biddingEndTime)
-        if (loaclEndM.isBefore(moment({}))) {
-          loaclEndM = moment({}).add(2, 'days')
-        }
-        const loaclEnd = loaclEndM.format('DD-MM-YY')
-        this.offerData.biddingEndTime = loaclEnd
-      } else {
-        const dd = moment({}).add(2, 'days')
-        dd.hour(10)
-        dd.minute(0)
-        this.offerData.biddingEndTime = dd.format()
-      }
+    },
+    getFormattedBiddingEndTime: function (contractAsset) {
+      return this.$store.getters[APP_CONSTANTS.KEY_FORMATTED_BIDDING_END_TIME](contractAsset)
     },
     backStep: function () {
       this.offerStage = 0
@@ -107,7 +113,7 @@ export default {
       this.offerData.nftIndex = contractAsset.nftIndex
       this.offerData.assetHash = contractAsset.tokenInfo.assetHash
 
-      this.$store.dispatch('rpayStacksStore/makeOffer', this.offerData).then((data) => {
+      this.$store.dispatch('rpayPurchaseStore/makeOffer', this.offerData).then((data) => {
         this.$emit('offerSent', data)
       }).catch((err) => {
         this.errorMessage = err
@@ -123,26 +129,43 @@ export default {
         nftIndex: contractAsset.nftIndex,
         amount: contractAsset.saleData.buyNowOrStartingPrice,
         owner: contractAsset.owner,
+        provider: 'risidio',
         recipient: recipient
       }
-      this.$store.dispatch('rpayStacksStore/buyNow', buyNowData).then(() => {
-        // this.$emit('offerSent', data)
+      this.$store.dispatch('rpayPurchaseStore/buyNow', buyNowData).then((result) => {
+        this.$emit('buySent', result)
       }).catch((err) => {
         this.errorMessage = err
       })
     },
     placeBid: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      const nextBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](contractAsset)
       this.errorMessage = null
-      this.offerData.biddingEndTime = moment(contractAsset.saleData.biddingEndTime).valueOf()
-      this.sellingMessage = 'Sending your request to the blockchain... this takes a few minutes to confirm!'
-      this.offerData.contractAddress = STX_CONTRACT_ADDRESS
-      this.offerData.contractName = STX_CONTRACT_NAME
-      this.offerData.nftIndex = contractAsset.nftIndex
-      this.offerData.assetHash = contractAsset.tokenInfo.assetHash
-
-      this.$store.dispatch('rpayStacksStore/placeBid', this.offerData).then(() => {
-        // this.$emit('offerSent', data)
+      let functionName = 'place-bid'
+      if (contractAsset.bidCounter === 0) {
+        functionName = 'opening-bid'
+      }
+      const bidAmount = new BigNum(utils.toOnChainAmount(nextBid.amount))
+      const standardSTXPostCondition = makeContractSTXPostCondition(
+        STX_CONTRACT_ADDRESS,
+        STX_CONTRACT_NAME,
+        FungibleConditionCode.LessEqual,
+        bidAmount
+      )
+      const bidData = {
+        postConditions: [standardSTXPostCondition],
+        contractAddress: STX_CONTRACT_ADDRESS,
+        contractName: STX_CONTRACT_NAME,
+        functionName: functionName,
+        sendAsSky: true,
+        nftIndex: contractAsset.nftIndex,
+        assetHash: contractAsset.tokenInfo.assetHash,
+        appTimestamp: moment({}).valueOf(),
+        bidAmount: bidAmount
+      }
+      this.$store.dispatch('rpayPurchaseStore/placeBid', bidData).then((result) => {
+        this.$emit('bidSent', result)
       }).catch((err) => {
         this.errorMessage = err
       })

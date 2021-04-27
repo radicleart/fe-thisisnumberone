@@ -35,7 +35,7 @@
         <div class="col-2">Mint Fee</div><div class="col-10">{{application.tokenContract.mintCounter}}</div>
         <div class="ml-4 py-5 border-top" v-for="(token, index) in application.tokenContract.tokens" :key="index">
           <div class="row">
-            <div class="col-2 my-4"><div v-if="gaiaAsset(token.tokenInfo.assetHash)"><img width="100px" :src="gaiaAsset(token.tokenInfo.assetHash).imageUrl"/></div></div>
+            <div class="col-2 my-4"><div v-if="gaiaAsset(token.tokenInfo.assetHash)"><img width="70px" :src="gaiaAsset(token.tokenInfo.assetHash).imageUrl"/></div></div>
             <div class="col-10 my-4" v-if="gaiaAsset(token.tokenInfo.assetHash)">
               <div>{{gaiaAsset(token.tokenInfo.assetHash).name}}</div>
               <div>[#{{token.nftIndex}}] : Edition {{token.tokenInfo.edition}} / {{token.tokenInfo.maxEditions}}</div>
@@ -56,6 +56,16 @@
                 <div class="col-2">{{beneficiary.username}}</div>
                 <div class="col-2">{{beneficiary.royalty}}</div>
                 <div class="col-8">{{beneficiary.chainAddress}}</div>
+              </div>
+            </div>
+            <div class="col-2">Bids</div><div class="col-10">{{token.bidCounter}}</div>
+            <div class="col-2"></div>
+            <div class="col-10">
+              <div class="row bg-dark p-2 my-3" v-for="(bid, index1) in token.bidHistory" :key="index1">
+                <div class="col-2">Amount</div><div class="col-10">{{bid.amount}}</div>
+                <div class="col-2">Bidder</div><div class="col-10">{{bid.bidder}}</div>
+                <div class="col-2">Placed</div><div class="col-10">{{formatDate(bid.whenBid)}}</div>
+                <div class="col-2">Cycle</div><div class="col-10">{{bid.saleCycle}}</div>
               </div>
             </div>
             <div class="col-2">Offers</div><div class="col-10">{{token.offerCounter}}</div>

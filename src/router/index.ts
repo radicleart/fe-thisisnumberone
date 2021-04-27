@@ -51,8 +51,7 @@ const routes: Array<RouteConfig> = [
     name: 'create',
     components: { default: UploadItem, header: AdminNavbar, footer: MainFooter },
     meta: {
-      requiresAuth: true,
-      requiresAdmin: true
+      requiresAuth: true
     }
   },
   {

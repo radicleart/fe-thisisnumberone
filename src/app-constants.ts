@@ -15,8 +15,13 @@ export const APP_CONSTANTS = {
   KEY_MODAL_MESSAGE: 'getModalMessage',
   KEY_ITEM_VALIDITY: 'myItemStore/getItemValidity',
 
-  KEY_SALES_BUTTON_LABEL: 'assetGeneralStore/getSalesButtonLabel',
-  KEY_SALES_BADGE_LABEL: 'assetGeneralStore/getSalesBadgeLabel',
+  KEY_BIDDING_CURRENT_BID: 'rpayPurchaseStore/getCurrentBid',
+  KEY_BIDDING_NEXT_BID: 'rpayPurchaseStore/getNextBid',
+  KEY_SALES_BUTTON_LABEL: 'rpayPurchaseStore/getSalesButtonLabel',
+  KEY_SALES_BADGE_LABEL: 'rpayPurchaseStore/getSalesBadgeLabel',
+  KEY_SALES_INFO_TEXT: 'rpayPurchaseStore/getSalesInfoText',
+  KEY_FORMATTED_BIDDING_END_TIME: 'rpayPurchaseStore/getFormattedBiddingEndTime',
+
   KEY_RECIPIENT: 'assetGeneralStore/getRecipientAddress',
 
   KEY_TRANSACTION_DIALOG_MESSAGE: 'contentStore/getTransactionDialogMessage',

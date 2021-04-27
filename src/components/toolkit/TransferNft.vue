@@ -57,7 +57,7 @@ export default {
         owner: contractAsset.owner,
         recipient: this.toAddress
       }
-      return this.$store.dispatch('rpayStacksStore/transferAsset', data).then((result) => {
+      return this.$store.dispatch('rpayPurchaseStore/transferAsset', data).then((result) => {
         this.transferring = null
         this.result = result
       }).catch((err) => {

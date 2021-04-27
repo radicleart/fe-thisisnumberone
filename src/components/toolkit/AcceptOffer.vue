@@ -50,7 +50,7 @@ export default {
         owner: this.offerData.owner,
         recipient: this.offerData.offer.offerer
       }
-      return this.$store.dispatch('rpayStacksStore/acceptOffer', data).then((result) => {
+      return this.$store.dispatch('rpayPurchaseStore/acceptOffer', data).then((result) => {
         this.result = result
       })
     },

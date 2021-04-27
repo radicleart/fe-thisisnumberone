@@ -51,15 +51,30 @@
               <div class="col-2">Offerer</div>
               <div class="col-10">{{offer.offerer}}</div>
               <div class="col-2">Amount</div>
-              <div class="col-10">{{offerAmount(offer.amount)}} STX</div>
+              <div class="col-10">{{offer.amount}} STX</div>
               <div class="col-2">Made</div>
-              <div class="col-10">{{offerMade(offer.madeDate)}}</div>
+              <div class="col-10">{{offerMade(offer.appTimestamp)}}</div>
               <div class="col-2"></div>
-              <div class="col-10"><a href="#" @click.prevent="acceptOffer(offer, index1)">accept</a></div>
             </div>
           </div>
         </b-tab>
-        <b-tab title="Bids"><p>Bidding not enabled.</p></b-tab>
+        <b-tab :title="contractAsset.bidCounter + ' Bids'">
+          <div class="upload-preview text-small">
+            <div class="row mb-4" v-for="(bid, index1) in contractAsset.bidHistory" :key="index1">
+              <div class="col-2">Bidder</div>
+              <div class="col-10">{{bid.bidder}}</div>
+              <div class="col-2">Amount</div>
+              <div class="col-10">{{bid.amount}} STX</div>
+              <div class="col-2">Made</div>
+              <div class="col-10">{{offerMade(bid.appTimestamp)}}</div>
+              <div class="col-2"></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6"><a class="text-info" href="#" @click.prevent="closeBidding(1)">refund and close</a></div>
+            <div class="col-6"><a class="text-info" href="#" @click.prevent="closeBidding(2)">transfer and close</a></div>
+          </div>
+        </b-tab>
       </b-tabs>
     </div>
   </div>
@@ -184,6 +199,20 @@ export default {
       }
       this.$bvModal.show('accept-offer-modal')
     },
+    closeBidding: function (closeType) {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
+      const data = {
+        contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
+        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
+        nftIndex: contractAsset.nftIndex,
+        closeType: closeType,
+        functionName: 'close-bidding'
+      }
+      this.$store.dispatch('rpayPurchaseStore/closeBidding', data).then((result) => {
+        this.result = result
+        this.$store.dispatch('myItemStore/initSchema', true)
+      })
+    },
     offerAmount: function (amount) {
       return (amount)
     },
@@ -211,17 +240,7 @@ export default {
     },
     saleDataText () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      if (!contractAsset || !contractAsset.saleData || contractAsset.saleData.saleType === 0) {
-        return 'NOT FOR SALE'
-      } else if (contractAsset.saleData.saleType === 1) {
-        return 'Buy now for ' + (contractAsset.saleData.buyNowOrStartingPrice)
-      } else if (contractAsset.saleData.saleType === 2) {
-        return 'Place a bid current highest bid is ' + (contractAsset.saleData.buyNowOrStartingPrice)
-      } else if (contractAsset.saleData.saleType === 3) {
-        return 'Offers over ' + (contractAsset.saleData.reservePrice) + ' STX will be considered'
-      } else {
-        return 'Unknown sale type?'
-      }
+      return this.$store.getters[APP_CONSTANTS.KEY_SALES_INFO_TEXT](contractAsset)
     },
     contractAsset () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
