@@ -37,6 +37,7 @@ import BigNum from 'bn.js'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
+const NETWORK = process.env.VUE_APP_NETWORK
 
 export default {
   name: 'PurchaseFlow',
@@ -121,7 +122,14 @@ export default {
     },
     buyNow: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      const recipient = this.$store.getters[APP_CONSTANTS.KEY_RECIPIENT](contractAsset.owner)
+      const mac = this.$store.getters[APP_CONSTANTS.KEY_MACS_WALLET]
+      const sky = this.$store.getters[APP_CONSTANTS.KEY_SKYS_WALLET]
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      let recipient = profile.stxAddress
+
+      if (NETWORK === 'local') {
+        recipient = (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address
+      }
       const buyNowData = {
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,
@@ -143,10 +151,11 @@ export default {
       const nextBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](contractAsset)
       this.errorMessage = null
       let functionName = 'place-bid'
+      let bidAmount = new BigNum(utils.toOnChainAmount(nextBid.amount))
       if (contractAsset.bidCounter === 0) {
         functionName = 'opening-bid'
+        bidAmount = new BigNum(utils.toOnChainAmount(contractAsset.saleData.buyNowOrStartingPrice))
       }
-      const bidAmount = new BigNum(utils.toOnChainAmount(nextBid.amount))
       const standardSTXPostCondition = makeContractSTXPostCondition(
         STX_CONTRACT_ADDRESS,
         STX_CONTRACT_NAME,

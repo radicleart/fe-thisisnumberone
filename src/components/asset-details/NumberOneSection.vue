@@ -13,7 +13,7 @@
           <b-col cols="12" align-self="start" class="p-0 m-0 text-right w-100">
             <img width="100px" :src="logo" alt="logo">
           </b-col>
-          <b-col v-if="gaiaAsset" cols="12" align-self="end" class="p-5 m-0">
+          <b-col v-if="gaiaAsset" cols="12" align-self="end" class="p-5 m-0" :key="componentKey">
             <h1>{{gaiaAsset.artist}}</h1>
             <h2>{{gaiaAsset.name}}</h2>
             <p v-if="gaiaAsset.contractAsset">{{gaiaAsset.contractAsset.owner}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
@@ -41,6 +41,7 @@ export default {
   },
   data () {
     return {
+      componentKey: null,
       logo: require('@/assets/img/logo-rainbow.svg'),
       artistId: null,
       oneBoxHeight: 200,
@@ -80,6 +81,7 @@ export default {
     updateContainer (vo) {
       this.gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](vo.assetHash)
       this.artistId = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_ARTIST_ID](this.gaiaAsset.artist)
+      this.componentKey++
     },
     resetContainer () {
       // this.artistId = null

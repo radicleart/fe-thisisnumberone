@@ -21,8 +21,7 @@ export const APP_CONSTANTS = {
   KEY_SALES_BADGE_LABEL: 'rpayPurchaseStore/getSalesBadgeLabel',
   KEY_SALES_INFO_TEXT: 'rpayPurchaseStore/getSalesInfoText',
   KEY_FORMATTED_BIDDING_END_TIME: 'rpayPurchaseStore/getFormattedBiddingEndTime',
-
-  KEY_RECIPIENT: 'assetGeneralStore/getRecipientAddress',
+  KEY_RECIPIENT: 'rpayPurchaseStore/getRecipientAddress',
 
   KEY_TRANSACTION_DIALOG_MESSAGE: 'contentStore/getTransactionDialogMessage',
   KEY_WAITING_IMAGE: 'contentStore/getWaitingCSS',
@@ -50,6 +49,9 @@ export const APP_CONSTANTS = {
   KEY_ENABLED_NETWORKS: 'rpayStore/getEnabledNetworks',
   SET_PREFERRED_NETWORK_VALUE: 'rpayStore/setPreferredNetwork',
   KEY_PAYMENT_OPTIONS: 'rpayStore/getPaymentOptions',
+
+  KEY_MACS_WALLET: 'rpayStacksStore/getMacsWallet',
+  KEY_SKYS_WALLET: 'rpayStacksStore/getSkysWallet',
 
   KEY_TARGET_FILE_FOR_DISPLAY: 'rpayStacksContractStore/getTargetFileForDisplay',
   KEY_GAIA_ASSET_BY_HASH: 'rpayStacksContractStore/getGaiaAssetByHash',

@@ -79,7 +79,7 @@ export default {
   },
   computed: {
     bidAmount () {
-      return this.biddingData.nextBid.amount
+      return (this.biddingData.bidCounter > 0) ? this.biddingData.nextBid.amount : this.biddingData.currentBid.amount
     },
     reserveMet () {
       return this.biddingData.currentBid.reserveMet
