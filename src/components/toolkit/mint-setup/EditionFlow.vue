@@ -48,20 +48,23 @@ export default {
     this.setPage()
   },
   methods: {
-    mintToken: function () {
+    mintEdition: function () {
       this.errorMessage = 'Minting non fungible token - takes a minute or so..'
       const methos = (process.env.VUE_APP_NETWORK === 'local') ? 'callContractRisidio' : 'callContractBlockstack'
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       const data = {
         assetHash: this.item.assetHash,
+        owner: profile.stxAddress,
         gaiaUsername: this.item.gaiaUsername,
         beneficiaries: this.item.beneficiaries,
         editions: this.item.editions,
+        editionCost: this.item.editionCost,
         action: methos,
         contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
         contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
-        functionName: 'mint-token'
+        functionName: 'mint-edition'
       }
-      this.$store.dispatch('rpayPurchaseStore/mintToken', data).then((result) => {
+      this.$store.dispatch('rpayPurchaseStore/mintEdition', data).then((result) => {
         this.result = result
         this.$store.dispatch('myItemStore/initSchema', true)
       })

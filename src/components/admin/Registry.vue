@@ -34,14 +34,24 @@
         <div class="col-2">Platform Fee</div><div class="col-10">{{application.tokenContract.platformFee}}</div>
         <div class="col-2">Mint Fee</div><div class="col-10">{{application.tokenContract.mintCounter}}</div>
         <div class="ml-4 py-5 border-top" v-for="(token, index) in application.tokenContract.tokens" :key="index">
-          <div class="row">
-            <div class="col-2 my-4"><div v-if="gaiaAsset(token.tokenInfo.assetHash)"><img width="70px" :src="gaiaAsset(token.tokenInfo.assetHash).imageUrl"/></div></div>
-            <div class="col-10 my-4" v-if="gaiaAsset(token.tokenInfo.assetHash)">
+          <div class="row" v-if="gaiaAsset(token.tokenInfo.assetHash)">
+            <div class="col-2 my-4"><div><img width="70px" :src="gaiaAsset(token.tokenInfo.assetHash).imageUrl"/></div></div>
+            <div class="col-10 my-4">
               <div>{{gaiaAsset(token.tokenInfo.assetHash).name}}</div>
-              <div>[#{{token.nftIndex}}] : Edition {{token.tokenInfo.edition}} / {{token.tokenInfo.maxEditions}}</div>
+              <div>[#{{token.nftIndex}}] : Edition {{token.tokenInfo.edition}} / {{token.tokenInfo.maxEditions}} / {{token.tokenInfo.editionCost}}</div>
               <div>Uploaded by:     {{gaiaAsset(token.tokenInfo.assetHash).owner}}</div>
               <div>Gaia user:       {{token.tokenInfo.gaiaUsername}}</div>
             </div>
+          </div>
+          <div class="row" v-else>
+            <div class="col-2 my-4"><div>No Gaia Record?</div></div>
+            <div class="col-10 my-4">
+              <div>{{token.tokenInfo.assetHash}}</div>
+              <div>[#{{token.nftIndex}}] : Edition {{token.tokenInfo.edition}} / {{token.tokenInfo.maxEditions}} / {{token.tokenInfo.editionCost}}</div>
+              <div>Uploaded by:     {{token.owner}}</div>
+            </div>
+          </div>
+          <div class="row">
             <div class="col-2">SHA(256)</div><div class="col-10">{{token.tokenInfo.assetHash}}</div>
             <div class="col-2">Owner</div><div class="col-10">{{token.owner}}</div>
             <div class="col-2">Sale Data</div><div class="col-10">Type={{token.saleData.saleType}} Cycle={{token.saleData.saleCycleIndex}}, Amount={{token.saleData.buyNowOrStartingPrice}} Reserve={{token.saleData.reservePrice}} Increment={{token.saleData.incrementPrice}}</div>

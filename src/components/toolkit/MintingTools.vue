@@ -4,7 +4,7 @@
     <div class="w-100 text-small">
       <div v-if="contractAsset">
         <div v-if="minting()">Minting - <a :href="transactionUrl()" target="_blank">track progress here...</a></div>
-        <b-alert show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</b-alert>
+        <b-alert show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}} / Cost {{contractAsset.tokenInfo.editionCost}} STX</b-alert>
       </div>
       <div v-else-if="isValid" show variant="danger">
         <square-button @clickButton="mintToken()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
@@ -26,6 +26,9 @@
             </div>
             <div class="col-12 mb-5">
               <b-tabs  content-class="p-4">
+                <b-tab title="Editions" active>
+                  <manage-editions :assetHash="assetHash"/>
+                </b-tab>
                 <b-tab title="Beneficiaries" active>
                   <list-beneficiaries :assetHash="assetHash"/>
                 </b-tab>
@@ -105,6 +108,7 @@ import RisidioPay from 'risidio-pay'
 import moment from 'moment'
 import { APP_CONSTANTS } from '@/app-constants'
 import AcceptOffer from '@/components/toolkit/AcceptOffer'
+import ManageEditions from '@/components/toolkit/ManageEditions'
 import TransferNft from '@/components/toolkit/TransferNft'
 import ListBeneficiaries from '@/components/toolkit/ListBeneficiaries'
 import GaiaHubRelay from '@/components/toolkit/GaiaHubRelay'
@@ -120,7 +124,8 @@ export default {
     TransferNft,
     ListBeneficiaries,
     GaiaHubRelay,
-    SquareButton
+    SquareButton,
+    ManageEditions
   },
   props: ['assetHash'],
   data: function () {

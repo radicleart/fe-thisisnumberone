@@ -56,6 +56,7 @@ export default {
         gaiaUsername: this.item.gaiaUsername,
         beneficiaries: this.item.beneficiaries,
         editions: this.item.editions,
+        editionCost: (this.item.editionCost) ? this.item.editionCost : 0,
         action: methos,
         contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
         contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
