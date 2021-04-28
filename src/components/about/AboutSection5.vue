@@ -7,7 +7,7 @@
         <h1 class="mb-4 text-white">{{content.section5rtf1[1].text}}</h1>
         <div class="text-white mb-5 about-section5--text">{{content.section5rtf1[2].text}}</div>
         <div>
-          <square-button @clickButton="$router.push('/home')" class="button-style" :label1="'Find out more'" :icon="'plus-square'"/>
+          <square-button @clickButton="$router.push('/home')" class="button-style" :label1="'Find out more'" :icon="'plus-square'" :theme="'light'"/>
         </div>
       </b-col>
     </b-row>

@@ -6,7 +6,7 @@
         <h1 class="mb-4 text-info">{{content.section6rtf1[0].text}}</h1>
         <div class="mb-5 text-center about-section6--text">{{content.section6rtf1[1].text}}</div>
         <div>
-          <square-button @clickButton="$router.push('/home')" class="button-style" :label1="'Get in touch'" :icon="'chat-left'"/>
+          <square-button @clickButton="$router.push('/home')" class="button-style" :label1="'Get in touch'" :icon="'chat-left'" :colorOnHover="'black'"/>
         </div>
       </b-col>
     </b-row>
