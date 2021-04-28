@@ -1,4 +1,5 @@
 <template>
+<div id="environment">
 <section v-if="content" id="about-section5" :style="'background-size: cover; background-image: url(' + content.section5rtf1[0].url + ')'">
   <div class="spaced-name">Environment</div>
   <b-container class="">
@@ -13,6 +14,7 @@
     </b-row>
   </b-container>
 </section>
+</div>
 </template>
 
 <script>

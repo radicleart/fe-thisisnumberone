@@ -1,7 +1,9 @@
 <template>
+<div id="chemicalx">
 <section id="section1">
   <artist-section :artistId="'chemicalx'" :parentPage="'about'" />
 </section>
+</div>
 </template>
 
 <script>

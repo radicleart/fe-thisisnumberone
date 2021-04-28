@@ -1,4 +1,5 @@
 <template>
+<div id="thisisone">
 <section class="about-section bg-white text-black">
   <b-container style="min-height: 60vh" class="pb-4 text-center">
     <div class="my-4 mt-5"><span class="mr-2" style="font-size: 45px;font-weight: bold; position: relative; top: 15px;opacity: 1;">THIS IS</span> <img height="36px" :src="rainbowOne" alt="logo"/></div>
@@ -6,6 +7,7 @@
     <div class="section2-text">{{content.section2rtf1[1].text}}</div>
   </b-container>
 </section>
+</div>
 </template>
 
 <script>

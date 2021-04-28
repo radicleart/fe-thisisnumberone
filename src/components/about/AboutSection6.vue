@@ -1,4 +1,5 @@
-  <template>
+<template>
+<div id="collaborate">
 <section class="bg-white text-black" id="about-section6">
   <b-container class="py-5">
     <b-row style="text-align: center; height: 92vh" class="text-center">
@@ -12,6 +13,7 @@
     </b-row>
   </b-container>
 </section>
+</div>
 </template>
 
 <script>

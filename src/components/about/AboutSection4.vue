@@ -1,7 +1,9 @@
 <template>
+<div id="charity">
 <section class=" bg-white text-black">
   <charity-grid />
 </section>
+</div>
 </template>
 
 <script>
