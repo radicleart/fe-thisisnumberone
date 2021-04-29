@@ -45,7 +45,7 @@ export default {
   color: #fff;
 }
 .spaced-name {
-  margin: -3rem 0 8rem -4rem;
+  margin: -3.5rem 0 8rem -4rem;
   line-height: 0.6;
   white-space: nowrap;
   text-align: left;

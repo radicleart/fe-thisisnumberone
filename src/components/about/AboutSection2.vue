@@ -37,7 +37,7 @@ h1 {
   color: #333333 !important;
 }
 .section2-text {
-  max-width: 700px;
+  max-width: 600px;
   color: #888888;
   font-size: 1.5rem;
   margin: 0 auto;
