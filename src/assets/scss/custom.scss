@@ -107,8 +107,22 @@ body a:hover {
   font-size: 1.5rem;
   font-weight: 700;
 }
+.text-underline {
+  text-decoration: underline;
+}
+.input-group-append .input-group-text {
+  width: 40px;
+  color: #fff;
+  background: #000;
+}
+.input-group-prepend .input-group-text {
+  width: 80px;
+  color: #fff;
+  background: #000;
+  font-size: 1.4rem;
+}
 .text-small {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 300;
 }
 .tooltip-inner {

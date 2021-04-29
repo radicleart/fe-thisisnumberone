@@ -18,11 +18,12 @@
       </div>
       <div>
         <b-input-group size="lg" append="STX">
-          <b-form-input id="offer" :state="offerState" v-model="offerAmount" placeholder="Enter amount in STX tokens"></b-form-input>
+          <b-form-input type="number" id="offer" :state="offerState" v-model="offerAmount" placeholder="Enter amount in STX tokens"></b-form-input>
         </b-input-group>
         <p class="text-small text-danger" v-html="errorMessage"></p>
       </div>
     </b-col>
+    <rates-listing :message="rateMessage()" :amount="minimumOffer"/>
     <b-col md="3" sm="6" style="font-size: 0.8em;">
       <div class="mb-3 pb-3 border-bottom">Offers above {{minimumOffer}} STX will be considered</div>
       <div class="pl-0">
@@ -79,8 +80,8 @@ export default {
     this.loading = false
   },
   methods: {
-    stxSymbol: function () {
-      return '&#931;'
+    rateMessage: function () {
+      return 'Offers above ' + this.minimumOffer + ' STX will be considered'
     },
     next: function () {
       this.errorMessage = null
@@ -111,40 +112,8 @@ export default {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
       return configuration.gaiaAsset
     },
-    rateOptions () {
-      const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
-      const options = []
-      tickerRates.forEach((rate) => {
-        options.push({
-          text: rate.currency,
-          value: rate.currency
-        })
-      })
-      return options
-    },
     offerState () {
       return (this.offerAmount >= this.minimumOffer)
-    },
-    rates () {
-      const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
-      const options = []
-      const stxToBtc = tickerRates[0].stxPrice / tickerRates[0].last
-      options.push({
-        text: 'BTC',
-        value: utils.toDecimals(stxToBtc * this.offerAmount, 100000)
-      })
-      const stxToETh = tickerRates[0].stxPrice / tickerRates[0].ethPrice
-      options.push({
-        text: 'ETH',
-        value: utils.toDecimals(stxToETh * this.offerAmount, 100000)
-      })
-      tickerRates.forEach((rate) => {
-        options.push({
-          text: rate.currency,
-          value: utils.toDecimals(rate.stxPrice * this.offerAmount)
-        })
-      })
-      return options
     }
   }
 }

@@ -59,8 +59,8 @@ const routes: Array<RouteConfig> = [
     name: 'admin',
     components: { default: Admin, header: AdminNavbar, footer: MainFooter },
     meta: {
-      requiresAuth: true,
-      requiresAdmin: true
+      requiresAuth: true
+      // requiresAdmin: true
     }
   },
   {

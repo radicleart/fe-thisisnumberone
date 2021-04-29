@@ -4,7 +4,7 @@
     <div class="w-100 text-small">
       <div v-if="contractAsset">
         <div v-if="minting()">Minting - <a :href="transactionUrl()" target="_blank">track progress here...</a></div>
-        <b-alert show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</b-alert>
+        <b-alert show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}} / Cost {{contractAsset.tokenInfo.editionCost}} STX</b-alert>
       </div>
       <div v-else-if="isValid" show variant="danger">
         <square-button @clickButton="mintToken()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
@@ -17,16 +17,18 @@
         <b-tab title="General" active>
           <div class="row">
             <div class="col-12">
-              <p>owned by:<br/>
-              {{contractAsset.owner}}
-              </p>
+              <p>owned by:<br/>{{contractAsset.owner}}</p>
+              <p>you:<br/>{{profile.stxAddress}}</p>
             </div>
             <div class="col-12 mb-5">
               <div class="">{{saleDataText}}</div>
             </div>
             <div class="col-12 mb-5">
               <b-tabs  content-class="p-4">
-                <b-tab title="Beneficiaries" active>
+                <b-tab title="Editions" active>
+                  <manage-editions :assetHash="assetHash"/>
+                </b-tab>
+                <b-tab title="Beneficiaries">
                   <list-beneficiaries :assetHash="assetHash"/>
                 </b-tab>
                 <b-tab title="Transfers">
@@ -105,6 +107,7 @@ import RisidioPay from 'risidio-pay'
 import moment from 'moment'
 import { APP_CONSTANTS } from '@/app-constants'
 import AcceptOffer from '@/components/toolkit/AcceptOffer'
+import ManageEditions from '@/components/toolkit/editions/ManageEditions'
 import TransferNft from '@/components/toolkit/TransferNft'
 import ListBeneficiaries from '@/components/toolkit/ListBeneficiaries'
 import GaiaHubRelay from '@/components/toolkit/GaiaHubRelay'
@@ -120,11 +123,13 @@ export default {
     TransferNft,
     ListBeneficiaries,
     GaiaHubRelay,
-    SquareButton
+    SquareButton,
+    ManageEditions
   },
   props: ['assetHash'],
   data: function () {
     return {
+      profile: null,
       showRpay: false,
       showTransfers: false,
       showBeneficiaries: false,
@@ -136,9 +141,9 @@ export default {
   },
   mounted () {
     const $self = this
-    const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+    this.profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
     const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-    if (item.uploader !== profile.username) throw new Error('Unexpected NFT ownership error')
+    // if (item.uploader !== profile.username) throw new Error('Unexpected NFT ownership error')
     item.gaiaUsername = item.uploader
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: item })
     if (window.eventBus && window.eventBus.$on) {

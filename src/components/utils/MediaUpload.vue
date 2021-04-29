@@ -245,7 +245,7 @@ export default {
       let allowed = false
       const types = this.mediaTypes.split(',').find((o) => type.indexOf(o.trim() > -1))
       for (let i = 0; i < types.length; i++) {
-        if (types[i] === type) {
+        if (type.indexOf(types[i]) > -1) {
           allowed = true
         }
       }
