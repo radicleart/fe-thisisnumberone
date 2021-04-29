@@ -4,7 +4,11 @@
   <b-container>
     <b-row>
       <b-col class="text-center" cols="12" sm="6" md="4" v-for="(charity, index) in content" :key="index">
-        <img class="charity-image" :src="charity.data.image.url"/>
+        <div class="image-background">
+          <div class="image-container">
+            <img class="charity-image" :src="charity.data.image.url"/>
+          </div>
+        </div>
         <p>{{charity.data.description[0].text}}</p>
       </b-col>
     </b-row>
@@ -60,10 +64,30 @@ p {
 }
 
 /* Images style */
-.charity-image {
+.image-background {
+  background: #000;
+  display: table;
   width: 100%;
-  max-width: 333px;
+  height: 100%;
+  position: relative;
   max-height: 333px;
+  max-width: 333px;
+}
+
+.image-container {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  margin: auto;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+img {
+  display: block;
+  max-height: 100%;
+  max-width: 100%;
+  margin: auto;
   border: 1pt solid #000;
 }
 
