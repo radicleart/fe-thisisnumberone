@@ -21,7 +21,7 @@
             <h1>{{gaiaAsset.name}}</h1>
             <h2>{{gaiaAsset.artist}}</h2>
             <p>{{owner}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
-            <p class="border-top pt-4" style="font-size: 1.2rem;">{{gaiaAsset.description}}</p>
+            <p class="border-top pt-4 text-small">{{gaiaAsset.description}}</p>
             <div class="w-50 my-5 d-flex justify-content-between">
               <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
               <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
@@ -31,6 +31,8 @@
               {{salesInfoText}}
             </div>
             -->
+            <edition-trigger :assetHash="gaiaAsset.assetHash" />
+            <div class="border-top py-4 text-small">{{salesInfoText}}</div>
             <div class="d-flex justify-content-start">
               <square-button v-if="getSaleType() > 0" class="mr-4" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer"/>
               <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'"/>
@@ -76,6 +78,7 @@ import { APP_CONSTANTS } from '@/app-constants'
 import MediaItem from '@/components/utils/MediaItem'
 import SquareButton from '@/components/utils/SquareButton'
 import moment from 'moment'
+import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
@@ -83,6 +86,7 @@ export default {
   name: 'AssetDetailsSection',
   components: {
     AssetUpdatesModal,
+    EditionTrigger,
     PurchaseFlow,
     MediaItem,
     SquareButton
@@ -205,6 +209,11 @@ export default {
     }
   },
   computed: {
+    currentCost: function () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
+      if (!contractAsset) return
+      return contractAsset.tokenInfo.editionCost
+    },
     salesButtonLabel () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
@@ -272,7 +281,7 @@ export default {
 .on-auction-text {
   text-transform: capitalize;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
 }
 #asset-offer-modal .modal-content {
   text-align: left !important;

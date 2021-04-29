@@ -2,11 +2,11 @@
 <div v-if="!loading">
   <div v-if="contractAsset">
     <div v-if="contractAsset.saleData.saleType === 1">
-      <purchase-buy-now :offerData="offerData" :saleData="contractAsset.saleData" @buyNow="buyNow"/>
+      <purchase-buy-now :contractAsset="contractAsset" :saleData="contractAsset.saleData" @buyNow="buyNow"/>
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
     <div v-if="contractAsset.saleData.saleType === 2">
-      <purchase-place-bid :biddingData="biddingData" :saleData="contractAsset.saleData" @placeBid="placeBid"/>
+      <purchase-place-bid :contractAsset="contractAsset" @placeBid="placeBid"/>
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
     <div v-if="contractAsset.saleData.saleType === 3">
@@ -124,8 +124,8 @@ export default {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       const mac = this.$store.getters[APP_CONSTANTS.KEY_MACS_WALLET]
       const sky = this.$store.getters[APP_CONSTANTS.KEY_SKYS_WALLET]
-      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      let recipient = profile.stxAddress
+      // const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      let recipient = (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address // profile.stxAddress
 
       if (NETWORK === 'local') {
         recipient = (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address
