@@ -164,6 +164,7 @@ export default {
     },
     addBeneficiary: function () {
       this.formSubmitted = true
+      if (this.beneficiary.royalty) this.beneficiary.royalty = parseInt(this.beneficiary.royalty)
       if (!this.isValid('chainAddress') | !this.isValid('royalty')) return
       this.$emit('addBeneficiary', this.beneficiary)
     }

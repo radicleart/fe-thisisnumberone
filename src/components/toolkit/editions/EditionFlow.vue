@@ -65,10 +65,11 @@ export default {
     mintEdition: function () {
       this.errorMessage = 'Minting non fungible token - takes a minute or so..'
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
+      const methos = (process.env.VUE_APP_NETWORK === 'local') ? 'callContractRisidio' : 'callContractBlockstack'
       const data = {
         owner: contractAsset.owner,
         editionCost: this.currentCost + 0.1,
-        provider: 'risidio',
+        action: methos,
         nftIndex: contractAsset.nftIndex,
         contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
         contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,

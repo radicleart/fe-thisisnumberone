@@ -32,8 +32,7 @@ const selling = {
 const marketConfig = {
   oneLayout: true,
   searchMenu: false,
-  sideMenu: false,
-  projectId: 'ST1ESYCGJB5Z5NBHS39XPC70PGC14WAQK5XXNQYDW.thisisnumberone'
+  sideMenu: false
 }
 const beneficiariesDefault = [
   {
@@ -201,6 +200,7 @@ export default new Vuex.Store({
       return new Promise(resolve => {
         dispatch('rpayAuthStore/fetchMyAccount').then(profile => {
           if (profile.loggedIn) {
+            dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
             dispatch('myItemStore/initSchema').then(rootFile => {
               resolve(rootFile)
             })
