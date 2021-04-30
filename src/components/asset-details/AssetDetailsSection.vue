@@ -34,8 +34,8 @@
             <edition-trigger :assetHash="gaiaAsset.assetHash" />
             <div class="border-top py-4 text-small">{{salesInfoText}}</div>
             <div class="d-flex justify-content-start">
-              <square-button v-if="getSaleType() > 0" class="mr-4" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer"/>
-              <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'"/>
+              <square-button v-if="getSaleType() > 0" class="mr-4" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
+              <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>
             </div>
           </b-col>
         </b-row>

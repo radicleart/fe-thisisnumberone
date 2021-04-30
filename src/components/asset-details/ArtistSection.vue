@@ -72,7 +72,7 @@ section {
   min-height: 100vh;
 }
 .spaced-name {
-  margin: -3rem -3rem 8rem auto;
+  margin: -3.5rem -3rem 8rem auto;
   line-height: 0.6;
   max-width: 952px;
   white-space: nowrap;

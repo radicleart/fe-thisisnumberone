@@ -12,11 +12,11 @@
   <div class="link-panel bg-white d-flex justify-content-center">
     <div class="d-flex justify-content-center text-black link-panel--container">
       <div class="d-flex justify-content-around link-panel--content">
-        <b-link router-tag="span" to="#thisisone">This is #1</b-link>
-        <b-link router-tag="span" to="#chemicalx">Chemical X</b-link>
-        <b-link router-tag="span" to="#charity">Charity</b-link>
-        <b-link router-tag="span" to="#environment">Environment</b-link>
-        <b-link router-tag="span" to="#collaborate">Collaborate</b-link>
+        <a href="#thisisone">This is #1</a>
+        <a href="#chemicalx">Chemical X</a>
+        <a href="#charity">Charity</a>
+        <a href="#environment">Environment</a>
+        <a href="#collaborate">Collaborate</a>
       </div>
     </div>
   </div>

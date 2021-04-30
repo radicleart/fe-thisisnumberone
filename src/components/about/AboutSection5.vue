@@ -1,4 +1,5 @@
 <template>
+<div id="environment">
 <section v-if="content" id="about-section5" :style="'background-size: cover; background-image: url(' + content.section5rtf1[0].url + ')'">
   <div class="spaced-name">Environment</div>
   <b-container class="">
@@ -6,22 +7,23 @@
       <b-col cols="12" align-self="end">
         <h1 class="mb-4 text-white">{{content.section5rtf1[1].text}}</h1>
         <div class="text-white mb-5 about-section5--text">{{content.section5rtf1[2].text}}</div>
-        <div>
-          <square-button @clickButton="$router.push('/home')" class="button-style" :label1="'Find out more'" :icon="'plus-square'"/>
-        </div>
+        <!-- <div>
+          <square-button @clickButton="$router.push('/home')" class="button-style" :label1="'Find out more'" :icon="'plus-square'" :theme="'light'"/>
+        </div> -->
       </b-col>
     </b-row>
   </b-container>
 </section>
+</div>
 </template>
 
 <script>
-import SquareButton from '@/components/utils/SquareButton'
+// import SquareButton from '@/components/utils/SquareButton'
 export default {
   name: 'AboutSection5',
   props: ['content'],
   components: {
-    SquareButton
+    // SquareButton
   },
   data () {
     return {
@@ -38,10 +40,10 @@ export default {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
-  min-height: 100vh;
+  min-height: 80vh;
 }
 #about-section5 .spaced-name {
-  margin: 0 0 8rem auto;
+  margin: 0 0 6rem auto;
   line-height: 0.6;
   max-width: 1050px;
   white-space: nowrap;
