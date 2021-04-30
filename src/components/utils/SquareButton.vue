@@ -1,8 +1,8 @@
 <template>
   <b-button-group class="text-white" v-if="loaded">
     <b-button @click="$emit('clickButton')" class="btn-square" :style="(usePixelBg) ? 'background-image: url(' + pixelBg + ')' : ''">
-      <span class="" v-if="icon">
-        <b-icon class="text-warning" style="width: 30px; height: 30px;" :icon="icon"/>
+      <span class="d-flex justify-content-center" v-if="icon">
+        <b-icon :class="smallIconColor" style="width: 30px; height: 30px;" :icon="icon"/>
       </span>
       <span class="" v-else>
         <img class="text-warning" style="width: 30px; height: 30px;" :src="svgImage"/>
@@ -17,21 +17,25 @@ export default {
   name: 'SquareButton',
   components: {
   },
-  props: ['theme', 'usePixelBg', 'label1', 'icon', 'route', 'svgImage'],
+  props: ['theme', 'usePixelBg', 'label1', 'icon', 'route', 'svgImage', 'iconColor'],
   data () {
     return {
       pixelBg: require('@/assets/img/pixelBg.svg'),
       loaded: false,
       b1: null,
-      bigButtonTheme: null
+      bigButtonTheme: null,
+      smallIconColor: null
     }
   },
   mounted () {
+    // big button theme
     this.bigButtonTheme = 'btn-dark'
     if (this.theme) {
       this.bigButtonTheme = 'btn-' + this.theme
     }
     this.loaded = true
+    // small button icon colour
+    this.smallIconColor = this.iconColor
   },
   methods: {
   },

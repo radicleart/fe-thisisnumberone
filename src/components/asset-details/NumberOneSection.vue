@@ -11,7 +11,7 @@
       <div v-else id="one-box" class="box2 text-white d-flex flex-column justify-content-end align-items-center" :style="'height:' + oneBoxHeight + 'px'" style="min-width: 200px; width: 100%;">
         <b-row align-h="center" style="min-height: 100%" v-if="resultSet" class="p-0 m-0 w-100">
           <b-col cols="12" align-self="start" class="p-0 m-0 text-right w-100">
-            <img width="100px" :src="logo" alt="logo">
+            <img width="115px" s :src="logo" alt="logo">
           </b-col>
           <b-col class=" p-5 m-0" v-if="gaiaAsset" cols="12" align-self="end" :key="componentKey">
             <h1>{{gaiaAsset.artist}}</h1>
@@ -121,7 +121,7 @@ export default {
 }
 .box2 {
   background-color: #333333;
-  border: 1pt solid #707070;
+  /* border: 1pt solid #707070; */
 }
 .center {
   margin: auto;
