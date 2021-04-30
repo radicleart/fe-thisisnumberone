@@ -9,17 +9,6 @@
       </b-col>
     </b-row>
   </b-container>
-  <div class="link-panel bg-white d-flex justify-content-center">
-    <div class="d-flex justify-content-center text-black link-panel--container">
-      <div class="d-flex justify-content-around link-panel--content">
-        <a href="#thisisone">This is #1</a>
-        <a href="#chemicalx">Chemical X</a>
-        <a href="#charity">Charity</a>
-        <a href="#environment">Environment</a>
-        <a href="#collaborate">Collaborate</a>
-      </div>
-    </div>
-  </div>
 </section>
 </template>
 
@@ -38,16 +27,6 @@ export default {
 
 <style scoped>
 /* General style */
-.link-panel--container {
-  width: 100%;
-  padding: 30px 0;
-  box-shadow: 0px 3px 6px #00000029;
-}
-.link-panel--content {
-  width: 50%;
-  color: #333333;
-  font-size: 1.4rem;
-}
 h1 {
   font-size: 3rem;
 }
@@ -57,20 +36,4 @@ h1 {
   margin: 0 auto;
 }
 
-/* Link panel responsive design */
-@media only screen and (max-width: 768px) {
-  .link-panel--content {
-    width: 70%;
-  }
-}
-@media only screen and (max-width: 600px) {
-  .link-panel--content {
-    width: 100%;
-  }
-}
-@media only screen and (max-width: 376px) {
-  .link-panel--content {
-    font-size: 1.2rem;
-  }
-}
 </style>
