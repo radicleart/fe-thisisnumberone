@@ -9,6 +9,7 @@
     <div class="col-2">RISIDIO_API</div><div class="col-10">{{RISIDIO_API}}</div>
     <div class="col-2">Address</div><div class="col-10">{{STACKS_CONTRACT_ADDRESS}}</div>
     <div class="col-2">Name</div><div class="col-10">{{STACKS_CONTRACT_NAME}}</div>
+    <div class="col-2">Network</div><div class="col-10">{{NETWORK}}</div>
   </div>
   <div class="row mb-3">
     <div class="col-2"><b>Mac Wallet</b></div><div class="col-10"></div>
@@ -119,7 +120,9 @@ export default {
     return {
       STACKS_CONTRACT_ADDRESS: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
       STACKS_CONTRACT_NAME: process.env.VUE_APP_STACKS_CONTRACT_NAME,
-      RISIDIO_API: process.env.VUE_APP_RISIDIO_API
+      RISIDIO_API: process.env.VUE_APP_RISIDIO_API,
+      NETWORK: process.env.VUE_APP_NETWORK
+
     }
   },
   methods: {
