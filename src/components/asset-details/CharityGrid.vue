@@ -1,10 +1,14 @@
 <template>
 <section v-if="content" :class="'theme-' + content.uid" class="container-fluid p-5 hundred-vh">
-  <div class="spaced-name">Charities</div>
+  <div class="spaced-name spaced-name--charity-grid">Charities</div>
   <b-container>
     <b-row>
       <b-col class="text-center" cols="12" sm="6" md="4" v-for="(charity, index) in content" :key="index">
-        <img class="charity-image" :src="charity.data.image.url"/>
+        <div class="image-background">
+          <div class="image-container">
+            <img class="charity-image" :src="charity.data.image.url"/>
+          </div>
+        </div>
         <p>{{charity.data.description[0].text}}</p>
       </b-col>
     </b-row>
@@ -40,15 +44,11 @@ export default {
   background-color: #C92E11;
   color: #fff;
 }
-.spaced-name {
-  margin: -3rem 0 8rem -4rem;
-  line-height: 0.6;
-  white-space: nowrap;
+.spaced-name--charity-grid {
+  margin: -3.5rem 0 8rem -4rem;
   text-align: left;
-  font-family: 'Bungee Hairline';
   font-size: 15rem;
   color: #888888;
-  text-transform: uppercase;
 }
 p {
   display: inline-block;
@@ -60,37 +60,57 @@ p {
 }
 
 /* Images style */
-.charity-image {
+.image-background {
+  background: #000;
+  display: table;
   width: 100%;
-  max-width: 333px;
+  height: 100%;
+  position: relative;
   max-height: 333px;
+  max-width: 333px;
+}
+
+.image-container {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  margin: auto;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+img {
+  display: block;
+  max-height: 100%;
+  max-width: 100%;
+  margin: auto;
   border: 1pt solid #000;
 }
 
 /* Spaced name responsive design */
 @media only screen and (max-width: 1023px) {
-  .spaced-name {
+  .spaced-name--charity-grid {
     font-size: 10rem;
   }
 }
 @media only screen and (max-width: 787px) {
-  .spaced-name {
+  .spaced-name--charity-grid {
     font-size: 8rem;
   }
 }
 @media only screen and (max-width: 600px) {
-  .spaced-name {
+  .spaced-name--charity-grid {
     font-size: 6rem;
   }
 }
 @media only screen and (max-width: 475px) {
-  .spaced-name {
+  .spaced-name--charity-grid {
     font-size: 5rem;
     margin: -3rem 0 8rem -3rem;
   }
 }
 @media only screen and (max-width: 350px) {
-  .spaced-name {
+  .spaced-name--charity-grid {
     font-size: 4rem;
   }
 }

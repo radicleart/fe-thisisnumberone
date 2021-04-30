@@ -156,3 +156,12 @@ body a:hover {
 .hundred-vh {
   min-height: 100vh !important;
 }
+
+// Style for big titles in sections
+.spaced-name {
+  line-height: 0.6;
+  white-space: nowrap;
+  font-family: 'Bungee Hairline';
+  text-transform: uppercase;
+  user-select: none;
+}

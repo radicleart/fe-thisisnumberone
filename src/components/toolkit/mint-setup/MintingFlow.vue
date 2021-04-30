@@ -2,7 +2,7 @@
 <div class="d-flex justify-content-center" v-if="!loading">
   <div class="mx-auto">
     <royalty-screen :errorMessage="errorMessage" :item="item" @mintToken="mintToken" @editBeneficiary="editBeneficiary" @removeBeneficiary="removeBeneficiary" @updateBeneficiary="updateBeneficiary" @addNewBeneficiary="addNewBeneficiary" :beneficiaries="beneficiaries" v-if="!isMinted && displayCard !== 102"/>
-    <add-beneficiary-screen :eBen="eBen" @addBeneficiary="addBeneficiary" :beneficiaries="beneficiaries" :item="item" v-if="!isMinted && displayCard === 102"/>
+    <add-beneficiary-screen :errorMessage="errorMessage" :eBen="eBen" @addBeneficiary="addBeneficiary" :beneficiaries="beneficiaries" :item="item" v-if="!isMinted && displayCard === 102"/>
   </div>
 </div>
 </template>
@@ -50,15 +50,13 @@ export default {
   methods: {
     mintToken: function () {
       this.errorMessage = 'Minting non fungible token - takes a minute or so..'
-      const methos = (process.env.VUE_APP_NETWORK === 'local') ? 'callContractRisidio' : 'callContractBlockstack'
       const data = {
         assetHash: this.item.assetHash,
         gaiaUsername: this.item.gaiaUsername,
         beneficiaries: this.item.beneficiaries,
         editions: this.item.editions,
         editionCost: (this.item.editionCost) ? this.item.editionCost : 0,
-        action: methos,
-        sendAsSky: false,
+        sendAsSky: true,
         contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
         contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
         functionName: 'mint-token'
@@ -93,6 +91,7 @@ export default {
       }
     },
     addBeneficiary: function (beneficiary) {
+      this.errorMessage = null
       if (!beneficiary || !beneficiary.royalty || !beneficiary.chainAddress) {
         this.errorMessage = 'Bad value for beneficiary'
         return

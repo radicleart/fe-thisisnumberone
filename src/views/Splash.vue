@@ -8,7 +8,7 @@
         <p class="text-center">{{content.splashtext[1].text}}</p>
       </div>
       <div class="mt-5">
-        <square-button @clickButton="$router.push('/home')" :theme="'light'" :label1="'Enter Website'" :icon="'arrow-right'" :iconColor="'text-white'"/>
+        <square-button @clickButton="$router.push('/home')" :theme="'light'" :label1="'Enter Website'" :icon="'arrow-right'"/>
       </div>
     </b-col>
   </b-row>

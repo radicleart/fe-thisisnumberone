@@ -119,11 +119,10 @@ export default {
   components: {
     SquareButton
   },
-  props: ['eBen'],
+  props: ['eBen', 'errorMessage'],
   data () {
     return {
       formSubmitted: false,
-      errorMessage: null,
       savedChainAddress: null,
       beneficiary: {
         royalty: 0,
@@ -149,21 +148,15 @@ export default {
       this.$store.commit('rpayStore/setDisplayCard', 100)
     },
     isValid: function (param) {
-      this.errorMessage = null
       if (param === 'chainAddress') {
-        if (this.beneficiary.chainAddress.length < 10) {
-          this.errorMessage = 'Address looks wrong?'
-        }
         return this.beneficiary.chainAddress.length > 10
       } else if (param === 'royalty') {
-        if (this.beneficiary.royalty < 0 || this.beneficiary.royalty > 100) {
-          this.errorMessage = 'Royalty must be between 0 and 100 and the royalties must add up to 100'
-        }
         return typeof this.beneficiary.royalty === 'number' && this.beneficiary.royalty > 0 && this.beneficiary.royalty <= 100
       }
     },
     addBeneficiary: function () {
       this.formSubmitted = true
+      if (this.beneficiary.royalty) this.beneficiary.royalty = parseInt(this.beneficiary.royalty)
       if (!this.isValid('chainAddress') | !this.isValid('royalty')) return
       this.$emit('addBeneficiary', this.beneficiary)
     }

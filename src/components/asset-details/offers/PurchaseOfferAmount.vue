@@ -52,7 +52,6 @@
 <script>
 import SquareButton from '@/components/utils/SquareButton'
 import { APP_CONSTANTS } from '@/app-constants'
-import utils from '@/services/utils'
 
 export default {
   name: 'PurchaseOfferAmount',

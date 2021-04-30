@@ -32,10 +32,9 @@ export default {
     ItemDisplay,
     SquareButton
   },
-  props: ['item', 'beneficiaries'],
+  props: ['item', 'beneficiaries', 'errorMessage'],
   data () {
     return {
-      errorMessage: null,
       mintedMessage: null
     }
   },

@@ -1,6 +1,6 @@
 <template>
 <section v-if="content" :class="getArtistTheme()" class="container-fluid p-5">
-  <div class="spaced-name" :class="getArtistText1()">{{content.data.description[0].text}}</div>
+  <div class="spaced-name spaced-name--artist-section" :class="getArtistText1()">{{content.data.description[0].text}}</div>
   <b-container>
     <b-row style="margin-bottom: 100px">
       <b-col cols="12" lg="6" class="pr-lg-5 mb-lg-0 mb-5">
@@ -71,15 +71,11 @@ section {
   justify-content: space-between;
   min-height: 100vh;
 }
-.spaced-name {
-  margin: -3rem -3rem 8rem auto;
-  line-height: 0.6;
+.spaced-name--artist-section {
+  margin: -3.5rem -3rem 8rem auto;
   max-width: 952px;
-  white-space: nowrap;
   text-align: right;
-  font-family: 'Bungee Hairline';
   font-size: 15rem;
-  text-transform: uppercase;
 }
 h1 {
   font-size: 3rem;
@@ -91,27 +87,27 @@ h1 {
 
 /* Spaced name responsive design */
 @media only screen and (max-width: 1023px) {
-  .spaced-name {
+  .spaced-name--artist-section {
     font-size: 10rem;
   }
 }
 @media only screen and (max-width: 787px) {
-  .spaced-name {
+  .spaced-name--artist-section {
     font-size: 8rem;
   }
 }
 @media only screen and (max-width: 600px) {
-  .spaced-name {
+  .spaced-name--artist-section {
     font-size: 6rem;
   }
 }
 @media only screen and (max-width: 475px) {
-  .spaced-name {
+  .spaced-name--artist-section {
     font-size: 5rem;
   }
 }
 @media only screen and (max-width: 350px) {
-  .spaced-name {
+  .spaced-name--artist-section {
     font-size: 4rem;
   }
 }

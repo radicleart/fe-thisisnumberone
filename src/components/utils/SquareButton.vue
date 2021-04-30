@@ -1,11 +1,13 @@
 <template>
-  <b-button-group class="text-white" v-if="loaded">
-    <b-button @click="$emit('clickButton')" class="btn-square" :style="(usePixelBg) ? 'background-image: url(' + pixelBg + ')' : ''">
+  <b-button-group class="text-white" id="parent-group" v-if="loaded">
+    <b-button @click="$emit('clickButton')" class="btn-square" :class="colorHover" :style="(usePixelBg) ? 'background-image: url(' + pixelBg + ')' : ''">
       <span class="d-flex justify-content-center" v-if="icon">
-        <b-icon :class="smallIconColor" style="width: 30px; height: 30px;" :icon="icon"/>
+        <b-icon class="text-warning" style="width: 30px; height: 30px;" :icon="icon" v-if="text-warning"/>
+        <b-icon class="" style="width: 30px; height: 30px;" :icon="icon" v-else/>
       </span>
-      <span class="" v-else>
-        <img class="text-warning" style="width: 30px; height: 30px;" :src="svgImage"/>
+      <span class="d-flex justify-content-center" v-else>
+        <img class="text-warning" style="width: 30px; height: 30px;" :src="svgImage" v-if="text-warning"/>
+        <img class="" style="width: 30px; height: 30px;" :src="svgImage" v-else/>
       </span>
     </b-button>
     <b-button @click="$emit('clickButton')" class="btn-rectangle" :class="bigButtonTheme">{{label1}}</b-button>
@@ -17,25 +19,26 @@ export default {
   name: 'SquareButton',
   components: {
   },
-  props: ['theme', 'usePixelBg', 'label1', 'icon', 'route', 'svgImage', 'iconColor'],
+  props: ['theme', 'usePixelBg', 'label1', 'icon', 'route', 'svgImage', 'text-warning', 'colorOnHover'],
   data () {
     return {
       pixelBg: require('@/assets/img/pixelBg.svg'),
       loaded: false,
       b1: null,
       bigButtonTheme: null,
-      smallIconColor: null
+      colorHover: null
     }
   },
   mounted () {
-    // big button theme
     this.bigButtonTheme = 'btn-dark'
+    this.colorHover = 'hover-white'
     if (this.theme) {
       this.bigButtonTheme = 'btn-' + this.theme
     }
+    if (this.colorOnHover) {
+      this.colorHover = 'hover-' + this.colorOnHover
+    }
     this.loaded = true
-    // small button icon colour
-    this.smallIconColor = this.iconColor
   },
   methods: {
   },
@@ -60,6 +63,7 @@ export default {
 .btn-rectangle {
   font-size: 1.5rem;
   text-transform: uppercase;
+  color: white;
 }
 .btn-dark {
   color: #000;
@@ -77,5 +81,13 @@ export default {
 .btn-light:hover {
   color: #fff !important;
   background: transparent !important;
+}
+#parent-group:hover .btn-square.hover-white {
+  color: black !important;
+  background: white !important;
+}
+#parent-group:hover .btn-square.hover-black {
+  color: white !important;
+  background: black !important;
 }
 </style>
