@@ -50,15 +50,13 @@ export default {
   methods: {
     mintToken: function () {
       this.errorMessage = 'Minting non fungible token - takes a minute or so..'
-      const methos = (process.env.VUE_APP_NETWORK === 'local') ? 'callContractRisidio' : 'callContractBlockstack'
       const data = {
         assetHash: this.item.assetHash,
         gaiaUsername: this.item.gaiaUsername,
         beneficiaries: this.item.beneficiaries,
         editions: this.item.editions,
         editionCost: (this.item.editionCost) ? this.item.editionCost : 0,
-        action: methos,
-        sendAsSky: false,
+        sendAsSky: true,
         contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
         contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
         functionName: 'mint-token'
