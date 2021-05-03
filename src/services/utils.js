@@ -64,12 +64,6 @@ const utils = {
       }, 300)
     }, 300)
   },
-  convertAddress: function (b160Address) {
-    let version = 26
-    if (NETWORK === 'mainnet') version = 22
-    const address = c32address(version, b160Address) // 22 for mainnet
-    return address
-  },
   fromMicroAmount: function (amountMicroStx) {
     try {
       if (amountMicroStx === 0) return 0

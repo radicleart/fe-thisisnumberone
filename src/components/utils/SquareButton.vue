@@ -2,12 +2,10 @@
   <b-button-group class="text-white" id="parent-group" v-if="loaded">
     <b-button @click="$emit('clickButton')" class="btn-square" :class="colorHover" :style="(usePixelBg) ? 'background-image: url(' + pixelBg + ')' : ''">
       <span class="d-flex justify-content-center" v-if="icon">
-        <b-icon class="text-warning" style="width: 30px; height: 30px;" :icon="icon" v-if="text-warning"/>
-        <b-icon class="" style="width: 30px; height: 30px;" :icon="icon" v-else/>
+        <b-icon :class="(textWarning) ? 'text-warning' : ''" style="width: 30px; height: 30px;" :icon="icon"/>
       </span>
       <span class="d-flex justify-content-center" v-else>
-        <img class="text-warning" style="width: 30px; height: 30px;" :src="svgImage" v-if="text-warning"/>
-        <img class="" style="width: 30px; height: 30px;" :src="svgImage" v-else/>
+        <img :class="(textWarning) ? 'text-warning' : ''" style="width: 30px; height: 30px;" :src="svgImage"/>
       </span>
     </b-button>
     <b-button @click="$emit('clickButton')" class="btn-rectangle" :class="bigButtonTheme">{{label1}}</b-button>
@@ -19,7 +17,7 @@ export default {
   name: 'SquareButton',
   components: {
   },
-  props: ['theme', 'usePixelBg', 'label1', 'icon', 'route', 'svgImage', 'text-warning', 'colorOnHover'],
+  props: ['theme', 'usePixelBg', 'label1', 'icon', 'route', 'svgImage', 'textWarning', 'colorOnHover'],
   data () {
     return {
       pixelBg: require('@/assets/img/pixelBg.svg'),

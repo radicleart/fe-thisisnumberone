@@ -129,7 +129,7 @@ const setup = function (data) {
   if (data.flow) {
     risidioCardMode = data.flow
   }
-  const useNetwork = 'testnet'
+  const NETWORK = process.env.VUE_APP_NETWORK
   // let beneficiaries = []
   const risidioBaseApi = RISIDIO_API_PATH
   const configuration = {
@@ -140,7 +140,7 @@ const setup = function (data) {
     marketConfig: marketConfig,
     selling: selling,
     minter: minter,
-    network: useNetwork,
+    network: NETWORK,
     risidioProjectId: STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
     risidioBaseApi: risidioBaseApi,
     risidioStacksApi: RISIDIO_STACKS_API,

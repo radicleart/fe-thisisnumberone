@@ -50,7 +50,10 @@ export default {
   methods: {
     mintToken: function () {
       this.errorMessage = 'Minting non fungible token - takes a minute or so..'
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       const data = {
+        mintingFee: 1,
+        owner: profile.stxAddress,
         assetHash: this.item.assetHash,
         gaiaUsername: this.item.gaiaUsername,
         beneficiaries: this.item.beneficiaries,
