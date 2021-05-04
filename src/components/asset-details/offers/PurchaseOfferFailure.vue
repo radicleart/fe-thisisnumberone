@@ -1,5 +1,5 @@
 <template>
-<div v-if="!loading">
+<div v-if="makeOfferDialog">
   <b-row>
     <b-col cols="12">
       <h1>{{makeOfferDialog[0].text}}</h1>
@@ -7,48 +7,22 @@
     </b-col>
   </b-row>
   <b-row class="row mt-2">
-    <b-col md="4" sm="12">
+    <b-col align-v="stretch" cols="12">
       <h2>{{makeOfferDialog[2].text}}</h2>
-      <p>{{makeOfferDialog[3].text}}</p>
-    </b-col>
-    <b-col md="5" sm="6" style="border-right: 1pt solid #000;">
-      <div>
-        <label for="input-live"><span class="">Type Amount (in STX)</span></label>
-      </div>
-      <div>
-        <b-input-group size="lg" append="STX">
-          <b-form-input type="number" id="offer" :state="offerState" v-model="offerAmount" placeholder="Enter amount in STX tokens"></b-form-input>
-        </b-input-group>
-        <p class="text-small text-danger" v-html="errorMessage"></p>
-      </div>
-    </b-col>
-    <rates-listing :message="rateMessage()" :amount="minimumOffer"/>
-  </b-row>
-  <b-row>
-    <b-col cols="12">
-      <div class="mt-3">
-        <div class="d-flex justify-content-between">
-          <div class="" style="width: 79%; border-bottom: 1pt solid #000000;"></div>
-          <div style="position: relative; top: 25px;">
-            <square-button :theme="'dark'" @clickButton="next()" :label1="'NEXT'" :svgImage="icon" :usePixelBg="true"/>
-          </div>
-        </div>
-      </div>
+      <p v-if="makeOfferDialog[3]">{{makeOfferDialog[3].text}}</p>
+      <p v-if="makeOfferDialog[4]">{{makeOfferDialog[4].text}}</p>
+      <p v-if="makeOfferDialog[5]">{{makeOfferDialog[5].text}}</p>
     </b-col>
   </b-row>
 </div>
 </template>
 
 <script>
-import SquareButton from '@/components/utils/SquareButton'
 import { APP_CONSTANTS } from '@/app-constants'
-import RatesListing from '@/components/toolkit/RatesListing'
 
 export default {
-  name: 'PurchaseOfferAmount',
+  name: 'PurchaseOfferFailure',
   components: {
-    SquareButton,
-    RatesListing
   },
   props: ['offerData'],
   data () {
@@ -58,10 +32,13 @@ export default {
       formSubmitted: false,
       minimumOffer: 0,
       errorMessage: null,
-      offerAmount: 0
+      offerAmount: 0,
+      defaultRate: null
     }
   },
   mounted () {
+    const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
+    this.defaultRate = tickerRates[0].currency
     this.minimumOffer = this.offerData.minimumOffer
     this.offerAmount = this.offerData.offerAmount
     this.$emit('updateSaleDataInfo', { field: 'saleType', value: 3 })
@@ -71,13 +48,21 @@ export default {
     rateMessage: function () {
       return 'Offers above ' + this.minimumOffer + ' STX will be considered'
     },
-    next: function () {
-      this.errorMessage = null
-      if (this.offerAmount < this.minimumOffer) {
-        this.errorMessage = 'Offers above ' + this.minimumOffer + ' STX will be considered'
-        return
-      }
-      this.$emit('collectEmail', { offerAmount: this.offerAmount })
+    back: function () {
+      this.$emit('backStep')
+    },
+    registerByEmail: function () {
+      this.$emit('registerByEmail')
+    },
+    connect: function () {
+      this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
+        this.$emit('registerByConnect')
+      })
+      const $self = this
+      this.timer1 = setInterval(function () {
+        const profile = $self.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+        if (profile.loggedIn) $self.$emit('registerByConnect')
+      }, 1500)
     },
     checkAndConvertToDecimals: function () {
       if (this.offerAmount < this.minimumOffer) {
@@ -92,8 +77,12 @@ export default {
     }
   },
   computed: {
+    profile () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      return profile
+    },
     makeOfferDialog () {
-      const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('make-offer')
+      const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('failed-offer')
       return dialog
     },
     gaiaAsset () {

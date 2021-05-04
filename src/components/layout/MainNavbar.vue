@@ -21,6 +21,8 @@
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/number-one"><img :src="hollowWhiteOne"/></router-link></b-nav-item>
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/about">About</router-link></b-nav-item>
         <!-- <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/news">News</router-link></b-nav-item> -->
+        <b-nav-item v-b-toggle.collapse @click="noScroll()" v-if="!loggedIn"><b-link variant="light" @click.prevent="startLogin()">Login</b-link></b-nav-item>
+        <b-nav-item v-b-toggle.collapse @click="noScroll()" v-else><b-link variant="light" @click.prevent="startLogout()">Logout</b-link></b-nav-item>
       </b-navbar-nav>
 
       <div class="break-line"><img :src="getBreakLine"></div>
@@ -88,11 +90,20 @@ export default {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile.username
     },
-    startLogin () {
-      this.$store.dispatch('rpayAuthStore/startLogin')
-    },
     noScroll () {
       document.body.classList.toggle('no-scroll')
+    },
+    startLogout () {
+      this.$store.dispatch('rpayAuthStore/startLogout').then(() => {
+        // localStorage.clear()
+        // sessionStorage.clear()
+        this.$router.push('/')
+      })
+    },
+    startLogin () {
+      this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
+        console.log(profile)
+      })
     }
   },
   computed: {

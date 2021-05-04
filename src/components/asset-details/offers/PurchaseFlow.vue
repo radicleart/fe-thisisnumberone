@@ -1,6 +1,15 @@
 <template>
 <div v-if="!loading">
-  <div v-if="contractAsset">
+  <div v-if="loginFlow">
+    <purchase-offer-login :offerData="offerData" @registerByEmail="registerByEmail" @registerByConnect="registerByConnect"/>
+  </div>
+  <div v-else-if="successFlow">
+    <purchase-offer-success :offerData="offerData"/>
+  </div>
+  <div v-else-if="failureFlow">
+    <purchase-offer-failure :offerData="offerData"/>
+  </div>
+  <div v-else-if="contractAsset">
     <div v-if="contractAsset.saleData.saleType === 1">
       <purchase-buy-now :contractAsset="contractAsset" :saleData="contractAsset.saleData" @buyNow="buyNow"/>
       <div class="text-danger" v-html="errorMessage"></div>
@@ -11,7 +20,7 @@
     </div>
     <div v-if="contractAsset.saleData.saleType === 3">
       <purchase-offer-amount :offerData="offerData" v-if="contractAsset.saleData.saleType === 3 && offerStage === 0" @collectEmail="collectEmail"/>
-      <purchase-offer-email :offerData="offerData" v-else-if="contractAsset.saleData.saleType === 3 && offerStage === 1" @backStep="backStep" @makeOffer="makeOffer"/>
+      <purchase-offer-email :offerData="offerData" v-else-if="contractAsset.saleData.saleType === 3 && offerStage === 1" @backStep="backStep" @setEmail="setEmail"/>
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
   </div>
@@ -24,9 +33,12 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import PurchaseBuyNow from './PurchaseBuyNow'
+import PurchaseOfferLogin from './PurchaseOfferLogin'
 import PurchaseOfferAmount from './PurchaseOfferAmount'
 import PurchasePlaceBid from './PurchasePlaceBid'
 import PurchaseOfferEmail from './PurchaseOfferEmail'
+import PurchaseOfferSuccess from './PurchaseOfferSuccess'
+import PurchaseOfferFailure from './PurchaseOfferFailure'
 import moment from 'moment'
 import {
   makeContractSTXPostCondition,
@@ -43,7 +55,10 @@ export default {
   name: 'PurchaseFlow',
   components: {
     PurchaseOfferAmount,
+    PurchaseOfferSuccess,
+    PurchaseOfferFailure,
     PurchaseOfferEmail,
+    PurchaseOfferLogin,
     PurchaseBuyNow,
     PurchasePlaceBid
   },
@@ -55,7 +70,10 @@ export default {
       offerStage: 0,
       offerData: {},
       biddingData: {},
-      biddingEndTime: null
+      biddingEndTime: null,
+      successFlow: false,
+      failureFlow: false,
+      loginFlow: false
     }
   },
   mounted () {
@@ -103,21 +121,62 @@ export default {
       Object.assign(this.offerData, data)
       this.offerStage = 1
     },
-    makeOffer: function (data) {
+    setEmail: function (data) {
+      this.offerData.email = data.email
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      if (!profile.loggedIn) {
+        this.loginFlow = true
+      } else {
+        this.makeOffer()
+      }
+    },
+    registerByEmail: function () {
+      this.offerData.registerByEmail = true
+      this.registerOfferOffChain(1)
+    },
+    registerByConnect: function () {
+      this.offerData.registerByEmail = false
+      this.makeOffer()
+    },
+    registerOfferOffChain: function (status) {
+      this.loginFlow = false
+      this.successFlow = false
+      this.failureFlow = false
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      const data = {
+        status: status,
+        domain: location.host,
+        contractAddress: STX_CONTRACT_ADDRESS,
+        contractName: STX_CONTRACT_NAME,
+        assetHash: contractAsset.tokenInfo.assetHash,
+        nftIndex: contractAsset.nftIndex,
+        amount: this.offerData.offerAmount,
+        email: this.offerData.email
+      }
+      this.$store.dispatch('assetGeneralStore/registerOfferOffChain', data).then(() => {
+        this.successFlow = true
+      }).catch(() => {
+        this.failureFlow = true
+      })
+    },
+    makeOffer: function () {
+      this.loginFlow = false
+      this.successFlow = false
+      this.failureFlow = false
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       this.errorMessage = null
       this.offerData.biddingEndTime = moment(contractAsset.saleData.biddingEndTime).valueOf()
-      this.offerData.email = data.email
       this.sellingMessage = 'Sending your request to the blockchain... this takes a few minutes to confirm!'
       this.offerData.contractAddress = STX_CONTRACT_ADDRESS
       this.offerData.contractName = STX_CONTRACT_NAME
       this.offerData.nftIndex = contractAsset.nftIndex
       this.offerData.assetHash = contractAsset.tokenInfo.assetHash
-
-      this.$store.dispatch('rpayPurchaseStore/makeOffer', this.offerData).then((data) => {
-        this.$emit('offerSent', data)
+      this.$store.dispatch('rpayPurchaseStore/makeOffer', this.offerData).then(() => {
+        this.registerOfferOffChain(2)
+        this.successFlow = true
       }).catch((err) => {
         this.errorMessage = err
+        this.failureFlow = true
       })
     },
     buyNow: function () {

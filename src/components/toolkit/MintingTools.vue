@@ -18,7 +18,7 @@
           <div class="row">
             <div class="col-12">
               <p>owned by:<br/>{{contractAsset.owner}}</p>
-              <p>you:<br/>{{profile.stxAddress}}</p>
+              <p v-if="profile">you:<br/>{{profile.stxAddress}}</p>
             </div>
             <div class="col-12 mb-5">
               <div class="">{{saleDataText}}</div>
@@ -129,7 +129,6 @@ export default {
   props: ['assetHash'],
   data: function () {
     return {
-      profile: null,
       showRpay: false,
       showTransfers: false,
       showBeneficiaries: false,
@@ -141,7 +140,6 @@ export default {
   },
   mounted () {
     const $self = this
-    this.profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
     const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
     // if (item.uploader !== profile.username) throw new Error('Unexpected NFT ownership error')
     item.gaiaUsername = item.uploader
@@ -235,6 +233,10 @@ export default {
     }
   },
   computed: {
+    profile () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      return profile
+    },
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
       return configuration

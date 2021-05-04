@@ -3,10 +3,8 @@ import dataUriToBuffer from 'data-uri-to-buffer'
 import {
   hexToCV
 } from '@stacks/transactions'
-import { c32address } from 'c32check'
 
 const precision = 1000000
-const NETWORK = process.env.VUE_APP_NETWORK
 
 const utils = {
   buildHash: function (hashable) {

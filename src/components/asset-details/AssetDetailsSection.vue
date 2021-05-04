@@ -11,6 +11,7 @@
           <b-col cols="12 mb-md-5">
             <div class="d-flex justify-content-between">
               <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
+              <div v-if="isOwner"><router-link class="text-white" to="/my-items/all">Admin <b-icon icon="chevron-right" shift-h="-4" variant="white"></b-icon></router-link></div>
               <div class="d-flex justify-content-between">
                 <b-link router-tag="span" v-b-tooltip.click :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
                 <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white"><div>{{salesBadgeLabel}}</div><div v-if="showEndTime()">{{biddingEndTime()}}</div></div>
@@ -30,8 +31,8 @@
             <div class="d-flex justify-content-start">
               {{salesInfoText}}
             </div>
-            -->
             <edition-trigger :assetHash="gaiaAsset.assetHash" />
+            -->
             <div class="border-top py-4 text-small">{{salesInfoText}}</div>
             <div class="d-flex justify-content-start">
               <square-button v-if="getSaleType() > 0" class="mr-4" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
@@ -78,7 +79,7 @@ import { APP_CONSTANTS } from '@/app-constants'
 import MediaItem from '@/components/utils/MediaItem'
 import SquareButton from '@/components/utils/SquareButton'
 import moment from 'moment'
-import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
+// import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
@@ -86,7 +87,7 @@ export default {
   name: 'AssetDetailsSection',
   components: {
     AssetUpdatesModal,
-    EditionTrigger,
+    // EditionTrigger,
     PurchaseFlow,
     MediaItem,
     SquareButton
@@ -268,6 +269,12 @@ export default {
         fluid: true
       }
       return videoOptions
+    },
+    isOwner: function () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      if (!contractAsset || !profile || !profile.loggedIn) return false
+      return profile.stxAddress === contractAsset.owner
     },
     owner () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)

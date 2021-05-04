@@ -56,10 +56,11 @@ export default {
   width: 61px;
   height: 61px;
   font-size: 2rem;
-  border: 1pt solid #fff !important;
+  border: 1pt solid #ccc !important;
 }
 .btn-rectangle {
   font-size: 1.5rem;
+  min-width: 200px;
   text-transform: uppercase;
   color: white;
 }
@@ -80,6 +81,7 @@ export default {
   color: #fff !important;
   background: transparent !important;
 }
+/**
 #parent-group:hover .btn-square.hover-white {
   color: black !important;
   background: white !important;
@@ -88,4 +90,5 @@ export default {
   color: white !important;
   background: black !important;
 }
+**/
 </style>

@@ -3,12 +3,12 @@
   <b-row>
     <b-col cols="12">
       <h1>{{sendOfferDialog[0].text}}</h1>
+      <h4 class="mb-5">{{sendOfferDialog[1].text}} <b>{{offerData.fbet}}</b></h4>
     </b-col>
   </b-row>
   <b-row class="row mt-5">
-    <b-col align-v="stretch" cols="4">
-      <h1>{{sendOfferDialog[1].text}}</h1>
-      <p class="text-small text-bold">{{sendOfferDialog[2].text}} {{offerData.fbet}}</p>
+    <b-col align-v="stretch" md="4" sm="12">
+      <h2>{{sendOfferDialog[2].text}}</h2>
       <p v-if="sendOfferDialog[3]">{{sendOfferDialog[3].text}}</p>
       <p v-if="sendOfferDialog[4]">{{sendOfferDialog[4].text}}</p>
       <p v-if="sendOfferDialog[5]">{{sendOfferDialog[5].text}}</p>
@@ -75,7 +75,7 @@ export default {
         this.errorMessage = 'Please enter an email where we can reach with news about your offer.'
         return
       }
-      this.$emit('makeOffer', { email: this.email })
+      this.$emit('setEmail', { email: this.email })
     }
   },
   computed: {

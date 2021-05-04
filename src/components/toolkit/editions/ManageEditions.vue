@@ -80,7 +80,6 @@ export default {
         this.transferring = 'cost has to be a positive number and max editions same or bigger than current number minted...'
         return
       }
-      this.transferring = 'update begun...'
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
       const data = {
         contractAddress: STX_CONTRACT_ADDRESS,
