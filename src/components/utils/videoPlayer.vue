@@ -24,13 +24,22 @@ export default {
   },
   mounted () {
     console.log(this.options)
+    const $self = this
     this.player = videojs(this.$refs.videoPlayer, this.options, function onPlayerReady () {
       console.log('onPlayerReady', this)
+      $self.player.controls($self.options.controls)
     })
-    this.player.controls(false)
     if (this.options.autoplay) {
       this.player.play()
     }
+    this.player.on('pause', function () {
+      this.bigPlayButton.show()
+      // Now the issue is that we need to hide it again if we start playing
+      // So every time we do this, we can create a one-time listener for play events.
+    })
+    this.player.on('play', function () {
+      this.bigPlayButton.hide()
+    })
   },
   beforeDestroy () {
     if (this.player) {
@@ -39,6 +48,7 @@ export default {
   },
   methods: {
     playMe: function () {
+      if (this.options.bigPlayer) return
       if (this.options.emitOnHover) {
         this.$emit('videoHover', this.options)
       }
@@ -47,6 +57,7 @@ export default {
       }
     },
     pauseMe: function () {
+      if (this.options.bigPlayer) return
       if (this.options.emitOnHover) {
         this.$emit('videoHoverOut', this.options)
       }
@@ -55,12 +66,13 @@ export default {
       }
     },
     clickedMe: function () {
+      if (this.options.bigPlayer) return
       this.player.pause()
       this.$emit('openAssetDetails')
     },
     poster: function () {
-      if (this.options.imageUrl) {
-        return this.options.imageUrl
+      if (this.options.poster) {
+        return this.options.poster
       }
     }
   }
@@ -73,7 +85,10 @@ export default {
     width: 100% !important;
     height: auto !important;
 }
-.vjs-default-skin.vjs-paused .vjs-big-play-button {
-  display: block;
+.vjs-paused.vjs-big-play-button {
+  display: none;
+}
+.vjs-paused.vjs-has-started .vjs-big-play-button {
+  display: none;
 }
 </style>

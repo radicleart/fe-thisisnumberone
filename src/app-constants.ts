@@ -36,6 +36,7 @@ export const APP_CONSTANTS = {
   KEY_BREAK_LINE: 'contentStore/getBreakLine',
   KEY_PIXEL_BACKGROUND: 'contentStore/getPixelBackground',
 
+  KEY_USER_SESSION: 'rpayAuthStore/getUserSession',
   KEY_PROFILE: 'rpayAuthStore/getMyProfile',
   KEY_GAIA_STORAGE: 'rpayAuthStore/getMyProfile',
   KEY_ACCOUNT_INFO: 'rpayAuthStore/getAccountInfo',

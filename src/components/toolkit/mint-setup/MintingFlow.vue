@@ -67,7 +67,6 @@ export default {
       }
       this.$store.dispatch('rpayPurchaseStore/mintToken', data).then((result) => {
         this.result = result
-        this.$store.dispatch('myItemStore/initSchema', true)
       })
     },
     addNewBeneficiary: function () {

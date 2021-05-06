@@ -1,12 +1,12 @@
 <template>
-<section v-if="content" :class="getArtistBgTheme()" class="container-fluid p-5">
+<section v-if="content" :class="getArtistBgTheme()">
   <!-- <div class="spaced-name">{{content.data.description[0].text}}</div> -->
   <b-container fluid class="center-section">
-    <b-row>
-      <b-col cols="12" lg="6">
+    <b-row align-h="center">
+      <b-col md="6" sm="10" xs="8" class="mb-5">
         <img style="width: 100%;" :src="content.data.image.url"/>
       </b-col>
-      <b-col cols="12" lg="6" align-self="end" class="text-left pl-lg-5">
+      <b-col md="6" sm="10" xs="8" align-self="end" class="text-left">
         <prismic-items :prismicItems="content.data.description"></prismic-items>
         <social-links class="mt-4" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
         <div v-if="showButton">

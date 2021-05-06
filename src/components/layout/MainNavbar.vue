@@ -6,6 +6,10 @@
       <router-link to="/home" class="navbar-brand"><img height="36px" :src="getLogo()" alt="logo"/></router-link>
     </div>
   </b-navbar-brand>
+  <b-navbar-nav class="ml-auto ">
+    <b-nav-item><b-link class="text-white top-content" to="/about">About</b-link></b-nav-item>
+  </b-navbar-nav>
+  <!--
   <b-navbar-nav class="ml-auto toggle-icon">
     <b-nav-item v-b-toggle.collapse @click="collapsed = !collapsed, noScroll()">
       <img style="width: 40px; height: 40px;" :src="toggleIcon">
@@ -20,7 +24,6 @@
         </b-navbar-brand>
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/number-one"><img :src="hollowWhiteOne"/></router-link></b-nav-item>
         <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/about">About</router-link></b-nav-item>
-        <!-- <b-nav-item v-b-toggle.collapse @click="noScroll()"><router-link to="/news">News</router-link></b-nav-item> -->
         <b-nav-item v-b-toggle.collapse @click="noScroll()" v-if="!loggedIn"><b-link variant="light" @click.prevent="startLogin()">Login</b-link></b-nav-item>
         <b-nav-item v-b-toggle.collapse @click="noScroll()" v-else><b-link variant="light" @click.prevent="startLogout()">Logout</b-link></b-nav-item>
       </b-navbar-nav>
@@ -43,7 +46,7 @@
         </div>
       </b-navbar-nav>
     </b-collapse>
-
+  -->
   </b-navbar>
 </div>
 </template>
@@ -139,6 +142,9 @@ export default {
 
 <style lang="scss">
 /* NAVBAR GENERAL STYLE */
+.top-content {
+  font-size: 2.6rem;
+}
 #one-nav nav {
   height: 60px;
 }

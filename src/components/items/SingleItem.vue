@@ -78,13 +78,14 @@ export default {
       if (!file) return {}
       const videoOptions = {
         emitOnHover: true,
-        playOnHover: true,
+        playOnHover: false,
+        bigPlayer: false,
         assetHash: this.item.assetHash,
-        showMeta: false,
         autoplay: false,
         muted: true,
+        controls: false,
+        showMeta: false,
         aspectRatio: '1:1',
-        controls: true,
         poster: (this.item.nftMedia.coverImage) ? this.item.nftMedia.coverImage.fileUrl : null,
         sources: [
           { src: file.fileUrl, type: file.type }

@@ -212,7 +212,6 @@ export default {
       }
       this.$store.dispatch('rpayPurchaseStore/closeBidding', data).then((result) => {
         this.result = result
-        this.$store.dispatch('myItemStore/initSchema', true)
       })
     },
     offerAmount: function (amount) {

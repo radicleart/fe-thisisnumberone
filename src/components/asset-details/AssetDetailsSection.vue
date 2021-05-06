@@ -1,14 +1,14 @@
 <template>
 <section :key="componentKey" id="asset-details-section" v-if="gaiaAsset" class="text-white">
   <b-container fluid class="center-section" style="min-height: 100vh;">
-    <b-row>
-      <div id="video-column" class="mb-5 col-md-6 col-sm-12">
-        <div :style="dimensions">
-          <media-item class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="gaiaAsset.nftMedia" :targetItem="targetItem()"/>
+    <b-row align-h="center">
+      <b-col lg="6" sm="10" class="mb-5">
+        <div id="video-column" :style="dimensions">
+          <media-item :videoOptions="videoOptions" :nftMedia="gaiaAsset.nftMedia" :targetItem="targetItem()"/>
         </div>
-      </div>
-      <div class="col-md-6 col-sm-12">
-        <b-row align-v="stretch" :style="'height:' + (videoHeight + 0) + 'px;'">
+      </b-col>
+      <b-col lg="6" sm="10">
+        <b-row align-v="stretch" :style="'min-height:60vh;'">
           <b-col cols="12">
             <div class="d-flex justify-content-between">
               <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
@@ -23,21 +23,25 @@
             </div>
           </b-col>
           <b-col cols="12" align-self="end">
-            <h1>{{gaiaAsset.name}}</h1>
-            <h2>{{gaiaAsset.artist}}</h2>
-            <p>{{owner}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
-            <p class="border-top pt-4 text-small">{{gaiaAsset.description}}</p>
-            <div class="w-50 my-5 d-flex justify-content-between">
-              <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
-              <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
-            </div>
-            <div class="d-flex justify-content-start">
-              <square-button v-if="getSaleType() > 0" class="mr-4" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
-              <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>
+            <div class="w-100">
+              <h1>{{gaiaAsset.name}}</h1>
+              <h2>{{gaiaAsset.artist}}</h2>
+              <p class="border-bottom pb-4">{{owner}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
+              <div class="w-75">
+                <p class="pt-4 text-small">{{gaiaAsset.description}}</p>
+              </div>
+              <div class="w-75 my-5 d-flex justify-content-between">
+                <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
+                <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
+              </div>
+              <div class="d-flex justify-content-start">
+                <square-button v-if="getSaleType() > 0" class="mr-4" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
+                <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>
+              </div>
             </div>
           </b-col>
         </b-row>
-      </div>
+      </b-col>
     </b-row>
   <b-modal size="lg" id="asset-offer-modal" class="text-left">
     <purchase-flow v-if="showRpay === 1" :gaiaAsset="gaiaAsset" @offerSent="offerSent"/>
@@ -269,7 +273,8 @@ export default {
     videoOptions () {
       const videoOptions = {
         emitOnHover: true,
-        playOnHover: true,
+        playOnHover: false,
+        bigPlayer: true,
         assetHash: this.assetHash,
         autoplay: false,
         muted: false,

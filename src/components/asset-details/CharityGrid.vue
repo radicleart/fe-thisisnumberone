@@ -1,12 +1,12 @@
 <template>
-<section v-if="content" :class="'theme-' + content.uid" class="container-fluid p-5 hundred-vh">
+<section v-if="content" :class="'theme-' + content.uid" class="container-fluid p-5" style="min-height: 50vh;">
   <!-- <div class="spaced-name spaced-name--charity-grid">Charities</div> -->
-  <b-container>
-    <b-row>
-      <b-col class="text-center" cols="12" sm="6" md="4" v-for="(charity, index) in content" :key="index">
-        <div class="image-background">
-          <div class="image-container">
-            <img class="charity-image" :src="charity.data.image.url"/>
+  <b-container fluid class="center-section">
+    <b-row align-h="center">
+      <b-col lg="2" sm="6" md="4" v-for="(charity, index) in content" :key="index">
+        <div class="">
+          <div class="">
+            <img style="width: 100%;" class="charity-image" :src="charity.data.image.url"/>
           </div>
         </div>
         <p class="title-text">{{charity.data.description[0].text}}</p>

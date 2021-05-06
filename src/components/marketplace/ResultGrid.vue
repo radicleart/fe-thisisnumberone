@@ -36,17 +36,21 @@ export default {
         }
       }
     }
-    if (this.resultSet.length === 5) {
-      this.resultSet.splice(1, 0, padder)
-      this.resultSet.splice(3, 0, padder)
-      this.resultSet.splice(5, 0, padder)
-      this.resultSet.splice(7, 0, padder)
-    }
-    this.paddedResults = this.resultSet
-    const numbs = this.resultSet.length
-    for (let i = numbs; i < 10; i++) {
-      if (this.paddedResults.length < 9) {
-        this.paddedResults.push(this.resultSet[i - numbs])
+    if (this.resultSet.length > 4) {
+      this.setupGrid(padder)
+    } else {
+      if (this.resultSet.length === 5) {
+        this.resultSet.splice(1, 0, padder)
+        this.resultSet.splice(3, 0, padder)
+        this.resultSet.splice(5, 0, padder)
+        this.resultSet.splice(7, 0, padder)
+      }
+      this.paddedResults = this.resultSet
+      const numbs = this.resultSet.length
+      for (let i = numbs; i < 10; i++) {
+        if (this.paddedResults.length < 9) {
+          this.paddedResults.push(this.resultSet[i - numbs])
+        }
       }
     }
     this.loaded = true
@@ -54,6 +58,22 @@ export default {
   methods: {
     numbEntries: function () {
       return this.resultSet.length
+    },
+    setupGrid: function (padder) {
+      const dave = this.resultSet.find((o) => o.artist === 'Dave Stewart') || this.resultSet[0]
+      const orbital = this.resultSet.find((o) => o.artist === 'Orbital') || this.resultSet[1]
+      const fatboy = this.resultSet.find((o) => o.artist === 'Fatboy Slim') || this.resultSet[2]
+      const marc = this.resultSet.find((o) => o.artist === 'Chemical X') || this.resultSet[3]
+      const cara = this.resultSet.find((o) => o.artist === 'Cara Delevingne') || this.resultSet[4]
+      this.paddedResults.push(marc)
+      this.paddedResults.push(padder)
+      this.paddedResults.push(orbital)
+      this.paddedResults.push(padder)
+      this.paddedResults.push(cara)
+      this.paddedResults.push(padder)
+      this.paddedResults.push(fatboy)
+      this.paddedResults.push(padder)
+      this.paddedResults.push(dave)
     }
   },
   computed: {

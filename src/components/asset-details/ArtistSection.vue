@@ -2,11 +2,11 @@
 <section v-if="content" :class="getArtistTheme()">
   <!-- <div class="spaced-name spaced-name--artist-section" :class="getArtistText1()">{{content.data.description[0].text}}</div> -->
   <b-container fluid class="center-section">
-    <b-row class="mt-sm-5">
-      <b-col cols="12" lg="8">
+    <b-row align-h="center">
+      <b-col md="6" sm="10" xs="8" class="mb-5">
         <img style="width: 100%;" :src="content.data.image.url"/>
       </b-col>
-      <b-col cols="12" lg="4" align-self="end" class="text-left text-white">
+      <b-col md="6" sm="10" xs="8" align-self="end" class="text-left text-white">
         <prismic-items :prismicItems="content.data.description"></prismic-items>
         <social-links class="mt-5" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
       </b-col>
