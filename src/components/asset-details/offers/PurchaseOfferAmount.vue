@@ -1,19 +1,18 @@
 <template>
 <div v-if="!loading">
   <b-row>
-    <b-col cols="12">
-      <h1>{{makeOfferDialog[0].text}}</h1>
-      <h4 class="mb-5">{{makeOfferDialog[1].text}} <b>{{offerData.fbet}}</b></h4>
+    <b-col cols="12" class="mb-5">
+      <h1 class="mb-4">{{makeOfferDialog[0].text}}</h1>
+      <h4><span class="mr-3">{{makeOfferDialog[1].text}}</span> <b>{{offerData.fbet}}</b></h4>
     </b-col>
   </b-row>
   <b-row class="row mt-2">
     <b-col md="4" sm="12">
-      <h2>{{makeOfferDialog[2].text}}</h2>
       <p>{{makeOfferDialog[3].text}}</p>
     </b-col>
-    <b-col md="5" sm="6" style="border-right: 1pt solid #000;">
+    <b-col md="6" sm="6">
       <div>
-        <label for="input-live"><span class="">Type Amount (in STX)</span></label>
+        <label for="input-live"><span class="text-small">Type Amount (in STX)</span></label>
       </div>
       <div>
         <b-input-group size="lg" append="STX">
@@ -21,34 +20,34 @@
         </b-input-group>
         <p class="text-small text-danger" v-html="errorMessage"></p>
       </div>
-    </b-col>
-    <rates-listing :message="rateMessage()" :amount="minimumOffer"/>
-  </b-row>
-  <b-row>
-    <b-col cols="12">
-      <div class="mt-3">
-        <div class="d-flex justify-content-between">
-          <div class="" style="width: 79%; border-bottom: 1pt solid #000000;"></div>
-          <div style="position: relative; top: 25px;">
-            <square-button :theme="'dark'" @clickButton="next()" :label1="'NEXT'" :svgImage="icon" :usePixelBg="true"/>
-          </div>
+      <div class="d-flex justify-content-start">
+        <div class="text-small" style="width: 50px;">
+          <b>STX</b> =
+        </div>
+        <div class="text-small">
+          <rates-listing :message="rateMessage()" :amount="offerAmount"/>
         </div>
       </div>
     </b-col>
+    <b-col md="2" sm="4" class="text-small" style="border-left: 1pt solid #000;">
+      <div>{{rateMessage()}}</div>
+      <div>{{minimumOffer}} STX</div>
+    </b-col>
   </b-row>
+  <action-row :buttonLabel="'NEXT'" @clickButton="next"/>
 </div>
 </template>
 
 <script>
-import SquareButton from '@/components/utils/SquareButton'
 import { APP_CONSTANTS } from '@/app-constants'
 import RatesListing from '@/components/toolkit/RatesListing'
+import ActionRow from '@/components/utils/ActionRow'
 
 export default {
   name: 'PurchaseOfferAmount',
   components: {
-    SquareButton,
-    RatesListing
+    RatesListing,
+    ActionRow
   },
   props: ['offerData'],
   data () {
@@ -69,7 +68,8 @@ export default {
   },
   methods: {
     rateMessage: function () {
-      return 'Offers above ' + this.minimumOffer + ' STX will be considered'
+      // return 'Offers above ' + this.minimumOffer + ' STX will be considered'
+      return 'Minimum Offer'
     },
     next: function () {
       this.errorMessage = null

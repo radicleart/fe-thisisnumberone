@@ -1,6 +1,6 @@
 <template>
 <section v-if="content" :class="'theme-' + content.uid" class="container-fluid p-5 hundred-vh">
-  <div class="spaced-name spaced-name--charity-grid">Charities</div>
+  <!-- <div class="spaced-name spaced-name--charity-grid">Charities</div> -->
   <b-container>
     <b-row>
       <b-col class="text-center" cols="12" sm="6" md="4" v-for="(charity, index) in content" :key="index">
@@ -9,7 +9,7 @@
             <img class="charity-image" :src="charity.data.image.url"/>
           </div>
         </div>
-        <p>{{charity.data.description[0].text}}</p>
+        <p class="title-text">{{charity.data.description[0].text}}</p>
       </b-col>
     </b-row>
   </b-container>
@@ -43,6 +43,10 @@ export default {
 .theme-chemicalx {
   background-color: #C92E11;
   color: #fff;
+}
+.title-text {
+  font-weight: normal;
+  font-size: 1.6rem;
 }
 .spaced-name--charity-grid {
   margin: -3.5rem 0 8rem -4rem;

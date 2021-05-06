@@ -2,18 +2,18 @@
 <div>
   <div :style="videoOptions.dimensions" id="video-demo-container" v-if="isThreed(mediaItem())">
     <video-player v-on="$listeners" :style="videoOptions.dimensions" :options="videoOptions"/>
-    <div :style="videoOptions.dimensions" class="d-flex justify-content-between" v-if="videoOptions.showMeta">
-      <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
-      <div @click="deleteMediaItem()" v-if="!contractAsset && (mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></div>
+    <div :style="videoOptions.dimensions" class="p-4 d-flex justify-content-between" v-if="videoOptions.showMeta">
+      <div class="text-small">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
+      <div><a href="#" @click.prevent="deleteMediaItem()" v-if="!contractAsset && (mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></a></div>
     </div>
     <!-- <video id="video1" controls style="max-height: 250px;" @loadedmetadata="cover"> -->
   </div>
 
   <div :style="videoOptions.dimensions" id="video-demo-container" v-if="isVideo(mediaItem())">
     <video-player v-on="$listeners" :style="videoOptions.dimensions" :options="videoOptions"/>
-    <div class="d-flex justify-content-between" v-if="videoOptions.showMeta">
-      <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
-      <div @click="deleteMediaItem()" v-if="!contractAsset && (mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></div>
+    <div class="p-4 d-flex justify-content-between" v-if="videoOptions.showMeta">
+      <div class="text-small">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
+      <div><a href="#" @click.prevent="deleteMediaItem()" v-if="(mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></a></div>
     </div>
     <!-- <video id="video1" controls style="max-height: 250px;" @loadedmetadata="cover"> -->
   </div>
@@ -22,22 +22,20 @@
     <audio v-on="$listeners" controls :src="mediaItem().fileUrl" :style="dimensions()">
       Your browser does not support the <code>audio</code> element.
     </audio>
-    <div class="d-flex justify-content-between">
-      <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
-      <div v-if="!contractAsset" @click="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></div>
+    <div class="p-4 d-flex justify-content-between">
+      <div class="text-small">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
+      <div @click="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></div>
     </div>
  </div>
-
-  <div v-if="ispdf(mediaItem())">
+  <div v-else-if="ispdf(mediaItem())">
     <img v-on="$listeners" :src="missing" :alt="mediaItem().name" :title="mediaItem().name" :style="dimensions()">
     <div @click="deleteMediaItem()" class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
   </div>
-
   <div v-else-if="isImage(mediaItem())">
     <img v-on="$listeners" :src="mediaItem().fileUrl" :alt="mediaItem().name" :style="dimensions()">
-    <div class="d-flex justify-content-between">
-      <div class="text-small text-info">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
-      <div v-if="!contractAsset" @click="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></div>
+    <div class="p-4 d-flex justify-content-between" v-if="videoOptions.showMeta">
+      <div class="text-small">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
+      <div><a href="#" @click.prevent="deleteMediaItem()" v-if="(mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></a></div>
     </div>
   </div>
 </div>
@@ -66,13 +64,6 @@ export default {
     contractAsset () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.videoOptions.assetHash)
       return contractAsset
-    },
-    bannerImage () {
-      if (this.nftMedia) {
-        const item = this.$store.getters['myItemStore/myItem'](this.nftMedia.artworkFile.dataHash)
-        return this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](item.nftMedia.imageUrl)
-      }
-      return this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](null)
     }
   },
   methods: {

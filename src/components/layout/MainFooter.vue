@@ -10,17 +10,32 @@
           <b-link to="/home"><img :src="logo" alt="logo"/></b-link>
         </div>
 
-        <div class="col-3 col-lg-2 footer-top--content">
+        <div class="col-3 offset-2 col-lg-2 footer-top--content">
           <div class="column-header">About</div>
+          <div v-scroll-to="{ element: '#about-number-1', duration: 1000 }">
+            <b-link to="/about">About This is #1</b-link>
+          </div>
+          <div v-scroll-to="{ element: '#chemicalx', duration: 1000 }">
+            <b-link to="/about">Chemical X</b-link>
+          </div>
+          <div v-scroll-to="{ element: '#charity', duration: 1000 }">
+            <b-link to="/about">Charities</b-link>
+          </div>
+          <div v-scroll-to="{ element: '#environment', duration: 1000 }">
+            <b-link to="/about">Charities</b-link>
+          </div>
+          <!--
           <div v-for="(item,index) of content.column_about" :key="index">
             <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href="item.link.url" target="_blank">{{ item.title_of_the_link[0].text }}</a></div>
             <div v-else-if="item.title_of_the_link[0].type === 'image'">
               <a :href="item.link.url" target="_blank"><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
             </div>
           </div>
+          -->
         </div>
 
-        <div class="col-3 col-lg-2 footer-top--content">
+        <!--
+          <div class="col-3 col-lg-2 footer-top--content">
           <div class="column-header">#1</div>
           <div v-for="(item,index) of content.column__1" :key="index">
             <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href="item.link.url" target="_blank">{{ item.title_of_the_link[0].text }}</a></div>
@@ -29,19 +44,27 @@
             </div>
           </div>
         </div>
+        -->
 
         <div class="col-3 col-lg-2 footer-top--content">
           <div class="column-header">News</div>
+          <div v-scroll-to="{ element: '#about', duration: 1000 }">
+            <a href="mailto:press@thisisnumberone.com">Press</a>
+          </div>
+          <!--
           <div v-for="(item,index) of content.news_column" :key="index">
             <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href="item.link.url" target="_blank">{{ item.title_of_the_link[0].text }}</a></div>
             <div v-else-if="item.title_of_the_link[0].type === 'image'">
               <a :href="item.link.url" target="_blank"><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
             </div>
           </div>
+          -->
           <div class="social-links">
+            <!--
             <a href="#"><b-icon width="23px" height="23px" icon="facebook"></b-icon></a>
-            <a href="#"><b-icon width="23px" height="23px" icon="instagram"></b-icon></a>
             <a href="#"><b-icon width="23px" height="23px" icon="twitter"></b-icon></a>
+            -->
+            <a href="https://www.instagram.com/this_is_no.1" target="_blank"><b-icon width="23px" height="23px" icon="instagram"></b-icon></a>
           </div>
         </div>
 

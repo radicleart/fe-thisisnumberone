@@ -12,37 +12,33 @@
       <p v-if="buyNowDialog[3]">{{buyNowDialog[3].text}}
       </p>
     </b-col>
-    <b-col md="5" sm="6" style="border-right: 1pt solid #000;">
+    <b-col md="8" sm="12" style="border-right: 1pt solid #000;">
       <div>
         <h3><span class="mr-5 text-black">Buy Now</span> {{contractAsset.saleData.buyNowOrStartingPrice}} STX</h3>
       </div>
-    </b-col>
-    <rates-listing :message="rateMessage()" :amount="contractAsset.saleData.buyNowOrStartingPrice"/>
-  </b-row>
-  <b-row>
-    <b-col cols="12">
-      <div class="mt-3">
-        <div class="d-flex justify-content-between">
-          <div class="" style="width: 79%; border-bottom: 1pt solid #000000;"></div>
-          <div style="position: relative; top: 25px;">
-            <square-button :theme="'dark'" @clickButton="$emit('buyNow')" :label1="'BUY NOW'" :svgImage="icon" :usePixelBg="true"/>
-          </div>
+      <div class="d-flex justify-content-start">
+        <div class="text-small" style="width: 50px;">
+          <b>STX</b> =
+        </div>
+        <div class="text-small">
+          <rates-listing :message="''" :amount="contractAsset.saleData.buyNowOrStartingPrice"/>
         </div>
       </div>
     </b-col>
   </b-row>
+  <action-row :eventName="buyNow" :buttonLabel="'BUY NOW'"/>
 </div>
 </template>
 
 <script>
 import RatesListing from '@/components/toolkit/RatesListing'
-import SquareButton from '@/components/utils/SquareButton'
+import ActionRow from '@/components/utils/ActionRow'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'PurchaseBuyNow',
   components: {
-    SquareButton,
+    ActionRow,
     RatesListing
   },
   props: ['contractAsset'],

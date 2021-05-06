@@ -5,7 +5,7 @@
       <result-grid @videoHoverOut="resetContainer" @videoHover="updateContainer" class="container text-center" :outerOptions="videoOptions" :outsiderCols="12" :resultSet="resultSet"/>
     </b-col>
     <b-col md="4" sm="6" align-self="center" :style="getOffset" class="mb-5">
-      <div v-if="!artistId" id="one-box" class="box1 " :style="'height:' + oneBoxHeight + 'px'" style="min-width: 200px; width: 100%;">
+      <div v-if="!artistId" id="one-box" class="box1" :style="'height:' + oneBoxHeight + 'px'" style="min-width: 200px; width: 100%;">
         <div><img :src="logo" alt="logo"></div>
       </div>
       <div v-else id="one-box" class="box2 text-white d-flex flex-column justify-content-end align-items-center" :style="'height:' + oneBoxHeight + 'px'" style="min-width: 200px; width: 100%;">
@@ -17,7 +17,7 @@
             <h1>{{gaiaAsset.artist}}</h1>
             <h2>{{gaiaAsset.name}}</h2>
             <p class="" v-if="gaiaAsset.contractAsset">{{getOwningAddress}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
-            <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
+            <div v-scroll-to="{ element: '#asset-details-section', duration: 1000 }"><b-link @click.prevent="routeTo(gaiaAsset.assetHash)" class="text-white">Find out more</b-link></div>
           </b-col>
         </b-row>
       </div>
@@ -65,6 +65,9 @@ export default {
     }, this)
   },
   methods: {
+    routeTo (assetHash) {
+      this.$router.push('/assets/' + assetHash)
+    },
     ttStacksAddress () {
       const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-stacks-address')
       return (tooltip) ? tooltip[0].text : ''
@@ -122,17 +125,6 @@ export default {
 .box2 {
   background-color: #333333;
   /* border: 1pt solid #707070; */
-}
-.center {
-  margin: auto;
-  width: 70%;
-  border: 0px solid green;
-  padding: 10px;
-}
-@media only screen and (max-width: 900px) {
-  .center {
-    width: 85%;
-  }
 }
 
 </style>

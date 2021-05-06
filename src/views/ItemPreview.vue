@@ -1,37 +1,37 @@
 <template>
-<div class="container hundred-vh">
-<div class="mt-3" v-if="!item">
-  {{message}}
-</div>
-<div class="mt-3 text-white" v-else>
-  <div class="row">
-    <div class="col-md-7 col-sm-12">
-      <div id="result-item" class="mb-4">
-        <media-item :videoOptions="videoOptions" :nftMedia="nftMedia" :targetItem="targetItem()" :dims="dims"/>
-      </div>
-
-    </div>
-    <div class="col-md-5 col-sm-12">
-      <div>
-        <div class="mb-2 d-flex justify-content-between">
-          <div class="">{{item.name}}</div>
-          <div class="">
-            <router-link v-if="!contractAsset" class="mr-2" :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"></b-icon></router-link>
-            <a v-if="!contractAsset" href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
-          </div>
-        </div>
-        <h6 class="text-small">By : {{item.artist}}</h6>
-      </div>
-      <!--
-        <div class="mb-2 text-bold">Editions {{item.editions}}</div>
-        <span class="text-small mr-1" v-for="(kw, index) in item.keywords" :key="index">#{{kw.name}}</span>
-      -->
-      <div class="text-small">{{item.description}}</div>
-      <minting-tools class="w-100" :assetHash="item.assetHash" />
-    </div>
+<section class="" id="section-minting">
+  <div class="mt-3" v-if="!item">
+    {{message}}
   </div>
-</div>
-</div>
+  <b-container class="my-5 pt-5" v-if="item">
+    <b-row style="min-height: 40vh" >
+      <b-col md="6" sm="12" align-self="start" class=" text-center">
+        <div  class="bg-white" style="width:80%;">
+          <p class="p-3">Artwork File</p>
+          <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="item.nftMedia" :targetItem="'artworkFile'"/>
+        </div>
+      </b-col>
+      <b-col md="6" sm="12" align-self="start" class="mb-4 text-white">
+        <div>
+          <div class="mb-2 d-flex justify-content-between">
+            <h2 class="d-block border-bottom mb-5">{{item.name}}</h2>
+            <div class="">
+              <router-link v-if="!contractAsset" class="mr-2" :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"></b-icon></router-link>
+              <a v-if="!contractAsset" href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
+            </div>
+          </div>
+          <h6 class="text-small">By : {{item.artist}}</h6>
+        </div>
+        <!--
+          <div class="mb-2 text-bold">Editions {{item.editions}}</div>
+          <span class="text-small mr-1" v-for="(kw, index) in item.keywords" :key="index">#{{kw.name}}</span>
+        -->
+        <div class="text-small">{{item.description}}</div>
+        <minting-tools class="w-100" :assetHash="item.assetHash" />
+      </b-col>
+    </b-row>
+  </b-container>
+</section>
 </template>
 
 <script>

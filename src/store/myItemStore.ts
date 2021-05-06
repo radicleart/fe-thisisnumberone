@@ -224,6 +224,7 @@ const myItemStore = {
         if (!data.nftMedia.dataUrl) {
           // ok the file is stored externally - carry on..
           resolve(data.nftMedia)
+          return
         }
         data.nftMedia.storage = 'gaia'
         const fileName = data.assetHash + '_' + data.nftMedia.id + utils.getFileExtension(data.nftMedia.fileUrl, data.nftMedia.type)
@@ -236,9 +237,9 @@ const myItemStore = {
         })
       })
     },
-    saveItem ({ state, commit }: any, item: any) {
+    saveItem ({ state, rootGetters, commit }: any, item: any) {
       return new Promise((resolve, reject) => {
-        const profile = store.getters[APP_CONSTANTS.KEY_PROFILE]
+        const profile = rootGetters[APP_CONSTANTS.KEY_PROFILE]
         item.uploader = profile.username
         if (!item.owner) item.owner = profile.username
         // the item can be saved once there is an asset hash - all other fields can be added later..
@@ -267,18 +268,25 @@ const myItemStore = {
         if (item.nftMedia.artworkClip && item.nftMedia.artworkClip.dataUrl) item.nftMedia.artworkClip.dataUrl = null
         if (item.nftMedia.artworkFile && item.nftMedia.artworkFile.dataUrl) item.nftMedia.artworkFile.dataUrl = null
         if (item.nftMedia.coverImage && item.nftMedia.coverImage.dataUrl) item.nftMedia.coverImage.dataUrl = null
-        myItemService.saveItem(state.rootFile).then((rootFile) => {
-          commit('rootFile', rootFile)
-          resolve(item)
-          if (!item.private) {
-            searchIndexService.addRecord(item).then((result) => {
-              console.log(result)
-            }).catch((error) => {
-              console.log(error)
-            })
-          }
-        }).catch((error) => {
-          reject(error)
+        item.updated = moment({}).valueOf()
+        if (!item.metaDataUrl && !profile.gaiaHubConfig) {
+          throw new Error('profile needs to refresh - please reload current page..')
+        }
+        item.metaDataUrl = profile.gaiaHubConfig.url_prefix + profile.gaiaHubConfig.address + '/' + item.assetHash + '.json'
+        myItemService.saveAsset(item).then(() => {
+          myItemService.saveItem(state.rootFile).then((rootFile) => {
+            commit('rootFile', rootFile)
+            resolve(item)
+            if (!item.private) {
+              searchIndexService.addRecord(item).then((result) => {
+                console.log(result)
+              }).catch((error) => {
+                console.log(error)
+              })
+            }
+          }).catch((error) => {
+            reject(error)
+          })
         })
       })
     }

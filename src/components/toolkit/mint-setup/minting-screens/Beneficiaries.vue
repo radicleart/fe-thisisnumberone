@@ -49,10 +49,6 @@ export default {
       this.updateEditions()
     }
   },
-  mounted () {
-    const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-    this.editions = (configuration.gaiaAsset.editions) ? configuration.gaiaAsset.editions : 2
-  },
   methods: {
     addBeneficiary: function () {
       this.$emit('addNewBeneficiary')

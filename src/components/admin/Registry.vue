@@ -28,14 +28,14 @@
   <div class="row border-bottom mb-3 pb-2">
     <div class="col-12"><h3>Contract Data</h3></div>
     <div class="col-2">Administrator</div><div class="col-10">{{registry.administrator}}</div>
+    <div class="col-2">Admin Contract Address</div><div class="col-10">{{registry.adminContractAddress}}</div>
+    <div class="col-2">Admin Contract Name</div><div class="col-10">{{registry.adminContractName}}</div>
     <div class="col-2">Apps Connected</div><div class="col-10">{{registry.appCounter}}</div>
   </div>
   <div class="row border-bottom" v-for="(application, index) in registry.applications" :key="index">
     <div class="col-2">Contract Id</div><div class="col-10">{{application.contractId}}</div>
     <div class="col-2">Owner</div><div class="col-10">{{application.owner}}</div>
     <div class="col-2">App Index</div><div class="col-10">{{application.appIndex}}</div>
-    <div class="col-2">Gaia File</div><div class="col-10">{{application.gaiaFilename}}</div>
-    <div class="col-2">App origin</div><div class="col-10">{{application.appOrigin}}</div>
     <div class="col-2">Storage</div><div class="col-10">{{application.storageModel}}</div>
     <div class="col-2">Status</div><div class="col-10">{{application.status}}</div>
       <div class="row mx-5 my-5" v-if="application.tokenContract">
@@ -51,7 +51,7 @@
               <div>{{gaiaAsset(token.tokenInfo.assetHash).name}}</div>
               <div>[#{{token.nftIndex}}] : Edition {{token.tokenInfo.edition}} / {{token.tokenInfo.maxEditions}} / {{token.tokenInfo.editionCost}}</div>
               <div>Uploaded by:     {{gaiaAsset(token.tokenInfo.assetHash).owner}}</div>
-              <div>Gaia user:       {{token.tokenInfo.gaiaUsername}}</div>
+              <div>MetaDataUrl:       {{token.tokenInfo.metaDataUrl}}</div>
             </div>
           </div>
           <div class="row" v-else>
@@ -64,12 +64,11 @@
           </div>
           <div class="row">
             <div class="col-2">SHA(256)</div><div class="col-10">{{token.tokenInfo.assetHash}}</div>
+            <div class="col-2">Meta Data Url</div><div class="col-10">{{token.tokenInfo.metaDataUrl}}</div>
             <div class="col-2">Owner</div><div class="col-10">{{token.owner}}</div>
             <div class="col-2">Sale Data</div><div class="col-10">Type={{token.saleData.saleType}} Cycle={{token.saleData.saleCycleIndex}}, Amount={{token.saleData.buyNowOrStartingPrice}} Reserve={{token.saleData.reservePrice}} Increment={{token.saleData.incrementPrice}}</div>
             <div class="col-2">End time</div><div class="col-10">{{formatDate(token.saleData.biddingEndTime)}}</div>
             <div class="col-2">Block-height</div><div class="col-10">{{token.tokenInfo.date}}</div>
-            <div class="col-2">Transfer Count</div><div class="col-10">{{token.transferCounter}}</div>
-            <div class="col-2">Transfer History</div><div class="col-10">{{token.transferHistory}}</div>
             <div class="col-2">Original</div><div class="col-10">{{token.tokenInfo.seriesOriginal}}</div>
             <div class="col-2">Royalties:</div>
             <div class="col-10">

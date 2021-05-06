@@ -3,7 +3,7 @@
   <div class="col-md-4 col-sm-12 mb-4">
     <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="nftMedia" :targetItem="'artworkFile'"/>
   </div>
-  <div class="col-md-4 col-sm-12 mb-4">
+  <div class="col-md-4 col-sm-12 mb-4" v-if="videoOptions.allowClip">
     <media-item :videoOptions="videoOptions" v-if="hasFile('artworkClip')" :dims="dims" :nftMedia="nftMedia" :targetItem="'artworkClip'" v-on="$listeners"/>
     <media-upload v-else :myUploadId="'artworkClip'" :dims="dims" :contentModel="contentModelClip" :mediaFiles="mediaFilesMusicFile" :limit="1" :sizeLimit="4" :mediaTypes="'video,image'" @updateMedia="updateMedia($event)"/>
   </div>
@@ -13,7 +13,7 @@
   </div>
 </div>
 <div class="row mb-4" v-else>
-  <div class="col-sm-12 col-md-4 offset-md-4 mb-3">
+  <div class="col-sm-12 col-md-4 mb-3">
     <media-item :videoOptions="videoOptions" v-if="hasFile('artworkFile')" :dims="dims" :nftMedia="nftMedia" :targetItem="'artworkFile'"/>
     <media-upload v-else :myUploadId="'artworkFile'" :dims="dims" :contentModel="contentModelArtwork" :mediaFiles="mediaFilesMusicFile" :limit="1" :sizeLimit="20" :mediaTypes="'video'" @updateMedia="updateMedia($event)"/>
   </div>
@@ -30,7 +30,7 @@ export default {
     MediaUpload,
     MediaItem
   },
-  props: ['uploadState', 'nftMedia', 'videoOptions'],
+  props: ['uploadState', 'nftMedia', 'videoOptions', 'useClip'],
   data: function () {
     return {
       artworkFileUrl: null,

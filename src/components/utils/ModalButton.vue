@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  name: 'SquareButton',
+  name: 'ModalButton',
   components: {
   },
   props: ['theme', 'usePixelBg', 'label1', 'icon', 'route', 'svgImage', 'textWarning', 'colorOnHover'],
@@ -54,6 +54,7 @@ export default {
 }
 .btn-group > .btn:hover {
   background: transparent;
+  color: #000;
 }
 .btn-square {
   width: 61px;
@@ -63,35 +64,8 @@ export default {
 }
 .btn-rectangle {
   font-size: 1.5rem;
-  min-width: 200px;
+  min-width: 170px;
   text-transform: uppercase;
-  color: white;
-}
-.btn-dark {
   color: #000;
-  border: 1pt solid #ccc !important;
 }
-.btn-dark:hover {
-  color: #000 !important;
-  background: transparent !important;
-  border: none;
-}
-.btn-light {
-  color: #fff;
-  border: 1pt solid #fff !important;
-}
-.btn-light:hover {
-  color: #fff !important;
-  background: transparent !important;
-}
-/**
-#parent-group:hover .btn-square.hover-white {
-  color: black !important;
-  background: white !important;
-}
-#parent-group:hover .btn-square.hover-black {
-  color: white !important;
-  background: black !important;
-}
-**/
 </style>

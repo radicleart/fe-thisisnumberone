@@ -1,17 +1,16 @@
 <template>
 <div v-if="makeOfferDialog">
+  <three-steps :step="3" />
   <b-row>
-    <b-col cols="12">
-      <h1>{{makeOfferDialog[0].text}}</h1>
-      <h4 class="mb-5">{{makeOfferDialog[1].text}} <b>{{offerData.fbet}}</b></h4>
-    </b-col>
-  </b-row>
-  <b-row class="row mt-2">
-    <b-col align-v="stretch" cols="12">
-      <h2>{{makeOfferDialog[2].text}}</h2>
+    <b-col cols="8">
+      <h1 class="mb-5">{{makeOfferDialog[0].text}}</h1>
+      <p>{{makeOfferDialog[1].text}}</p>
+      <p v-if="makeOfferDialog[2]">{{makeOfferDialog[2].text}}</p>
       <p v-if="makeOfferDialog[3]">{{makeOfferDialog[3].text}}</p>
       <p v-if="makeOfferDialog[4]">{{makeOfferDialog[4].text}}</p>
-      <p v-if="makeOfferDialog[5]">{{makeOfferDialog[5].text}}</p>
+    </b-col>
+    <b-col cols="4">
+      <img :src="logoRainbow" style="width: 100%;" alt="logo number one" />
     </b-col>
   </b-row>
 </div>
@@ -19,14 +18,17 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
+import ThreeSteps from '@/components/utils/ThreeSteps'
 
 export default {
   name: 'PurchaseOfferSuccess',
   components: {
+    ThreeSteps
   },
   props: ['offerData'],
   data () {
     return {
+      logoRainbow: require('@/assets/img/logo-rainbow.svg'),
       icon: require('@/assets/img/check-square.svg'),
       loading: true,
       formSubmitted: false,

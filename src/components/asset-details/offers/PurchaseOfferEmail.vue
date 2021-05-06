@@ -2,13 +2,13 @@
 <div>
   <b-row>
     <b-col cols="12">
-      <h1>{{sendOfferDialog[0].text}}</h1>
-      <h4 class="mb-5">{{sendOfferDialog[1].text}} <b>{{offerData.fbet}}</b></h4>
+      <h1 class="mb-4">{{sendOfferDialog[0].text}}</h1>
+      <!-- <h4 class="mb-5">{{sendOfferDialog[1].text}} <b>{{offerData.fbet}}</b></h4> -->
     </b-col>
   </b-row>
   <b-row class="row mt-5">
     <b-col align-v="stretch" md="4" sm="12">
-      <h2>{{sendOfferDialog[2].text}}</h2>
+      <h4>{{sendOfferDialog[2].text}}</h4>
       <p v-if="sendOfferDialog[3]">{{sendOfferDialog[3].text}}</p>
       <p v-if="sendOfferDialog[4]">{{sendOfferDialog[4].text}}</p>
       <p v-if="sendOfferDialog[5]">{{sendOfferDialog[5].text}}</p>
@@ -17,8 +17,8 @@
     <b-col cols="8">
       <b-row align-v="stretch" class="row mt-5" style="height: 70%;">
         <b-col align-self="start" cols="12">
-          <div class="d-flex justify-content-between">
-            <div>Confirm Interest</div>
+          <div class="text-small d-flex justify-content-between">
+            <div>Confirm Your Interest</div>
             <div>Your Offer <span class="ml-5 text-dark">{{offerData.offerAmount}} STX</span></div>
           </div>
           <div class="mb-3" role="group">
@@ -33,25 +33,21 @@
             <p class="text-small text-danger" v-html="errorMessage"></p>
           </div>
         </b-col>
-        <b-col cols="12" align-self="end">
-          <div class="d-flex justify-content-end">
-            <square-button :theme="'dark'" @clickButton="makeOffer()" :label1="'SUBMIT'" :svgImage="icon" :usePixelBg="true"/>
-          </div>
-        </b-col>
       </b-row>
     </b-col>
   </b-row>
+      <action-row :buttonLabel="'SUBMIT'" @clickButton="makeOffer()"/>
 </div>
 </template>
 
 <script>
-import SquareButton from '@/components/utils/SquareButton'
 import { APP_CONSTANTS } from '@/app-constants'
+import ActionRow from '@/components/utils/ActionRow'
 
 export default {
   name: 'PurchaseOfferEmail',
   components: {
-    SquareButton
+    ActionRow
   },
   props: ['offerData'],
   data () {

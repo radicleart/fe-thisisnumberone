@@ -1,9 +1,9 @@
 <template>
 <div>
-  <div class="mt-3" v-if="gaiaAsset">
+  <div v-if="gaiaAsset">
     <asset-details-section :gaiaAsset="gaiaAsset" />
     <artist-section id="artist-section" :parentPage="'about'" :artistId="getArtistPrismicId(gaiaAsset.artist)" />
-    <charity-section id="charity-section" :artistId="getArtistPrismicId(gaiaAsset.artist)" />
+    <charity-section :showButton="true" id="charity-section" :artistId="getArtistPrismicId(gaiaAsset.artist)" />
     <section id="number-one-section" class="">
       <number-one-section />
     </section>

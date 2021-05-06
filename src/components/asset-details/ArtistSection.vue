@@ -1,18 +1,14 @@
 <template>
-<section v-if="content" :class="getArtistTheme()" class="container-fluid p-5">
-  <div class="spaced-name spaced-name--artist-section" :class="getArtistText1()">{{content.data.description[0].text}}</div>
-  <b-container>
-    <b-row style="margin-bottom: 100px">
-      <b-col cols="12" lg="6" class="pr-lg-5 mb-lg-0 mb-5">
+<section v-if="content" :class="getArtistTheme()">
+  <!-- <div class="spaced-name spaced-name--artist-section" :class="getArtistText1()">{{content.data.description[0].text}}</div> -->
+  <b-container fluid class="center-section">
+    <b-row class="mt-sm-5">
+      <b-col cols="12" lg="8">
         <img style="width: 100%;" :src="content.data.image.url"/>
       </b-col>
-      <b-col cols="12" lg="6" align-self="end" class="text-left pl-lg-5">
-        <h1 :class="getArtistText1()" v-if="content.data.description[1]">{{content.data.description[1].text}}</h1>
-        <div class="artist-section--text" v-if="content.data.description[2]">{{content.data.description[2].text}}</div>
-        <div class="artist-section--text" v-if="content.data.description[3]">{{content.data.description[3].text}}</div>
-        <div class="artist-section--text" v-if="content.data.description[4]">{{content.data.description[4].text}}</div>
-        <div class="artist-section--text" v-if="content.data.description[5]">{{content.data.description[5].text}}</div>
-        <social-links class="mt-4" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
+      <b-col cols="12" lg="4" align-self="end" class="text-left text-white">
+        <prismic-items :prismicItems="content.data.description"></prismic-items>
+        <social-links class="mt-5" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
       </b-col>
     </b-row>
   </b-container>
@@ -22,11 +18,13 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import SocialLinks from './SocialLinks'
+import PrismicItems from '@/components/prismic/PrismicItems'
 
 export default {
   name: 'ArtistSection',
   components: {
-    SocialLinks
+    SocialLinks,
+    PrismicItems
   },
   props: ['artistId', 'parentPage'],
   data: function () {
@@ -71,6 +69,7 @@ section {
   justify-content: space-between;
   min-height: 100vh;
 }
+
 .spaced-name--artist-section {
   margin: -3.5rem -3rem 8rem auto;
   max-width: 952px;

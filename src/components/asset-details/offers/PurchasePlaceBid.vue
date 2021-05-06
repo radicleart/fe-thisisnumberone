@@ -20,33 +20,27 @@
           <span class="">{{currentBidAmount}}</span> STX
         </h3>
       </div>
-    </b-col>
-    <rates-listing :message="rateMessage()" :amount="nextBidAmount"/>
-  </b-row>
-  <b-row>
-    <b-col cols="12">
-      <div class="mt-3">
-        <div class="d-flex justify-content-between">
-          <div class="" style="width: 79%; border-bottom: 1pt solid #000000;"></div>
-          <div style="position: relative; top: 25px;">
-            <square-button :theme="'dark'" @clickButton="$emit('placeBid')" :label1="'BID NOW: ' + nextBidAmount + ' STX'" :svgImage="hammer" :usePixelBg="true"/>
-          </div>
-        </div>
+      <div class="text-small">
+        <rates-listing :message="''" :amount="currentBidAmount"/>
       </div>
     </b-col>
+    <b-col md="2" sm="4" class="text-small" style="border-left: 1pt solid #000;">
+      <div>{{rateMessage()}}</div>
+    </b-col>
   </b-row>
+  <action-row :buttonLabel="'BID: ' + nextBidAmount + ' STX'" @clickButton="$emit('placeBid')" :svgImage="hammer"/>
 </div>
 </template>
 
 <script>
-import SquareButton from '@/components/utils/SquareButton'
+import ActionRow from '@/components/utils/ActionRow'
 import { APP_CONSTANTS } from '@/app-constants'
 import RatesListing from '@/components/toolkit/RatesListing'
 
 export default {
   name: 'PurchaseBuyNow',
   components: {
-    SquareButton,
+    ActionRow,
     RatesListing
   },
   props: ['contractAsset'],

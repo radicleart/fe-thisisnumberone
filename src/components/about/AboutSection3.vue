@@ -1,6 +1,6 @@
 <template>
 <div id="chemicalx">
-<section id="section1">
+<section>
   <artist-section :artistId="'chemicalx'" :parentPage="'about'" />
 </section>
 </div>

@@ -1,24 +1,28 @@
 <template>
-<section v-if="gaiaAsset" class="mx-md-5 px-md-5 mb-5 p-5 text-white" style="min-height: 120vh;">
-    <b-row class="mx-md-5 px-md-5 p-5">
-      <div id="video-column" class="col-md-6 col-sm-12">
-        <div class="mb-5" :style="dimensions">
+<section :key="componentKey" id="asset-details-section" v-if="gaiaAsset" class="text-white">
+  <b-container fluid class="center-section" style="min-height: 100vh;">
+    <b-row>
+      <div id="video-column" class="mb-5 col-md-6 col-sm-12">
+        <div :style="dimensions">
           <media-item class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="gaiaAsset.nftMedia" :targetItem="targetItem()"/>
         </div>
       </div>
       <div class="col-md-6 col-sm-12">
-        <b-row align-v="stretch" :style="'height:' + videoHeight * .5 + 'px;'">
-          <b-col cols="12 mb-md-5">
+        <b-row align-v="stretch" :style="'height:' + (videoHeight + 0) + 'px;'">
+          <b-col cols="12">
             <div class="d-flex justify-content-between">
               <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
-              <div v-if="isOwner"><router-link class="text-white" to="/my-items/all">Admin <b-icon icon="chevron-right" shift-h="-4" variant="white"></b-icon></router-link></div>
               <div class="d-flex justify-content-between">
                 <b-link router-tag="span" v-b-tooltip.click :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
-                <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white"><div>{{salesBadgeLabel}}</div><div v-if="showEndTime()">{{biddingEndTime()}}</div></div>
+                <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white">
+                  <div v-if="isOwner"><router-link class="text-white" to="/my-items/all">{{salesBadgeLabel}}</router-link></div>
+                  <div v-else>{{salesBadgeLabel}}</div>
+                  <div v-if="showEndTime()">{{biddingEndTime()}}</div>
+                </div>
               </div>
             </div>
           </b-col>
-          <b-col cols="12" align-self="center">
+          <b-col cols="12" align-self="end">
             <h1>{{gaiaAsset.name}}</h1>
             <h2>{{gaiaAsset.artist}}</h2>
             <p>{{owner}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
@@ -27,13 +31,6 @@
               <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
               <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
             </div>
-            <!--
-            <div class="d-flex justify-content-start">
-              {{salesInfoText}}
-            </div>
-            <edition-trigger :assetHash="gaiaAsset.assetHash" />
-            -->
-            <div class="border-top py-4 text-small">{{salesInfoText}}</div>
             <div class="d-flex justify-content-start">
               <square-button v-if="getSaleType() > 0" class="mr-4" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
               <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>
@@ -42,10 +39,15 @@
         </b-row>
       </div>
     </b-row>
-  <asset-updates-modal :assetHash="gaiaAsset.assetHash" @registerForUpdates="registerForUpdates"/>
   <b-modal size="lg" id="asset-offer-modal" class="text-left">
-    <purchase-flow v-if="showRpay" :gaiaAsset="gaiaAsset" @offerSent="offerSent"/>
-    <template #modal-header>
+    <purchase-flow v-if="showRpay === 1" :gaiaAsset="gaiaAsset" @offerSent="offerSent"/>
+    <asset-updates-modal v-if="showRpay === 2" :assetHash="gaiaAsset.assetHash" @registerForUpdates="registerForUpdates"/>
+    <template #modal-header="{ close }">
+      <div class="text-black text-warning w-100 d-flex justify-content-end">
+        <b-button size="sm" variant="white" @click="close()"  class="m-0 p-1 text-dark" style="max-width: 30px !important; max-height: 30px !important;">
+          <img :src="cross" class="filter-black" alt="close" style="max-width: 20px !important; max-height: 20px !important;"/>
+        </b-button>
+      </div>
     </template>
     <template #modal-footer>
       <div class="w-100 d-flex justify-content-between">
@@ -68,6 +70,7 @@
       </div>
     </template>
   </b-modal>
+  </b-container>
 </section>
 </template>
 
@@ -95,15 +98,24 @@ export default {
   props: ['gaiaAsset'],
   data: function () {
     return {
+      grid: require('@/assets/img/navbar-footer/grid.svg'),
+      cross: require('@/assets/img/navbar-footer/cross.svg'),
       hammer: require('@/assets/img/auction.svg'),
-      showRpay: false,
+      showRpay: 0,
       dims: { width: 768, height: 768 },
       videoHeight: 0,
+      componentKey: 0,
       showHash: false,
       assetHash: null,
       mintResult: null,
       mintResultTxId: null,
       message: 'No item available...'
+    }
+  },
+  watch: {
+    '$route' () {
+      this.assetHash = this.$route.params.assetHash
+      this.componentKey++
     }
   },
   mounted () {
@@ -117,12 +129,12 @@ export default {
         const txResult = $self.$store.getters[APP_CONSTANTS.KEY_TRANSACTION_DIALOG_MESSAGE]({ dKey: data.opcode, txId: data.txId })
         $self.$store.commit('setModalMessage', txResult)
         if (data.opcode.indexOf('stx-transaction-') > -1) {
-          $self.showRpay = false
-          $self.$bvModal.hide('result-modal')
-          $self.$bvModal.hide('asset-offer-modal')
-          $self.$bvModal.hide('rpay-modal')
-          $self.mintResult = txResult
-          $self.$root.$emit('bv::show::modal', 'success-modal')
+          // $self.showRpay = 0
+          // $self.$bvModal.hide('result-modal')
+          // $self.$bvModal.hide('asset-offer-modal')
+          // $self.$bvModal.hide('rpay-modal')
+          // $self.mintResult = txResult
+          // $self.$root.$emit('bv::show::modal', 'success-modal')
         } else {
           // $self.$bvModal.hide('minting-modal')
           // $self.showRpay = false
@@ -173,7 +185,8 @@ export default {
       }
     },
     openUpdates: function () {
-      this.$bvModal.show('asset-updates-modal', { assetHash: this.assetHash })
+      this.showRpay = 2
+      this.$bvModal.show('asset-offer-modal', { assetHash: this.assetHash })
     },
     getSaleType: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
@@ -187,7 +200,7 @@ export default {
       if (contractAsset.saleData.saleType === 0) {
         return
       }
-      this.showRpay = true
+      this.showRpay = 1
       this.$bvModal.show('asset-offer-modal')
     },
     registerForUpdates: function (email) {
@@ -199,12 +212,14 @@ export default {
       }
       this.$store.dispatch('assetGeneralStore/registerForUpdates', data).then((result) => {
         this.$store.commit('setModalMessage', 'Thanks for registering an interest - we will keep you updated.')
-        this.$bvModal.hide('asset-updates-modal')
+        this.showRpay = 0
+        this.$bvModal.hide('asset-offer-modal')
         this.$root.$emit('bv::show::modal', 'success-modal')
         this.message = result
       }).catch(() => {
         this.$store.commit('setModalMessage', 'Thanks for re-registering an interest - we will keep you updated.')
-        this.$bvModal.hide('asset-updates-modal')
+        this.showRpay = 0
+        this.$bvModal.hide('asset-offer-modal')
         this.$root.$emit('bv::show::modal', 'success-modal')
       })
     }
@@ -293,5 +308,4 @@ export default {
 #asset-offer-modal .modal-content {
   text-align: left !important;
 }
-
 </style>

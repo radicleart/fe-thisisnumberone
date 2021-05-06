@@ -1,8 +1,8 @@
 <template>
-<div :class="themeClass" class="w-50 d-flex justify-content-around">
-  <div v-for="(link, index) in socialLinks" :key="index">
-    <b-link router-tag="span" :to="target(link)" target="_blank"><b-icon style="width: 20px; height: 20px;" :icon="icon(link)"/></b-link>
-  </div>
+<div :class="themeClass">
+  <span v-for="(link, index) in socialLinks" :key="index">
+    <b-link class="mr-5" router-tag="span" :to="target(link)" target="_blank"><b-icon style="width: 30px; height: 30px;" :icon="icon(link)"/></b-link>
+  </span>
 </div>
 </template>
 

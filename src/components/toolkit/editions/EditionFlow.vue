@@ -16,33 +16,24 @@
         <h3>Mint Edition: <span class="text-warning">{{currentCost}}</span> STX</h3>
         <h5>{{currentMaxEditions - (editionCounter - 1)}} available in current run</h5>
       </div>
-    </b-col>
-    <rates-listing :message="rateMessage()"  :amount="currentCost"/>
-  </b-row>
-  <b-row>
-    <b-col cols="12">
-      <div class="mt-3">
-        <div class="d-flex justify-content-between">
-          <div class="" style="width: 79%; border-bottom: 1pt solid #000000;"></div>
-          <div style="position: relative; top: 25px;">
-            <square-button :theme="'dark'" @clickButton="mintEdition" :label1="'MINT EDITION'" :svgImage="icon" :usePixelBg="true"/>
-          </div>
-        </div>
+      <div class="text-small">
+        <rates-listing :message="''" :amount="currentCost"/>
       </div>
     </b-col>
   </b-row>
+  <action-row :buttonLabel="'MINT EDITION'" @clickButton="mintEdition" :svgImage="icon"/>
 </div>
 </template>
 
 <script>
 import RatesListing from '@/components/toolkit/RatesListing'
-import SquareButton from '@/components/utils/SquareButton'
+import ActionRow from '@/components/utils/ActionRow'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'PurchaseBuyNow',
   components: {
-    SquareButton,
+    ActionRow,
     RatesListing
   },
   props: ['assetHash'],

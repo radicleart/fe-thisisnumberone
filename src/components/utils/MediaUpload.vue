@@ -1,26 +1,28 @@
 <template>
-<div class="text-center">
-  <div @drop.prevent="loadMediaObjects" @dragover.prevent class="p-4 drop-zone text-danger d-flex flex-column align-items-center">
-      <div class="mt-5"><b-icon scale="3" :icon="contentModel.iconName"/></div>
+<div class="">
+  <div @drop.prevent="loadMediaObjects" @dragover.prevent class="p-4 drop-zone d-flex flex-column align-items-center">
       <div class="mt-4 mb-5" v-html="contentModel.title"></div>
-      <div class="text-center mx-auto" style="position: relative; top: 10px;">
+      <div class="mx-5 px-5 " style="border: 1pt dashed #ccc;">
+        <div class="mt-5" v-html="contentModel.message"></div>
+        <div v-if="contentModel.iconName" class="mt-5"><b-icon scale="3" :icon="contentModel.iconName"/></div>
         <div>
           <input style="width: 80%;" class="input-file" type="file" :ref="getUploadId()" @change.prevent="loadMediaObjects"/>
         </div>
-        <div>
-          <b-button style="width: 80%;" variant="light" v-html="contentModel.buttonName" @click="chooseFiles()"></b-button>
+        <div class="mx-auto" style="position:relative; top: 20px;">
+          <b-button variant="dark" v-html="contentModel.buttonName" @click="chooseFiles()"></b-button>
         </div>
-        <div style="width: 100%;" class="text-left mt-4 mb-3" role="group">
-          <label for="item-name">or paste a link</label>
-          <b-form-input
-            id="item-name"
-            v-model="directUrl"
-            @keyup="startDownload()"
-            aria-describedby="item-name-help item-name-feedback"
-            placeholder="Enter URL"
-            trim
-          ></b-form-input>
-        </div>
+      </div>
+      <div class="mt-5 pt-5">or paste a link</div>
+      <div class="mt-5 text-left mt-4 mb-3" style="font-size: 1.2rem; width: 100%;">
+        <label for="item-name">enter url</label>
+        <b-form-input
+          id="item-name"
+          v-model="directUrl"
+          @keyup="startDownload()"
+          aria-describedby="item-name-help item-name-feedback"
+          placeholder="Enter URL"
+          trim
+        ></b-form-input>
       </div>
     <div class="invalid-feedback d-block" v-if="showError">
       {{contentModel.errorMessage}}
@@ -91,6 +93,13 @@ export default {
   },
   data () {
     return {
+      myContentModel: {
+        title: 'Artwork File<br/>drop a url - up to 200M',
+        buttonName: 'Choose NFT File',
+        iconName: 'film',
+        errorMessage: 'A mp4 file is required',
+        popoverBody: 'The artwork file.'
+      },
       mediaItem: null,
       directUrl: null,
       loaded: false,
@@ -100,6 +109,10 @@ export default {
     }
   },
   mounted () {
+    if (this.contentModel) {
+      // Object.assign(this.myContentModel, this.contentModel)
+      // this.myContentModel = this.contentModel
+    }
     if (this.mediaFiles && this.mediaFiles.length > 0) {
       Object.assign(this.mediaObjects, this.mediaFiles)
       this.loaded = true
@@ -238,22 +251,20 @@ export default {
       if (ksize > Number(this.sizeLimit)) {
         this.internalError = 'This file (' + ksize + ' M) exceeds the size limit of ' + this.sizeLimit + ' M - try dropping in a of a file url - we can create the NFT from this and serve the content from the URL'
         this.$emit('updateMedia', { errorMessage: this.internalError })
-        return false
+        return true
       }
     },
     isForbidden (type) {
-      let allowed = false
-      const types = this.mediaTypes.split(',').find((o) => type.indexOf(o.trim() > -1))
-      for (let i = 0; i < types.length; i++) {
-        if (type.indexOf(types[i]) > -1) {
-          allowed = true
-        }
+      let compareTo = type
+      if (type.indexOf('/') > -1) {
+        compareTo = type.split('/')[0]
       }
-      if (!allowed) {
+      const forbidden = this.mediaTypes.indexOf(compareTo) === -1
+      if (forbidden) {
         this.$emit('updateMedia', { errorMessage: 'Files of type ' + type + ' are not allowed here.' })
         this.internalError = 'Files of type ' + type + ' are not allowed here.'
       }
-      return !allowed
+      return forbidden
     },
     isValidUrl (url1) {
       try {

@@ -133,6 +133,15 @@ const myItemService = {
         reject(error)
       })
     })
+  },
+  saveAsset: function (item) {
+    return new Promise((resolve, reject) => {
+      storage.putFile(item.assetHash + '.json', JSON.stringify(item), { encrypt: false }).then(() => {
+        resolve(item)
+      }).catch((error) => {
+        reject(error)
+      })
+    })
   }
 }
 export default myItemService

@@ -8,8 +8,6 @@ import Login from '../views/Login.vue'
 // import Profile from '../views/Profile.vue'
 import Information from '../views/Information.vue'
 import Charity from '../views/Charity.vue'
-import Splash from '../views/Splash.vue'
-import Home from '../views/Home.vue'
 import AssetDetails from '../views/AssetDetails.vue'
 import Admin from '../views/Admin.vue'
 import About from '../views/About.vue'
@@ -38,13 +36,12 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'splash',
-    components: { default: Splash }
+    components: { default: NumberOne, header: MainNavbar, footer: MainFooter }
   },
   {
     path: '/home',
     name: 'home',
-    components: { default: Home, header: MainNavbar, footer: HomeFooter },
-    meta: { resizable: false }
+    components: { default: NumberOne, header: MainNavbar, footer: MainFooter }
   },
   {
     path: '/create',

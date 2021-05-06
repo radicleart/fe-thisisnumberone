@@ -1,12 +1,12 @@
 <template>
-  <section id="section1" class="my-5 container text-white" v-if="content">
+  <section class="my-5 container text-white" v-if="content">
     <div class="row">
       <div class="col-12">
         <prismic-items :prismicItems="content"/>
       </div>
     </div>
   </section>
-  <section id="section1" class="my-5 container text-white" v-else>
+  <section class="my-5 container text-white" v-else>
     <div class="row">
       <div class="col-12">
         Content missing for key {{getKey()}}

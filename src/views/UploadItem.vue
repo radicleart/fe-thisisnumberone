@@ -1,54 +1,35 @@
 <template>
-<div id="upload-item" v-if="loaded" style="min-height: 85vh;">
-  <div class="container" :key="componentKey">
-    <div class="row mt-4">
-      <div class="col-12">
-        <h4 class="text-white">{{contextTitle()}}</h4>
-      </div>
-      <div class="col-md-12">
-        <media-handler :videoOptions="videoOptions()" :uploadState="uploadState" :nftMedia="item.nftMedia" @updateMedia="updateMedia"/>
-      </div>
-    </div>
-    <div class="row mt-4">
-      <div class="col-md-6 offset-md-3 col-sm-12">
-        <div>
-          <item-form-nav :item="item" @upload-state="updateUploadState" :uploadState="uploadState"/>
-          <item-form-part1 v-if="uploadState === 3" @upload-state="updateUploadState" :item="item" :upload="true" :formSubmitted="formSubmitted"/>
-          <item-form-part2 v-if="uploadState === 4" @upload-state="updateUploadState" :item="item" :upload="true" :formSubmitted="formSubmitted"/>
-          <item-form-part3 v-if="uploadState === 5" @upload-state="updateUploadState" :item="item" :upload="true" :formSubmitted="formSubmitted"/>
+<section class="" id="section-upload">
+  <b-container class="mt-5 pt-5">
+    <b-row style="min-height: 40vh" >
+      <b-col md="6" sm="12" align-self="start" class=" text-center">
+        <div  class="bg-white" style="width:80%;">
+          <media-upload :myUploadId="'artworkFile'" :dims="dims" :contentModel="contentModelArtwork" :limit="1" :sizeLimit="20" :mediaTypes="'video'" @updateMedia="updateMedia($event)"/>
         </div>
-      </div>
-      <div class="px-4 col-md-6 col-sm-12" v-if="uploadState > 1">
-        <item-summary class="upload-preview" :itemSummary="itemSummary" @upload-item="uploadItem"/>
-      </div>
-    </div>
-  </div>
-</div>
+      </b-col>
+      <b-col md="6" sm="12" align-self="end"  class="mb-4 text-white">
+        <h1 class="border-bottom mb-5">Upload Item</h1>
+        <div>First step to creating your NFT is to upload it here.</div>
+      </b-col>
+    </b-row>
+  </b-container>
+</section>
 </template>
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import ItemFormPart1 from '@/components/items/ItemFormPart1'
-import ItemFormPart2 from '@/components/items/ItemFormPart2'
-import ItemFormPart3 from '@/components/items/ItemFormPart3'
-import ItemFormNav from '@/components/items/ItemFormNav'
-import ItemSummary from '@/components/items/ItemSummary'
-import MediaHandler from '@/components/items/MediaHandler'
+import MediaUpload from '@/components/utils/MediaUpload'
 import utils from '@/services/utils'
 
 export default {
   name: 'UploadItem',
   components: {
-    ItemSummary,
-    ItemFormPart1,
-    ItemFormPart2,
-    ItemFormPart3,
-    ItemFormNav,
-    MediaHandler
+    MediaUpload
   },
   data () {
     return {
       formSubmitted: false,
+      dims: { width: 360, height: 202 },
       componentKey: 0,
       uploadState: 0,
       showHash: false,
@@ -68,7 +49,16 @@ export default {
       result: 'Saving data to your storage - back in a mo!',
       doValidate: true,
       defaultBadge: require('@/assets/img/risidio_white.png'),
-      defaultBadgeData: null
+      defaultBadgeData: null,
+      contentModelArtwork: {
+        id: 'artworkFile',
+        title: 'UPLOAD FILE',
+        buttonName: 'CHOOSE A FILE',
+        message: '<span class="text-small">Up to 20M</span><br/>Main Artwork File',
+        iconName: 'film',
+        errorMessage: 'A mp4 file is required',
+        popoverBody: 'The artwork file.'
+      }
     }
   },
   mounted () {
@@ -80,11 +70,17 @@ export default {
     this.loaded = true
   },
   methods: {
+    hasFile (file) {
+      if (file === 'artworkFile') return this.nftMedia.artworkFile && this.nftMedia.artworkFile.fileUrl
+      else if (file === 'artworkClip') return this.nftMedia.artworkClip && this.nftMedia.artworkClip.fileUrl
+      else if (file === 'coverImage') return this.nftMedia.coverImage && this.nftMedia.coverImage.fileUrl
+    },
     videoOptions () {
       if (this.assetHash) return
       const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       if (!myAsset) return
       const videoOptions = {
+        allowClip: true,
         emitOnHover: true,
         playOnHover: true,
         showMeta: true,

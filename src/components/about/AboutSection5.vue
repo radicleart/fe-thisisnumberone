@@ -1,15 +1,12 @@
 <template>
 <div id="environment">
-<section v-if="content" id="about-section5" :style="'background-size: cover; background-image: url(' + content.section5rtf1[0].url + ')'">
-  <div class="spaced-name spaced-name--section5">Environment</div>
+<section v-if="content" id="about-section5" :style="'height: 100vh; background-size: cover; background-image: url(' + content.section5rtf1[0].url + ')'">
+  <!-- <div class="spaced-name spaced-name--section5">Environment</div> -->
   <b-container class="">
-    <b-row style="margin-bottom: 100px" class="text-left">
-      <b-col cols="12" align-self="end">
+    <b-row style="height: 82vh">
+      <b-col offset="1" cols="10" align-self="end">
         <h1 class="mb-4 text-white">{{content.section5rtf1[1].text}}</h1>
         <div class="text-white mb-5 about-section5--text">{{content.section5rtf1[2].text}}</div>
-        <!-- <div>
-          <square-button @clickButton="$router.push('/home')" class="button-style" :label1="'Find out more'" :icon="'plus-square'" :theme="'light'"/>
-        </div> -->
       </b-col>
     </b-row>
   </b-container>

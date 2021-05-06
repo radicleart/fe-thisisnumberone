@@ -1,13 +1,12 @@
 <template>
-    <b-col md="3" sm="6" style="font-size: 0.8em;">
-      <div class="mb-3 pb-3 border-bottom">{{message}}</div>
-      <div class="pl-0">
-        <div v-for="(rate, index) in rates" :key="index" class="border-bottom py-1 d-flex justify-content-between">
-          <div style="min-width: 100px;" class="text-right mr-4">{{rate.value}}</div>
-          <div style="min-width: 100px;">{{rate.text}}</div>
-        </div>
-      </div>
-    </b-col>
+<span class="text-small">
+    <span v-for="(rate, index) in rates" :key="index" class="">
+      <span style="min-width: 100px;" class="text-right mr-4">
+        {{rate.value}} <span style="font-weight: 600">{{rate.text}}</span>
+      </span>
+      <div class="w-100" v-if="index === 2 || index === 5"></div>
+    </span>
+</span>
 </template>
 
 <script>

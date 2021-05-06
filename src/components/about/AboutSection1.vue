@@ -1,5 +1,5 @@
 <template>
-<section class="" id="section1">
+<section id="about-number-1">
   <b-container class="">
     <b-row style="height: 92vh" class="text-center">
       <b-col cols="12" align-self="end"><div class="text-white"><b-icon style="width: 60px; height: 60px;" icon="film"/></div></b-col>

@@ -59,8 +59,8 @@ const contentStore = {
       const dialog = getters[key](dKey)
       if (!dialog || dialog.length < 3) return 'Dialog content missing for key: ' + data.dKey
       let msg = '<h1>' + dialog[0].text + '</h1>'
-      msg += '<h2 class="my-5">' + dialog[1].text + '</h2>'
-      if (data.txId) msg += '<h2><a href="https://explorer.stacks.co/txid/' + data.txId + '?chain=' + process.env.VUE_APP_NETWORK + '" target="_blank">' + dialog[2].text + '</h2>'
+      msg += '<p class="my-5">' + dialog[1].text + '</p>'
+      if (data.txId) msg += '<p><a href="https://explorer.stacks.co/txid/' + data.txId + '?chain=' + process.env.VUE_APP_NETWORK + '" target="_blank">' + dialog[2].text + '</p>'
       return msg
     },
     getDialog: state => dialogId => {

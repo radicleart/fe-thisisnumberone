@@ -56,7 +56,7 @@ export default {
         owner: profile.stxAddress, // process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
         // methos: 'rpayStacksStore/callContractBlockstack',
         assetHash: this.item.assetHash,
-        gaiaUsername: this.item.gaiaUsername,
+        metaDataUrl: this.item.metaDataUrl,
         beneficiaries: this.item.beneficiaries,
         editions: this.item.editions,
         editionCost: (this.item.editionCost) ? this.item.editionCost : 0,

@@ -74,6 +74,6 @@ export default {
     height: auto !important;
 }
 .vjs-default-skin.vjs-paused .vjs-big-play-button {
-  display: none;
+  display: block;
 }
 </style>

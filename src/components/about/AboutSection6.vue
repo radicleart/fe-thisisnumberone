@@ -12,7 +12,7 @@
       </b-col>
     </b-row>
   </b-container>
-<div class="spaced-name spaced-name--section6">Collaborate</div>
+<!-- <div class="spaced-name spaced-name--section6">Collaborate</div> -->
 </section>
 </div>
 </template>

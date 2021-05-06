@@ -1,20 +1,16 @@
 <template>
 <section v-if="content" :class="getArtistBgTheme()" class="container-fluid p-5">
-  <div class="spaced-name">{{content.data.description[0].text}}</div>
-  <b-container>
-    <b-row style="margin-bottom: 100px">
-      <b-col cols="12" lg="6" class="pr-lg-5 mb-lg-0 mb-5">
+  <!-- <div class="spaced-name">{{content.data.description[0].text}}</div> -->
+  <b-container fluid class="center-section">
+    <b-row>
+      <b-col cols="12" lg="6">
         <img style="width: 100%;" :src="content.data.image.url"/>
       </b-col>
       <b-col cols="12" lg="6" align-self="end" class="text-left pl-lg-5">
-        <h1 :class="getArtistText1()" v-if="content.data.description[1]">{{content.data.description[1].text}}</h1>
-        <div class="artist-section--text" :class="getArtistText2()" v-if="content.data.description[2]">{{content.data.description[2].text}}</div>
-        <div class="artist-section--text" :class="getArtistText2()" v-if="content.data.description[3]">{{content.data.description[3].text}}</div>
-        <div class="artist-section--text" :class="getArtistText2()" v-if="content.data.description[4]">{{content.data.description[4].text}}</div>
-        <div class="artist-section--text" :class="getArtistText2()" v-if="content.data.description[5]">{{content.data.description[5].text}}</div>
+        <prismic-items :prismicItems="content.data.description"></prismic-items>
         <social-links class="mt-4" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
-        <div>
-          <square-button :theme="'dark'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + content.data.artist_id[0].text"/>
+        <div v-if="showButton">
+          <square-button :theme="'dark'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + content.data.artist_id[0].text" :usePixelBg="true"/>
         </div>
       </b-col>
     </b-row>
@@ -26,14 +22,16 @@
 import { APP_CONSTANTS } from '@/app-constants'
 import SocialLinks from './SocialLinks'
 import SquareButton from '@/components/utils/SquareButton'
+import PrismicItems from '@/components/prismic/PrismicItems'
 
 export default {
   name: 'ArtistSection',
   components: {
     SocialLinks,
-    SquareButton
+    SquareButton,
+    PrismicItems
   },
-  props: ['artistId'],
+  props: ['artistId', 'showButton'],
   data: function () {
     return {
     }
@@ -84,6 +82,18 @@ section {
   justify-content: space-between;
   min-height: 100vh;
 }
+.center-section {
+  margin: auto;
+  width: 90%;
+  border: 0px solid green;
+  padding: 50px 10px;
+}
+@media only screen and (max-width: 900px) {
+  .center-section {
+    width: 85%;
+  }
+}
+
 .spaced-name {
   margin: -3rem -3rem 8rem auto;
   line-height: 0.6;

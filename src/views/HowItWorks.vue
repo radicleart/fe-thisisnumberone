@@ -1,5 +1,5 @@
 <template>
-  <section id="section1" class="container home-content" v-if="slices">
+  <section class="container home-content" v-if="slices">
     <div class="row">
       <div class="col-12">
         <h1 class="home-content text-white">{{title}}</h1>

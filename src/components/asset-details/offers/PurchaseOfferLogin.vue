@@ -3,48 +3,33 @@
   <b-row>
     <b-col cols="12">
       <h1>{{makeOfferDialog[0].text}}</h1>
-      <h4 class="mb-5">{{makeOfferDialog[1].text}} <b>{{offerData.fbet}}</b></h4>
     </b-col>
   </b-row>
   <b-row class="row mt-2">
     <b-col align-v="stretch" md="4" sm="12">
-      <h2>{{makeOfferDialog[2].text}}</h2>
+      <p v-if="makeOfferDialog[1]">{{makeOfferDialog[1].text}}</p>
+      <p v-if="makeOfferDialog[2]">{{makeOfferDialog[2].text}}</p>
       <p v-if="makeOfferDialog[3]">{{makeOfferDialog[3].text}}</p>
       <p v-if="makeOfferDialog[4]">{{makeOfferDialog[4].text}}</p>
-      <p v-if="makeOfferDialog[5]">{{makeOfferDialog[5].text}}</p>
       <div class="mt-5"><a href="#" @click.prevent="back()"><b-icon icon="chevron-left"/> Back</a></div>
     </b-col>
-    <b-col md="5" sm="6" style="border-right: 1pt solid #000;">
-      <div><p v-if="makeOfferDialog[4]">{{makeOfferDialog[4].text}}</p></div>
-      <div><b-link @click="registerByEmail"><b-icon icon="chevron-right"/> Skip connect to wallet - register by email</b-link></div>
-    </b-col>
-    <rates-listing :message="rateMessage()" :amount="minimumOffer"/>
-  </b-row>
-  <b-row>
-    <b-col cols="12">
-      <div class="mt-3">
-        <div class="d-flex justify-content-between">
-          <div class="" style="width: 70%; border-bottom: 1pt solid #000000;"></div>
-          <div class="mr-4" style="position: relative; top: 25px;">
-            <square-button :theme="'dark'" :colorOnHover="'dark'" @clickButton="connect()" :label1="'CONNECT TO WALLET'" :icon="'power'" :usePixelBg="true"/>
-          </div>
-        </div>
-      </div>
+    <b-col md="8" sm="6">
+      <div class="mb-3">Connect to wallet or..</div>
+      <div><b-link @click="registerByEmail">Register your offer by email</b-link></div>
     </b-col>
   </b-row>
+  <action-row :buttonLabel="'CONNECT'" @clickButton="connect"/>
 </div>
 </template>
 
 <script>
-import SquareButton from '@/components/utils/SquareButton'
+import ActionRow from '@/components/utils/ActionRow'
 import { APP_CONSTANTS } from '@/app-constants'
-import RatesListing from '@/components/toolkit/RatesListing'
 
 export default {
   name: 'PurchaseOfferAmount',
   components: {
-    SquareButton,
-    RatesListing
+    ActionRow
   },
   props: ['offerData'],
   data () {

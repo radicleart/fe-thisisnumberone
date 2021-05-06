@@ -20,11 +20,28 @@ export default {
   data () {
     return {
       loaded: false,
+      padderSrc: 'https://images.prismic.io/dbid/d030a2d9-66eb-4d09-b0a6-52bfa581faa6_Cover_Placeholder_400.jpg?auto=compress,format',
+      padderVid: 'https://res.cloudinary.com/mijo-enterprises/video/upload/v1617695880/numberone/placeholders/Comp_2.mp4',
       paddedResults: [],
       dims100: { width: '100%', height: '100%' }
     }
   },
   mounted () {
+    const padder = {
+      imageUrl: this.padderSrc,
+      nftMedia: {
+        coverImage: {
+          fileUrl: this.padderSrc,
+          type: 'image'
+        }
+      }
+    }
+    if (this.resultSet.length === 5) {
+      this.resultSet.splice(1, 0, padder)
+      this.resultSet.splice(3, 0, padder)
+      this.resultSet.splice(5, 0, padder)
+      this.resultSet.splice(7, 0, padder)
+    }
     this.paddedResults = this.resultSet
     const numbs = this.resultSet.length
     for (let i = numbs; i < 10; i++) {
@@ -44,15 +61,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.center {
-  margin: auto;
-  width: 70%;
-  border: 0px solid green;
-  padding: 10px;
-}
-@media only screen and (max-width: 900px) {
-  .center {
-    width: 85%;
-  }
-}
 </style>

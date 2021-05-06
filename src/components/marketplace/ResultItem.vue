@@ -35,6 +35,9 @@ export default {
   },
   methods: {
     targetItem: function () {
+      if (!this.result.assetHash) {
+        return 'coverImage'
+      }
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.result)
     },
     openAssetDetails: function () {
@@ -64,10 +67,13 @@ export default {
         dimensions: 'max-width: 100%; max-height: auto;',
         aspectRatio: '1:1',
         poster: (this.result.nftMedia.coverImage) ? this.result.nftMedia.coverImage.fileUrl : null,
-        sources: [
-          { src: this.result.nftMedia.artworkFile.fileUrl, type: this.result.nftMedia.artworkFile.type }
-        ],
+        sources: [],
         fluid: true
+      }
+      if (this.result.nftMedia.artworkFile) {
+        videoOptions.sources = [
+          { src: this.result.nftMedia.artworkFile.fileUrl, type: this.result.nftMedia.artworkFile.type }
+        ]
       }
       if (this.outerOptions) {
         Object.assign(videoOptions, this.outerOptions)
