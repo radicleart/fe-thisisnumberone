@@ -3,8 +3,8 @@
   <!-- <div class="spaced-name spaced-name--artist-section" :class="getArtistText1()">{{content.data.description[0].text}}</div> -->
   <b-container fluid class="center-section">
     <b-row align-h="center">
-      <b-col md="6" sm="10" xs="8" class="mb-5">
-        <img style="width: 100%;" :src="content.data.image.url"/>
+      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end mb-5">
+        <img style="width: 100%; max-width: 450px;" :src="content.data.image.url"/>
       </b-col>
       <b-col md="6" sm="10" xs="8" align-self="end" class="text-left text-white">
         <prismic-items :prismicItems="content.data.description"></prismic-items>

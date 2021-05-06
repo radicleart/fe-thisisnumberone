@@ -27,10 +27,10 @@
               <h1>{{gaiaAsset.name}}</h1>
               <h2>{{gaiaAsset.artist}}</h2>
               <p class="border-bottom pb-4">{{owner}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
-              <div class="w-75">
-                <p class="pt-4 text-small">{{gaiaAsset.description}}</p>
+              <div class="w-100">
+                <p class="pt-4 text-small" v-html="preserveWhiteSpace(gaiaAsset.description)"></p>
               </div>
-              <div class="w-75 my-5 d-flex justify-content-between">
+              <div class="w-100 my-5 d-flex justify-content-between">
                 <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
                 <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
               </div>
@@ -153,6 +153,9 @@ export default {
     }, this)
   },
   methods: {
+    preserveWhiteSpace: function (content) {
+      return '<span class="text-description" style="white-space: break-spaces;">' + content + '</span>'
+    },
     back: function () {
       this.$bvModal.hide('result-modal')
     },

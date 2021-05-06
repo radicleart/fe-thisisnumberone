@@ -136,10 +136,14 @@ const myItemService = {
   },
   saveAsset: function (item) {
     return new Promise((resolve, reject) => {
-      storage.putFile(item.assetHash + '.json', JSON.stringify(item), { encrypt: false }).then(() => {
-        resolve(item)
-      }).catch((error) => {
-        reject(error)
+      storage.getFile(item.assetHash + '.json', { decrypt: false }).then((file: string) => {
+        let item2 = JSON.parse(file)
+        item2 = item
+        storage.putFile(item.assetHash + '.json', JSON.stringify(item2), { encrypt: false }).then(() => {
+          resolve(item)
+        }).catch((error) => {
+          reject(error)
+        })
       })
     })
   }

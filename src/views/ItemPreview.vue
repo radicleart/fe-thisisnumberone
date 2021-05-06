@@ -26,7 +26,7 @@
           <div class="mb-2 text-bold">Editions {{item.editions}}</div>
           <span class="text-small mr-1" v-for="(kw, index) in item.keywords" :key="index">#{{kw.name}}</span>
         -->
-        <div class="text-small">{{item.description}}</div>
+        <p class="pt-4 text-small" v-html="preserveWhiteSpace(item.description)"></p>
         <minting-tools class="w-100" :assetHash="item.assetHash" />
       </b-col>
     </b-row>
@@ -63,6 +63,9 @@ export default {
     })
   },
   methods: {
+    preserveWhiteSpace: function (content) {
+      return '<span class="text-description" style="white-space: break-spaces;">' + content + '</span>'
+    },
     targetItem: function () {
       const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](item)
