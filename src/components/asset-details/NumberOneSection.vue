@@ -6,7 +6,7 @@
     </b-col>
     <b-col md="4" sm="6" align-self="center" :style="getOffset" class="mb-5">
       <div v-if="!artistId" id="one-box" class="box1" :style="'height:' + oneBoxHeight + 'px'" style="min-width: 200px; width: 100%;">
-        <div><img :src="logo" alt="logo"></div>
+        <div style="margin: 3rem;"><img :src="logo" alt="logo"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam sodales hendrerit.</div>
       </div>
       <div v-else id="one-box" class="box2 text-white d-flex flex-column justify-content-end align-items-center" :style="'height:' + oneBoxHeight + 'px'" style="min-width: 200px; width: 100%;">
         <b-row align-h="center" style="min-height: 100%" v-if="resultSet" class="p-0 m-0 w-100">
@@ -121,6 +121,7 @@ export default {
 <style scoped>
 .box1 {
   border: 1pt solid #ffffff;
+  text-align: center;
 }
 .box2 {
   background-color: #333333;

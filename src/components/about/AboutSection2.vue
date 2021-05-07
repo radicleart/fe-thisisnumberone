@@ -4,7 +4,8 @@
   <b-container style="min-height: 60vh" class="pb-4 text-center">
     <div class="my-4 mt-5"><span class="mr-2" style="font-size: 45px;font-weight: bold; position: relative; top: 15px;opacity: 1;">THIS IS</span> <img height="36px" :src="rainbowOne" alt="logo"/></div>
     <h1 class="mb-4">{{content.section2rtf1[0].text}}</h1>
-    <div class="section2-text">{{content.section2rtf1[1].text}}</div>
+    <div v-for="(paragraph, index) in content.section2rtf1" :key="index">
+      <p class="section2-text" v-if="index > 0">{{content.section2rtf1[index].text}}</p><br></div>
   </b-container>
 </section>
 </div>
@@ -38,8 +39,11 @@ h1 {
 }
 .section2-text {
   max-width: 600px;
-  color: #888888;
+  color: #202020;
   font-size: 1.5rem;
   margin: 0 auto;
+}
+p {
+  text-align: center;
 }
 </style>

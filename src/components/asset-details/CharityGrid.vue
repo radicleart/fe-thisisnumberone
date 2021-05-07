@@ -81,6 +81,7 @@ p {
   margin: auto;
   max-height: 100%;
   max-width: 100%;
+  padding:0;
 }
 
 img {

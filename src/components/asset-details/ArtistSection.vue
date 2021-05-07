@@ -3,10 +3,10 @@
   <!-- <div class="spaced-name spaced-name--artist-section" :class="getArtistText1()">{{content.data.description[0].text}}</div> -->
   <b-container fluid class="center-section">
     <b-row align-h="center">
-      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end mb-5">
+      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end image">
         <img style="width: 100%; max-width: 450px;" :src="content.data.image.url"/>
       </b-col>
-      <b-col md="6" sm="10" xs="8" align-self="end" class="text-left text-white">
+      <b-col md="6" sm="10" xs="8" align-self="end" class="text text-left text-white">
         <prismic-items :prismicItems="content.data.description"></prismic-items>
         <social-links class="mt-5" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
       </b-col>
@@ -68,6 +68,7 @@ section {
   flex-flow: column;
   justify-content: space-between;
   min-height: 100vh;
+  background-color: #1E2D40 !important;
 }
 
 .spaced-name--artist-section {
@@ -80,6 +81,14 @@ h1 {
   font-size: 3rem;
   margin-bottom: 15px;
 }
+.image {
+  max-width: 60rem;
+}
+
+.text {
+  max-width: 60rem;
+}
+
 .artist-section--text {
   font-size: 1.4rem;
 }

@@ -47,7 +47,7 @@
         -->
 
         <div class="col-3 col-lg-2 footer-top--content">
-          <div class="column-header">News</div>
+          <div class="column-header">Contact</div>
           <div v-scroll-to="{ element: '#about', duration: 1000 }">
             <a href="mailto:press@thisisnumberone.com">Press</a>
           </div>

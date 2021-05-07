@@ -3,7 +3,7 @@
 <b-navbar class="p-4" variant="transparent">
   <b-navbar-brand href="#">
     <div class="">
-      <router-link to="/home" class="navbar-brand"><img height="36px" :src="getLogo()" alt="logo"/></router-link>
+      <router-link to="/home" class="navbar-brand"><img height="36px" class="logo" :src="getLogo()" alt="logo"/></router-link>
     </div>
   </b-navbar-brand>
   <b-navbar-nav class="ml-auto ">
@@ -156,8 +156,18 @@ export default {
   z-index: 4;
 }
 
-#one-nav .toggle-icon .nav-link {
+#one-nav {
+  padding: 2rem;
+}
+
+.toggle-icon .nav-link {
   padding: 0;
+}
+
+.logo {
+  max-width: 20rem;
+  width: 100%;
+  min-width: 8rem;
 }
 
 /* COLLAPSIBLE PART OF NAVBAR STYLE */
