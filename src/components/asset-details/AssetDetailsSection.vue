@@ -1,6 +1,6 @@
 <template>
 <section :key="componentKey" id="asset-details-section" v-if="gaiaAsset" class="text-white">
-  <b-container class="center-section" style="min-height: 100vh;">
+  <b-container class="center-section" style="min-height: 50vh;">
     <b-row align-h="center" :style="'min-height: ' + videoHeight + 'px'">
       <b-col lg="7" sm="10" class="mb-5">
         <div id="video-column" :style="dimensions">
@@ -31,15 +31,15 @@
                 <p class="pt-4 text-small" v-html="preserveWhiteSpace(gaiaAsset.description)"></p>
               </div>
               <div class="w-25">
-                <social-links class="mt-4" :socialLinks="getSocialLinks()" :gaiaAsset="gaiaAsset" />
+                <share-links class="mt-4" :socialLinks="getSocialLinks()" :gaiaAsset="gaiaAsset" />
               </div>
               <div class="w-100 my-5 d-flex justify-content-between">
                 <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
                 <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
               </div>
               <b-row>
-                <b-col md="6" sm="12" class="mb-3">
-                  <square-button v-if="getSaleType() > 0" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
+                <b-col md="6" sm="12" class="mb-3" v-if="getSaleType() > 0">
+                  <square-button @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
                 </b-col>
                 <b-col md="6" sm="12">
                   <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>
@@ -92,7 +92,7 @@ import PurchaseFlow from './offers/PurchaseFlow'
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaItem from '@/components/utils/MediaItem'
 import SquareButton from '@/components/utils/SquareButton'
-import SocialLinks from '@/components/utils/SocialLinks'
+import ShareLinks from '@/components/utils/ShareLinks'
 import moment from 'moment'
 // import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
 
@@ -106,7 +106,7 @@ export default {
     PurchaseFlow,
     MediaItem,
     SquareButton,
-    SocialLinks
+    ShareLinks
   },
   props: ['gaiaAsset'],
   data: function () {

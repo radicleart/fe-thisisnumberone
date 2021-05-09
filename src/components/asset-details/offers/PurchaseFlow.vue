@@ -181,7 +181,7 @@ export default {
       const mac = this.$store.getters[APP_CONSTANTS.KEY_MACS_WALLET]
       const sky = this.$store.getters[APP_CONSTANTS.KEY_SKYS_WALLET]
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      let recipient = profile.stxAddress
+      let recipient = profile.stxAddress // (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address
 
       if (NETWORK === 'local') {
         recipient = (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address

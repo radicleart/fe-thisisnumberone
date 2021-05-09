@@ -146,7 +146,7 @@ export default {
           $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
           $self.mintResult = txResult
-          $self.$bvModal.show('result-modal')
+          // $self.$bvModal.show('result-modal')
         } else if (data.opcode === 'stx-update-mint-data') {
           // $self.$bvModal.hide('minting-modal')
         } else if (data.opcode === 'stx-save-and-close-mint-data') {
@@ -155,7 +155,7 @@ export default {
           $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
           $self.mintResult = txResult
-          $self.$bvModal.show('result-modal')
+          // $self.$bvModal.show('result-modal')
         } else if (data.opcode === 'cancel-minting') {
           $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')

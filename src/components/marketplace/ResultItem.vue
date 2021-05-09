@@ -1,5 +1,5 @@
 <template>
-<div :style="dimensions" class="text-right">
+<div :style="dimensions" class="text-right" v-if="result">
   <media-item v-on="$listeners" @videoClicked="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
 </div>
 </template>

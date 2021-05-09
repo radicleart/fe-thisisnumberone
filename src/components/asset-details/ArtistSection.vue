@@ -1,14 +1,14 @@
 <template>
-<section v-if="content" :class="getArtistTheme()">
+<section id="artist-section" v-if="content" :class="getArtistTheme()">
   <!-- <div class="spaced-name spaced-name--artist-section" :class="getArtistText1()">{{content.data.description[0].text}}</div> -->
-  <b-container class="center-section">
+  <b-container class="center-section py-5">
     <b-row align-h="center">
-      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end mb-5">
+      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end">
         <img style="width: 100%; max-width: 450px;" :src="content.data.image.url"/>
       </b-col>
-      <b-col md="6" sm="10" xs="8" align-self="end" class="text-left text-white">
+      <b-col md="6" sm="10" xs="8" align-self="end" class="text-left text-white pr-5" style="position: relative; top: 5px;">
         <prismic-items :prismicItems="content.data.description"></prismic-items>
-        <!-- <social-links class="mt-5" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" /> -->
+        <social-links class="mt-5" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
       </b-col>
     </b-row>
   </b-container>
@@ -18,11 +18,13 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import PrismicItems from '@/components/prismic/PrismicItems'
+import SocialLinks from '@/components/utils/SocialLinks'
 
 export default {
   name: 'ArtistSection',
   components: {
-    PrismicItems
+    PrismicItems,
+    SocialLinks
   },
   props: ['artistId', 'parentPage'],
   data: function () {
@@ -62,21 +64,19 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 /* General style */
+#artist-section p {
+  padding: 0;
+  margin: 0;
+}
 section {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
-  min-height: 100vh;
+  min-height: 70vh;
 }
 
-.spaced-name--artist-section {
-  margin: -3.5rem -3rem 8rem auto;
-  max-width: 952px;
-  text-align: right;
-  font-size: 15rem;
-}
 h1 {
   font-size: 3rem;
   margin-bottom: 15px;

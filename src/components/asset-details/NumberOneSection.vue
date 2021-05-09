@@ -63,7 +63,7 @@ export default {
     }
   },
   mounted () {
-    this.findAssets()
+    // this.findAssets()
     this.resizeContainers()
   },
   updated () {
@@ -161,9 +161,13 @@ export default {
     },
     resultSet () { // FromIndex
       const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
-      return resultSet
+      if (resultSet && resultSet.length > 0 && resultSet[0] && resultSet[0].nftMedia) {
+        return resultSet
+      }
+      return null
     },
     resultSet1 () {
+      // const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
       const results = this.$store.getters[APP_CONSTANTS.KEY_SEARCH_RESULTS]
       if (!results) return
       const resultSet = results.filter((o) => (o.nftMedia && o.nftMedia.artworkFile && o.nftMedia.artworkFile.type.indexOf('video') > -1))

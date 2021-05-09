@@ -1,18 +1,21 @@
 <template>
-<div id="social-links" :class="themeClass">
+<div id="share-links" :class="themeClass">
   <div class="d-flex justify-content-between">
+    <!-- <b-icon style="width: 30px; height: 30px;" icon="share"/> -->
     <span v-for="(link, index) in socialLinks" :key="index">
-      <a class="mr-5" :href="getTarget(link)" target="_blank"><b-icon style="width: 30px; height: 30px;" :icon="getIcon(link)"/></a>
+      <share-content :gaiaAsset="gaiaAsset" :network="getNetwork(link)" :icon="getIcon(link)" />
     </span>
   </div>
 </div>
 </template>
 
 <script>
+import ShareContent from '@/components/utils/ShareContent'
 
 export default {
   name: 'SocialLinks',
   components: {
+    ShareContent
   },
   props: ['socialLinks', 'link', 'themeClass', 'gaiaAsset'],
   data: function () {
@@ -28,7 +31,7 @@ export default {
         const hasNetwork = link.social_link[0].text.indexOf('type') > -1
         if (hasNetwork) {
           const params = link.social_link[0].text.split('&')
-          const target = params.find((o) => o.indexOf('link') > -1)
+          const target = params.find((o) => o.indexOf('type') > -1)
           if (target) {
             return target.split('=')[1]
           }
