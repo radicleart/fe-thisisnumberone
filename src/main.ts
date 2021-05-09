@@ -14,11 +14,13 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import '@/assets/scss/custom.scss'
 import './assets/scss/rpay-pay-card.css'
 import VueScrollTo from 'vue-scrollto'
+import VueSocialSharing from 'vue-social-sharing'
 
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
 Vue.use(VueScrollTo)
+Vue.use(VueSocialSharing)
 Vue.use(IconsPlugin)
 Vue.use(Notifications, { closeOnClick: true, duration: 6000 })
 Vue.use(PrismicVue, {

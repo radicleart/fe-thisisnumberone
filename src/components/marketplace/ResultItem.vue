@@ -1,6 +1,6 @@
 <template>
 <div :style="dimensions" class="text-right">
-  <media-item v-on="$listeners" @openAssetDetails="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
+  <media-item v-on="$listeners" @videoClicked="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
 </div>
 </template>
 
@@ -8,6 +8,7 @@
 import Vue from 'vue'
 import MediaItem from '@/components/utils/MediaItem'
 import { APP_CONSTANTS } from '@/app-constants'
+import VueScrollTo from 'vue-scrollto'
 
 export default {
   name: 'ResultItem',
@@ -40,11 +41,14 @@ export default {
       }
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.result)
     },
-    openAssetDetails: function () {
-      this.$router.push(this.assetUrl())
+    openAssetDetails () {
+      if (this.result.assetHash !== this.$route.params.assetHash) {
+        this.$router.push('/assets/' + this.result.assetHash)
+      }
+      VueScrollTo.scrollTo('#app', 2000)
     },
     assetUrl () {
-      let assetUrl = '/assets/' + this.result.assetHash
+      let assetUrl = '/assets/' + this.result.assetHash + '#app'
       if (this.$route.name === 'my-items') {
         assetUrl = '/my-items/' + this.result.assetHash
       }
@@ -68,7 +72,7 @@ export default {
         aspectRatio: '1:1',
         poster: (this.result.nftMedia.coverImage) ? this.result.nftMedia.coverImage.fileUrl : null,
         sources: [],
-        fluid: true
+        fluid: false
       }
       if (this.result.nftMedia.artworkFile) {
         videoOptions.sources = [

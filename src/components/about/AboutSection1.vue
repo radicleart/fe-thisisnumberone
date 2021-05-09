@@ -1,11 +1,11 @@
 <template>
-<section id="about-number-1">
+<section id="about-number-1" v-if="content">
   <b-container class="">
     <b-row style="height: 92vh" class="text-center">
-      <b-col cols="12" align-self="end"><div class="text-white"><b-icon style="width: 60px; height: 60px;" icon="film"/></div></b-col>
-      <b-col class="mx-md-5 mx-sm-3" cols-md="6" cols-sm="6" align-self="center">
-        <h1 class="mb-4 text-white">{{content.section1rtf1[0].text}}</h1>
-        <div class="text-white text-center section1-description">{{content.section1rtf1[1].text}}</div>
+      <b-col class="mx-md-5 mx-sm-3" cols-md="6" cols-sm="6" align-self="center" v-if="content.section1rtf1.length > 1">
+        <img class="mb-5" width="300px;" :src="rainbowOne" alt="site logo" />
+        <div class="mt-5 text-white text-center section1-description">{{content.section1rtf1[0].text}}</div>
+        <div class="mt-5 text-white text-center section1-description">{{content.section1rtf1[1].text}}</div>
       </b-col>
     </b-row>
   </b-container>
@@ -18,6 +18,7 @@ export default {
   props: ['content'],
   data () {
     return {
+      rainbowOne: require('@/assets/img/Group 76.svg')
     }
   },
   computed: {

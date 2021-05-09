@@ -1,25 +1,28 @@
 <template>
-<b-container fluid id="number-one-container" style="min-height: 91vh">
-  <b-row align-h="center" style="min-height: 91vh" v-if="resultSet">
-    <b-col md="8" sm="12" align-self="center">
-      <result-grid @videoHoverOut="resetContainer" @videoHover="updateContainer" class="container text-center" :outerOptions="videoOptions" :outsiderCols="12" :resultSet="resultSet"/>
-    </b-col>
-    <b-col md="4" sm="6" align-self="center" :style="getOffset" class="mb-5">
-      <div v-if="!artistId" id="one-box" class="box1" :style="'height:' + oneBoxHeight + 'px'" style="min-width: 200px; width: 100%;">
-        <div><img :src="logo" alt="logo"></div>
+<b-container fluid id="number-one-container">
+  <b-row align-h="center" style="min-height: 91vh" v-if="resultSet" class="mb-5">
+    <b-col lg="8" sm="10" class="mb-5" align-self="center">
+      <div id="video-column" :style="dimensions">
+        <result-grid id="grid-container" @videoHoverOut="resetContainer" @videoHover="updateContainer" class="container text-center" :outerOptions="videoOptions" :outsiderCols="12" :resultSet="resultSet"/>
       </div>
-      <div v-else id="one-box" class="box2 text-white d-flex flex-column justify-content-end align-items-center" :style="'height:' + oneBoxHeight + 'px'" style="min-width: 200px; width: 100%;">
-        <b-row align-h="center" style="min-height: 100%" v-if="resultSet" class="p-0 m-0 w-100">
-          <b-col cols="12" align-self="start" class="p-0 m-0 text-right w-100">
-            <img width="115px" s :src="logo" alt="logo">
-          </b-col>
-          <b-col class=" p-5 m-0" v-if="gaiaAsset" cols="12" align-self="end" :key="componentKey">
-            <h1>{{gaiaAsset.artist}}</h1>
-            <h2>{{gaiaAsset.name}}</h2>
-            <p class="" v-if="gaiaAsset.contractAsset">{{getOwningAddress}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
-            <div v-scroll-to="{ element: '#asset-details-section', duration: 1000 }"><b-link @click.prevent="routeTo(gaiaAsset.assetHash)" class="text-white">Find out more</b-link></div>
-          </b-col>
-        </b-row>
+    </b-col>
+    <b-col lg="4" sm="10" align-self="center" :key="componentKey">
+      <div v-if="content && !artistId" id="one-box" class="center-section text-white bg-black box1" :style="bannerImage()">
+        <div class="mx-5 text-splash">
+          <prismic-items :prismicItems="content.splashtext"></prismic-items>
+        </div>
+      </div>
+      <div v-else class="center-box text-white bg-black" :style="bannerImage()" >
+        <div class="bg-black box2" style="opacity: 0.5">
+          <img width="350px" height="350px" :src="bannerImage1(artistId)"/>
+        </div>
+        <div style="position: relative;">
+          <div class="text-white p-5" style="position: absolute; bottom: 0;">
+            <p class="my-0 text-artist">{{gaiaAsset.artist}}</p>
+            <p class="mb-2 text-artwork">{{gaiaAsset.name}}</p>
+            <!-- <div class="my-0 text-action" v-scroll-to="{ element: '#app', duration: 1000 }"><b-link @click.prevent="routeTo(gaiaAsset.assetHash)" class="text-white">Find out more</b-link></div> -->
+          </div>
+        </div>
       </div>
     </b-col>
   </b-row>
@@ -30,6 +33,8 @@
 import { APP_CONSTANTS } from '@/app-constants'
 import ResultGrid from '@/components/marketplace/ResultGrid'
 import Vue from 'vue'
+import PrismicItems from '@/components/prismic/PrismicItems'
+import VueScrollTo from 'vue-scrollto'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
@@ -37,10 +42,12 @@ const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 export default {
   name: 'NumberOneSection',
   components: {
-    ResultGrid
+    ResultGrid,
+    PrismicItems
   },
   data () {
     return {
+      show: true,
       componentKey: null,
       logo: require('@/assets/img/logo-rainbow.svg'),
       artistId: null,
@@ -57,16 +64,37 @@ export default {
   },
   mounted () {
     this.findAssets()
+    this.resizeContainers()
   },
   updated () {
     Vue.nextTick(function () {
-      const oneBox = document.getElementById('one-box')
+      const oneBox = document.getElementById('grid-container')
       if (oneBox) this.oneBoxHeight = oneBox.clientWidth
     }, this)
   },
   methods: {
+    resizeContainers () {
+      let resizeTimer
+      const $self = this
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer)
+        resizeTimer = setTimeout(function () {
+          $self.componentKey += 1
+        }, 400)
+      })
+    },
+    dimensions () {
+      const dims = { width: '100%', height: '100%' }
+      return 'max-width: ' + dims.height + '; max-height: ' + dims.height + ';'
+    },
+    intoBoxStyle () {
+      return 'width: ' + 350 + 'px; height: ' + 350 + 'px;'
+    },
     routeTo (assetHash) {
-      this.$router.push('/assets/' + assetHash)
+      if (assetHash !== this.$route.params.assetHash) {
+        this.$router.push('/assets/' + assetHash)
+      }
+      VueScrollTo.scrollTo('#app', 2000)
     },
     ttStacksAddress () {
       const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-stacks-address')
@@ -87,16 +115,39 @@ export default {
       this.artistId = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_ARTIST_ID](this.gaiaAsset.artist)
       this.componentKey++
     },
+    bannerImage () {
+      const disp = {
+        width: '350px',
+        height: '350px'
+      }
+      if (window.innerWidth > 987) {
+        disp.position = 'relative'
+        disp.left = '-100px'
+      }
+      return disp
+    },
+    bannerImage1 (artistId) {
+      const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_ARTIST_BY_ID](artistId)
+      let bannerUrl = '#'
+      if (content) {
+        bannerUrl = content.data.image.url
+      }
+      return bannerUrl
+    },
     resetContainer () {
-      // this.artistId = null
+      this.artistId = null
     }
   },
   computed: {
     getOffset () {
-      if (window.innerWidth > 800) {
+      if (window.innerWidth > 987) {
         return 'position: relative; left: -70px;'
       }
       return ''
+    },
+    content () {
+      const content = this.$store.getters['contentStore/getHomepage']
+      return content
     },
     getOwningAddress () {
       if (this.gaiaAsset && this.gaiaAsset.contractAsset && this.gaiaAsset.contractAsset.owner) {
@@ -108,7 +159,11 @@ export default {
       }
       return ''
     },
-    resultSet () {
+    resultSet () { // FromIndex
+      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      return resultSet
+    },
+    resultSet1 () {
       const results = this.$store.getters[APP_CONSTANTS.KEY_SEARCH_RESULTS]
       if (!results) return
       const resultSet = results.filter((o) => (o.nftMedia && o.nftMedia.artworkFile && o.nftMedia.artworkFile.type.indexOf('video') > -1))
@@ -125,6 +180,16 @@ export default {
 .box2 {
   background-color: #333333;
   /* border: 1pt solid #707070; */
+}
+.center-box {
+  margin: auto;
+  width: 100%;
+  border: 0px solid green;
+}
+@media only screen and (max-width: 900px) {
+  .center-box {
+    width: 85%;
+  }
 }
 
 </style>

@@ -125,24 +125,40 @@ const myItemService = {
     })
   },
   saveItem: function (rootFile) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       rootFile.updated = moment({}).valueOf()
-      storage.putFile(ITEM_ROOT_PATH, JSON.stringify(rootFile), { encrypt: false }).then(() => {
-        resolve(rootFile)
-      }).catch((error) => {
-        reject(error)
+      storage.getFile(ITEM_ROOT_PATH, { decrypt: false }).then((file: string) => {
+        let rootFile2 = JSON.parse(file)
+        rootFile2 = rootFile
+        storage.putFile(ITEM_ROOT_PATH, JSON.stringify(rootFile2), { encrypt: false }).then(() => {
+          resolve(rootFile2)
+        }).catch(() => {
+          // reject(error)
+        })
+      }).catch(() => {
+        storage.putFile(ITEM_ROOT_PATH, JSON.stringify(rootFile), { encrypt: false }).then(() => {
+          resolve(rootFile)
+        }).catch(() => {
+          // reject(error)
+        })
       })
     })
   },
   saveAsset: function (item) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       storage.getFile(item.assetHash + '.json', { decrypt: false }).then((file: string) => {
         let item2 = JSON.parse(file)
         item2 = item
         storage.putFile(item.assetHash + '.json', JSON.stringify(item2), { encrypt: false }).then(() => {
           resolve(item)
-        }).catch((error) => {
-          reject(error)
+        }).catch(() => {
+          // reject(error)
+        })
+      }).catch(() => {
+        storage.putFile(item.assetHash + '.json', JSON.stringify(item), { encrypt: false }).then(() => {
+          resolve(item)
+        }).catch(() => {
+          // reject(error)
         })
       })
     })

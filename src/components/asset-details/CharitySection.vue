@@ -1,7 +1,7 @@
 <template>
 <section v-if="content" :class="getArtistBgTheme()">
   <!-- <div class="spaced-name">{{content.data.description[0].text}}</div> -->
-  <b-container fluid class="center-section">
+  <b-container class="center-section">
     <b-row align-h="center">
       <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end mb-5">
         <img style="width: 100%; max-width: 450px;" :src="content.data.image.url"/>
@@ -20,7 +20,7 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import SocialLinks from './SocialLinks'
+import SocialLinks from '@/components/utils/SocialLinks'
 import SquareButton from '@/components/utils/SquareButton'
 import PrismicItems from '@/components/prismic/PrismicItems'
 

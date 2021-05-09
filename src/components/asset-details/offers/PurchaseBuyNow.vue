@@ -26,7 +26,7 @@
       </div>
     </b-col>
   </b-row>
-  <action-row :eventName="buyNow" :buttonLabel="'BUY NOW'"/>
+  <action-row @clickButton="$emit('buyNow')" :buttonLabel="'BUY NOW'"/>
 </div>
 </template>
 

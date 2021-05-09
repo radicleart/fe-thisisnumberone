@@ -6,7 +6,6 @@
 import searchIndexService from '@/services/searchIndexService'
 import myItemService from '@/services/myItemService'
 import { APP_CONSTANTS } from '@/app-constants'
-import store from '@/store'
 import moment from 'moment'
 import utils from '@/services/utils'
 

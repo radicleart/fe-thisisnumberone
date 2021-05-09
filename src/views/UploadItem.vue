@@ -92,7 +92,7 @@ export default {
         sources: [
           { src: myAsset.nftMedia.artworkFile.fileUrl, type: myAsset.nftMedia.artworkFile.type }
         ],
-        fluid: true
+        fluid: false
       }
       return videoOptions
     },

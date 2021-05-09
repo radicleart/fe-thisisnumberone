@@ -1,17 +1,15 @@
 <template>
-<section v-if="content" :class="'theme-' + content.uid" class="container-fluid p-5" style="min-height: 50vh;">
-  <!-- <div class="spaced-name spaced-name--charity-grid">Charities</div> -->
-  <b-container fluid class="center-section">
-    <b-row align-h="center">
-      <b-col lg="2" sm="6" md="4" v-for="(charity, index) in content" :key="index">
-        <div class="">
-          <div class="">
-            <img style="width: 100%;" class="charity-image" :src="charity.data.image.url"/>
-          </div>
+<section v-if="content" :class="'theme-' + content.uid" class="container px-5">
+  <b-container fluid>
+    <div class="py-5 d-flex justify-content-around">
+      <div class="mx-3" v-for="(charity, index) in content" :key="index">
+        <div @click="assetCharity(charity)">
+            <img style="width: 100%;" :src="charity.data.image.url"/>
         </div>
-        <p class="title-text">{{charity.data.description[0].text}}</p>
-      </b-col>
-    </b-row>
+        <p class="my-1 py-0 text-center text-small" style="font-size: 1.4rem">{{charity.data.charityname[0].text}}</p>
+        <p class="my-0 py-0 text-center  text-small text-white" style="font-size: 1.4rem">{{charity.data.charityartist[0].text}}</p>
+      </div>
+    </div>
   </b-container>
 </section>
 </template>
@@ -28,6 +26,18 @@ export default {
     }
   },
   methods: {
+    assetCharity: function (charity) {
+      const artistId = charity.data.artist_id[0].text
+      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      const artistAssets = resultSet.filter((o) => {
+        const oArtistId = o.artist.toLowerCase().replace(/ /g, '')
+        if (oArtistId === artistId) {
+          return o
+        }
+      })
+      if (!artistAssets || artistAssets.length === 0) return '#'
+      this.$router.push('/assets/' + artistAssets[0].assetHash)
+    }
   },
   computed: {
     content () {
@@ -88,7 +98,6 @@ img {
   max-height: 100%;
   max-width: 100%;
   margin: auto;
-  border: 1pt solid #000;
 }
 
 /* Spaced name responsive design */

@@ -1,28 +1,28 @@
 <template>
 <section :key="componentKey" id="asset-details-section" v-if="gaiaAsset" class="text-white">
-  <b-container fluid class="center-section" style="min-height: 100vh;">
-    <b-row align-h="center">
-      <b-col lg="6" sm="10" class="mb-5">
+  <b-container class="center-section" style="min-height: 100vh;">
+    <b-row align-h="center" :style="'min-height: ' + videoHeight + 'px'">
+      <b-col lg="7" sm="10" class="mb-5">
         <div id="video-column" :style="dimensions">
           <media-item :videoOptions="videoOptions" :nftMedia="gaiaAsset.nftMedia" :targetItem="targetItem()"/>
         </div>
       </b-col>
-      <b-col lg="6" sm="10">
-        <b-row align-v="stretch" :style="'min-height:60vh;'">
+      <b-col lg="5" sm="10">
+        <b-row align-v="stretch" :style="'min-height: ' + videoHeight + 'px'">
           <b-col cols="12">
             <div class="d-flex justify-content-between">
               <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
               <div class="d-flex justify-content-between">
                 <b-link router-tag="span" v-b-tooltip.click :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
                 <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white">
-                  <div v-if="isOwner"><router-link class="text-white" to="/my-items/all">{{salesBadgeLabel}}</router-link></div>
+                  <div v-if="isOwner"><router-link class="text-white" to="/my-items/minted">{{salesBadgeLabel}}</router-link></div>
                   <div v-else>{{salesBadgeLabel}}</div>
                   <div v-if="showEndTime()">{{biddingEndTime()}}</div>
                 </div>
               </div>
             </div>
           </b-col>
-          <b-col cols="12" align-self="end">
+          <b-col md="12" align-self="end">
             <div class="w-100">
               <h1>{{gaiaAsset.name}}</h1>
               <h2>{{gaiaAsset.artist}}</h2>
@@ -30,14 +30,21 @@
               <div class="w-100">
                 <p class="pt-4 text-small" v-html="preserveWhiteSpace(gaiaAsset.description)"></p>
               </div>
+              <div class="w-25">
+                <social-links class="mt-4" :socialLinks="getSocialLinks()" :gaiaAsset="gaiaAsset" />
+              </div>
               <div class="w-100 my-5 d-flex justify-content-between">
                 <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
                 <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
               </div>
-              <div class="d-flex justify-content-start">
-                <square-button v-if="getSaleType() > 0" class="mr-4" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
-                <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>
-              </div>
+              <b-row>
+                <b-col md="6" sm="12" class="mb-3">
+                  <square-button v-if="getSaleType() > 0" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
+                </b-col>
+                <b-col md="6" sm="12">
+                  <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>
+                </b-col>
+              </b-row>
             </div>
           </b-col>
         </b-row>
@@ -85,6 +92,7 @@ import PurchaseFlow from './offers/PurchaseFlow'
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaItem from '@/components/utils/MediaItem'
 import SquareButton from '@/components/utils/SquareButton'
+import SocialLinks from '@/components/utils/SocialLinks'
 import moment from 'moment'
 // import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
 
@@ -97,7 +105,8 @@ export default {
     // EditionTrigger,
     PurchaseFlow,
     MediaItem,
-    SquareButton
+    SquareButton,
+    SocialLinks
   },
   props: ['gaiaAsset'],
   data: function () {
@@ -128,6 +137,7 @@ export default {
     const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
     this.gaiaAsset.saleData = contractAsset.saleData
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'purchase-flow', asset: this.gaiaAsset })
+    this.resizeContainers()
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
         const txResult = $self.$store.getters[APP_CONSTANTS.KEY_TRANSACTION_DIALOG_MESSAGE]({ dKey: data.opcode, txId: data.txId })
@@ -153,6 +163,17 @@ export default {
     }, this)
   },
   methods: {
+    resizeContainers () {
+      let resizeTimer
+      const $self = this
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer)
+        resizeTimer = setTimeout(function () {
+          const vid = document.getElementById('video-column')
+          if (vid) $self.videoHeight = vid.clientHeight
+        }, 400)
+      })
+    },
     preserveWhiteSpace: function (content) {
       return '<span class="text-description" style="white-space: break-spaces;">' + content + '</span>'
     },
@@ -209,6 +230,32 @@ export default {
       }
       this.showRpay = 1
       this.$bvModal.show('asset-offer-modal')
+    },
+    getSocialLinks: function () {
+      const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_CHARITY_BY_ARTIST_ID](this.artistId)
+      if (content && content.data.social_links && content.data.social_links.length > 0) {
+        return content.data.social_links
+      }
+      return [
+        {
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          social_link: [{
+            text: 'type=twitter'
+          }]
+        },
+        {
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          social_link: [{
+            text: 'type=email&icon=mailbox2'
+          }]
+        },
+        {
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          social_link: [{
+            text: 'type=facebook'
+          }]
+        }
+      ]
     },
     registerForUpdates: function (email) {
       const data = {
@@ -289,7 +336,7 @@ export default {
         sources: [
           { src: this.gaiaAsset.nftMedia.artworkFile.fileUrl, type: this.gaiaAsset.nftMedia.artworkFile.type }
         ],
-        fluid: true
+        fluid: false
       }
       return videoOptions
     },

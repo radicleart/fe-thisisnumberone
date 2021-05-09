@@ -7,6 +7,7 @@
     </div>
   </b-navbar-brand>
   <b-navbar-nav class="ml-auto ">
+    <b-nav-item><b-link class="mr-4 text-white top-content" to="/my-items/minted">NFT Library</b-link></b-nav-item>
     <b-nav-item><b-link class="text-white top-content" to="/about">About</b-link></b-nav-item>
   </b-navbar-nav>
   <!--
@@ -87,7 +88,7 @@ export default {
       if (nav) nav.style.depth = '100px'
     },
     headerClass () {
-      return (this.$route.name === 'home' || this.$route.name === 'login' || this.$route.name === 'how-it-works') ? '' : 'header-class'
+      return (this.$route.name === 'home' || this.$route.name === 'login') ? '' : 'header-class'
     },
     username () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
@@ -125,6 +126,15 @@ export default {
     },
     getPixelBackground () {
       return this.$store.getters[APP_CONSTANTS.KEY_PIXEL_BACKGROUND]
+    },
+    myAssets () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      if (profile.loggedIn) {
+        const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
+        const assets = this.$store.getters[APP_CONSTANTS.KEY_ASSETS_BY_CONTRACT_ID_AND_OWNER]({ stxAddress: profile.stxAddress, contractId: STX_CONTRACT_ADDRESS })
+        return assets
+      }
+      return null
     },
     getBreakLine () {
       return this.$store.getters[APP_CONSTANTS.KEY_BREAK_LINE]

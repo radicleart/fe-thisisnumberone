@@ -48,17 +48,7 @@
           </div>
         </b-tab>
         <b-tab :title="contractAsset.offerCounter + ' Offers'">
-          <div class="upload-preview text-small">
-            <div class="row mb-4" v-for="(offer, index1) in contractAsset.offerHistory" :key="index1">
-              <div class="col-2">Offerer</div>
-              <div class="col-10">{{offer.offerer}}</div>
-              <div class="col-2">Amount</div>
-              <div class="col-10">{{offer.amount}} STX</div>
-              <div class="col-2">Made</div>
-              <div class="col-10">{{offerMade(offer.appTimestamp)}}</div>
-              <div class="col-2"></div>
-            </div>
-          </div>
+          <OfferHistory :assetHash="assetHash"/>
         </b-tab>
         <b-tab :title="contractAsset.bidCounter + ' Bids'">
           <div class="upload-preview text-small">
@@ -111,6 +101,7 @@ import ManageEditions from '@/components/toolkit/editions/ManageEditions'
 import TransferNft from '@/components/toolkit/TransferNft'
 import ListBeneficiaries from '@/components/toolkit/ListBeneficiaries'
 import GaiaHubRelay from '@/components/toolkit/GaiaHubRelay'
+import OfferHistory from '@/components/toolkit/offers/OfferHistory'
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
@@ -118,6 +109,7 @@ export default {
   name: 'MintingTools',
   components: {
     MintingFlow,
+    OfferHistory,
     RisidioPay,
     AcceptOffer,
     TransferNft,

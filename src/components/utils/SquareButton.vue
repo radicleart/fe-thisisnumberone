@@ -63,7 +63,7 @@ export default {
 }
 .btn-rectangle {
   font-size: 1.5rem;
-  min-width: 200px;
+  min-width: 150px;
   text-transform: uppercase;
   color: white;
 }

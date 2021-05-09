@@ -68,7 +68,7 @@ export default {
     clickedMe: function () {
       if (this.options.bigPlayer) return
       this.player.pause()
-      this.$emit('openAssetDetails')
+      this.$emit('videoClicked')
     },
     poster: function () {
       if (this.options.poster) {

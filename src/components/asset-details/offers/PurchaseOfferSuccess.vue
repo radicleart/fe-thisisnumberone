@@ -25,7 +25,7 @@ export default {
   components: {
     ThreeSteps
   },
-  props: ['offerData'],
+  props: ['offerData', 'contentKey'],
   data () {
     return {
       logoRainbow: require('@/assets/img/logo-rainbow.svg'),
@@ -84,7 +84,7 @@ export default {
       return profile
     },
     makeOfferDialog () {
-      const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('successful-offer')
+      const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT](this.contentKey)
       return dialog
     },
     gaiaAsset () {

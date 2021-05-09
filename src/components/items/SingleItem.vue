@@ -90,7 +90,7 @@ export default {
         sources: [
           { src: file.fileUrl, type: file.type }
         ],
-        fluid: true
+        fluid: false
       }
       return videoOptions
     },
