@@ -2,8 +2,8 @@
 <section class="" id="section-upload">
   <b-container class="my-5 pt-5" v-if="item">
     <b-row style="min-height: 40vh" >
-      <b-col md="6" sm="12" align-self="start" class=" text-center">
-        <div  class="bg-white" style="width:80%;">
+      <b-col md="4" sm="12" align-self="center" class=" text-center">
+        <div  class="bg-white" style="width:100%;">
           <p class="p-3">Artwork File</p>
           <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="item.nftMedia" :targetItem="'artworkFile'"/>
           <div v-if="superAdmin">
@@ -11,18 +11,18 @@
             <media-upload v-if="showAFUpload" :myUploadId="'artworkFile'" :dims="dims" :contentModel="contentModelArtwork" :limit="1" :sizeLimit="20" :mediaTypes="'video'" @updateMedia="updateMedia($event)"/>
           </div>
         </div>
-        <div  class="mt-5 bg-white" style="width:80%;">
+        <div  class="mt-5 bg-white" style="width:100%;">
           <p class="p-3">Cover Image</p>
           <media-item :videoOptions="videoOptions" v-if="hasFile('coverImage')" :dims="dims" :nftMedia="item.nftMedia" :targetItem="'coverImage'" @deleteMediaItem="deleteMediaItem"/>
           <media-upload v-else :myUploadId="'coverImage'" :dims="dims" :contentModel="contentModelCoverImage" :mediaFiles="mediaFilesCoverImage()" :limit="1" :sizeLimit="2" :mediaTypes="'image'" @updateMedia="updateMedia($event)"/>
         </div>
-        <div  class="mt-5 bg-white" style="width:80%;">
+        <div  class="mt-5 bg-white" style="width:100%;">
           <p class="p-3">Artwork Clip</p>
           <media-item :videoOptions="videoOptions" v-if="hasFile('artworkClip')" :dims="dims" :nftMedia="item.nftMedia" :targetItem="'artworkClip'" @deleteMediaItem="deleteMediaItem"/>
           <media-upload v-else :myUploadId="'artworkClip'" :dims="dims" :contentModel="contentModelClip" :mediaFiles="mediaFilesMusicFile()" :limit="1" :sizeLimit="4" :mediaTypes="'video,image'" @updateMedia="updateMedia($event)"/>
         </div>
       </b-col>
-      <b-col md="6" sm="12" align-self="start" class="mb-4 text-white">
+      <b-col md="8" sm="12" align-self="start" class="mb-4 text-white">
         <h2>NFT Info</h2>
         <p>Information displayed in the context of this artwork and to help people find it</p>
         <div class="my-4 bg-danger p-3" v-if="invalidItems.length > 0 && showErrors">

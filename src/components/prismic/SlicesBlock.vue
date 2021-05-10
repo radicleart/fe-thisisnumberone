@@ -36,7 +36,7 @@ export default {
       } else if (this.columns[index] === 2) {
         return 'col-md-6 col-sm-12'
       } else if (this.columns[index] === -1) {
-        return 'container-fluid'
+        return 'container'
       } else {
         return 'col-12'
       }

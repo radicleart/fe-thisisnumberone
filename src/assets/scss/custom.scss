@@ -195,3 +195,33 @@ body a:hover {
   font-size: 1.4rem;
   font-family: 'Baloo Bhaina 2';
 }
+.text-artist {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.text-action {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+.text-artwork {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+.text-address {
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+.text-splash {
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+.text-translucent {
+  opacity: 0.3;
+}
+.vjs-big-play-button {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 0 !important;
+  background-color: #222 !important;
+  opacity: 0.7;
+}

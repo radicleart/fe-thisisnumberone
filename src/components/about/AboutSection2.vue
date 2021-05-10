@@ -1,21 +1,26 @@
 <template>
-<div id="thisisone">
-<section class="about-section bg-white text-black">
+<section id="thisisone" class="about-section bg-white text-black">
   <b-container style="min-height: 60vh" class="pb-4 text-center">
-    <div class="my-4 mt-5"><span class="mr-2" style="font-size: 45px;font-weight: bold; position: relative; top: 15px;opacity: 1;">THIS IS</span> <img height="36px" :src="rainbowOne" alt="logo"/></div>
-    <h1 class="mb-4">{{content.section2rtf1[0].text}}</h1>
-    <div v-for="(paragraph, index) in content.section2rtf1" :key="index">
-      <p class="section2-text" v-if="index > 0">{{content.section2rtf1[index].text}}</p><br></div>
+    <b-row align-h="center" style="min-height: 91vh">
+      <b-col md="8" sm="10" align-self="center">
+        <div class="mt-2"><img height="36px" :src="rainbowOne" alt="logo"/></div>
+        <div class="mb-5 mt-1"><span class="mr-2" style="font-size: 45px;font-weight: bold; position: relative; top: 15px;opacity: 1;">THIS IS</span></div>
+        <div class="text-left">
+          <prismic-items :prismicItems="content.section2rtf1"></prismic-items>
+        </div>
+      </b-col>
+    </b-row>
   </b-container>
 </section>
-</div>
 </template>
 
 <script>
+import PrismicItems from '@/components/prismic/PrismicItems'
 
 export default {
   name: 'AboutSection2',
   components: {
+    PrismicItems
   },
   props: ['content'],
   data () {

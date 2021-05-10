@@ -12,9 +12,9 @@
           <b-button variant="dark" v-html="contentModel.buttonName" @click="chooseFiles()"></b-button>
         </div>
       </div>
-      <div class="mt-5 pt-5">or paste a link</div>
+      <div class="mt-5 pt-5">for big files paste a link</div>
       <div class="mt-5 text-left mt-4 mb-3" style="font-size: 1.2rem; width: 100%;">
-        <label for="item-name">enter url</label>
+        <label for="item-name">enter url <!-- <a href="#" @click.prevent="hashUrlOnly = !hashUrlOnly" :class="(hashUrlOnly) ? 'text-danger' : 'text-success'">file url only</a> --></label>
         <b-form-input
           id="item-name"
           v-model="directUrl"
@@ -93,6 +93,7 @@ export default {
   },
   data () {
     return {
+      hashUrlOnly: false,
       myContentModel: {
         title: 'Artwork File<br/>drop a url - up to 200M',
         buttonName: 'Choose NFT File',
@@ -287,20 +288,32 @@ export default {
         if (this.isValidUrl(data)) {
           this.$emit('updateMedia', { startLoad: 'Fetching file from ' + data })
           userFiles = data
-          utils.readFileFromUrlToDataURL(data).then((fileObject) => {
-            const type = $self.getFileType(fileObject)
-            if ($self.isForbidden(type)) return
-            fileObject.id = $self.contentModel.id
-            fileObject.type = type
-            fileObject.storage = 'external'
-            fileObject.fileUrl = data
-            fileObject.dataHash = utils.buildHash(fileObject.dataUrl)
-            fileObject.dataUrl = null
+          if (this.hashUrlOnly) {
+            const fileObject = {
+              id: $self.contentModel.id,
+              type: 'video/mp4',
+              storage: 'external',
+              fileUrl: data,
+              dataHash: utils.buildHash(data)
+            }
             $self.$emit('updateMedia', { media: fileObject })
-          }).catch((error) => {
-            $self.$store.commit('setModalMessage', 'Error occurred processing transaction.')
-            $self.result = error
-          })
+          } else {
+            // utils.readFileFromUrlToDataURL(data).then((fileObject) => {
+            utils.readFileChunks(data).then((fileObject) => {
+              const type = $self.getFileType(fileObject)
+              if ($self.isForbidden(type)) return
+              fileObject.id = $self.contentModel.id
+              fileObject.type = type
+              fileObject.storage = 'external'
+              fileObject.fileUrl = data
+              fileObject.dataHash = utils.buildHash(fileObject.dataUrl)
+              fileObject.dataUrl = null
+              $self.$emit('updateMedia', { media: fileObject })
+            }).catch((error) => {
+              $self.$store.commit('setModalMessage', 'Error occurred processing transaction.')
+              $self.result = error
+            })
+          }
           return
         } else {
           return
@@ -362,6 +375,10 @@ export default {
           }
         }
         reader.readAsDataURL(fileObject)
+        // const chunkSize = 64 * 1024 // bytes
+        // const offset = 0
+        // const blob = fileObject.slice(offset, chunkSize + offset)
+        // reader.readAsDataURL(blob)
       }
     }
   }

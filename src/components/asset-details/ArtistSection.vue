@@ -1,12 +1,12 @@
 <template>
-<section v-if="content" :class="getArtistTheme()">
+<section id="artist-section" v-if="content" :class="getArtistTheme()">
   <!-- <div class="spaced-name spaced-name--artist-section" :class="getArtistText1()">{{content.data.description[0].text}}</div> -->
-  <b-container fluid class="center-section">
+  <b-container class="center-section py-5">
     <b-row align-h="center">
-      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end image">
+      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end">
         <img style="width: 100%; max-width: 450px;" :src="content.data.image.url"/>
       </b-col>
-      <b-col md="6" sm="10" xs="8" align-self="end" class="text text-left text-white">
+      <b-col md="6" sm="10" xs="8" align-self="end" class="text-left text-white pr-5" style="position: relative; top: 5px;">
         <prismic-items :prismicItems="content.data.description"></prismic-items>
         <social-links class="mt-5" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
       </b-col>
@@ -17,14 +17,14 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import SocialLinks from './SocialLinks'
 import PrismicItems from '@/components/prismic/PrismicItems'
+import SocialLinks from '@/components/utils/SocialLinks'
 
 export default {
   name: 'ArtistSection',
   components: {
-    SocialLinks,
-    PrismicItems
+    PrismicItems,
+    SocialLinks
   },
   props: ['artistId', 'parentPage'],
   data: function () {
@@ -33,6 +33,9 @@ export default {
   },
   methods: {
     getArtistTheme: function () {
+      if (this.parentPage) {
+        return 'bg-black text-white text-white'
+      }
       try {
         const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_ARTIST_BY_ID](this.artistId)
         const bgcolor = content.data.theme[0].text.split(',')[0]
@@ -61,22 +64,24 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 /* General style */
+#artist-section p {
+  padding: 0;
+  margin: 0;
+}
 section {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
+<<<<<<< HEAD
   min-height: 100vh;
   background-color: #1E2D40 !important;
+=======
+  min-height: 70vh;
+>>>>>>> main
 }
 
-.spaced-name--artist-section {
-  margin: -3.5rem -3rem 8rem auto;
-  max-width: 952px;
-  text-align: right;
-  font-size: 15rem;
-}
 h1 {
   font-size: 3rem;
   margin-bottom: 15px;

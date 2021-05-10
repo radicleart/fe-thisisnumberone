@@ -1,20 +1,27 @@
 <template>
 <div v-if="content">
-  <about-section1 :content="content"></about-section1>
-  <div class="link-panel bg-white d-flex justify-content-center">
-    <div class="d-flex justify-content-center text-black link-panel--container">
-      <div class="d-flex justify-content-around link-panel--content">
-        <a href="#thisisone">This is #1</a>
-        <a href="#chemicalx">Chemical X</a>
-        <a href="#charity">Charity</a>
-        <a href="#environment">Environment</a>
-        <!-- <a href="#collaborate">Collaborate</a> -->
-      </div>
-    </div>
+  <div class="p-5">
+    <b-navbar class="p-5" fixed="top" type="dark" variant="black">
+      <b-navbar-brand href="#"><b-link to="/"><img width="40px" :src="rainbowOne" /></b-link></b-navbar-brand>
+
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+      <b-collapse id="nav-collapse" is-nav>
+
+        <!-- Right aligned nav items -->
+        <b-navbar-nav class="mx-auto">
+          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#thisisone', duration: 1000 }" href="#thisisone">This Is #1</a></b-nav-item>
+          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#chemicalx', duration: 1000 }" href="#chemicalx">Chemical X</a></b-nav-item>
+          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#charity-grid', duration: 1000 }" href="#charity">Charity</a></b-nav-item>
+          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#environment', duration: 1000 }" href="#environment">Environment</a></b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
   </div>
+  <about-section1 :content="content"></about-section1>
   <about-section2 :content="content"></about-section2>
-  <about-section3 :content="content"></about-section3>
   <about-section4 :content="content"></about-section4>
+  <about-section3 :content="content"></about-section3>
   <about-section5 :content="content"></about-section5>
   <!-- <about-section6 :content="content"></about-section6> -->
 </div>
@@ -41,6 +48,7 @@ export default {
   },
   data () {
     return {
+      rainbowOne: require('@/assets/img/Group 76.svg')
     }
   },
   methods: {
@@ -65,7 +73,9 @@ export default {
 #deep-logos li {
   cursor: pointer;
 }
-
+.text-nowrap {
+  white-space: nowrap;
+}
 .link-panel {
   position: sticky;
   top: 0;

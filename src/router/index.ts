@@ -1,22 +1,28 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
+
+// templates
 import MainNavbar from '@/components/layout/MainNavbar.vue'
-import AdminNavbar from '@/components/layout/AdminNavbar.vue'
-import HomeFooter from '@/components/layout/HomeFooter.vue'
 import MainFooter from '@/components/layout/MainFooter.vue'
+
+// public pages
+import HomeFooter from '@/components/layout/HomeFooter.vue'
 import Login from '../views/Login.vue'
-// import Profile from '../views/Profile.vue'
 import Information from '../views/Information.vue'
 import Charity from '../views/Charity.vue'
 import AssetDetails from '../views/AssetDetails.vue'
-import Admin from '../views/Admin.vue'
 import About from '../views/About.vue'
+import NumberOne from '../views/NumberOne.vue'
+
+// private pages
+import Admin from '../views/Admin.vue'
+import OfferAdmin from '../views/OfferAdmin.vue'
+import AdminNavbar from '@/components/layout/AdminNavbar.vue'
 import ItemPreview from '../views/ItemPreview.vue'
 import UploadItem from '../views/UploadItem.vue'
 import UpdateItem from '../views/UpdateItem.vue'
 import MyItems from '../views/MyItems.vue'
-import HowItWorks from '../views/HowItWorks.vue'
-import NumberOne from '../views/NumberOne.vue'
+
 import store from '@/store'
 
 Vue.use(VueRouter)
@@ -44,26 +50,14 @@ const routes: Array<RouteConfig> = [
     components: { default: NumberOne, header: MainNavbar, footer: MainFooter }
   },
   {
-    path: '/create',
-    name: 'create',
-    components: { default: UploadItem, header: AdminNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: '/admin',
-    name: 'admin',
-    components: { default: Admin, header: AdminNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true
-      // requiresAdmin: true
-    }
+    path: '/number-one',
+    name: 'number-one',
+    components: { default: NumberOne, header: MainNavbar, footer: MainFooter }
   },
   {
     path: '/about',
     name: 'about',
-    components: { default: About, header: MainNavbar, footer: MainFooter }
+    components: { default: About, footer: MainFooter }
   },
   {
     path: '/login',
@@ -74,12 +68,6 @@ const routes: Array<RouteConfig> = [
     path: '/profile',
     name: 'profile',
     components: { default: ItemPreview, header: MainNavbar, footer: MainFooter }
-  },
-  {
-    path: '/item-preview/:assetHash',
-    name: 'item-preview',
-    components: { default: ItemPreview, header: AdminNavbar, footer: MainFooter },
-    meta: { requiresAuth: true }
   },
   {
     path: '/information/:infoId',
@@ -96,46 +84,92 @@ const routes: Array<RouteConfig> = [
     name: 'asset-by-hash',
     components: { default: AssetDetails, header: MainNavbar, footer: MainFooter }
   },
+  // admin routes
+  {
+    path: '/item-preview/:assetHash',
+    name: 'item-preview',
+    components: { default: ItemPreview, header: AdminNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/offers/:assetHash',
+    name: 'offers',
+    components: { default: OfferAdmin, header: AdminNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/create',
+    name: 'create',
+    components: { default: UploadItem, header: AdminNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    components: { default: Admin, header: AdminNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
   {
     path: '/edit-item/:assetHash',
     name: 'edit-item',
     components: { default: UpdateItem, header: AdminNavbar, footer: MainFooter },
-    meta: { requiresAuth: true }
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   },
   {
     path: '/upload-item',
     name: 'upload-item',
     components: { default: UploadItem, header: AdminNavbar, footer: MainFooter },
-    meta: { requiresAuth: true }
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   },
   {
     path: '/my-items',
     name: 'my-items',
     components: { default: MyItems, header: AdminNavbar, footer: MainFooter },
-    meta: { requiresAuth: true }
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false
+    }
   },
   {
     path: '/my-items/:filter',
     name: 'my-items-filter',
     components: { default: MyItems, header: AdminNavbar, footer: MainFooter },
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/how-it-works',
-    name: 'how-it-works',
-    components: { default: HowItWorks, header: MainNavbar, footer: MainFooter }
-  },
-  {
-    path: '/number-one',
-    name: 'number-one',
-    components: { default: NumberOne, header: MainNavbar, footer: MainFooter }
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false
+    }
   }
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  }
 })
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {

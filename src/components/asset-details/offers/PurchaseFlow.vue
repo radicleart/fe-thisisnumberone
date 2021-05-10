@@ -1,31 +1,31 @@
 <template>
 <div v-if="!loading">
-  <div v-if="loginFlow">
+  <div v-if="flowType === 1">
     <purchase-offer-login :offerData="offerData" @registerByEmail="registerByEmail" @registerByConnect="registerByConnect"/>
   </div>
-  <div v-else-if="successFlow">
-    <purchase-offer-success :offerData="offerData"/>
+  <div v-else-if="flowType === 2">
+    <purchase-offer-success :offerData="offerData" :contentKey="contentKey"/>
   </div>
-  <div v-else-if="failureFlow">
+  <div v-else-if="flowType === 3">
     <purchase-offer-failure :offerData="offerData"/>
   </div>
-  <div v-else-if="contractAsset">
-    <div v-if="contractAsset.saleData.saleType === 1">
+  <div v-else>
+    <div v-if="contractAsset && contractAsset.saleData.saleType === 1">
       <purchase-buy-now :contractAsset="contractAsset" :saleData="contractAsset.saleData" @buyNow="buyNow"/>
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
-    <div v-if="contractAsset.saleData.saleType === 2">
+    <div v-if="contractAsset && contractAsset.saleData.saleType === 2">
       <purchase-place-bid :contractAsset="contractAsset" @placeBid="placeBid"/>
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
-    <div v-if="contractAsset.saleData.saleType === 3">
+    <div v-if="contractAsset && contractAsset.saleData.saleType === 3">
       <purchase-offer-amount :offerData="offerData" v-if="contractAsset.saleData.saleType === 3 && offerStage === 0" @collectEmail="collectEmail"/>
       <purchase-offer-email :offerData="offerData" v-else-if="contractAsset.saleData.saleType === 3 && offerStage === 1" @backStep="backStep" @setEmail="setEmail"/>
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
-  </div>
-  <div v-else>
-    Asset not in contract.
+    <div v-else>
+      Asset not on sale.
+    </div>
   </div>
 </div>
 </template>
@@ -71,9 +71,8 @@ export default {
       offerData: {},
       biddingData: {},
       biddingEndTime: null,
-      successFlow: false,
-      failureFlow: false,
-      loginFlow: false
+      flowType: 0,
+      contentKey: null
     }
   },
   mounted () {
@@ -125,7 +124,7 @@ export default {
       this.offerData.email = data.email
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       if (!profile.loggedIn) {
-        this.loginFlow = true
+        this.flowType = 1
       } else {
         this.makeOffer()
       }
@@ -139,9 +138,7 @@ export default {
       this.makeOffer()
     },
     registerOfferOffChain: function (status) {
-      this.loginFlow = false
-      this.successFlow = false
-      this.failureFlow = false
+      this.flowType = 2
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       const data = {
         status: status,
@@ -154,15 +151,14 @@ export default {
         email: this.offerData.email
       }
       this.$store.dispatch('assetGeneralStore/registerOfferOffChain', data).then(() => {
-        this.successFlow = true
+        this.contentKey = 'successful-offer'
+        this.flowType = 2
       }).catch(() => {
-        this.failureFlow = true
+        this.flowType = 3
       })
     },
     makeOffer: function () {
-      this.loginFlow = false
-      this.successFlow = false
-      this.failureFlow = false
+      this.flowType = 2
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       this.errorMessage = null
       this.offerData.biddingEndTime = moment(contractAsset.saleData.biddingEndTime).valueOf()
@@ -173,18 +169,19 @@ export default {
       this.offerData.assetHash = contractAsset.tokenInfo.assetHash
       this.$store.dispatch('rpayPurchaseStore/makeOffer', this.offerData).then(() => {
         this.registerOfferOffChain(2)
-        this.successFlow = true
+        this.contentKey = 'successful-offer'
+        this.flowType = 2
       }).catch((err) => {
         this.errorMessage = err
-        this.failureFlow = true
+        this.flowType = 3
       })
     },
     buyNow: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       const mac = this.$store.getters[APP_CONSTANTS.KEY_MACS_WALLET]
       const sky = this.$store.getters[APP_CONSTANTS.KEY_SKYS_WALLET]
-      // const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      let recipient = (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address // profile.stxAddress
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      let recipient = profile.stxAddress // (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address
 
       if (NETWORK === 'local') {
         recipient = (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address
@@ -194,15 +191,18 @@ export default {
         contractName: STX_CONTRACT_NAME,
         sendAsSky: true,
         nftIndex: contractAsset.nftIndex,
-        amount: contractAsset.saleData.buyNowOrStartingPrice,
+        buyNowOrStartingPrice: contractAsset.saleData.buyNowOrStartingPrice,
         owner: contractAsset.owner,
         provider: 'risidio',
         recipient: recipient
       }
       this.$store.dispatch('rpayPurchaseStore/buyNow', buyNowData).then((result) => {
+        this.contentKey = 'successful-buy'
+        this.flowType = 2
         this.$emit('buySent', result)
       }).catch((err) => {
         this.errorMessage = err
+        this.flowType = 3
       })
     },
     placeBid: function () {
@@ -233,9 +233,12 @@ export default {
         bidAmount: bidAmount
       }
       this.$store.dispatch('rpayPurchaseStore/placeBid', bidData).then((result) => {
+        this.contentKey = 'successful-bid'
+        this.flowType = 2
         this.$emit('bidSent', result)
       }).catch((err) => {
         this.errorMessage = err
+        this.flowType = 3
       })
     },
     minted () {

@@ -39,7 +39,7 @@ export default {
   },
   mounted () {
     this.setupEventListener()
-    this.resizeContainers()
+    // this.resizeContainers()
     this.readPrismicContent()
   },
   methods: {

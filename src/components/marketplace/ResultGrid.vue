@@ -1,11 +1,9 @@
 <template>
-<b-container v-if="loaded">
   <b-row class="center">
     <b-col cols="4" class="p-0 m-0" v-for="(result, index) in paddedResults" :key="index">
       <result-item v-on="$listeners" :result="result" :dims="dims100" :outerOptions="outerOptions"/>
     </b-col>
   </b-row>
-</b-container>
 </template>
 
 <script>

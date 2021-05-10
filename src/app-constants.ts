@@ -41,6 +41,7 @@ export const APP_CONSTANTS = {
   KEY_GAIA_STORAGE: 'rpayAuthStore/getMyProfile',
   KEY_ACCOUNT_INFO: 'rpayAuthStore/getAccountInfo',
   KEY_ACCOUNTS: 'rpayAuthStore/getAccounts',
+  KEY_AUTH_HEADERS: 'rpayAuthStore/getAuthHeaders',
 
   KEY_TICKER_RATES: 'rpayStore/getTickerRates',
   KEY_DISPLAY_CARD: 'rpayStore/getDisplayCard',

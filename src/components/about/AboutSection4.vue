@@ -1,8 +1,8 @@
 <template>
-<div id="charity">
-<section class=" bg-white text-black">
-  <charity-grid />
-</section>
+<div>
+  <section id="charity-grid" class="bg-warning">
+    <charity-grid />
+  </section>
 </div>
 </template>
 

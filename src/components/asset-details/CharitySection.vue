@@ -1,14 +1,14 @@
 <template>
 <section v-if="content" :class="getArtistBgTheme()">
   <!-- <div class="spaced-name">{{content.data.description[0].text}}</div> -->
-  <b-container fluid class="center-section">
+  <b-container class="center-section">
     <b-row align-h="center">
-      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end mb-5">
+      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end">
         <img style="width: 100%; max-width: 450px;" :src="content.data.image.url"/>
       </b-col>
-      <b-col md="6" sm="10" xs="8" align-self="end" class="text-left">
+      <b-col md="6" sm="10" xs="8" align-self="end" class="text-left" style="position: relative; top: 15px;">
         <prismic-items :prismicItems="content.data.description"></prismic-items>
-        <social-links class="mt-4" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
+        <social-links :type="'socials'" class="mt-4" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
         <div v-if="showButton">
           <square-button :theme="'dark'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + content.data.artist_id[0].text" :usePixelBg="true"/>
         </div>
@@ -20,7 +20,7 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import SocialLinks from './SocialLinks'
+import SocialLinks from '@/components/utils/SocialLinks'
 import SquareButton from '@/components/utils/SquareButton'
 import PrismicItems from '@/components/prismic/PrismicItems'
 
@@ -80,7 +80,7 @@ section {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
-  min-height: 100vh;
+  min-height: 70vh;
 }
 .center-section {
   margin: auto;
