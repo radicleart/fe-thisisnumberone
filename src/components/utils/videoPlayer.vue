@@ -1,6 +1,6 @@
 <template>
   <div @click.prevent="clickedMe()" @mouseover="playMe()" @mouseout="pauseMe()" :style="options.dimensions">
-    <video oncontextmenu="return false" :poster="poster()" ref="videoPlayer" class="video-js vjs-theme-city vjs-big-play-centered"></video>
+    <video :poster="poster()" ref="videoPlayer" class="video-js vjs-theme-city vjs-big-play-centered"></video>
   </div>
 </template>
 
