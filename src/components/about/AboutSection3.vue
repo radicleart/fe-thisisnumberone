@@ -15,10 +15,6 @@ export default {
     ArtistSection
   },
   props: ['content'],
-  data () {
-    return {
-    }
-  },
   computed: {
   }
 }
