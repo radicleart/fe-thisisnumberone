@@ -95,4 +95,9 @@ export default {
 .vjs-paused.vjs-has-started .vjs-big-play-button {
   display: none;
 }
+.vjs-big-play-button {
+  width: 8rem;
+  border-radius: 12px !important;
+  left: 51% !important;
+}
 </style>
