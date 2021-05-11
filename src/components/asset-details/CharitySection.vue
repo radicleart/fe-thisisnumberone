@@ -1,5 +1,5 @@
 <template>
-<section v-if="content" :class="getArtistBgTheme()">
+<section id="asset-charity" v-if="content" :class="getArtistBgTheme()">
   <!-- <div class="spaced-name">{{content.data.description[0].text}}</div> -->
   <b-container class="center-section">
     <b-row align-h="center">

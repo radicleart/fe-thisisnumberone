@@ -7,8 +7,8 @@
     </div>
   </b-navbar-brand>
   <b-navbar-nav class="ml-auto ">
-    <b-nav-item><b-link class="mr-4 text-white top-content" to="/my-items/minted">NFT Library</b-link></b-nav-item>
-    <b-nav-item><b-link class="text-white top-content" to="/about">About</b-link></b-nav-item>
+    <b-nav-item v-if="loggedIn"><b-link class="mr-4 text-white top-content" to="/my-items/minted">My NFTs</b-link></b-nav-item>
+    <b-nav-item><b-link class="text-white top-content" to="/about"><img height="36px" :src="wtf" alt="about link"/></b-link></b-nav-item>
   </b-navbar-nav>
   <!--
   <b-navbar-nav class="ml-auto toggle-icon">
@@ -61,12 +61,12 @@ export default {
   },
   data () {
     return {
+      wtf: 'https://images.prismic.io/dbid/5b31fbd1-ca16-4fa0-bd5c-2d82b3ef98cc_WTF.png?auto=compress,format',
       logo: require('@/assets/img/navbar-footer/logo.svg'),
       hollowWhiteOne: require('@/assets/img/Group 97.svg'),
       rainbowOne: require('@/assets/img/Group 76.svg'),
       grid: require('@/assets/img/navbar-footer/grid.svg'),
       cross: require('@/assets/img/navbar-footer/cross.svg'),
-      numberOne: require('@/assets/img/navbar-footer/n1.svg'),
       collapsed: true
     }
   },

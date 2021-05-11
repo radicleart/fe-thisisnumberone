@@ -7,14 +7,14 @@
       </div>
     </b-col>
     <b-col lg="4" sm="10" align-self="center" :key="componentKey">
-      <div v-if="content && !artistId" id="one-box" class="center-section text-white bg-black box1" :style="bannerImage()">
-        <div class="mx-5 text-splash">
-          <prismic-items :prismicItems="content.splashtext"></prismic-items>
-        </div>
-      </div>
+      <b-row align-h="center" v-if="content && !artistId" id="one-box" class=" text-white bg-black box1" :style="bannerImage()">
+        <b-col align-self="center" cols="12">
+          <prismic-items class="mx-5 text-center" :prismicItems="content.splashtext"></prismic-items>
+        </b-col>
+      </b-row>
       <div v-else class="center-box text-white bg-black" :style="bannerImage()" >
         <div class="bg-black box2" style="opacity: 0.5">
-          <img width="350px" height="350px" :src="bannerImage1(artistId)"/>
+          <img width="400px" height="400px" :src="bannerImage1(artistId)"/>
         </div>
         <div style="position: relative;">
           <div class="text-white p-5" style="position: absolute; bottom: 0;">
@@ -49,7 +49,8 @@ export default {
     return {
       show: true,
       componentKey: null,
-      logo: require('@/assets/img/logo-rainbow.svg'),
+      // logo: require('@/assets/img/logo-rainbow.svg'),
+      rainbowOne: require('@/assets/img/Group 76.svg'),
       artistId: null,
       oneBoxHeight: 200,
       videoOptions: {
@@ -88,7 +89,7 @@ export default {
       return 'max-width: ' + dims.height + '; max-height: ' + dims.height + ';'
     },
     intoBoxStyle () {
-      return 'width: ' + 350 + 'px; height: ' + 350 + 'px;'
+      return 'width: ' + 400 + 'px; height: ' + 400 + 'px;'
     },
     routeTo (assetHash) {
       if (assetHash !== this.$route.params.assetHash) {
@@ -117,8 +118,8 @@ export default {
     },
     bannerImage () {
       const disp = {
-        width: '350px',
-        height: '350px'
+        width: '400px',
+        height: '400px'
       }
       if (window.innerWidth > 987) {
         disp.position = 'relative'
@@ -139,12 +140,6 @@ export default {
     }
   },
   computed: {
-    getOffset () {
-      if (window.innerWidth > 987) {
-        return 'position: relative; left: -70px;'
-      }
-      return ''
-    },
     content () {
       const content = this.$store.getters['contentStore/getHomepage']
       return content
@@ -177,21 +172,30 @@ export default {
 }
 </script>
 
-<style scoped>
-.box1 {
+<style>
+#number-one-container .prismic-items img {
+  width: 50px;
+  height: 50px;
+  margin: 20px auto;
+}
+#number-one-container .prismic-items p {
+  font-size: 1.4rem;
+  text-align: left;
+}
+#number-one-container .box1 {
   border: 1pt solid #ffffff;
 }
-.box2 {
+#number-one-container .box2 {
   background-color: #333333;
   /* border: 1pt solid #707070; */
 }
-.center-box {
+#number-one-container .center-box {
   margin: auto;
   width: 100%;
   border: 0px solid green;
 }
 @media only screen and (max-width: 900px) {
-  .center-box {
+  #number-one-container .center-box {
     width: 85%;
   }
 }

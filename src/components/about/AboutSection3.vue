@@ -1,5 +1,5 @@
 <template>
-<div id="chemicalx">
+<div id="about-number-3">
 <section class="bg-black">
   <artist-section :artistId="'chemicalx'" :parentPage="'about'" />
 </section>
@@ -25,5 +25,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+#about-number-3 h1 {
+  color: #FF9900 !important;
+}
+
 </style>

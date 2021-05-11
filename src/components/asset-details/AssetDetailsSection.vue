@@ -33,10 +33,14 @@
               <div class="w-25">
                 <share-links class="mt-4" :socialLinks="getSocialLinks()" :gaiaAsset="gaiaAsset" />
               </div>
-              <div class="w-100 my-5 d-flex justify-content-between">
-                <div v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
-                <div v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
-              </div>
+              <b-row class="my-4">
+                <b-col md="6" sm="12" class="">
+                  <div class="more-link m-0" v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
+                </b-col>
+                <b-col md="6" sm="12" class="">
+                  <div class="more-link m-0" v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
+                </b-col>
+              </b-row>
               <b-row>
                 <b-col md="6" sm="12" class="mb-3" v-if="getSaleType() > 0">
                   <square-button @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
@@ -355,6 +359,12 @@ export default {
 </script>
 
 <style>
+.more-link {
+  border: 1pt solid #fff;
+  padding: 3px 10px;
+  text-align: center;
+  font-size: 1.2rem;
+}
 .on-auction-text {
   text-transform: capitalize;
   font-weight: 700;

@@ -1,11 +1,10 @@
 <template>
-<section id="thisisone" class="about-section bg-white text-black">
+<section id="about-number-2" class="about-section bg-white text-black">
   <b-container style="min-height: 60vh" class="pb-4 text-center">
     <b-row align-h="center" style="min-height: 91vh">
       <b-col md="8" sm="10" align-self="center">
-        <div class="mt-2"><img height="36px" :src="rainbowOne" alt="logo"/></div>
-        <div class="mb-5 mt-1"><span class="mr-2" style="font-size: 45px;font-weight: bold; position: relative; top: 15px;opacity: 1;">THIS IS</span></div>
-        <div class="text-left">
+        <!-- <div class="mt-2"><img height="36px" :src="rainbowOne" alt="logo"/></div> -->
+        <div class="text-center">
           <prismic-items :prismicItems="content.section2rtf1"></prismic-items>
         </div>
       </b-col>
@@ -33,10 +32,26 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 /* General style */
 section {
   padding: 20px 0;
+}
+#about-number-2 p {
+  text-align: left;
+}
+#about-number-2 img {
+  text-align: center;
+  width: 100px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+#about-number-2 h4 {
+  text-align: left;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 h1 {
   font-size: 3rem;

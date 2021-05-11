@@ -22,7 +22,7 @@
             <b-link to="/about">Charities</b-link>
           </div>
           <div v-scroll-to="{ element: '#environment', duration: 1000 }">
-            <b-link to="/about">Charities</b-link>
+            <a href="mailto:enquiries@thisisnumberone.com" target="_blank">Collaborate</a>
           </div>
           <!--
           <div v-for="(item,index) of content.column_about" :key="index">
@@ -47,9 +47,12 @@
         -->
 
         <div class="col-3 col-lg-2 footer-top--content">
-          <div class="column-header">News</div>
+          <div class="column-header">Contact</div>
           <div v-scroll-to="{ element: '#about', duration: 1000 }">
-            <a href="mailto:press@thisisnumberone.com">Press</a>
+            <a href="mailto:press@thisisnumberone.com" target="_blank">Press enquiries</a>
+          </div>
+          <div v-scroll-to="{ element: '#about', duration: 1000 }">
+            <a href="mailto:enquiries@thisisnumberone.com" target="_blank">Get in touch</a>
           </div>
           <!--
           <div v-for="(item,index) of content.news_column" :key="index">
@@ -64,7 +67,8 @@
             <a href="#"><b-icon width="23px" height="23px" icon="facebook"></b-icon></a>
             <a href="#"><b-icon width="23px" height="23px" icon="twitter"></b-icon></a>
             -->
-            <a href="https://www.instagram.com/this_is_no.1" target="_blank"><b-icon width="23px" height="23px" icon="instagram"></b-icon></a>
+            <a class="mr-3" href="https://www.instagram.com/this_is_no.1" target="_blank"><b-icon width="20px" height="20px" icon="instagram"></b-icon></a>
+            <a href="mailto:enquiries@thisisnumberone.com" target="_blank"><b-icon width="23px" height="23px" icon="mailbox"></b-icon></a>
           </div>
         </div>
 
