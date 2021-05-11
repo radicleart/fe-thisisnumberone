@@ -122,6 +122,8 @@ const utils = {
   readFileChunks: function (fileUrl) {
     return new Promise((resolve) => {
       const myRequest = new Request(fileUrl)
+      const fileObject = { fileUrl: fileUrl }
+      fileObject.dataHash = ''
       // fetch returns a promise
       const $self = this
       fetch(myRequest).then((response) => {
@@ -131,7 +133,7 @@ const utils = {
         const myReader = response.body.getReader()
         // the reader result will need to be decoded to text
         // @link https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/TextDecoder
-        // const decoder = new TextDecoder()
+        const decoder = new TextDecoder()
         // add decoded text to buffer for decoding
         let buffer = ''
         // you could use the number of bytes received to implement a progress indicator
@@ -142,29 +144,35 @@ const utils = {
           // done  - true if the stream is finished
           // value - the data
           if (result.done) {
-            resolve({ fileUrl: fileUrl, type: $self.getTypeFromFileExtension(fileUrl), dataUrl: buffer, size: contentLength, received: received })
+            fileObject.type = $self.getTypeFromFileExtension(fileUrl)
+            fileObject.size = contentLength
+            fileObject.received = received
+            resolve(fileObject)
+            return
           }
           // update the number of bytes received total
           received += result.value.length
           // result.value is a Uint8Array so it will need to be decoded
           // buffer the decoded text before processing it
-          // buffer += decoder.decode(result.value, { stream: true })
-          buffer += result.value
+          buffer = decoder.decode(result.value, { stream: true })
+          // buffer += result.value
           /* process the buffer string */
 
           // read the next piece of the stream and process the result
+          fileObject.dataHash = utils.buildHash(buffer + fileObject.dataHash)
+          return myReader.read().then(processResult)
+          /**
           myReader.read().then(() => {
-            const type = $self.getTypeFromFileExtension(fileUrl)
-            resolve({ fileUrl: fileUrl, type: type, dataUrl: buffer, size: contentLength, received: received })
-            /**
+            // processResult(result)
              * this is how to read the whole file - we'll just take the first chunk, hash it and save the fileUrl.
             if (received >= contentLength) {
-              resolve({ fileUrl: fileUrl, type: type, dataUrl: buffer, size: contentLength, received: received })
+              const type = $self.getTypeFromFileExtension(fileUrl)
+              resolve({ fileUrl: fileUrl, type: type, size: contentLength, received: received })
             } else {
               processResult(result)
             }
-            **/
           })
+          **/
         })
       })
     })

@@ -1,9 +1,7 @@
 <template>
-<div>
-  <section id="charity-grid" class="bg-warning">
-    <charity-grid />
-  </section>
-</div>
+  <div id="charity-grid" class="bg-warning" style="min-height: 40vh;">
+    <charity-grid class="center-section"/>
+  </div>
 </template>
 
 <script>

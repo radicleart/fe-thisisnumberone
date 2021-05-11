@@ -85,6 +85,10 @@ export default {
     width: 100% !important;
     height: auto !important;
 }
+.vjs-big-play-centered .vjs-big-play-button {
+    left: 53.5% !important;
+    opacity: 0.5 !important;
+}
 .vjs-paused.vjs-big-play-button {
   display: none;
 }

@@ -1,7 +1,7 @@
 <template>
-<section v-if="content" :class="'theme-' + content.uid" class="container px-5">
-  <b-container fluid>
-    <div class="py-5 d-flex justify-content-around">
+<b-container class="center-section" style="min-height: 30vh;">
+  <section v-if="content" :class="'theme-' + content.uid" fluid>
+    <div class="d-flex justify-content-around">
       <div class="mx-3" v-for="(charity, index) in content" :key="index">
         <div @click="assetCharity(charity)">
             <img style="width: 100%;" :src="charity.data.image.url"/>
@@ -10,8 +10,8 @@
         <p class="my-0 py-0 text-center  text-small text-white" style="font-size: 1.4rem">{{charity.data.charityartist[0].text}}</p>
       </div>
     </div>
-  </b-container>
-</section>
+  </section>
+</b-container>
 </template>
 
 <script>

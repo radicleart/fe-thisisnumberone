@@ -8,7 +8,7 @@
       </b-col>
       <b-col md="6" sm="10" xs="8" align-self="end" class="text-left text-white pr-5" style="position: relative; top: 5px;">
         <prismic-items :prismicItems="content.data.description"></prismic-items>
-        <social-links class="mt-5" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
+        <div class="w-50 mt-5"><social-links :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" /></div>
       </b-col>
     </b-row>
   </b-container>
@@ -70,11 +70,13 @@ export default {
   padding: 0;
   margin: 0;
 }
-section {
+
+#artist-section {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
-  min-height: 70vh;
+  min-height: 80vh;
+  margin: 0px 0 0 0;
 }
 
 h1 {

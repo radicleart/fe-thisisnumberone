@@ -1,14 +1,12 @@
 <template>
 <div>
   <div style="font-size: 1.6rem;" class="d-flex justify-content-between" v-if="beneficiary">
-    <div><a href="#" @click.prevent="showBeneficiary = !showBeneficiary">{{chainAddress()}}</a></div>
+    <div><a href="#" @click.prevent="showBeneficiary = !showBeneficiary">{{displayAddress()}} / {{chainAddress()}}</a></div>
     <div class=" d-flex justify-content-between">
       <div class="mr-5">{{displayBeneficiary(beneficiary.royalty)}} %</div>
-      <div v-if="!beneficiary.owner" style="width: 40px;">
+      <div style="width: 40px;">
         <a href="#" @click="editBeneficiary()"><b-icon icon="pencil"/></a>
         <a class="ml-2 text-danger" href="#" @click="removeBeneficiary()"><b-icon icon="trash"/></a>
-      </div>
-      <div v-else style="width: 40px;">
       </div>
     </div>
   </div>
@@ -55,6 +53,9 @@ export default {
     },
     displayBeneficiary: function (num) {
       return parseFloat(num).toFixed(2)
+    },
+    displayAddress: function () {
+      return this.beneficiary.chainAddress.substring(0, 5) + '...' + this.beneficiary.chainAddress.substring(this.beneficiary.chainAddress.length - 5)
     },
     editBeneficiary: function () {
       this.$emit('editBeneficiary', this.beneficiary)

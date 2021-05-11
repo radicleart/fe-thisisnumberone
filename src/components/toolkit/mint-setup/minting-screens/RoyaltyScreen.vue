@@ -10,7 +10,7 @@
         <div>
           <div class="bg-dark p-3 d-flex justify-content-between">
             <square-button @clickButton="saveData()" :theme="'light'" :label1="'CANCEL'" :icon="'eye'"/>
-            <square-button @clickButton="mintToken()" :theme="'light'" :label1="'MINT NOW'" :icon="'eye'"/>
+            <square-button v-if="allowMint()" @clickButton="mintToken()" :theme="'light'" :label1="'MINT NOW'" :icon="'eye'"/>
           </div>
         </div>
       </div>
@@ -47,6 +47,14 @@ export default {
       if (displayCard === 100) return 0
       else if (displayCard === 102) return 1
       else if (displayCard === 104) return 2
+    },
+    allowMint () {
+      let sum = 0
+      this.beneficiaries.forEach((o) => {
+        sum += o.royalty
+      })
+      sum = Math.round(sum * 100) / 100
+      return sum === 100.00
     },
     saveData: function () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]

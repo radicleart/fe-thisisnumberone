@@ -99,11 +99,11 @@ export default {
         this.errorMessage = 'Bad value for beneficiary'
         return
       }
-      if (beneficiary.chainAddress === this.beneficiaries[0].chainAddress) {
-        this.errorMessage = 'Can not have the same address as owner!'
-        return
-      }
-      this.beneficiaries[0].royalty = this.beneficiaries[0].royalty - beneficiary.royalty
+      // if (beneficiary.chainAddress === this.beneficiaries[0].chainAddress) {
+      //  this.errorMessage = 'Can not have the same address as owner!'
+      //  return
+      // }
+      // this.beneficiaries[0].royalty = this.beneficiaries[0].royalty - beneficiary.royalty
       const index = this.beneficiaries.findIndex((obj) => obj.chainAddress === beneficiary.chainAddress)
       if (index > -1) {
         this.beneficiaries.splice(index, 1, beneficiary)
@@ -114,7 +114,7 @@ export default {
           this.beneficiaries.push(beneficiary)
         }
       }
-      this.setBaseRoyalty()
+      // this.setBaseRoyalty()
       this.updateItem()
       this.$store.commit('rpayStore/setDisplayCard', 100)
     },

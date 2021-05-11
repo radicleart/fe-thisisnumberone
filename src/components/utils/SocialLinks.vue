@@ -2,7 +2,7 @@
 <div id="social-links" :class="themeClass">
   <div class="d-flex justify-content-between">
     <span v-for="(link, index) in socialLinks" :key="index">
-      <a class="mr-5" :href="getTarget(link)" target="_blank"><b-icon style="width: 30px; height: 30px;" :icon="getIcon(link)"/></a>
+      <a class="mr-5" :href="getTarget(link)" target="_blank"><b-icon class="text-white" style="width: 30px; height: 30px;" :icon="getIcon(link)"/></a>
     </span>
   </div>
 </div>

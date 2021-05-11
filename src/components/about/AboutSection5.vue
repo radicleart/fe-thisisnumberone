@@ -5,8 +5,10 @@
   <b-container class="">
     <b-row style="height: 82vh">
       <b-col offset="1" cols="10" align-self="end">
-        <h1 class="mb-4 text-white">{{content.section5rtf1[1].text}}</h1>
-        <div class="text-white mb-5 about-section5--text">{{content.section5rtf1[2].text}}</div>
+        <h1 class="mb-4 text-white">{{content.section5rtf1[0].text}}</h1>
+        <div class="text-white mb-5 about-section5--text">
+          <prismic-items :prismicItems="content.section5rtf1"></prismic-items>
+        </div>
       </b-col>
     </b-row>
   </b-container>
@@ -15,12 +17,13 @@
 </template>
 
 <script>
-// import SquareButton from '@/components/utils/SquareButton'
+import PrismicItems from '@/components/prismic/PrismicItems'
+
 export default {
   name: 'AboutSection5',
   props: ['content'],
   components: {
-    // SquareButton
+    PrismicItems
   },
   data () {
     return {
