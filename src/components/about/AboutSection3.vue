@@ -17,7 +17,6 @@ export default {
   props: ['content'],
   data () {
     return {
-      quotes: require('@/assets/img/Blackswannew_fat_font.jpg')
     }
   },
   computed: {
