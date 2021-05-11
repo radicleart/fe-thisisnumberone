@@ -64,6 +64,7 @@ export default {
         emitOnHover: true,
         playOnHover: true,
         assetHash: this.result.assetHash,
+        bigPlayer: false,
         autoplay: false,
         muted: true,
         controls: true,

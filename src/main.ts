@@ -15,6 +15,7 @@ import '@/assets/scss/custom.scss'
 import './assets/scss/rpay-pay-card.css'
 import VueScrollTo from 'vue-scrollto'
 import VueSocialSharing from 'vue-social-sharing'
+import Vue2TouchEvents from 'vue2-touch-events'
 
 Vue.config.productionTip = false
 
@@ -29,6 +30,7 @@ Vue.use(PrismicVue, {
   htmlSerializer
 })
 Vue.use(RisidioPay)
+Vue.use(Vue2TouchEvents)
 
 declare global {
   interface Window { eventBus: any }

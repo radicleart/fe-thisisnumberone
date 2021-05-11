@@ -274,6 +274,7 @@ export default {
       const videoOptions = {
         emitOnHover: true,
         playOnHover: true,
+        bigPlayer: false,
         showMeta: true,
         assetHash: this.assetHash,
         autoplay: false,

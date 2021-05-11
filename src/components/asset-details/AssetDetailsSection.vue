@@ -9,7 +9,7 @@
       </b-col>
       <b-col lg="5" sm="10">
         <b-row align-v="stretch" :style="'min-height: ' + videoHeight + 'px'">
-          <b-col cols="12">
+          <b-col cols="12" class="mb-sm-5">
             <div class="d-flex justify-content-between">
               <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
               <div class="d-flex justify-content-between">
@@ -24,7 +24,7 @@
           </b-col>
           <b-col md="12" align-self="end">
             <div class="w-100">
-              <h1>{{gaiaAsset.name}}</h1>
+              <h1 class="text-white">{{gaiaAsset.name}}</h1>
               <h2>{{gaiaAsset.artist}}</h2>
               <p class="border-bottom pb-4">{{owner}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
               <div class="w-100">
