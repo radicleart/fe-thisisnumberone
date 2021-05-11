@@ -53,7 +53,6 @@ export default {
   font-size: 3rem;
 }
 #about-section5 .about-section5--text {
-  font-size: 1.4rem;
   text-shadow: 0px 3px 6px #00000029;
 }
 

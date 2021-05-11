@@ -1,11 +1,11 @@
 <template>
 <div id="collaborate">
-<section class="bg-white text-black" id="about-section6">
+<section class="bg-black" id="about-section6">
   <b-container class="py-5">
-    <b-row style="text-align: center; height: 80vh" class="text-center">
-      <b-col cols="12" align-self="center">
-        <h1 class="mb-4 text-info">{{content.section6rtf1[0].text}}</h1>
-        <div class="mb-5 text-center about-section6--text">{{content.section6rtf1[1].text}}</div>
+    <b-row style="height: 20vh">
+      <b-col class="offset-md-2 col-md-8" align-self="left">
+        <h1 class="mb-4">{{content.section6rtf1[0].text}}</h1>
+        <div class="mb-5 about-section6--text" v-html="adaptedText"></div>
         <!-- <div>
           <square-button @clickButton="$router.push('/home')" class="button-style" :label1="'Get in touch'" :icon="'chat-left'" :colorOnHover="'black'"/>
         </div> -->
@@ -27,9 +27,14 @@ export default {
   },
   data () {
     return {
+      adaptedText: ''
     }
   },
-  computed: {
+  mounted () {
+    let change = this.content.section6rtf1[1].text
+    change = change.replace('collaborate@thisisnumberone.com', '<span style="color: #FF9900">collaborate@thisisnumberone.com</span>')
+    console.log(change)
+    this.adaptedText = change
   }
 }
 </script>
@@ -38,12 +43,12 @@ export default {
 /* General style */
 #about-section6 h1 {
   font-size: 3rem;
+  color: #FF9900;
 }
 #about-section6 .about-section6--text {
-  font-size: 1.4rem;
-  color: #000000;
+  font-size: 1.6rem;
+  color: white;
   max-width: 700px;
-  margin: 0 auto;
 }
 
 .spaced-name--section6 {

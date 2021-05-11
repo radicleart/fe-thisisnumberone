@@ -14,6 +14,7 @@
           <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#chemicalx', duration: 1000 }" href="#chemicalx">Chemical X</a></b-nav-item>
           <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#charity-grid', duration: 1000 }" href="#charity">Charity</a></b-nav-item>
           <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#environment', duration: 1000 }" href="#environment">Environment</a></b-nav-item>
+          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#collaborate', duration: 1000 }" href="#collaborate">Collaborate</a></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -23,7 +24,7 @@
   <about-section3 :content="content"></about-section3>
   <about-section4 :content="content"></about-section4>
   <about-section5 :content="content"></about-section5>
-  <!-- <about-section6 :content="content"></about-section6> -->
+  <about-section6 :content="content"></about-section6>
 </div>
 </template>
 
@@ -33,7 +34,7 @@ import AboutSection2 from '@/components/about/AboutSection2'
 import AboutSection3 from '@/components/about/AboutSection3'
 import AboutSection4 from '@/components/about/AboutSection4'
 import AboutSection5 from '@/components/about/AboutSection5'
-// import AboutSection6 from '@/components/about/AboutSection6'
+import AboutSection6 from '@/components/about/AboutSection6'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
@@ -43,8 +44,8 @@ export default {
     AboutSection2,
     AboutSection3,
     AboutSection4,
-    AboutSection5
-    // AboutSection6
+    AboutSection5,
+    AboutSection6
   },
   data () {
     return {

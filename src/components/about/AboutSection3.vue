@@ -1,8 +1,10 @@
 <template>
+<div id="chemicalx">
 <div id="about-number-3">
 <section class="bg-black">
   <artist-section :artistId="'chemicalx'" :parentPage="'about'" />
 </section>
+</div>
 </div>
 </template>
 

@@ -1,4 +1,5 @@
 <template>
+<div id="thisisone">
 <section id="about-number-2" class="about-section bg-white text-black">
   <b-container style="min-height: 60vh" class="pb-4 text-center">
     <b-row align-h="center" style="min-height: 91vh">
@@ -11,6 +12,7 @@
     </b-row>
   </b-container>
 </section>
+</div>
 </template>
 
 <script>
@@ -55,7 +57,7 @@ section {
 }
 h1 {
   font-size: 3rem;
-  color: #333333 !important;
+  color: #333333;
 }
 .section2-text {
   max-width: 600px;
