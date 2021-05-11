@@ -8,7 +8,7 @@
 import videojs from 'video.js'
 
 export default {
-  name: 'VideoPlayer',
+  name: 'VideoJsPlayer',
   props: {
     options: {
       type: Object,

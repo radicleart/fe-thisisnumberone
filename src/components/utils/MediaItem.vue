@@ -1,7 +1,7 @@
 <template>
 <div>
   <div :style="videoOptions.dimensions" id="video-demo-container" v-if="isThreed(mediaItem())">
-    <video-player v-on="$listeners" :style="videoOptions.dimensions" :options="videoOptions"/>
+    <video-js-player v-on="$listeners" :style="videoOptions.dimensions" :options="videoOptions"/>
     <div :style="videoOptions.dimensions" class="p-4 d-flex justify-content-between" v-if="videoOptions.showMeta">
       <div class="text-small">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
       <div><a href="#" @click.prevent="deleteMediaItem()" v-if="!contractAsset && (mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></a></div>
@@ -10,7 +10,7 @@
   </div>
 
   <div :style="videoOptions.dimensions" id="video-demo-container" v-if="isVideo(mediaItem())">
-    <video-player v-on="$listeners" :style="videoOptions.dimensions" :options="videoOptions"/>
+    <video-js-player v-on="$listeners" :style="videoOptions.dimensions" :options="videoOptions"/>
     <div class="p-4 d-flex justify-content-between" v-if="videoOptions.showMeta">
       <div class="text-small">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
       <div><a href="#" @click.prevent="deleteMediaItem()" v-if="(mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></a></div>
@@ -44,12 +44,12 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import VideoPlayer from './VideoPlayer'
+import VideoJsPlayer from './VideoJsPlayer'
 
 export default {
   name: 'MediaItem',
   components: {
-    VideoPlayer
+    VideoJsPlayer
     // BFormFile
   },
   props: ['videoOptions', 'targetItem', 'nftMedia', 'dims'],
