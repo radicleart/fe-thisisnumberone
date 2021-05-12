@@ -250,12 +250,6 @@ export default {
         {
           // eslint-disable-next-line @typescript-eslint/camelcase
           social_link: [{
-            text: 'type=email&icon=mailbox2'
-          }]
-        },
-        {
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          social_link: [{
             text: 'type=facebook'
           }]
         }

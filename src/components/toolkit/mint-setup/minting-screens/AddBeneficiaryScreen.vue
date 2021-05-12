@@ -1,6 +1,6 @@
 <template>
 <b-card-group class="">
-  <b-card header-tag="header" footer-tag="footer" class="rpay-card">
+  <b-card header-tag="header" footer-tag="footer" class="">
     <b-card-text class="m-4">
       <b-form>
         <p class="">Add Contributer</p>
@@ -96,26 +96,22 @@
         </div>
       </b-form>
     </b-card-text>
-    <template v-slot:footer>
-      <div class="">
-        <div class="bg-dark p-3 d-flex justify-content-between">
-          <square-button @clickButton="cancel()" :theme="'light'" :label1="'CANCEL'" :icon="'eye'"/>
-          <square-button @clickButton="addBeneficiary()" :theme="'light'" :label1="'SAVE'" :icon="'eye'"/>
-        </div>
+    <b-card-text class="mx-4">
+      <div class="d-flex justify-content-between">
+        <b-button @click="cancel()" class="w-50 py-4 mr-2" variant="outline-danger">CANCEL</b-button>
+        <b-button @click="addBeneficiary()" class="w-50 py-4 ml-2" variant="outline-primary">SAVE</b-button>
       </div>
-    </template>
+    </b-card-text>
   </b-card>
 </b-card-group>
 </template>
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import SquareButton from '@/components/utils/SquareButton'
 
 export default {
   name: 'AddBeneficiaryScreen',
   components: {
-    SquareButton
   },
   props: ['eBen', 'errorMessage'],
   data () {

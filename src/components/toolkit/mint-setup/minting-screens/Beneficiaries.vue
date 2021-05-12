@@ -3,7 +3,7 @@
   <div class="mb-3" role="group">
     <b-form v-on:submit.prevent inline>
       <label class="sr-only" for="chain-address">Editions</label>
-      <b-input-group prepend="Editions" class="mb-2 mr-sm-2 mb-sm-0">
+      <b-input-group prepend="Editions" class="bg-white mb-2 mr-sm-2 mb-sm-0">
         <b-form-input
           style="border-radius: none !important;"
           id="chain-address"
