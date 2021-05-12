@@ -1,12 +1,12 @@
 <template>
 <splash v-if="loading"/>
-<div id="app" v-else :style="'z-index: -40; min-height: 100vh; background-size: contain; background-image: url(' + getPixelBackground + ')'">
+<div id="app" v-else :style="'z-index: -40; min-height: 90vh; background-size: contain; background-image: url(' + getPixelBackground + ')'">
   <div v-if="!configured">
     <risidio-pay :configuration="configuration"/>
   </div>
   <div :key="componentKey" v-else>
     <router-view name="header" style="z-index: 10;"/>
-    <router-view style="min-height: 88vh;" />
+    <router-view style="min-height: 90vh;" />
     <router-view name="footer"/>
     <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
     <waiting-modal/>
