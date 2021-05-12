@@ -34,7 +34,7 @@
   <div class="text-right mb-4">
     <b-form-checkbox class="" id="item-private" size="sm" v-model="item.private" name="check-button" switch>
       <label for="item-private"><span :class="(!item.private) ? 'text-success' : ''">public</span> / <span :class="(item.private) ? 'text-danger' : ''">private</span></label>
-      <b-icon class="ml-2" v-b-tooltip.hover :title="'Private to encrypt the file'" icon="question-circle"/>
+      <b-icon class="ml-2" v-b-tooltip.hover="{ variant: 'light' }" :title="'Private to encrypt the file'" icon="question-circle"/>
     </b-form-checkbox>
   </div>
   -->

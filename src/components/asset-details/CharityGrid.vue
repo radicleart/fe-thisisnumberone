@@ -58,12 +58,6 @@ export default {
   font-weight: normal;
   font-size: 1.6rem;
 }
-.spaced-name--charity-grid {
-  margin: -3.5rem 0 8rem -4rem;
-  text-align: left;
-  font-size: 15rem;
-  color: #888888;
-}
 p {
   display: inline-block;
   max-width: 333px;
@@ -98,33 +92,5 @@ img {
   max-height: 100%;
   max-width: 100%;
   margin: auto;
-}
-
-/* Spaced name responsive design */
-@media only screen and (max-width: 1023px) {
-  .spaced-name--charity-grid {
-    font-size: 10rem;
-  }
-}
-@media only screen and (max-width: 787px) {
-  .spaced-name--charity-grid {
-    font-size: 8rem;
-  }
-}
-@media only screen and (max-width: 600px) {
-  .spaced-name--charity-grid {
-    font-size: 6rem;
-  }
-}
-@media only screen and (max-width: 475px) {
-  .spaced-name--charity-grid {
-    font-size: 5rem;
-    margin: -3rem 0 8rem -3rem;
-  }
-}
-@media only screen and (max-width: 350px) {
-  .spaced-name--charity-grid {
-    font-size: 4rem;
-  }
 }
 </style>

@@ -13,7 +13,7 @@
             <div class="d-flex justify-content-between mb-5">
               <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
               <div class="d-flex justify-content-between">
-                <b-link router-tag="span" v-b-tooltip.click :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
+                <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
                 <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white">
                   <div v-if="isOwner"><router-link class="text-white" to="/my-items/minted">{{salesBadgeLabel}}</router-link></div>
                   <div v-else>{{salesBadgeLabel}}</div>
@@ -26,7 +26,7 @@
             <div class="w-100">
               <h1 class="text-white">{{gaiaAsset.name}}</h1>
               <h2>{{gaiaAsset.artist}}</h2>
-              <p class="border-bottom pb-4" style="font-size: 1.2rem;">{{owner}} <b-link router-tag="span" v-b-tooltip.click :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
+              <p class="border-bottom pb-4" style="font-size: 1.2rem;">{{owner}} <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }"  :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
               <div class="w-100">
                 <p class="pt-4 text-small" v-html="preserveWhiteSpace(gaiaAsset.description)"></p>
               </div>

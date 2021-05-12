@@ -1,6 +1,5 @@
 <template>
 <section id="asset-charity" v-if="content" :class="getArtistBgTheme()">
-  <!-- <div class="spaced-name">{{content.data.description[0].text}}</div> -->
   <b-container class="center-section" v-for="(charity, index) in content" :key="index">
     <b-row align-h="center" v-if="(index % 2) === 0">
       <b-col md="6" sm="10" xs="8" align-self="end" class="text-left" style="max-width: 450px; position: relative; top: 15px;">
@@ -106,49 +105,8 @@ section {
   }
 }
 
-.spaced-name {
-  margin: -3rem -3rem 8rem auto;
-  line-height: 0.6;
-  max-width: 952px;
-  white-space: nowrap;
-  text-align: right;
-  font-family: 'Bungee Hairline';
-  font-size: 15rem;
-  text-transform: uppercase;
-}
 h1 {
   font-size: 3rem;
   margin-bottom: 15px;
 }
-.artist-section--text {
-  font-size: 1.4rem;
-}
-
-/* Spaced name responsive design */
-@media only screen and (max-width: 1023px) {
-  .spaced-name {
-    font-size: 10rem;
-  }
-}
-@media only screen and (max-width: 787px) {
-  .spaced-name {
-    font-size: 8rem;
-  }
-}
-@media only screen and (max-width: 600px) {
-  .spaced-name {
-    font-size: 6rem;
-  }
-}
-@media only screen and (max-width: 475px) {
-  .spaced-name {
-    font-size: 5rem;
-  }
-}
-@media only screen and (max-width: 350px) {
-  .spaced-name {
-    font-size: 4rem;
-  }
-}
-
 </style>

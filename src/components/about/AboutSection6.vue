@@ -12,7 +12,6 @@
       </b-col>
     </b-row>
   </b-container>
-<!-- <div class="spaced-name spaced-name--section6">Collaborate</div> -->
 </section>
 </div>
 </template>
@@ -52,13 +51,6 @@ export default {
   max-width: 700px;
 }
 
-.spaced-name--section6 {
-  text-align: left;
-  max-width: 1050px;
-  font-size: 13.5rem;
-  color: #000000;
-}
-
 /* Button style */
 #about-section6 .button-style button, .button-style button:hover {
   border-color: #2255A4;
@@ -68,37 +60,5 @@ export default {
 }
 #about-section6 .button-style button:last-child {
   color: #2255A4 !important;
-}
-
-/* Spaced name responsive design */
-@media only screen and (max-width: 1100px) {
-  .spaced-name--section6 {
-    font-size: 10rem;
-  }
-}
-@media only screen and (max-width: 900px) {
-  .spaced-name--section6 {
-    font-size: 7rem;
-  }
-}
-@media only screen and (max-width: 650px) {
-  .spaced-name--section6 {
-    font-size: 6rem;
-  }
-}
-@media only screen and (max-width: 530px) {
-  .spaced-name--section6 {
-    font-size: 4.5rem;
-  }
-}
-@media only screen and (max-width: 376px) {
-  .spaced-name--section6 {
-    font-size: 4rem;
-  }
-}
-@media only screen and (max-width: 350px) {
-  .spaced-name--section6 {
-    font-size: 3.5rem;
-  }
 }
 </style>

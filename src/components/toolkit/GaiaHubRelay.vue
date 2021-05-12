@@ -4,7 +4,7 @@
     <div class="row mb-4">
       <div class="col-12">
         <square-button @clickButton="indexRootFile()" :theme="'light'" :label1="'RE-INDEX ITEM'" :icon="'eye'"/>
-        <b-link router-tag="span" v-b-tooltip.click :title="ttReindex" class="text-white ml-3" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
+        <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttReindex" class="text-white ml-3" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
       </div>
       <div class="col-12 mt-5" v-if="showTips">
         <p>Reindexing takes a few seconds and ensures everyone sees recent changes.</p>

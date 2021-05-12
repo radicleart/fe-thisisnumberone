@@ -1,7 +1,6 @@
 <template>
 <div id="environment">
 <section v-if="content" id="about-section5">
-  <!-- <div class="spaced-name spaced-name--section5">Environment</div> -->
   <b-container class="mt-5">
     <b-row>
       <b-col class="offset-md-2 col-md-8 mt-5">
@@ -42,13 +41,6 @@ export default {
   min-height: 65vh;
   background-color: white;
 }
-.spaced-name--section5 {
-  margin: 0 0 auto auto;
-  max-width: 1050px;
-  text-align: right;
-  font-size: 13.5rem;
-  color: #FFFFFF;
-}
 #about-section5 h1 {
   font-size: 3rem;
 }
@@ -62,37 +54,5 @@ export default {
 }
 #about-section5 .button-style svg {
   color: #129A9A;
-}
-
-/* Spaced name responsive design */
-@media only screen and (max-width: 1100px) {
-  .spaced-name--section5 {
-    font-size: 10rem;
-  }
-}
-@media only screen and (max-width: 900px) {
-  .spaced-name--section5 {
-    font-size: 7rem;
-  }
-}
-@media only screen and (max-width: 650px) {
-  .spaced-name--section5 {
-    font-size: 6rem;
-  }
-}
-@media only screen and (max-width: 530px) {
-  .spaced-name--section5 {
-    font-size: 4.5rem;
-  }
-}
-@media only screen and (max-width: 376px) {
-  .spaced-name--section5 {
-    font-size: 4rem;
-  }
-}
-@media only screen and (max-width: 350px) {
-  .spaced-name--section5 {
-    font-size: 3.5rem;
-  }
 }
 </style>

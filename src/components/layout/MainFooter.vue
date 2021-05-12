@@ -12,17 +12,17 @@
 
         <div class="col-3 offset-2 col-lg-2 footer-top--content">
           <div class="column-header">About</div>
-          <div v-scroll-to="{ element: '#about-number-1', duration: 1000 }">
+          <div v-scroll-to="{ offset: -60, element: '#thisisone', duration: 1000 }">
             <b-link to="/about">About This is #1</b-link>
           </div>
-          <div v-scroll-to="{ element: '#chemicalx', duration: 1000 }">
+          <div v-scroll-to="{ offset: -60, element: '#chemicalx', duration: 1000 }">
             <b-link to="/about">Chemical X</b-link>
           </div>
-          <div v-scroll-to="{ element: '#charity', duration: 1000 }">
+          <div v-scroll-to="{ offset: -60, element: '#charity-grid', duration: 1000 }">
             <b-link to="/about">Charities</b-link>
           </div>
-          <div v-scroll-to="{ element: '#environment', duration: 1000 }">
-            <a href="mailto:enquiries@thisisnumberone.com" target="_blank">Collaborate</a>
+          <div v-scroll-to="{ offset: -60, element: '#collaborate', duration: 1000 }">
+            <b-link to="/about">Collaborate</b-link>
           </div>
           <!--
           <div v-for="(item,index) of content.column_about" :key="index">
@@ -48,11 +48,11 @@
 
         <div class="col-3 col-lg-2 footer-top--content">
           <div class="column-header">Contact</div>
-          <div v-scroll-to="{ element: '#about', duration: 1000 }">
-            <a href="mailto:press@thisisnumberone.com" target="_blank">Press enquiries</a>
+          <div>
+            <a :href="'mailto:press@thisisnumberone.com'" target="_blank">Press enquiries</a>
           </div>
-          <div v-scroll-to="{ element: '#about', duration: 1000 }">
-            <a href="mailto:enquiries@thisisnumberone.com" target="_blank">Get in touch</a>
+          <div>
+            <a :href="'mailto:enquiries@thisisnumberone.com'" target="_blank">Get in touch</a>
           </div>
           <!--
           <div v-for="(item,index) of content.news_column" :key="index">
@@ -68,7 +68,7 @@
             <a href="#"><b-icon width="23px" height="23px" icon="twitter"></b-icon></a>
             -->
             <a class="mr-3" href="https://www.instagram.com/this_is_no.1" target="_blank"><b-icon width="20px" height="20px" icon="instagram"></b-icon></a>
-            <a href="mailto:enquiries@thisisnumberone.com" target="_blank"><b-icon width="23px" height="23px" icon="mailbox"></b-icon></a>
+            <a :href="'mailto:enquiries@thisisnumberone.com'" target="_blank"><b-icon width="23px" height="23px" icon="mailbox"></b-icon></a>
           </div>
         </div>
 
@@ -87,6 +87,12 @@
         <div class="footer-bottom--left">
           {{ content.left_bottom_corner[0].text }}
         </div>
+      </div>
+        <!--
+      <div class="d-none d-sm-flex justify-content-between footer-bottom">
+        <div class="footer-bottom--left">
+          {{ content.left_bottom_corner[0].text }}
+        </div>
 
         <div class="footer-bottom--right">
           <b-link to="/information/info-terms">Term of use</b-link>
@@ -96,7 +102,6 @@
 
       <div class="d-block d-sm-none text-center footer-bottom">
         <div class="footer-bottom--left mb-1">
-          <a href="#">Term of use</a>
           <b-link to="/information/info-terms">Term of use</b-link>
           <b-link to="/information/info-privacy-policy">Privacy policy</b-link>
         </div>
@@ -105,6 +110,7 @@
           {{ content.left_bottom_corner[0].text }}
         </div>
       </div>
+        -->
 
     </div>
   </div>

@@ -1,20 +1,25 @@
 <template>
 <div v-if="content">
   <div class="p-5">
-    <b-navbar class="p-5" fixed="top" type="dark" variant="black">
-      <b-navbar-brand href="#"><b-link to="/"><img width="40px" :src="rainbowOne" /></b-link></b-navbar-brand>
+    <b-navbar toggleable="md" class="p-5" fixed="top" type="dark" variant="black">
+      <b-navbar-brand href="#"><b-link to="/"><img width="45px" :src="rainbowOne" /></b-link></b-navbar-brand>
 
-      <b-navbar-toggle target="nav-collapse" class="text-white"></b-navbar-toggle>
+      <b-navbar-toggle target="nav-collapse" class="text-white">
+        <template #default="{ expanded }">
+          <img width="60px" height="30px" class="text-white" v-if="expanded" :src="cross">
+          <img width="60px" height="30px" class="text-white" v-else :src="grid">
+        </template>
+      </b-navbar-toggle>
 
-      <b-collapse id="nav-collapse" is-nav>
+      <b-collapse id="nav-collapse" is-nav align="center">
 
         <!-- Right aligned nav items -->
-        <b-navbar-nav class="mx-auto">
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#thisisone', duration: 1000 }" href="#thisisone">This Is #1</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#chemicalx', duration: 1000 }" href="#chemicalx">Chemical X</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#charity-grid', duration: 1000 }" href="#charity">Charity</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#environment', duration: 1000 }" href="#environment">Environment</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ element: '#collaborate', duration: 1000 }" href="#collaborate">Collaborate</a></b-nav-item>
+        <b-navbar-nav class="mx-auto mt-3 ">
+          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -60, element: '#thisisone', duration: 1000 }" href="#thisisone">This Is #1</a></b-nav-item>
+          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -60, element: '#chemicalx', duration: 1000 }" href="#chemicalx">Chemical X</a></b-nav-item>
+          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -80, element: '#charity-grid', duration: 1000 }" href="#charity">Charity</a></b-nav-item>
+          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -60, element: '#environment', duration: 1000 }" href="#environment">Environment</a></b-nav-item>
+          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: 50, element: '#collaborate', duration: 1000 }" href="#collaborate">Collaborate</a></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -49,7 +54,9 @@ export default {
   },
   data () {
     return {
-      rainbowOne: require('@/assets/img/Group 76.svg')
+      rainbowOne: require('@/assets/img/Group 76.svg'),
+      grid: require('@/assets/img/navbar-footer/grid.svg'),
+      cross: require('@/assets/img/navbar-footer/cross.svg')
     }
   },
   methods: {

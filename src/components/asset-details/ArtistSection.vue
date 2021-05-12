@@ -1,6 +1,5 @@
 <template>
 <section id="artist-section" v-if="content" :class="getArtistTheme()">
-  <!-- <div class="spaced-name spaced-name--artist-section" :class="getArtistText1()">{{content.data.description[0].text}}</div> -->
   <b-container class="center-section py-5">
     <b-row align-h="center">
       <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end">
@@ -66,10 +65,6 @@ export default {
 
 <style>
 /* General style */
-#artist-section p {
-  padding: 0;
-  margin: 0;
-}
 
 #artist-section {
   display: flex;
@@ -85,32 +80,5 @@ h1 {
 }
 .artist-section--text {
   font-size: 1.4rem;
-}
-
-/* Spaced name responsive design */
-@media only screen and (max-width: 1023px) {
-  .spaced-name--artist-section {
-    font-size: 10rem;
-  }
-}
-@media only screen and (max-width: 787px) {
-  .spaced-name--artist-section {
-    font-size: 8rem;
-  }
-}
-@media only screen and (max-width: 600px) {
-  .spaced-name--artist-section {
-    font-size: 6rem;
-  }
-}
-@media only screen and (max-width: 475px) {
-  .spaced-name--artist-section {
-    font-size: 5rem;
-  }
-}
-@media only screen and (max-width: 350px) {
-  .spaced-name--artist-section {
-    font-size: 4rem;
-  }
 }
 </style>

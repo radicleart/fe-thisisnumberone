@@ -21,7 +21,7 @@ export default {
   props: ['content'],
   data () {
     return {
-      rainbowOne: 'https://images.prismic.io/dbid/7a4e684a-36a5-4b90-be16-284544773ab5_Number1_build2.gif?auto=compress,format'
+      rainbowOne: 'https://images.prismic.io/dbid/a70b331a-ee92-4d98-81e4-659f2edadba1_Number1_build3.gif?auto=compress,format'
     }
   },
   computed: {
