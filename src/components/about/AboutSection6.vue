@@ -47,7 +47,6 @@ export default {
 }
 #about-section6 .about-section6--text {
   font-size: 1.6rem;
-  margin: auto;
   color: white;
   max-width: 700px;
 }
@@ -55,6 +54,7 @@ export default {
 .spaced-name--section6 {
   text-align: left;
   max-width: 1050px;
+  margin: auto;
   font-size: 13.5rem;
   color: #000000;
 }
