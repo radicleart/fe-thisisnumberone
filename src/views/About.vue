@@ -1,7 +1,7 @@
 <template>
 <div v-if="content">
   <div class="p-5">
-    <b-navbar class="p-5" fixed="top" type="dark" variant="black">
+    <b-navbar class="p-5" fixed="top" type="dark" variant="black" toggleable="md">
       <b-navbar-brand href="#"><b-link to="/"><img width="40px" :src="rainbowOne" /></b-link></b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
