@@ -1,6 +1,9 @@
 <template>
-  <div id="charity-grid" class="bg-warning" style="min-height: 40vh;">
-    <charity-grid class="center-section"/>
+  <div>
+    <div id="charity-grid" ></div>
+    <div class="bg-warning" style="min-height: 40vh;">
+      <charity-grid class="center-section pb-0"/>
+    </div>
   </div>
 </template>
 
@@ -22,4 +25,9 @@ export default {
 </script>
 
 <style scoped>
+#charity-grid {
+  height: 90px;
+  background-color: transparent;
+  z-index: 10;
+}
 </style>
