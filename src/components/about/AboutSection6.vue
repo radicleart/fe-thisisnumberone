@@ -46,11 +46,9 @@ export default {
 }
 #about-section6 .about-section6--text {
   font-size: 1.6rem;
-  margin: auto;
   color: white;
   max-width: 700px;
 }
-
 /* Button style */
 #about-section6 .button-style button, .button-style button:hover {
   border-color: #2255A4;
