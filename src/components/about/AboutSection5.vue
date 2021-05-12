@@ -1,13 +1,15 @@
 <template>
 <div id="environment">
-<section v-if="content" id="about-section5" :style="'height: 100vh; background-size: cover; background-image: url(' + content.section5rtf1[0].url + ')'">
+<section v-if="content" id="about-section5">
   <!-- <div class="spaced-name spaced-name--section5">Environment</div> -->
-  <b-container class="">
-    <b-row style="height: 82vh">
-      <b-col offset="1" cols="10" align-self="end">
-        <h1 class="mb-4 text-white">{{content.section5rtf1[0].text}}</h1>
-        <div class="text-white mb-5 about-section5--text">
-          <prismic-items :prismicItems="content.section5rtf1"></prismic-items>
+  <b-container class="mt-5">
+    <b-row>
+      <b-col class="offset-md-2 col-md-8 mt-5">
+        <h1 class="mb-4 text-black">{{content.section5rtf1[0].text}}</h1>
+        <div class="text-black about-section5--text text-left">
+          <div v-for="(item,index) in content.section5rtf1" :key="index">
+            <p v-if="index > 0" v-html="item.text"></p>
+          </div>
         </div>
       </b-col>
     </b-row>
@@ -17,14 +19,10 @@
 </template>
 
 <script>
-import PrismicItems from '@/components/prismic/PrismicItems'
 
 export default {
   name: 'AboutSection5',
   props: ['content'],
-  components: {
-    PrismicItems
-  },
   data () {
     return {
     }
@@ -39,8 +37,10 @@ export default {
 #about-section5 {
   display: flex;
   flex-flow: column;
+  width: 100%;
   justify-content: space-between;
-  min-height: 80vh;
+  min-height: 65vh;
+  background-color: white;
 }
 .spaced-name--section5 {
   margin: 0 0 6rem auto;
@@ -53,9 +53,7 @@ export default {
   font-size: 3rem;
 }
 #about-section5 .about-section5--text {
-  font-size: 1.4rem;
   text-shadow: 0px 3px 6px #00000029;
-  max-width: 500px;
 }
 
 /* Button style */
