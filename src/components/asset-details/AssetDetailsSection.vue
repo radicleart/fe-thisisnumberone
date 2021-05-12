@@ -287,8 +287,8 @@ export default {
       return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
     },
     salesBadgeLabel () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BADGE_LABEL](contractAsset.saleData.saleType)
+      // const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      return 'AUCTION STARTS SOON!' // this.$store.getters[APP_CONSTANTS.KEY_SALES_BADGE_LABEL](contractAsset.saleData.saleType)
     },
     salesInfoText () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
