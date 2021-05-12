@@ -1,16 +1,28 @@
 <template>
 <section id="asset-charity" v-if="content" :class="getArtistBgTheme()">
   <!-- <div class="spaced-name">{{content.data.description[0].text}}</div> -->
-  <b-container class="center-section">
-    <b-row align-h="center">
-      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-end">
-        <img style="width: 100%; max-width: 450px;" :src="content.data.image.url"/>
-      </b-col>
-      <b-col md="6" sm="10" xs="8" align-self="end" class="text-left" style="position: relative; top: 15px;">
-        <prismic-items :prismicItems="content.data.description"></prismic-items>
-        <social-links :type="'socials'" class="mt-4" :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" />
+  <b-container class="center-section" v-for="(charity, index) in content" :key="index">
+    <b-row align-h="center" v-if="(index % 2) === 0">
+      <b-col md="6" sm="10" xs="8" align-self="end" class="text-left" style="max-width: 450px; position: relative; top: 15px;">
+        <prismic-items :prismicItems="charity.data.description"></prismic-items>
+        <social-links :type="'socials'" class="mt-4" :themeClass="getArtistText1()" :socialLinks="charity.data['social_links']" />
         <div v-if="showButton">
-          <square-button :theme="'dark'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + content.data.artist_id[0].text" :usePixelBg="true"/>
+          <square-button :theme="'dark'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + charity.data.artist_id[0].text" :usePixelBg="true"/>
+        </div>
+      </b-col>
+      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-start">
+        <img style="width: 100%; max-width: 450px;" :src="charity.data.image.url"/>
+      </b-col>
+    </b-row>
+    <b-row align-h="center" v-else>
+      <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-start">
+        <img style="width: 100%; max-width: 450px;" :src="charity.data.image.url"/>
+      </b-col>
+      <b-col md="6" sm="10" xs="8" align-self="end" class="text-left" style="max-width: 450px; position: relative; top: 15px; left: 0px;">
+        <prismic-items :prismicItems="charity.data.description"></prismic-items>
+        <social-links :type="'socials'" class="mt-4" :themeClass="getArtistText1()" :socialLinks="charity.data['social_links']" />
+        <div v-if="showButton">
+          <square-button :theme="'dark'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + charity.data.artist_id[0].text" :usePixelBg="true"/>
         </div>
       </b-col>
     </b-row>
@@ -40,7 +52,7 @@ export default {
     getArtistBgTheme: function () {
       try {
         const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_CHARITY_BY_ARTIST_ID](this.artistId)
-        const bgcolor = content.data.theme[0].text.split(',')[0]
+        const bgcolor = content[0].data.theme[0].text.split(',')[0]
         return 'bg-' + bgcolor
       } catch {
         return 'bg-primary text-info text-danger'
@@ -49,7 +61,7 @@ export default {
     getArtistText1: function () {
       try {
         const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_CHARITY_BY_ARTIST_ID](this.artistId)
-        const fgcolor = content.data.theme[0].text.split(',')[1]
+        const fgcolor = content[0].data.theme[0].text.split(',')[1]
         return 'text-' + fgcolor
       } catch {
         return 'text-info'
@@ -58,7 +70,7 @@ export default {
     getArtistText2: function () {
       try {
         const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_CHARITY_BY_ARTIST_ID](this.artistId)
-        const fgcolor = content.data.theme[0].text.split(',')[2]
+        const fgcolor = content[0].data.theme[0].text.split(',')[2]
         return 'text-' + fgcolor
       } catch {
         return 'text-info'
@@ -68,7 +80,7 @@ export default {
   computed: {
     content () {
       const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_CHARITY_BY_ARTIST_ID](this.artistId)
-      return content
+      return (content && content.length > 0) ? content : null
     }
   }
 }

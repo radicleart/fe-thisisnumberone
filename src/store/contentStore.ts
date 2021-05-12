@@ -35,11 +35,11 @@ const contentStore = {
     },
     getCharityByArtistId: state => id => {
       try {
-        const charity = state.content.charities.find((o) => o.data.artist_id[0].text === id)
-        if (!charity) return state.content.charities[0]
-        return charity
+        const charities = state.content.charities.filter((o) => o.data.artist_id[0].text === id)
+        if (!charities) return null
+        return charities
       } catch (err) {
-        return state.content.charities[0]
+        return state.content.charities
       }
     },
     getPixelBackground: state => {

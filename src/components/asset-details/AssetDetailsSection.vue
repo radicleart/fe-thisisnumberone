@@ -237,7 +237,7 @@ export default {
     },
     getSocialLinks: function () {
       const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_CHARITY_BY_ARTIST_ID](this.artistId)
-      if (content && content.data.social_links && content.data.social_links.length > 0) {
+      if (content && content.length > 0 && content[0].data.social_links && content[0].data.social_links.length > 0) {
         return content.data.social_links
       }
       return [
