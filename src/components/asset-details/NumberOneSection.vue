@@ -3,25 +3,23 @@
   <b-row align-h="center" style="min-height: 91vh" v-if="resultSet" class="mb-5">
     <b-col lg="8" sm="10" class="mb-5" align-self="center">
       <div id="video-column" :style="dimensions">
-        <result-grid id="grid-container" @videoHoverOut="resetContainer" @videoHover="updateContainer" class="container text-center" :outerOptions="videoOptions" :outsiderCols="12" :resultSet="resultSet"/>
+        <result-grid id="grid-container" @videoHoverOut="resetContainer" @videoHover="updateContainer" class="container text-center" :outerOptions="videoOptions" :resultSet="resultSet"/>
       </div>
     </b-col>
     <b-col lg="4" sm="10" align-self="center" :key="componentKey">
-      <b-row align-h="center" v-if="content && !artistId" id="one-box" class=" text-white bg-black box1" :style="bannerImage()">
-        <b-col align-self="center" cols="12">
-          <prismic-items class="mx-5 text-center" :prismicItems="content.splashtext"></prismic-items>
-        </b-col>
-      </b-row>
-      <b-row align-h="center" v-else class="center-box text-white bg-black" :style="bannerImage()" >
-        <b-col align-self="center" cols="12">
-          <div class="bg-black box2" style="opacity: 0.5">
-            <img width="400px" height="400px" :src="bannerImage1(artistId)"/>
-          </div>
-          <div style="position: relative;">
-            <div class="text-white p-5" style="position: absolute; bottom: 0;">
-              <p class="my-0 text-artist">{{gaiaAsset.artist}}</p>
-              <p class="mb-2 text-artwork">{{gaiaAsset.name}}</p>
-              <!-- <div class="my-0 text-action" v-scroll-to="{ element: '#app', duration: 1000 }"><b-link @click.prevent="routeTo(gaiaAsset.assetHash)" class="text-white">Find out more</b-link></div> -->
+      <b-row align-h="center" id="one-box" class="text-white bg-black" :style="bannerImage()">
+        <b-col align-self="center" cols="12" class="p-0">
+          <prismic-items v-if="content && !artistId" class="mx-5 text-center" :prismicItems="content.splashtext"></prismic-items>
+          <div v-else>
+            <div class="bg-black" style="opacity: 0.5">
+              <img width="100%" height="100%" :src="bannerImage1(artistId)"/>
+            </div>
+            <div style="position: relative; left: -10px;">
+              <div class="text-white p-5" style="position: absolute; bottom: 0;">
+                <p class="my-0 text-artist">{{gaiaAsset.artist}}</p>
+                <p class="mb-2 text-artwork">{{gaiaAsset.name}}</p>
+                <!-- <div class="my-0 text-action" v-scroll-to="{ element: '#app', duration: 1000 }"><b-link @click.prevent="routeTo(gaiaAsset.assetHash)" class="text-white">Find out more</b-link></div> -->
+              </div>
             </div>
           </div>
         </b-col>
@@ -91,7 +89,7 @@ export default {
       return 'max-width: ' + dims.height + '; max-height: ' + dims.height + ';'
     },
     intoBoxStyle () {
-      return 'width: ' + 400 + 'px; height: ' + 400 + 'px;'
+      return 'width: ' + 350 + 'px; height: ' + 350 + 'px;'
     },
     routeTo (assetHash) {
       if (assetHash !== this.$route.params.assetHash) {
@@ -120,12 +118,16 @@ export default {
     },
     bannerImage () {
       const disp = {
-        width: '400px',
-        height: '400px'
+        width: '350px',
+        height: '350px',
+        margin: '0 auto'
       }
       if (window.innerWidth > 987) {
         disp.position = 'relative'
         disp.left = '-100px'
+      }
+      if (!this.artistId) {
+        disp.border = '1pt solid #fff'
       }
       return disp
     },

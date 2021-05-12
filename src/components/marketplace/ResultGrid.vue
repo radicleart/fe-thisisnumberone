@@ -14,7 +14,7 @@ export default {
   components: {
     ResultItem
   },
-  props: ['resultSet', 'outsiderCols', 'outerOptions'],
+  props: ['resultSet', 'outerOptions'],
   data () {
     return {
       loaded: false,

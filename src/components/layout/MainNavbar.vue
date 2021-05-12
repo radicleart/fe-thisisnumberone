@@ -3,12 +3,12 @@
 <b-navbar class="p-4" variant="transparent">
   <b-navbar-brand href="#">
     <div class="">
-      <router-link to="/home" class="navbar-brand"><img height="36px" :src="getLogo()" alt="logo"/></router-link>
+      <router-link to="/home" class="navbar-brand"><img height="30px" :src="getLogo()" alt="logo"/></router-link>
     </div>
   </b-navbar-brand>
   <b-navbar-nav class="ml-auto">
-    <b-nav-item class="d-xs-none d-sm-block" v-if="loggedIn"><b-link class="mr-4 text-white top-content" to="/my-items/minted">My NFTs</b-link></b-nav-item>
-    <b-nav-item><b-link class="text-white top-content" to="/about"><img height="36px" :src="wtf" alt="about link"/></b-link></b-nav-item>
+    <!--<b-nav-item class="d-xs-none d-sm-block" v-if="loggedIn"><b-link class="mr-4 text-white top-content" to="/my-items/minted">My NFTs</b-link></b-nav-item>-->
+    <b-nav-item><b-link class="text-white top-content" to="/about"><img height="30px" :src="wtf" alt="about link"/></b-link></b-nav-item>
   </b-navbar-nav>
   <!--
   <b-navbar-nav class="ml-auto toggle-icon">
