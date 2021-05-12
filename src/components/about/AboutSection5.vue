@@ -43,7 +43,7 @@ export default {
   background-color: white;
 }
 .spaced-name--section5 {
-  margin: 0 0 6rem auto;
+  margin: 0 0 auto auto;
   max-width: 1050px;
   text-align: right;
   font-size: 13.5rem;

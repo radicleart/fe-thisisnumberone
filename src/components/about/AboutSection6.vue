@@ -47,6 +47,7 @@ export default {
 }
 #about-section6 .about-section6--text {
   font-size: 1.6rem;
+  margin: auto;
   color: white;
   max-width: 700px;
 }
