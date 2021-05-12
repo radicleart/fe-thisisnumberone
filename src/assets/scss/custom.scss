@@ -68,7 +68,7 @@ body a:hover {
 .modal-dialog {
   min-width: 60vw;
   padding: 50px auto;
-  margin: 20vh auto;
+  margin: 5vh auto;
 }
 .modal-content {
   border: none !important;
@@ -113,14 +113,16 @@ body a:hover {
 }
 .input-group-append .input-group-text {
   width: 40px;
-  color: #fff;
-  background: #000;
+  color: #000;
+  background: #fff;
+  border: 1pt solid #000;
 }
 .input-group-prepend .input-group-text {
   width: 80px;
-  color: #fff;
-  background: #000;
+  color: #000;
+  background: #fff;
   font-size: 1.4rem;
+  border: 1pt solid #000;
 }
 .text-small {
   font-size: 1.2rem;

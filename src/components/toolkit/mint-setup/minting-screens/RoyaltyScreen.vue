@@ -5,16 +5,12 @@
     <item-display :item="item"/>
     <div class="text-danger" v-html="errorMessage"></div>
     <beneficiaries :beneficiaries="beneficiaries" v-on="$listeners" :item="item"/>
-    <template v-slot:footer>
-      <div class="">
-        <div>
-          <div class="bg-dark p-3 d-flex justify-content-between">
-            <square-button @clickButton="saveData()" :theme="'light'" :label1="'CANCEL'" :icon="'eye'"/>
-            <square-button v-if="allowMint()" @clickButton="mintToken()" :theme="'light'" :label1="'MINT NOW'" :icon="'eye'"/>
-          </div>
-        </div>
+    <b-card-text class="mx-4">
+      <div class="d-flex justify-content-between">
+        <b-button @click="saveData()" class="w-50 py-4 mr-2" variant="outline-danger">CANCEL</b-button>
+        <b-button @click="mintToken()" v-if="allowMint()"  class="w-50 py-4 ml-2" variant="outline-primary">MINT NOW</b-button>
       </div>
-    </template>
+    </b-card-text>
   </b-card>
 </b-card-group>
 </template>
@@ -23,14 +19,12 @@
 import { APP_CONSTANTS } from '@/app-constants'
 import Beneficiaries from './Beneficiaries'
 import ItemDisplay from './ItemDisplay'
-import SquareButton from '@/components/utils/SquareButton'
 
 export default {
   name: 'RoyaltyScreen',
   components: {
     Beneficiaries,
-    ItemDisplay,
-    SquareButton
+    ItemDisplay
   },
   props: ['item', 'beneficiaries', 'errorMessage'],
   data () {

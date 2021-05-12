@@ -37,6 +37,9 @@
                 <b-tab title="Gaia">
                   <gaia-hub-relay :assetHash="assetHash"/>
                 </b-tab>
+                <b-tab title="Next" v-if="contractNameNext">
+                  <square-button @clickButton="mintToken()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
+                </b-tab>
               </b-tabs>
             </div>
           </div>
@@ -121,6 +124,7 @@ export default {
   props: ['assetHash'],
   data: function () {
     return {
+      contractNameNext: process.env.VUE_APP_STACKS_CONTRACT_NAME_NEXT,
       showRpay: false,
       showTransfers: false,
       showBeneficiaries: false,
@@ -264,7 +268,7 @@ export default {
 }
 #minting-modal .modal-content {
   border: none !important;
-  background-color: transparent !important;
+  background-color: #fff !important;
 }
 #minting-tools  .nav-link.active {
   color: #000;

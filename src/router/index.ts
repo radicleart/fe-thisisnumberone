@@ -145,7 +145,7 @@ const routes: Array<RouteConfig> = [
     components: { default: MyItems, header: AdminNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
-      requiresAdmin: false
+      requiresAdmin: true
     }
   },
   {
@@ -154,7 +154,7 @@ const routes: Array<RouteConfig> = [
     components: { default: MyItems, header: AdminNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
-      requiresAdmin: false
+      requiresAdmin: true
     }
   }
 ]

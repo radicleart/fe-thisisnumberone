@@ -12,18 +12,20 @@
           <prismic-items class="mx-5 text-center" :prismicItems="content.splashtext"></prismic-items>
         </b-col>
       </b-row>
-      <div v-else class="center-box text-white bg-black" :style="bannerImage()" >
-        <div class="bg-black box2" style="opacity: 0.5">
-          <img width="400px" height="400px" :src="bannerImage1(artistId)"/>
-        </div>
-        <div style="position: relative;">
-          <div class="text-white p-5" style="position: absolute; bottom: 0;">
-            <p class="my-0 text-artist">{{gaiaAsset.artist}}</p>
-            <p class="mb-2 text-artwork">{{gaiaAsset.name}}</p>
-            <!-- <div class="my-0 text-action" v-scroll-to="{ element: '#app', duration: 1000 }"><b-link @click.prevent="routeTo(gaiaAsset.assetHash)" class="text-white">Find out more</b-link></div> -->
+      <b-row align-h="center" v-else class="center-box text-white bg-black" :style="bannerImage()" >
+        <b-col align-self="center" cols="12">
+          <div class="bg-black box2" style="opacity: 0.5">
+            <img width="400px" height="400px" :src="bannerImage1(artistId)"/>
           </div>
-        </div>
-      </div>
+          <div style="position: relative;">
+            <div class="text-white p-5" style="position: absolute; bottom: 0;">
+              <p class="my-0 text-artist">{{gaiaAsset.artist}}</p>
+              <p class="mb-2 text-artwork">{{gaiaAsset.name}}</p>
+              <!-- <div class="my-0 text-action" v-scroll-to="{ element: '#app', duration: 1000 }"><b-link @click.prevent="routeTo(gaiaAsset.assetHash)" class="text-white">Find out more</b-link></div> -->
+            </div>
+          </div>
+        </b-col>
+      </b-row>
     </b-col>
   </b-row>
 </b-container>
