@@ -1,5 +1,6 @@
 <template>
-<div id="environment">
+<div>
+<div id="environment"></div>
 <section v-if="content" id="about-section5">
   <!-- <div class="spaced-name spaced-name--section5">Environment</div> -->
   <b-container class="mt-5">
@@ -34,6 +35,12 @@ export default {
 
 <style>
 /* General style */
+#environment {
+  height: 90px;
+  background-color: #FF9900;
+  z-index: 10;
+}
+
 #about-section5 {
   display: flex;
   flex-flow: column;
