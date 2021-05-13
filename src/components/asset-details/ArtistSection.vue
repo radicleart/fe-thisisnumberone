@@ -3,7 +3,7 @@
   <b-container class="center-section py-5">
     <b-row align-h="center">
       <b-col align-self="end" md="6" sm="10" xs="8" class="mb-4 d-flex justify-content-end">
-        <img style="width: 100%; max-width: 450px; height: auto;" :src="content.data.image.url"/>
+        <img style="width: 100%; max-width: 450px; height: 100% !important;" :src="content.data.image.url"/>
       </b-col>
       <b-col md="6" sm="10" xs="8" align-self="end" class="text-left text-white pr-5" style="position: relative; top: 5px;">
         <prismic-items :prismicItems="content.data.description"></prismic-items>

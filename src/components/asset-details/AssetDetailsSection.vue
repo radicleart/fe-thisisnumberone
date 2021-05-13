@@ -34,7 +34,7 @@
                 <share-links class="mt-4" :socialLinks="getSocialLinks()" :gaiaAsset="gaiaAsset" />
               </div>
               <b-row class="my-4">
-                <b-col md="6" sm="12" class="">
+                <b-col md="6" sm="12" class="mb-3">
                   <div class="more-link m-0" v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
                 </b-col>
                 <b-col md="6" sm="12" class="">

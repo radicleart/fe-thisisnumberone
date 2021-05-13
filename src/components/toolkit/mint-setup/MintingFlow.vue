@@ -63,7 +63,7 @@ export default {
         editionCost: (this.item.editionCost) ? this.item.editionCost : 0,
         sendAsSky: true,
         contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
-        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME_NEXT,
+        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
         functionName: 'mint-token'
       }
       this.$store.dispatch('rpayPurchaseStore/mintToken', data).then((result) => {

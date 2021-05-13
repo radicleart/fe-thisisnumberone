@@ -150,7 +150,7 @@ export default {
         amount: this.offerData.offerAmount,
         email: this.offerData.email
       }
-      this.$store.dispatch('assetGeneralStore/registerOfferOffChain', data).then(() => {
+      this.$store.dispatch('rpayPurchaseStore/registerOfferOffChain', data).then(() => {
         this.contentKey = 'successful-offer'
         this.flowType = 2
       }).catch(() => {

@@ -10,7 +10,7 @@
         </div>
       </b-col>
       <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-start">
-        <img style="width: 100%; max-width: 450px;" :src="charity.data.image.url"/>
+        <img style="width: 100%; max-width: 450px; height: 100% !important;" :src="charity.data.image.url"/>
       </b-col>
     </b-row>
     <b-row align-h="center" v-else>

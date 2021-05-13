@@ -1,6 +1,4 @@
 <template>
-<div>
-<div id="environment"></div>
 <section v-if="content" id="about-section5">
   <b-container class="mt-5">
     <b-row>
@@ -15,7 +13,6 @@
     </b-row>
   </b-container>
 </section>
-</div>
 </template>
 
 <script>
@@ -34,12 +31,6 @@ export default {
 
 <style>
 /* General style */
-#environment {
-  height: 90px;
-  background-color: #FF9900;
-  z-index: 10;
-}
-
 #about-section5 {
   display: flex;
   flex-flow: column;

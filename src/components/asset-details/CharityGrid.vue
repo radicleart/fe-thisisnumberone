@@ -1,17 +1,20 @@
 <template>
-<b-container class="center-section" style="min-height: 30vh;">
-  <section v-if="content" :class="'theme-' + content.uid" fluid>
-    <div class="d-flex justify-content-around">
-      <div class="mx-3" v-for="(charity, index) in content" :key="index">
-        <div v-scroll-to="{ element: '#asset-charity', duration: 1000 }" @click="assetCharity(charity)" style="cursor: pointer;">
-          <img style="width: 100%;" :src="charity.data.image.url"/>
+<section v-if="content" :class="'theme-' + content.uid">
+  <b-container fluid class="center-section">
+    <b-row align-h="center" class="text-center">
+      <b-col v-for="(charity, index) in content" :key="index" class="mx-3" style="max-width: 250px;">
+        <div>
+          <div v-scroll-to="{ element: '#asset-charity', duration: 1000 }" @click="assetCharity(charity)" style="cursor: pointer;">
+            <img style="min-width: 250px; height: 250px;" :src="charity.data.image.url"/>
+          </div>
+          <p class="my-1 py-0 text-center text-small" style="font-size: 1.4rem">{{charity.data.charityname[0].text}}</p>
+          <p class="my-0 py-0 text-center  text-small text-white" style="font-size: 1.4rem">{{charity.data.charityartist[0].text}}</p>
         </div>
-        <p class="my-1 py-0 text-center text-small" style="font-size: 1.4rem">{{charity.data.charityname[0].text}}</p>
-        <p class="my-0 py-0 text-center  text-small text-white" style="font-size: 1.4rem">{{charity.data.charityartist[0].text}}</p>
-      </div>
-    </div>
-  </section>
-</b-container>
+        <div v-if="index === 3" class="w-100"></div>
+      </b-col>
+    </b-row>
+  </b-container>
+</section>
 </template>
 
 <script>
@@ -26,6 +29,13 @@ export default {
     }
   },
   methods: {
+    getCols: function () {
+      if (window.innerWidth > 1100) {
+        return 12
+      } else {
+        return 6
+      }
+    },
     assetCharity: function (charity) {
       const artistId = charity.data.artist_id[0].text
       const resultSet = this.$store.getters[APP_CONSTANTS.KEY_ASSETS_BY_CONTRACT_ID]()

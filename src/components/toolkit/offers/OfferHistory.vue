@@ -36,8 +36,11 @@ export default {
     }
   },
   mounted () {
-    this.$store.dispatch('assetGeneralStore/fetchOffers').then((dbOffers) => {
+    this.$store.dispatch('rpayPurchaseStore/fetchOffers').then((dbOffers) => {
       this.dbOffers = dbOffers
+    })
+    this.$store.dispatch('assetGeneralStore/fetchTransactions').then((transactions) => {
+      this.transactions = transactions
     })
   },
   methods: {
