@@ -8,6 +8,11 @@ module.exports = {
         "X-Requested-With, content-type, Authorization"
     }
   },
+  pluginOptions: {
+    webpackBundleAnalyzer: {
+      openAnalyzer: false
+    }
+  },
   configureWebpack: config => {
 
     // get a reference to the existing ForkTsCheckerWebpackPlugin
