@@ -54,21 +54,7 @@
           <OfferHistory :assetHash="assetHash"/>
         </b-tab>
         <b-tab :title="contractAsset.bidCounter + ' Bids'">
-          <div class="upload-preview text-small">
-            <div class="row mb-4" v-for="(bid, index1) in contractAsset.bidHistory" :key="index1">
-              <div class="col-2">Bidder</div>
-              <div class="col-10">{{bid.bidder}}</div>
-              <div class="col-2">Amount</div>
-              <div class="col-10">{{bid.amount}} STX</div>
-              <div class="col-2">Made</div>
-              <div class="col-10">{{offerMade(bid.appTimestamp)}}</div>
-              <div class="col-2"></div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-6"><a class="text-white" href="#" @click.prevent="closeBidding(1)">refund and close</a></div>
-            <div class="col-6"><a class="text-white" href="#" @click.prevent="closeBidding(2)">transfer and close</a></div>
-          </div>
+          <BidHistory :assetHash="assetHash"/>
         </b-tab>
       </b-tabs>
     </div>
@@ -96,7 +82,6 @@
 <script>
 import MintingFlow from './mint-setup/MintingFlow'
 import SquareButton from '@/components/utils/SquareButton'
-import RisidioPay from 'risidio-pay'
 import moment from 'moment'
 import { APP_CONSTANTS } from '@/app-constants'
 import AcceptOffer from '@/components/toolkit/AcceptOffer'
@@ -105,6 +90,9 @@ import TransferNft from '@/components/toolkit/TransferNft'
 import ListBeneficiaries from '@/components/toolkit/ListBeneficiaries'
 import GaiaHubRelay from '@/components/toolkit/GaiaHubRelay'
 import OfferHistory from '@/components/toolkit/offers/OfferHistory'
+import BidHistory from '@/components/toolkit/bids/BidHistory'
+
+const RisidioPay = () => import('risidio-pay')
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
@@ -113,6 +101,7 @@ export default {
   components: {
     MintingFlow,
     OfferHistory,
+    BidHistory,
     RisidioPay,
     AcceptOffer,
     TransferNft,
@@ -196,19 +185,6 @@ export default {
         nftIndex: contractAsset.nftIndex
       }
       this.$bvModal.show('accept-offer-modal')
-    },
-    closeBidding: function (closeType) {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      const data = {
-        contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
-        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
-        nftIndex: contractAsset.nftIndex,
-        closeType: closeType,
-        functionName: 'close-bidding'
-      }
-      this.$store.dispatch('rpayPurchaseStore/closeBidding', data).then((result) => {
-        this.result = result
-      })
     },
     offerAmount: function (amount) {
       return (amount)

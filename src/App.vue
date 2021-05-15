@@ -19,8 +19,9 @@
 import Splash from '@/views/Splash'
 import SuccessModal from '@/components/utils/SuccessModal'
 import WaitingModal from '@/components/utils/WaitingModal'
-import RisidioPay from 'risidio-pay'
 import { APP_CONSTANTS } from '@/app-constants'
+
+const RisidioPay = () => import('risidio-pay')
 
 export default {
   name: 'App',

@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import _ from 'lodash'
 import utils from '@/services/utils'
 
 export default {
@@ -141,9 +140,7 @@ export default {
       this.$refs[this.myUploadId].reset()
     },
     clearMediaObject: function (fsize) {
-      const index = _.findIndex(this.mediaObjects, function (mo) {
-        return mo.size === fsize
-      })
+      const index = this.mediaObjects.findIndex((mo) => mo.size === fsize)
       this.mediaObjects.splice(index, 1)
       this.$emit('updateMedia', { clear: true })
     },

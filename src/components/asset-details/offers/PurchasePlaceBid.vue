@@ -15,8 +15,8 @@
     <b-col md="5" sm="6" style="border-right: 1pt solid #000;">
       <div>
         <h3>
-          <span v-if="contractAsset.bidCounter > 0" class="">Current Bid: </span>
-          <span v-else class="">Opening Bid: </span>
+          <span v-if="isOpeneningBid" class="">Opening Bid: </span>
+          <span v-else class="">Current Bid: </span>
           <span class="">{{currentBidAmount}}</span> STX
         </h3>
       </div>
@@ -38,7 +38,7 @@ import { APP_CONSTANTS } from '@/app-constants'
 import RatesListing from '@/components/toolkit/RatesListing'
 
 export default {
-  name: 'PurchaseBuyNow',
+  name: 'PurchasePlaceBid',
   components: {
     ActionRow,
     RatesListing
@@ -69,7 +69,19 @@ export default {
     },
     nextBidAmount () {
       const nextBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](this.contractAsset)
+      if (this.isOpeneningBid) {
+        return this.currentBidAmount
+      }
       return nextBid.amount
+    },
+    isOpeneningBid () {
+      // simple case - no bids ever
+      if (this.contractAsset.bidCounter === 0 || !this.contractAsset.bidHistory || this.contractAsset.bidHistory.length === 0) {
+        return true
+      }
+      // less simple case - start of a new sale cycle
+      const index = this.contractAsset.bidHistory.findIndex((o) => o.saleCycle === this.contractAsset.saleData.saleCycleIndex)
+      return index === -1
     },
     reserveMet () {
       const currentBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_CURRENT_BID](this.contractAsset)

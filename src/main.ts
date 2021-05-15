@@ -8,7 +8,6 @@ import Notifications from 'vue-notification'
 import PrismicVue from 'prismic-vue'
 import linkResolver from './prismic/link-resolver'
 import htmlSerializer from './prismic/html-serializer'
-import RisidioPay from 'risidio-pay'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import '@/assets/scss/custom.scss'
@@ -16,6 +15,7 @@ import './assets/scss/rpay-pay-card.css'
 import VueScrollTo from 'vue-scrollto'
 import VueSocialSharing from 'vue-social-sharing'
 import Vue2TouchEvents from 'vue2-touch-events'
+const RisidioPay = () => import('risidio-pay')
 
 Vue.config.productionTip = false
 

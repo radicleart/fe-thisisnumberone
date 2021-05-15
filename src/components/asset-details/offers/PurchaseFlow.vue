@@ -14,11 +14,11 @@
       <purchase-buy-now :contractAsset="contractAsset" :saleData="contractAsset.saleData" @buyNow="buyNow"/>
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
-    <div v-if="contractAsset && contractAsset.saleData.saleType === 2">
+    <div v-else-if="contractAsset && contractAsset.saleData.saleType === 2">
       <purchase-place-bid :contractAsset="contractAsset" @placeBid="placeBid"/>
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
-    <div v-if="contractAsset && contractAsset.saleData.saleType === 3">
+    <div v-else-if="contractAsset && contractAsset.saleData.saleType === 3">
       <purchase-offer-amount :offerData="offerData" v-if="contractAsset.saleData.saleType === 3 && offerStage === 0" @collectEmail="collectEmail"/>
       <purchase-offer-email :offerData="offerData" v-else-if="contractAsset.saleData.saleType === 3 && offerStage === 1" @backStep="backStep" @setEmail="setEmail"/>
       <div class="text-danger" v-html="errorMessage"></div>
@@ -189,7 +189,7 @@ export default {
       const buyNowData = {
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,
-        sendAsSky: true,
+        sendAsSky: false,
         nftIndex: contractAsset.nftIndex,
         buyNowOrStartingPrice: contractAsset.saleData.buyNowOrStartingPrice,
         owner: contractAsset.owner,
@@ -205,13 +205,22 @@ export default {
         this.flowType = 3
       })
     },
+    isOpeneningBid () {
+      // simple case - no bids ever
+      if (this.contractAsset.bidCounter === 0 || this.contractAsset.bidHistory.length === 0) {
+        return true
+      }
+      // less simple case - start of a new sale cycle
+      const index = this.contractAsset.bidHistory.findIndex((o) => o.saleCycle === this.contractAsset.saleData.saleCycleIndex)
+      return index === -1
+    },
     placeBid: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       const nextBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](contractAsset)
       this.errorMessage = null
       let functionName = 'place-bid'
       let bidAmount = new BigNum(utils.toOnChainAmount(nextBid.amount))
-      if (contractAsset.bidCounter === 0) {
+      if (this.isOpeneningBid()) {
         functionName = 'opening-bid'
         bidAmount = new BigNum(utils.toOnChainAmount(contractAsset.saleData.buyNowOrStartingPrice))
       }
@@ -226,7 +235,7 @@ export default {
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,
         functionName: functionName,
-        sendAsSky: true,
+        sendAsSky: false,
         nftIndex: contractAsset.nftIndex,
         assetHash: contractAsset.tokenInfo.assetHash,
         appTimestamp: moment({}).valueOf(),
