@@ -193,7 +193,8 @@ export default {
     },
     biddingEndTime: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return moment(contractAsset.saleData.biddingEndTime).format('DD-MM-YY hh:mm')
+      // return moment(contractAsset.saleData.biddingEndTime).format('DD-MM-YY hh:mm')
+      return moment(contractAsset.saleData.biddingEndTime).format('ddd, MMMM Do, h:mma') + ' BST'
     },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.gaiaAsset)
@@ -229,12 +230,12 @@ export default {
     },
     openPurchaceDialog: function () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      if (!profile.loggedIn) {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      if (!profile.loggedIn && contractAsset.saleData.saleType !== 3) {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
           this.$emit('registerByConnect')
         })
       } else {
-        const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
         if (contractAsset.saleData.saleType === 0) {
           return
         }
@@ -291,17 +292,13 @@ export default {
     },
     salesButtonLabel () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      if (!profile.loggedIn) return 'LOGIN'
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      if (!profile.loggedIn && contractAsset.saleData.saleType !== 3) return 'LOGIN'
       return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
     },
     salesBadgeLabel () {
-      // const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return 'AUCTION STARTS SOON' // this.$store.getters[APP_CONSTANTS.KEY_SALES_BADGE_LABEL](contractAsset.saleData.saleType)
-    },
-    salesInfoText () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return this.$store.getters[APP_CONSTANTS.KEY_SALES_INFO_TEXT](contractAsset)
+      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BADGE_LABEL](contractAsset.saleData.saleType)
     },
     confirmOfferDialog () {
       const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('confirm-offer')
