@@ -53,6 +53,10 @@ export default {
       // the post condition applies to the address the funds are going to not from!!!
       // when minting the funds go to the contract admin.
       // const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      let contractName = process.env.VUE_APP_STACKS_CONTRACT_NAME
+      if (process.env.VUE_APP_STACKS_CONTRACT_NAME_NEXT) {
+        contractName = process.env.VUE_APP_STACKS_CONTRACT_NAME_NEXT
+      }
       const data = {
         mintingFee: 1.1,
         owner: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS, // profile.stxAddress,
@@ -63,7 +67,7 @@ export default {
         editionCost: (this.item.editionCost) ? this.item.editionCost : 0,
         sendAsSky: true,
         contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
-        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
+        contractName: contractName,
         functionName: 'mint-token'
       }
       this.$store.dispatch('rpayPurchaseStore/mintToken', data).then((result) => {

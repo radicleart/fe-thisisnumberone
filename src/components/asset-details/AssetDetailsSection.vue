@@ -228,12 +228,19 @@ export default {
       return 'https://explorer.stacks.co/txid/' + txId + '?chain=' + NETWORK
     },
     openPurchaceDialog: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      if (contractAsset.saleData.saleType === 0) {
-        return
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      if (!profile.loggedIn) {
+        this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
+          this.$emit('registerByConnect')
+        })
+      } else {
+        const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+        if (contractAsset.saleData.saleType === 0) {
+          return
+        }
+        this.showRpay = 1
+        this.$bvModal.show('asset-offer-modal')
       }
-      this.showRpay = 1
-      this.$bvModal.show('asset-offer-modal')
     },
     getSocialLinks: function () {
       const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_CHARITY_BY_ARTIST_ID](this.artistId)
@@ -283,6 +290,8 @@ export default {
       return contractAsset.tokenInfo.editionCost
     },
     salesButtonLabel () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      if (!profile.loggedIn) return 'LOGIN'
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
     },

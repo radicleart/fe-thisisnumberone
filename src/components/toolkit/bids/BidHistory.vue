@@ -50,13 +50,13 @@ export default {
     values () {
       let mapped = []
       const $self = this
-      if (this.contractAsset.cycledBidHistory) mapped = this.contractAsset.cycledBidHistory.map(function (bid) { return { Bidder: bid.bidder, Amount: bid.amount, Made: $self.appTimestamp(bid.appTimestamp), Cycle: bid.cycle } })
+      if (this.contractAsset.cycledBidHistory) mapped = this.contractAsset.cycledBidHistory.map(function (bid) { return { Bidder: bid.bidder, Amount: bid.amount, Made: $self.appTimestamp(bid.appTimestamp), Cycle: bid.saleCycle } })
       return mapped
     },
     valuesAll () {
       let mapped = []
       const $self = this
-      mapped = this.contractAsset.bidHistory.map(function (bid) { return { Bidder: bid.bidder, Amount: bid.amount, Made: $self.appTimestamp(bid.appTimestamp), Cycle: bid.cycle } })
+      mapped = this.contractAsset.bidHistory.map(function (bid) { return { Bidder: bid.bidder, Amount: bid.amount, Made: $self.appTimestamp(bid.appTimestamp), Cycle: bid.saleCycle } })
       return mapped
     },
     closeBidding: function (closeType) {

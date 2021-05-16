@@ -28,6 +28,7 @@
   <div class="row border-bottom mb-3 pb-2">
     <div class="col-12"><h3>Contract Data</h3></div>
     <div class="col-2">Administrator</div><div class="col-10">{{registry.administrator}}</div>
+    <div class="col-2">Balance</div><div class="col-10">{{contractBalance}}</div>
     <div class="col-2">Admin Contract Address</div><div class="col-10">{{registry.adminContractAddress}}</div>
     <div class="col-2">Admin Contract Name</div><div class="col-10">{{registry.adminContractName}}</div>
     <div class="col-2">Apps Connected</div><div class="col-10">{{registry.appCounter}}</div>
@@ -120,9 +121,20 @@ export default {
       STACKS_CONTRACT_ADDRESS: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
       STACKS_CONTRACT_NAME: process.env.VUE_APP_STACKS_CONTRACT_NAME,
       RISIDIO_API: process.env.VUE_APP_RISIDIO_API,
-      NETWORK: process.env.VUE_APP_NETWORK
-
+      NETWORK: process.env.VUE_APP_NETWORK,
+      contractBalance: -1
     }
+  },
+  mounted () {
+    const config = {
+      contractAddress: this.STACKS_CONTRACT_ADDRESS,
+      contractName: this.STACKS_CONTRACT_NAME,
+      functionName: 'get-balance',
+      functionArgs: []
+    }
+    this.$store.dispatch('rpayStacksStore/callContractReadOnly', config).then((result) => {
+      this.contractBalance = result.result
+    })
   },
   methods: {
     formatDate: function (date) {

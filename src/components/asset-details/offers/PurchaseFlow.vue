@@ -182,6 +182,11 @@ export default {
       const sky = this.$store.getters[APP_CONSTANTS.KEY_SKYS_WALLET]
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       let recipient = profile.stxAddress // (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address
+      if (!profile.loggedIn) {
+        this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
+          this.$emit('registerByConnect')
+        })
+      }
 
       if (NETWORK === 'local') {
         recipient = (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address
@@ -194,7 +199,8 @@ export default {
         buyNowOrStartingPrice: contractAsset.saleData.buyNowOrStartingPrice,
         owner: contractAsset.owner,
         provider: 'risidio',
-        recipient: recipient
+        recipient: recipient,
+        pcAddress: contractAsset.owner
       }
       this.$store.dispatch('rpayPurchaseStore/buyNow', buyNowData).then((result) => {
         this.contentKey = 'successful-buy'
@@ -219,27 +225,27 @@ export default {
       const nextBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](contractAsset)
       this.errorMessage = null
       let functionName = 'place-bid'
-      let bidAmount = new BigNum(utils.toOnChainAmount(nextBid.amount))
+      let bidAmount = nextBid.amount
       if (this.isOpeneningBid()) {
         functionName = 'opening-bid'
-        bidAmount = new BigNum(utils.toOnChainAmount(contractAsset.saleData.buyNowOrStartingPrice))
+        bidAmount = contractAsset.saleData.buyNowOrStartingPrice
       }
       const standardSTXPostCondition = makeContractSTXPostCondition(
         STX_CONTRACT_ADDRESS,
         STX_CONTRACT_NAME,
-        FungibleConditionCode.LessEqual,
-        bidAmount
+        FungibleConditionCode.Equal,
+        new BigNum(utils.toOnChainAmount(bidAmount))
       )
       const bidData = {
         postConditions: [standardSTXPostCondition],
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,
         functionName: functionName,
-        sendAsSky: false,
+        sendAsSky: true,
         nftIndex: contractAsset.nftIndex,
         assetHash: contractAsset.tokenInfo.assetHash,
         appTimestamp: moment({}).valueOf(),
-        bidAmount: bidAmount
+        bidAmount: new BigNum(utils.toOnChainAmount(bidAmount))
       }
       this.$store.dispatch('rpayPurchaseStore/placeBid', bidData).then((result) => {
         this.contentKey = 'successful-bid'
