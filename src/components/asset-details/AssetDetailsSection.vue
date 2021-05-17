@@ -41,6 +41,12 @@
                   <div class="more-link m-0" v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
                 </b-col>
               </b-row>
+              <b-row v-if="webWalletNeeded" align-h="left">
+                <b-col md="6" sm="12" class="mb-3">
+                  <div class="my-5"><a href="https://www.hiro.so/wallet/install-web" class="text-white" target="_blank">Get Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></div>
+                  <div class="text-small">Follow these instructions to setup your decentralised id and web wallet - then reload this tab!</div>
+                </b-col>
+              </b-row>
               <b-row>
                 <b-col md="6" sm="12" class="mb-3" v-if="getSaleType() > 0">
                   <square-button @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
@@ -126,7 +132,8 @@ export default {
       assetHash: null,
       mintResult: null,
       mintResultTxId: null,
-      message: 'No item available...'
+      message: 'No item available...',
+      webWalletNeeded: false
     }
   },
   watch: {
@@ -234,6 +241,10 @@ export default {
       if (!profile.loggedIn && contractAsset.saleData.saleType !== 3) {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
           this.$emit('registerByConnect')
+        }).catch((err) => {
+          console.log(err)
+          // https://www.hiro.so/wallet/install-web
+          this.webWalletNeeded = true
         })
       } else {
         if (contractAsset.saleData.saleType === 0) {

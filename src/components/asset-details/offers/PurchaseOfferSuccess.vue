@@ -56,16 +56,6 @@ export default {
     registerByEmail: function () {
       this.$emit('registerByEmail')
     },
-    connect: function () {
-      this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
-        this.$emit('registerByConnect')
-      })
-      const $self = this
-      this.timer1 = setInterval(function () {
-        const profile = $self.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-        if (profile.loggedIn) $self.$emit('registerByConnect')
-      }, 1500)
-    },
     checkAndConvertToDecimals: function () {
       if (this.offerAmount < this.minimumOffer) {
         // this.offerAmount = this.minimumOffer

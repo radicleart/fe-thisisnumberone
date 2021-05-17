@@ -12,7 +12,8 @@ export default {
   },
   data () {
     return {
-      logo: require('@/assets/img/navbar-footer/logo.svg')
+      logo: require('@/assets/img/navbar-footer/logo.svg'),
+      webWalletNeeded: false
     }
   },
   methods: {

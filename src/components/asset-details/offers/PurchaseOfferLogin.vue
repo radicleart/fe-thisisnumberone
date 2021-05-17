@@ -14,11 +14,15 @@
       <div class="mt-5"><a href="#" @click.prevent="back()"><b-icon icon="chevron-left"/> Back</a></div>
     </b-col>
     <b-col md="8" sm="6">
-      <div class="mb-3">Connect to wallet or..</div>
-      <div><b-link @click="registerByEmail">Register your offer by email</b-link></div>
+      <div class="mb-3 mt-4">Connect to wallet or..</div>
+      <div class="text-left mt-5"><b-link @click="registerByEmail">Register your offer by email</b-link></div>
     </b-col>
   </b-row>
-  <action-row :buttonLabel="'CONNECT'" @clickButton="connect"/>
+  <div class="text-left mt-4" v-if="webWalletNeeded">
+    <div><a href="https://www.hiro.so/wallet/install-web" target="_blank">Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></div>
+    <div class="text-small">Follow these instructions to setup your decentralised id and web wallet - then reload this tab!</div>
+  </div>
+  <action-row v-else :buttonLabel="'CONNECT'" @clickButton="connect"/>
 </div>
 </template>
 
@@ -40,7 +44,8 @@ export default {
       minimumOffer: 0,
       errorMessage: null,
       offerAmount: 0,
-      defaultRate: null
+      defaultRate: null,
+      webWalletNeeded: false
     }
   },
   mounted () {
@@ -68,6 +73,10 @@ export default {
       } else {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
           this.$emit('registerByConnect')
+        }).catch((err) => {
+          console.log(err)
+          // https://www.hiro.so/wallet/install-web
+          this.webWalletNeeded = true
         })
       }
       const $self = this

@@ -7,16 +7,16 @@
     </b-col>
   </b-row>
   <b-row class="row mt-5">
-    <b-col align-v="stretch" md="4" sm="12">
+    <b-col md="4" sm="12">
       <h4>{{sendOfferDialog[2].text}}</h4>
       <p v-if="sendOfferDialog[3]">{{sendOfferDialog[3].text}}</p>
       <p v-if="sendOfferDialog[4]">{{sendOfferDialog[4].text}}</p>
       <p v-if="sendOfferDialog[5]">{{sendOfferDialog[5].text}}</p>
       <div class="mt-5"><a href="#" @click.prevent="back()"><b-icon icon="chevron-left"/> Back</a></div>
     </b-col>
-    <b-col cols="8">
-      <b-row align-v="stretch" class="row mt-5" style="height: 70%;">
-        <b-col align-self="start" cols="12">
+    <b-col md="8" sm="12">
+      <b-row class="row mt-5" style="height: 70%;">
+        <b-col align-self="start" sm="12">
           <div class="text-small d-flex justify-content-between">
             <div>Confirm Your Interest</div>
             <div>Your Offer <span class="ml-5 text-dark">{{offerData.offerAmount}} STX</span></div>

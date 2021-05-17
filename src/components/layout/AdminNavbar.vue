@@ -1,7 +1,7 @@
 <template>
   <div class="p-5">
-    <b-navbar toggleable="md" class="p-5" fixed="top" type="dark" variant="black" style="height: 15vh;">
-      <b-navbar-brand href="#"><b-link to="/"><img width="45px" :src="rainbowOne" /></b-link></b-navbar-brand>
+    <b-navbar toggleable="md" class="p-5" fixed="top" type="dark" variant="transparent">
+      <b-navbar-brand href="#"><b-link to="/"><img :src="logo" /></b-link></b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse" class="text-white">
         <template #default="{ expanded }">
@@ -10,15 +10,16 @@
         </template>
       </b-navbar-toggle>
 
-      <b-collapse id="nav-collapse" is-nav align="center">
+      <b-collapse id="nav-collapse" is-nav align="right">
 
         <!-- Right aligned nav items -->
-        <b-navbar-nav class="mx-auto mt-3 ">
-          <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/my-items/minted">NFT Library</router-link></b-nav-item>
-          <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/upload-item">Create NFT</router-link></b-nav-item>
-          <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/admin">Admin</router-link></b-nav-item>
-          <b-nav-item v-if="!loggedIn"><b-link class="text-white" to="/admin" @click.prevent="startLogin">Login</b-link></b-nav-item>
-          <b-nav-item v-else><b-link class="text-white" to="/admin" @click.prevent="logout">Logout</b-link></b-nav-item>
+        <b-navbar-nav class="ml-auto mt-3 ">
+          <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/my-items/minted">NFT Library</router-link></b-nav-item>
+          <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/upload-item">Create NFT</router-link></b-nav-item>
+          <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/admin">Admin</router-link></b-nav-item>
+          <b-nav-item v-if="!loggedIn"><b-link class="mx-4 text-white" to="/admin" @click.prevent="startLogin">Login</b-link></b-nav-item>
+          <b-nav-item v-if="webWalletNeeded"><a href="https://www.hiro.so/wallet/install-web" class="mx-4 text-white" target="_blank" @click.prevent="startLogin">Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-nav-item>
+          <b-nav-item v-else><b-link class="mx-4 text-white" to="/admin" @click.prevent="logout">Logout</b-link></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -35,9 +36,9 @@ export default {
   data () {
     return {
       logo: require('@/assets/img/navbar-footer/logo.svg'),
-      rainbowOne: require('@/assets/img/Group 76.svg'),
       grid: require('@/assets/img/navbar-footer/grid.svg'),
-      cross: require('@/assets/img/navbar-footer/cross.svg')
+      cross: require('@/assets/img/navbar-footer/cross.svg'),
+      webWalletNeeded: false
     }
   },
   methods: {
@@ -59,6 +60,10 @@ export default {
     startLogin () {
       this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
         console.log(profile)
+      }).catch((err) => {
+        console.log(err)
+        // https://www.hiro.so/wallet/install-web
+        this.webWalletNeeded = true
       })
     }
   },

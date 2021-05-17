@@ -72,7 +72,8 @@ export default {
       biddingData: {},
       biddingEndTime: null,
       flowType: 0,
-      contentKey: null
+      contentKey: null,
+      webWalletNeeded: false
     }
   },
   mounted () {
@@ -185,6 +186,10 @@ export default {
       if (!profile.loggedIn) {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
           this.$emit('registerByConnect')
+        }).catch((err) => {
+          console.log(err)
+          // https://www.hiro.so/wallet/install-web
+          this.webWalletNeeded = true
         })
       }
 
