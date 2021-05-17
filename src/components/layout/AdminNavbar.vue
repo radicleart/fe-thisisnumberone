@@ -1,38 +1,28 @@
 <template>
-<div id="one-nav" class="px-5" @mouseover="transme" @mouseout="transbackme">
-  <b-navbar toggleable="lg" variant="transparent">
-    <b-navbar-brand href="#">
-      <div class="">
-        <router-link to="/" class="navbar-brand"><img :src="logo" alt="logo"/></router-link>
-      </div>
-    </b-navbar-brand>
-    <b-navbar-toggle class="" target="nav-collapse">
-      <template v-slot:default="{ expanded }">
-        <b-icon class="text-white" width="40px" height="40px" v-if="expanded" icon="grid-fill"></b-icon>
-        <b-icon class="text-white" width="40px" height="40px" v-else icon="grid"></b-icon>
-      </template>
-    </b-navbar-toggle>
-    <b-collapse id="nav-collapse" is-nav align="end">
-      <b-navbar-nav class="ml-auto" is-nav>
-        <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/my-items/minted">NFT Library</router-link></b-nav-item>
-        <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/upload-item">Create NFT</router-link></b-nav-item>
-        <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/admin">Admin</router-link></b-nav-item>
-        <b-dropdown right v-if="loggedIn" size="lg"  variant="link" toggle-class="text-decoration-none" no-caret>
-          <template #button-content>
-            <b-icon scale="1.5" class="text-white" icon="person"/><span class="sr-only">Account</span>
-          </template>
-          <b-dropdown-item>{{username()}}</b-dropdown-item>
-          <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item><router-link class="text-dark" to="/profile">My Profile</router-link></b-dropdown-item>
-          <b-dropdown-item><router-link class="text-dark" to="/my-items">My Items</router-link></b-dropdown-item>
-          <b-dropdown-item><router-link class="text-dark" to="/admin">Admin</router-link></b-dropdown-item>
-          <b-dropdown-item><span @click="logout()">Logout</span></b-dropdown-item>
-        </b-dropdown>
-        <b-nav-item v-if="!loggedIn"><b-button variant="light" @click.prevent="startLogin()">Login</b-button></b-nav-item>
-      </b-navbar-nav>
-    </b-collapse>
-  </b-navbar>
-</div>
+  <div class="p-5">
+    <b-navbar toggleable="md" class="p-5" fixed="top" type="dark" variant="black" style="height: 15vh;">
+      <b-navbar-brand href="#"><b-link to="/"><img width="45px" :src="rainbowOne" /></b-link></b-navbar-brand>
+
+      <b-navbar-toggle target="nav-collapse" class="text-white">
+        <template #default="{ expanded }">
+          <img width="60px" height="30px" class="text-white" v-if="expanded" :src="cross">
+          <img width="60px" height="30px" class="text-white" v-else :src="grid">
+        </template>
+      </b-navbar-toggle>
+
+      <b-collapse id="nav-collapse" is-nav align="center">
+
+        <!-- Right aligned nav items -->
+        <b-navbar-nav class="mx-auto mt-3 ">
+          <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/my-items/minted">NFT Library</router-link></b-nav-item>
+          <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/upload-item">Create NFT</router-link></b-nav-item>
+          <b-nav-item v-if="loggedIn"><router-link class="text-white" to="/admin">Admin</router-link></b-nav-item>
+          <b-nav-item v-if="!loggedIn"><b-link class="text-white" to="/admin" @click.prevent="startLogin">Login</b-link></b-nav-item>
+          <b-nav-item v-else><b-link class="text-white" to="/admin" @click.prevent="logout">Logout</b-link></b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+  </div>
 </template>
 
 <script>
@@ -44,19 +34,14 @@ export default {
   },
   data () {
     return {
-      logo: require('@/assets/img/navbar-footer/logo.svg')
+      logo: require('@/assets/img/navbar-footer/logo.svg'),
+      rainbowOne: require('@/assets/img/Group 76.svg'),
+      grid: require('@/assets/img/navbar-footer/grid.svg'),
+      cross: require('@/assets/img/navbar-footer/cross.svg')
     }
   },
   methods: {
     // test methods - just anticipating the design...
-    transme () {
-      const nav = document.getElementById('one-nav')
-      if (nav) nav.style.depth = '100px'
-    },
-    transbackme () {
-      const nav = document.getElementById('one-nav')
-      if (nav) nav.style.depth = '100px'
-    },
     headerClass () {
       return (this.$route.name === 'home' || this.$route.name === 'login') ? '' : 'header-class'
     },

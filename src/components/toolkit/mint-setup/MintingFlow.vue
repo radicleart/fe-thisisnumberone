@@ -72,6 +72,8 @@ export default {
       }
       this.$store.dispatch('rpayPurchaseStore/mintToken', data).then((result) => {
         this.result = result
+      }).catch((err) => {
+        this.errorMessage = 'Minting error: ' + err
       })
     },
     addNewBeneficiary: function () {
