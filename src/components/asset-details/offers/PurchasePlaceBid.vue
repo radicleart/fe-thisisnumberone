@@ -7,25 +7,25 @@
     </b-col>
   </b-row>
   <b-row class="row mt-2">
-    <b-col md="4" sm="12">
+    <b-col md="6" sm="12" v-if="buyNowDialog[3]">
+      <p v-html="buyNowDialog[3].text"></p>
+    </b-col>
+    <b-col md="6" sm="12" v-else>
       <p v-if="buyNowDialog[2]">{{buyNowDialog[2].text}}</p>
       <p v-if="buyNowDialog[3]">{{buyNowDialog[3].text}}
       </p>
     </b-col>
-    <b-col md="5" sm="6" style="border-right: 1pt solid #000;">
+    <b-col md="6" sm="12" style="">
       <div>
-        <h3>
-          <span v-if="isOpeneningBid" class="">Opening Bid: </span>
-          <span v-else class="">Current Bid: </span>
+        <h1>
+          <span v-if="isOpeneningBid" class="">Place Bid: </span>
+          <span v-else class="">Place Bid: </span>
           <span class="">{{currentBidAmount}}</span> STX
-        </h3>
+        </h1>
       </div>
       <div class="text-small">
         <rates-listing :message="''" :amount="currentBidAmount"/>
       </div>
-    </b-col>
-    <b-col md="2" sm="4" class="text-small" style="border-left: 1pt solid #000;">
-      <div>{{rateMessage()}}</div>
     </b-col>
   </b-row>
   <action-row :buttonLabel="'BID: ' + nextBidAmount + ' STX'" @clickButton="$emit('placeBid')" :svgImage="hammer"/>

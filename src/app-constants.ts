@@ -5,6 +5,9 @@ export const APP_CONSTANTS = {
   KEY_TRACKING_URL: 'getTrackingUrl',
   KEY_SECTION_HEIGHT: 'getSectionHeight',
 
+  KEY_ALL_OFFERS_ON_ASSET: 'assetGeneralStore/getAllOffersForAsset',
+  KEY_HIGHEST_OFFER_ON_ASSET: 'assetGeneralStore/getHighestOfferForAsset',
+
   KEY_CONTENT_ABOUT: 'contentStore/getAbout',
 
   KEY_MY_ITEMS: 'myItemStore/getMyItems',
@@ -22,9 +25,11 @@ export const APP_CONSTANTS = {
   KEY_SALES_INFO_TEXT: 'rpayPurchaseStore/getSalesInfoText',
   KEY_FORMATTED_BIDDING_END_TIME: 'rpayPurchaseStore/getFormattedBiddingEndTime',
   KEY_RECIPIENT: 'rpayPurchaseStore/getRecipientAddress',
+  KEY_DB_OFFERS: 'rpayPurchaseStore/getDbOffers',
 
   KEY_TRANSACTION_DIALOG_MESSAGE: 'contentStore/getTransactionDialogMessage',
   KEY_WAITING_IMAGE: 'contentStore/getWaitingCSS',
+  KEY_EMAIL_TEXT: 'contentStore/getEmail',
   KEY_TOOL_TIP: 'contentStore/getTooltip',
   KEY_DIALOG_CONTENT: 'contentStore/getDialog',
   KEY_CONTENT_CHARITY_BY_ARTIST_ID: 'contentStore/getCharityByArtistId',

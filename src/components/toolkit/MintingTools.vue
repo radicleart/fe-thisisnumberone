@@ -51,7 +51,7 @@
           </div>
         </b-tab>
         <b-tab :title="contractAsset.offerCounter + ' Offers'">
-          <OfferHistory :assetHash="assetHash"/>
+          <OfferHistory2 :assetHash="assetHash"/>
         </b-tab>
         <b-tab :title="contractAsset.bidCounter + ' Bids'">
           <BidHistory :assetHash="assetHash"/>
@@ -89,7 +89,7 @@ import ManageEditions from '@/components/toolkit/editions/ManageEditions'
 import TransferNft from '@/components/toolkit/TransferNft'
 import ListBeneficiaries from '@/components/toolkit/ListBeneficiaries'
 import GaiaHubRelay from '@/components/toolkit/GaiaHubRelay'
-import OfferHistory from '@/components/toolkit/offers/OfferHistory'
+import OfferHistory2 from '@/components/toolkit/offers/OfferHistory2'
 import BidHistory from '@/components/toolkit/bids/BidHistory'
 
 const RisidioPay = () => import('risidio-pay')
@@ -100,7 +100,7 @@ export default {
   name: 'MintingTools',
   components: {
     MintingFlow,
-    OfferHistory,
+    OfferHistory2,
     BidHistory,
     RisidioPay,
     AcceptOffer,
@@ -126,6 +126,7 @@ export default {
   mounted () {
     const $self = this
     const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+    this.$store.dispatch('rpayPurchaseStore/fetchOffers')
     // if (item.uploader !== profile.username) throw new Error('Unexpected NFT ownership error')
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: item })
     if (window.eventBus && window.eventBus.$on) {

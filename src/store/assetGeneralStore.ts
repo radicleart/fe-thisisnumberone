@@ -16,6 +16,35 @@ const assetGeneralStore = {
     },
     getOffers: state => {
       return state.offers
+    },
+    getAllOffersForAsset: (state, getters, rootState, rootGetters) => assetHash => {
+      if (!assetHash) return
+      const dbOffers = rootGetters[APP_CONSTANTS.KEY_DB_OFFERS].filter((o) => o.assetHash === assetHash)
+      const sortedOffers = dbOffers.sort(function compare (a, b) {
+        if (a.amount < b.amount) {
+          return 1
+        } else if (a.amount > b.amount) {
+          return -1
+        } else {
+          return 0
+        }
+      })
+      return sortedOffers
+    },
+    getHighestOfferForAsset: (state, getters, rootState, rootGetters) => assetHash => {
+      if (!assetHash) return
+      let dbOffers = rootGetters[APP_CONSTANTS.KEY_DB_OFFERS].filter((o) => o.assetHash === assetHash)
+      dbOffers = dbOffers.filter((o) => o.status > 0)
+      const sortedOffers = dbOffers.sort(function compare (a, b) {
+        if (a.amount < b.amount) {
+          return 1
+        } else if (a.amount > b.amount) {
+          return -1
+        } else {
+          return 0
+        }
+      })
+      return sortedOffers[0]
     }
   },
   mutations: {
@@ -27,24 +56,14 @@ const assetGeneralStore = {
     }
   },
   actions: {
-    fetchTransactions ({ commit, rootGetters }) {
+    fetchTransactions ({ commit }) {
       return new Promise(function (resolve, reject) {
-        const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
-        axios.post(MESH_API_PATH + '/v2/secure/fetch/transactions', {}, { headers: authHeaders }).then((response) => {
+        // const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+        axios.get(MESH_API_PATH + '/v2/fetch/transactions').then((response) => {
           commit('setTransactions', response.data)
           resolve(response.data)
         }).catch((error) => {
           reject(new Error('Unable to fetch offers: ' + error))
-        })
-      })
-    },
-    registerForUpdates ({ commit }, data: any) {
-      return new Promise(function (resolve, reject) {
-        axios.post(MESH_API_PATH + '/v2/register/email', data).then((result) => {
-          commit('addRegisteredEmail', data)
-          resolve(result)
-        }).catch((error) => {
-          reject(new Error('Unable to register email: ' + error))
         })
       })
     }

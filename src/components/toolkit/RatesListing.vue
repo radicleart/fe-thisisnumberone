@@ -1,12 +1,18 @@
 <template>
-<span class="text-small">
-    <span v-for="(rate, index) in rates" :key="index" class="">
-      <span style="min-width: 100px;" class="text-right mr-4">
-        {{rate.value}} <span style="font-weight: 600">{{rate.text}}</span>
-      </span>
-      <div class="w-100" v-if="index === 2 || index === 5"></div>
-    </span>
-</span>
+<div class="my-3 d-flex justify-content-end" style="font-size: 1.4rem;">
+  <div class="">
+        <div class="border-bottom pb-2 mb-2">
+          <div style="" class="text-right mr-4">
+            {{amount}} <span style="font-weight: 600">STX</span>
+          </div>
+        </div>
+        <div v-for="(rate, index) in rates" :key="index" class="">
+          <div style="" class="text-right mr-4">
+            {{rate.value}} <span style="font-weight: 600">{{rate.text}}</span>
+          </div>
+        </div>
+  </div>
+</div>
 </template>
 
 <script>
@@ -49,6 +55,7 @@ export default {
     rates () {
       const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
       const options = []
+      /**
       const stxToBtc = tickerRates[0].stxPrice / tickerRates[0].last
       options.push({
         text: 'BTC',
@@ -59,11 +66,14 @@ export default {
         text: 'ETH',
         value: utils.toDecimals(stxToETh * this.amount, 100000)
       })
+      **/
       tickerRates.forEach((rate) => {
-        options.push({
-          text: rate.currency,
-          value: utils.toDecimals(rate.stxPrice * this.amount)
-        })
+        if (rate.currency !== 'CNY') {
+          options.push({
+            text: rate.currency,
+            value: utils.toDecimals(rate.stxPrice * this.amount)
+          })
+        }
       })
       return options
     }

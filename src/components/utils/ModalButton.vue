@@ -1,6 +1,6 @@
 <template>
-  <b-button-group class="text-white" id="parent-group" v-if="loaded">
-    <b-button @click="$emit('clickButton')" class="btn-square" :class="colorHover" :style="(usePixelBg) ? 'background-image: url(' + pixelBg + ')' : ''">
+  <b-button-group class="text-white ml-4" id="parent-group" v-if="loaded">
+    <b-button @click="$emit('clickButton', label1)" class="btn-square" :class="colorHover" :style="(usePixelBg) ? 'background-image: url(' + pixelBg + ')' : ''">
       <span class="d-flex justify-content-center" v-if="icon">
         <b-icon :class="(textWarning) ? 'text-warning' : ''" style="width: 30px; height: 30px;" :icon="icon"/>
       </span>
@@ -8,7 +8,7 @@
         <img :class="(textWarning) ? 'text-warning' : ''" style="width: 30px; height: 30px;" :src="svgImage"/>
       </span>
     </b-button>
-    <b-button @click="$emit('clickButton')" class="btn-rectangle" :class="bigButtonTheme">
+    <b-button @click="$emit('clickButton', label1)" class="btn-rectangle" :class="bigButtonTheme">
       <span v-if="route"><b-link :to="route">{{label1}}</b-link></span>
       <span v-else>{{label1}}</span>
     </b-button>
@@ -65,7 +65,6 @@ export default {
 .btn-rectangle {
   font-size: 1.5rem;
   min-width: 170px;
-  text-transform: uppercase;
   color: #000;
 }
 </style>

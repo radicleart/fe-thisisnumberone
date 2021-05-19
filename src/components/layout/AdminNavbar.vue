@@ -1,6 +1,6 @@
 <template>
-  <div class="p-5">
-    <b-navbar toggleable="md" class="p-5" fixed="top" type="dark" variant="transparent">
+  <div class="" style="height: 100px;">
+    <b-navbar toggleable="md" class="" fixed="top" type="dark" variant="transparent">
       <b-navbar-brand href="#"><b-link to="/"><img :src="logo" /></b-link></b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse" class="text-white">
@@ -15,10 +15,11 @@
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto mt-3 ">
           <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/my-items/minted">NFT Library</router-link></b-nav-item>
+          <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/offers">Offers</router-link></b-nav-item>
           <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/upload-item">Create NFT</router-link></b-nav-item>
           <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/admin">Admin</router-link></b-nav-item>
+          <b-nav-item v-if="!loggedIn && webWalletNeeded"><a href="https://www.hiro.so/wallet/install-web" class="text-white" target="_blank">Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-nav-item>
           <b-nav-item v-if="!loggedIn"><b-link class="mx-4 text-white" to="/admin" @click.prevent="startLogin">Login</b-link></b-nav-item>
-          <b-nav-item v-if="webWalletNeeded"><a href="https://www.hiro.so/wallet/install-web" class="mx-4 text-white" target="_blank" @click.prevent="startLogin">Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-nav-item>
           <b-nav-item v-else><b-link class="mx-4 text-white" to="/admin" @click.prevent="logout">Logout</b-link></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
