@@ -107,6 +107,7 @@ import SquareButton from '@/components/utils/SquareButton'
 import ShareLinks from '@/components/utils/ShareLinks'
 import moment from 'moment'
 // import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
+import utils from '@/services/utils'
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
@@ -187,6 +188,9 @@ export default {
           if (vid) $self.videoHeight = vid.clientHeight
         }, 400)
       })
+    },
+    formatNumber: function (number) {
+      return utils.formatNumber(number)
     },
     preserveWhiteSpace: function (content) {
       return '<span class="text-description" style="white-space: break-spaces;">' + content + '</span>'
@@ -321,7 +325,12 @@ export default {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       if (!profile.loggedIn && contractAsset.saleData.saleType !== 3) return 'LOGIN TO BID'
-      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
+      const label = this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
+      if (contractAsset.saleData.saleType === 2) {
+        const bid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](contractAsset)
+        if (bid) return label + ' ' + bid.amountFmt + ' STX'
+      }
+      return label
     },
     salesBadgeLabel () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)

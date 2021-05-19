@@ -65,7 +65,7 @@ export default {
   computed: {
     currentBidAmount () {
       const currentBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_CURRENT_BID](this.contractAsset)
-      return currentBid.amount
+      return currentBid.amountFmt
     },
     nextBidAmount () {
       const nextBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](this.contractAsset)
