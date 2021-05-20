@@ -43,32 +43,38 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'splash',
-    components: { default: NumberOne, header: MainNavbar, footer: MainFooter }
+    components: { default: NumberOne, header: MainNavbar, footer: MainFooter },
+    meta: { title: 'This is number one' }
   },
   {
     path: '/home',
     name: 'home',
-    components: { default: NumberOne, header: MainNavbar, footer: MainFooter }
+    components: { default: NumberOne, header: MainNavbar, footer: MainFooter },
+    meta: { title: 'This is number one' }
   },
   {
     path: '/number-one',
     name: 'number-one',
-    components: { default: NumberOne, header: MainNavbar, footer: MainFooter }
+    components: { default: NumberOne, header: MainNavbar, footer: MainFooter },
+    meta: { title: 'This is number one' }
   },
   {
     path: '/about',
     name: 'about',
-    components: { default: About, footer: MainFooter }
+    components: { default: About, footer: MainFooter },
+    meta: { title: 'About page' }
   },
   {
     path: '/login',
     name: 'login',
-    components: { default: Login, header: AdminNavbar, footer: HomeFooter }
+    components: { default: Login, header: AdminNavbar, footer: HomeFooter },
+    meta: { title: 'Login page' }
   },
   {
     path: '/profile',
     name: 'profile',
-    components: { default: ItemPreview, header: MainNavbar, footer: MainFooter }
+    components: { default: ItemPreview, header: MainNavbar, footer: MainFooter },
+    meta: { title: 'Your profile' }
   },
   {
     path: '/information/:infoId',
@@ -83,7 +89,8 @@ const routes: Array<RouteConfig> = [
   {
     path: '/assets/:assetHash',
     name: 'asset-by-hash',
-    components: { default: AssetDetails, header: MainNavbar, footer: MainFooter }
+    components: { default: AssetDetails, header: MainNavbar, footer: MainFooter },
+    meta: { title: 'Asset informations' }
   },
   // admin routes
   {
@@ -92,7 +99,8 @@ const routes: Array<RouteConfig> = [
     components: { default: ItemPreview, header: AdminNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
-      requiresAdmin: true
+      requiresAdmin: true,
+      title: 'Item preview'
     }
   },
   {
@@ -172,6 +180,7 @@ const router = new VueRouter({
     }
   }
 })
+
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
@@ -203,6 +212,36 @@ router.beforeEach((to, from, next) => {
   } else {
     return next() // make sure to always call next()!
   }
+})
+
+router.beforeEach((to, from, next) => {
+  const nearestWithTitle = to.matched.slice().reverse().find(r => r.meta && r.meta.title)
+  const nearestWithMeta = to.matched.slice().reverse().find(r => r.meta && r.meta.metaTags)
+  const previousNearestWithMeta = from.matched.slice().reverse().find(r => r.meta && r.meta.metaTags)
+
+  if (nearestWithTitle) {
+    document.title = nearestWithTitle.meta.title
+  } else if (previousNearestWithMeta) {
+    document.title = previousNearestWithMeta.meta.title
+  }
+
+  Array.from(document.querySelectorAll('[data-vue-router-controlled]')).map(el => el.parentNode.removeChild(el))
+
+  if (!nearestWithMeta) return next()
+
+  nearestWithMeta.meta.metaTags.map(tagDef => {
+    const tag = document.createElement('meta')
+
+    Object.keys(tagDef).forEach(key => {
+      tag.setAttribute(key, tagDef[key])
+    })
+
+    tag.setAttribute('data-vue-router-controlled', '')
+
+    return tag
+  }).forEach(tag => document.head.appendChild(tag))
+
+  next()
 })
 
 export default router
