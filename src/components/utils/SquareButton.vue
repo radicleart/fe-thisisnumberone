@@ -84,7 +84,6 @@ export default {
   color: #fff !important;
   background: transparent !important;
 }
-/**
 #parent-group:hover .btn-square.hover-white {
   color: black !important;
   background: white !important;
@@ -93,5 +92,5 @@ export default {
   color: white !important;
   background: black !important;
 }
-**/
+
 </style>
