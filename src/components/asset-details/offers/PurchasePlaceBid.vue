@@ -20,7 +20,7 @@
         <h1>
           <span v-if="isOpeneningBid" class="">Place Bid: </span>
           <span v-else class="">Place Bid: </span>
-          <span class="">{{currentBidAmount}}</span> STX
+          <span class="">{{currentBidAmountFmt}}</span> STX
         </h1>
       </div>
       <div class="text-small">
@@ -28,7 +28,7 @@
       </div>
     </b-col>
   </b-row>
-  <action-row :buttonLabel="'BID: ' + nextBidAmount + ' STX'" @clickButton="$emit('placeBid')" :svgImage="hammer"/>
+  <action-row :buttonLabel="'BID: ' + nextBidAmountFmt + ' STX'" @clickButton="$emit('placeBid')" :svgImage="hammer"/>
 </div>
 </template>
 
@@ -59,20 +59,26 @@ export default {
   },
   methods: {
     rateMessage: function () {
-      return 'Place a bid for ' + this.nextBidAmount + ' STX'
+      return 'Place a bid for ' + this.nextBidAmountFmt + ' STX'
     }
   },
   computed: {
-    currentBidAmount () {
-      const currentBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_CURRENT_BID](this.contractAsset)
-      return currentBid.amountFmt
+    currentBidAmountFmt () {
+      const bid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](this.contractAsset)
+      // const currentBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_CURRENT_BID](this.contractAsset)
+      return bid.amountFmt
     },
-    nextBidAmount () {
+    currentBidAmount () {
+      const bid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](this.contractAsset)
+      // const currentBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_CURRENT_BID](this.contractAsset)
+      return bid.amount
+    },
+    nextBidAmountFmt () {
       const nextBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](this.contractAsset)
       if (this.isOpeneningBid) {
-        return this.currentBidAmount
+        return this.currentBidAmountFmt
       }
-      return nextBid.amount
+      return nextBid.amountFmt
     },
     isOpeneningBid () {
       // simple case - no bids ever

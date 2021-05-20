@@ -135,12 +135,15 @@ export default {
     },
     setEmail: function (data) {
       this.offerData.email = data.email
-      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      // const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      this.flowType = 1
+      /**
       if (!profile.loggedIn) {
         this.flowType = 1
       } else {
         this.makeOffer()
       }
+      **/
     },
     registerByEmail: function () {
       this.offerData.registerByEmail = true

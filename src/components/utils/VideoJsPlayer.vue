@@ -23,10 +23,8 @@ export default {
     }
   },
   mounted () {
-    console.log(this.options)
     const $self = this
     this.player = videojs(this.$refs.videoPlayer, this.options, function onPlayerReady () {
-      console.log('onPlayerReady', this)
       $self.player.controls($self.options.controls)
     })
     if (this.options.autoplay) {

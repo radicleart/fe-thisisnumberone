@@ -178,7 +178,6 @@ const myItemStore = {
         const index = state.rootFile.records.findIndex((o) => o.assetHash === item.assetHash)
         state.rootFile.records.splice(index, 1)
 
-        console.log(state.rootFile.records)
         myItemService.saveItem(state.rootFile).then((res) => {
           resolve(res)
         })
@@ -272,18 +271,14 @@ const myItemStore = {
           throw new Error('profile needs to refresh - please reload current page..')
         }
         item.metaDataUrl = profile.gaiaHubConfig.url_prefix + profile.gaiaHubConfig.address + '/' + item.assetHash + '.json'
-        myItemService.saveAsset(item).then((item) => {
-          console.log(item)
-        }).catch((error) => {
+        myItemService.saveAsset(item).catch((error) => {
           console.log(error)
         })
         myItemService.saveItem(state.rootFile).then((rootFile) => {
           commit('rootFile', rootFile)
           resolve(item)
           if (!item.private) {
-            searchIndexService.addRecord(item).then((result) => {
-              console.log(result)
-            }).catch((error) => {
+            searchIndexService.addRecord(item).catch((error) => {
               console.log(error)
             })
           }

@@ -1,9 +1,9 @@
 <template>
 <div class="my-3 d-flex justify-content-end" style="font-size: 1.4rem;">
   <div class="">
-        <div class="border-bottom pb-2 mb-2">
+        <div class="">
           <div style="" class="text-right mr-4">
-            {{amount}} <span style="font-weight: 600">STX</span>
+            {{Number(amount).toLocaleString()}} <span style="font-weight: 600">STX</span>
           </div>
         </div>
         <div v-for="(rate, index) in rates" :key="index" class="">
@@ -55,12 +55,12 @@ export default {
     rates () {
       const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
       const options = []
-      /**
       const stxToBtc = tickerRates[0].stxPrice / tickerRates[0].last
       options.push({
         text: 'BTC',
         value: utils.toDecimals(stxToBtc * this.amount, 100000)
       })
+      /**
       const stxToETh = tickerRates[0].stxPrice / tickerRates[0].ethPrice
       options.push({
         text: 'ETH',
@@ -71,7 +71,7 @@ export default {
         if (rate.currency !== 'CNY') {
           options.push({
             text: rate.currency,
-            value: utils.toDecimals(rate.stxPrice * this.amount)
+            value: Number(utils.toDecimals(rate.stxPrice * this.amount)).toLocaleString()
           })
         }
       })

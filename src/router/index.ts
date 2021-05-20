@@ -10,31 +10,21 @@ import AdminNavbar from '@/components/layout/AdminNavbar.vue'
 // public pages
 import HomeFooter from '@/components/layout/HomeFooter.vue'
 import Login from '../views/Login.vue'
-import Information from '../views/Information.vue'
-// const Information = () => import('../views/Information.vue')
+// import Information from '../views/Information.vue'
+const Information = () => import('../views/Information.vue')
 
-// const Charity = () => import('../views/Charity.vue')
-// const AssetDetails = () => import('../views/AssetDetails.vue')
-// const About = () => import('../views/About.vue')
-// const NumberOne = () => import('../views/NumberOne.vue')
-import Charity from '../views/Charity.vue'
-import AssetDetails from '../views/AssetDetails.vue'
-import About from '../views/About.vue'
-import NumberOne from '../views/NumberOne.vue'
+const Charity = () => import('../views/Charity.vue')
+const AssetDetails = () => import('../views/AssetDetails.vue')
+const About = () => import('../views/About.vue')
+const NumberOne = () => import('../views/NumberOne.vue')
 
 // private pages
-// const Admin = () => import('../views/Admin.vue')
-// const OfferAdmin = () => import('../views/OfferAdmin.vue')
-// const ItemPreview = () => import('../views/ItemPreview.vue')
-// const UploadItem = () => import('../views/UploadItem.vue')
-// const UpdateItem = () => import('../views/UpdateItem.vue')
-// const MyItems = () => import('../views/MyItems.vue')
-import Admin from '../views/Admin.vue'
-import OfferAdmin from '../views/OfferAdmin.vue'
-import ItemPreview from '../views/ItemPreview.vue'
-import UploadItem from '../views/UploadItem.vue'
-import UpdateItem from '../views/UpdateItem.vue'
-import MyItems from '../views/MyItems.vue'
+const Admin = () => import('../views/Admin.vue')
+const OfferAdmin = () => import('../views/OfferAdmin.vue')
+const ItemPreview = () => import('../views/ItemPreview.vue')
+const UploadItem = () => import('../views/UploadItem.vue')
+const UpdateItem = () => import('../views/UpdateItem.vue')
+const MyItems = () => import('../views/MyItems.vue')
 
 Vue.use(VueRouter)
 

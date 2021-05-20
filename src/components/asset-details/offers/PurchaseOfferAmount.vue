@@ -13,17 +13,19 @@
     </b-col>
     <b-col md="6" sm="6">
       <div>
-        <label for="input-live"><span class="text-small">Type Amount (select currency)</span></label>
+        <label for="input-live"><span class="text-small">Your Offer in STX (must be more than current offer)</span></label>
       </div>
       <div>
         <b-input-group size="lg">
-          <b-form-input v-on:keyup="changeAmount" type="number" id="offer" :state="offerState" v-model="offerAmountFiat" placeholder="Enter amount"></b-form-input>
-          <b-dropdown style="max-width: 60px; height: 44px; top: -6px; font-size: 1.6rem;" variant="outline-success" id="dropdown-1" :text="currency" class="m-2">
+          <b-form-input v-on:keyup="changeAmount" type="number" id="offer" :state="offerState" v-model="offerAmount" placeholder="Enter amount"></b-form-input>
+          <!--
+            <b-dropdown style="max-width: 60px; height: 44px; top: -6px; font-size: 1.6rem;" variant="outline-success" id="dropdown-1" :text="currency" class="m-2">
             <b-dropdown-item @click="changeCurrency('USD')">USD</b-dropdown-item>
             <b-dropdown-item @click="changeCurrency('EUR')">EUR</b-dropdown-item>
             <b-dropdown-item @click="changeCurrency('GBP')">GBP</b-dropdown-item>
             <b-dropdown-item @click="changeCurrency('JPY')">JPY</b-dropdown-item>
           </b-dropdown>
+          -->
         </b-input-group>
         <p class="text-small text-danger" v-html="errorMessage"></p>
       </div>
@@ -31,10 +33,10 @@
     </b-col>
     <b-col md="2" sm="4" class="text-small" style="border-left: 1pt solid #000;">
       <div>{{rateMessage()}}</div>
-      <div>{{minimumOffer}} STX</div>
+      <div>{{Number(minimumOffer).toLocaleString()}} STX</div>
     </b-col>
   </b-row>
-  <action-row :buttonLabel="'next'" @clickButton="next"/>
+  <action-row :buttonLabel="'Next'" @clickButton="next"/>
 </div>
 </template>
 
@@ -73,10 +75,10 @@ export default {
   methods: {
     rateMessage: function () {
       // return 'Offers above ' + this.minimumOffer + ' STX will be considered'
-      return 'Minimum Offer'
+      return 'Current Offer'
     },
     changeAmount: function () {
-      this.offerAmount = utils.toDecimals(this.offerAmountFiat / this.currentRate.stxPrice)
+      // this.offerAmount = utils.toDecimals(this.offerAmountFiat / this.currentRate.stxPrice)
     },
     changeCurrency: function (currency) {
       this.currency = currency
@@ -84,7 +86,7 @@ export default {
     },
     next: function () {
       this.errorMessage = null
-      if (this.offerAmount < this.minimumOffer) {
+      if (this.offerAmount <= this.minimumOffer) {
         this.errorMessage = 'Offers above ' + this.minimumOffer + ' STX will be considered'
         return
       }
@@ -121,7 +123,7 @@ export default {
       return contractAsset.saleData.saleType
     },
     offerState () {
-      return (this.offerAmount >= this.minimumOffer)
+      return (this.offerAmount > this.minimumOffer)
     }
   }
 }

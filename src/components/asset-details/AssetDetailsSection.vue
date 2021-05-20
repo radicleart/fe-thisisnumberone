@@ -48,13 +48,15 @@
               </b-row>
               <b-row v-else>
                 <b-col v-if="webWalletNeeded" md="6" sm="12" class="mb-3">
-                    <b-button class="w-100" style="height: 61px;" variant="outline-light"><a href="https://www.hiro.so/wallet/install-web" class="text-white" target="_blank">Get Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-button>
+                    <b-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttWalletHelp" class="w-100" style="height: 61px;" variant="outline-light"><a href="https://www.hiro.so/wallet/install-web" class="text-white" target="_blank">Get Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-button>
                 </b-col>
                 <b-col md="6" sm="12" class="mb-3" v-else-if="getSaleType() > 0 && getSaleType() < 3">
-                  <square-button @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
+                  <!-- <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link> -->
+                  <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
                 </b-col>
-                <b-col md="6" sm="12">
-                  <square-button @clickButton="openOfferPurchaceDialog()" :theme="'light'" :label1="'MAKE OFFER'" :icon="'eye'" :text-warning="true"/>
+                <b-col md="6" sm="12" class="text-right">
+                  <!-- <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link> -->
+                  <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" @clickButton="openOfferPurchaceDialog()" :theme="'light'" :label1="'MAKE OFFER'" :icon="'eye'" :text-warning="true"/>
                 </b-col>
               </b-row>
             </div>
@@ -328,7 +330,7 @@ export default {
       const label = this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
       if (contractAsset.saleData.saleType === 2) {
         const bid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](contractAsset)
-        if (bid) return label + ' ' + bid.amountFmt + ' STX'
+        if (bid) return 'BID: ' + bid.amountFmt + ' STX'
       }
       return label
     },
@@ -339,6 +341,18 @@ export default {
     confirmOfferDialog () {
       const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('confirm-offer')
       return dialog
+    },
+    ttWalletHelp () {
+      const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-wallet-help')
+      return (tooltip) ? tooltip[0].text : ''
+    },
+    ttBiddingHelp () {
+      const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-bidding-help')
+      return (tooltip) ? tooltip[0].text : ''
+    },
+    ttOfferingHelp () {
+      const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-offering-help')
+      return (tooltip) ? tooltip[0].text : ''
     },
     ttOnAuction () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)

@@ -8,10 +8,13 @@
   </b-row>
   <b-row class="row mt-5">
     <b-col md="4" sm="12">
+      <p v-if="sendOfferDialog[1]" v-html="sendOfferDialog[1].text"></p>
+      <!--
       <h4>{{sendOfferDialog[2].text}}</h4>
       <p v-if="sendOfferDialog[3]">{{sendOfferDialog[3].text}}</p>
       <p v-if="sendOfferDialog[4]">{{sendOfferDialog[4].text}}</p>
       <p v-if="sendOfferDialog[5]">{{sendOfferDialog[5].text}}</p>
+      -->
       <div class="mt-5"><a href="#" @click.prevent="back()"><b-icon icon="chevron-left"/> Back</a></div>
     </b-col>
     <b-col md="8" sm="12">
@@ -19,7 +22,7 @@
         <b-col align-self="start" sm="12">
           <div class="text-small d-flex justify-content-between">
             <div>Confirm Your Interest</div>
-            <div>Your Offer <span class="ml-5 text-dark">{{offerData.offerAmount}} STX</span></div>
+            <div>Your Offer <span class="ml-5 text-dark">{{Number(offerData.offerAmount).toLocaleString()}} STX</span></div>
           </div>
           <div class="mb-3" role="group">
             <b-form-input
@@ -36,7 +39,7 @@
       </b-row>
     </b-col>
   </b-row>
-  <action-row :buttonLabel="'submit'" @clickButton="makeOffer()"/>
+  <action-row :buttonLabel="'Next'" @clickButton="makeOffer()"/>
 </div>
 </template>
 
