@@ -59,6 +59,11 @@
                   <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" @clickButton="openOfferPurchaceDialog()" :theme="'light'" :label1="'MAKE OFFER'" :icon="'eye'" :text-warning="true"/>
                 </b-col>
               </b-row>
+              <b-row class="text-right text-small my-4" v-if="false && usdAmount">
+                <b-col md="12" sm="12" class="mb-3">
+                  <span>{{usdAmount}}</span>
+                </b-col>
+              </b-row>
             </div>
           </b-col>
         </b-row>
@@ -317,6 +322,20 @@ export default {
     }
   },
   computed: {
+    usdAmount () {
+      try {
+        const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+        const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
+        const rate = tickerRates.find((o) => o.currency === 'USD')
+        const offer = this.$store.getters[APP_CONSTANTS.KEY_HIGHEST_OFFER_ON_ASSET](contractAsset.tokenInfo.assetHash)
+        const currentOffer = (offer && offer.amount) ? offer.amount : 0
+        const minimumOffer = Math.max(currentOffer, (contractAsset.saleData.reservePrice))
+        const amountUsd = Number(utils.toDecimals(rate.stxPrice * minimumOffer)).toLocaleString()
+        return 'Current highest offer: ' + amountUsd + ' USD'
+      } catch (e) {
+        return null
+      }
+    },
     currentCost: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
       if (!contractAsset) return

@@ -33,7 +33,9 @@
     </b-col>
     <b-col md="2" sm="4" class="text-small" style="border-left: 1pt solid #000;">
       <div>{{rateMessage()}}</div>
-      <div>{{Number(minimumOffer).toLocaleString()}} STX</div>
+      <div style="font-weight: 700;">{{Number(minimumOffer).toLocaleString()}}  <span class="text-warning">STX</span></div>
+      =
+      <div style="font-weight: 700;">{{usdAmount}} <span class="text-warning">USD</span></div>
     </b-col>
   </b-row>
   <action-row :buttonLabel="'Next'" @clickButton="next"/>
@@ -109,6 +111,16 @@ export default {
       const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
       const rate = tickerRates.find((o) => o.currency === this.currency)
       return rate
+    },
+    usdAmount () {
+      try {
+        const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
+        const rate = tickerRates.find((o) => o.currency === 'USD')
+        // return utils.toDecimals(rate.stxPrice * this.minimumOffer)
+        return Number(utils.toDecimals(rate.stxPrice * this.minimumOffer)).toLocaleString()
+      } catch (err) {
+        return '?'
+      }
     },
     makeOfferDialog () {
       const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('make-offer')
