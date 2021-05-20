@@ -26,7 +26,6 @@ export default {
   },
   props: ['slice'],
   mounted () {
-    console.log(this.slice)
   },
   methods: {
     embeds: function (sample) {

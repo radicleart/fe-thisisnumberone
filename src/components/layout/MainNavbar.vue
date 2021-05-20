@@ -106,9 +106,7 @@ export default {
       })
     },
     startLogin () {
-      this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
-        console.log(profile)
-      }).catch((err) => {
+      this.$store.dispatch('rpayAuthStore/startLogin').catch((err) => {
         console.log(err)
         // https://www.hiro.so/wallet/install-web
         this.webWalletNeeded = true

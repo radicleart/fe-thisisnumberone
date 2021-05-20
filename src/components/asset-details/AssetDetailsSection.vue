@@ -41,18 +41,22 @@
                   <div class="more-link m-0" v-scroll-to="{ element: '#charity-section', duration: 1000 }"><b-link class="text-white">Charity</b-link></div>
                 </b-col>
               </b-row>
-              <b-row v-if="webWalletNeeded" align-h="left">
-                <b-col md="6" sm="12" class="mb-3">
-                  <div class="my-5"><a href="https://www.hiro.so/wallet/install-web" class="text-white" target="_blank">Get Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></div>
-                  <div class="text-small">Follow these instructions to setup your decentralised id and web wallet - then reload this tab!</div>
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col md="6" sm="12" class="mb-3" v-if="getSaleType() > 0">
-                  <square-button @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
-                </b-col>
+              <b-row v-if="getSaleType() === 0">
                 <b-col md="6" sm="12">
                   <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>
+                </b-col>
+              </b-row>
+              <b-row v-else>
+                <b-col v-if="webWalletNeeded" md="6" sm="12" class="mb-3">
+                    <b-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttWalletHelp" class="w-100" style="height: 61px;" variant="outline-light"><a href="https://www.hiro.so/wallet/install-web" class="text-white" target="_blank">Get Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-button>
+                </b-col>
+                <b-col md="6" sm="12" class="mb-3" v-else-if="getSaleType() > 0 && getSaleType() < 3">
+                  <!-- <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link> -->
+                  <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
+                </b-col>
+                <b-col md="6" sm="12" class="text-right">
+                  <!-- <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link> -->
+                  <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" @clickButton="openOfferPurchaceDialog()" :theme="'light'" :label1="'MAKE OFFER'" :icon="'eye'" :text-warning="true"/>
                 </b-col>
               </b-row>
             </div>
@@ -61,7 +65,7 @@
       </b-col>
     </b-row>
   <b-modal size="lg" id="asset-offer-modal" class="text-left">
-    <purchase-flow v-if="showRpay === 1" :gaiaAsset="gaiaAsset" @offerSent="offerSent"/>
+    <purchase-flow v-if="showRpay === 1" :gaiaAsset="gaiaAsset" :forceOfferFlow="forceOfferFlow" @offerSent="offerSent"/>
     <asset-updates-modal v-if="showRpay === 2" :assetHash="gaiaAsset.assetHash" @registerForUpdates="registerForUpdates"/>
     <template #modal-header="{ close }">
       <div class="text-black text-warning w-100 d-flex justify-content-end">
@@ -105,6 +109,7 @@ import SquareButton from '@/components/utils/SquareButton'
 import ShareLinks from '@/components/utils/ShareLinks'
 import moment from 'moment'
 // import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
+import utils from '@/services/utils'
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
@@ -121,6 +126,7 @@ export default {
   props: ['gaiaAsset'],
   data: function () {
     return {
+      forceOfferFlow: false,
       grid: require('@/assets/img/navbar-footer/grid.svg'),
       cross: require('@/assets/img/navbar-footer/cross.svg'),
       hammer: require('@/assets/img/auction.svg'),
@@ -185,6 +191,9 @@ export default {
         }, 400)
       })
     },
+    formatNumber: function (number) {
+      return utils.formatNumber(number)
+    },
     preserveWhiteSpace: function (content) {
       return '<span class="text-description" style="white-space: break-spaces;">' + content + '</span>'
     },
@@ -236,6 +245,7 @@ export default {
       return 'https://explorer.stacks.co/txid/' + txId + '?chain=' + NETWORK
     },
     openPurchaceDialog: function () {
+      this.forceOfferFlow = false
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       if (!profile.loggedIn && contractAsset.saleData.saleType !== 3) {
@@ -253,6 +263,11 @@ export default {
         this.showRpay = 1
         this.$bvModal.show('asset-offer-modal')
       }
+    },
+    openOfferPurchaceDialog: function () {
+      this.forceOfferFlow = true
+      this.showRpay = 1
+      this.$bvModal.show('asset-offer-modal')
     },
     getSocialLinks: function () {
       const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_CHARITY_BY_ARTIST_ID](this.artistId)
@@ -274,14 +289,20 @@ export default {
         }
       ]
     },
+    emailText () {
+      const emailText = this.$store.getters[APP_CONSTANTS.KEY_EMAIL_TEXT]('registeremail')
+      const answer = (emailText) ? emailText[0].text.replaceAll('amount_stx', this.offerData.offerAmount) : 'Interest Registered'
+      return answer
+    },
     registerForUpdates: function (email) {
       const data = {
+        emailContent: this.emailText(),
         status: 1,
         domain: location.host,
         assetHash: this.assetHash,
         email: email
       }
-      this.$store.dispatch('assetGeneralStore/registerForUpdates', data).then((result) => {
+      this.$store.dispatch('rpayPurchaseStore/registerForUpdates', data).then((result) => {
         this.$store.commit('setModalMessage', 'Thanks for registering an interest - we will keep you updated.')
         this.showRpay = 0
         this.$bvModal.hide('asset-offer-modal')
@@ -302,10 +323,16 @@ export default {
       return contractAsset.tokenInfo.editionCost
     },
     salesButtonLabel () {
+      if (this.webWalletNeeded) return 'GET STACKS WALLET'
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      if (!profile.loggedIn && contractAsset.saleData.saleType !== 3) return 'LOGIN'
-      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
+      if (!profile.loggedIn && contractAsset.saleData.saleType !== 3) return 'LOGIN TO BID'
+      const label = this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
+      if (contractAsset.saleData.saleType === 2) {
+        const bid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](contractAsset)
+        if (bid) return 'BID: ' + bid.amountFmt + ' STX'
+      }
+      return label
     },
     salesBadgeLabel () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
@@ -314,6 +341,18 @@ export default {
     confirmOfferDialog () {
       const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('confirm-offer')
       return dialog
+    },
+    ttWalletHelp () {
+      const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-wallet-help')
+      return (tooltip) ? tooltip[0].text : ''
+    },
+    ttBiddingHelp () {
+      const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-bidding-help')
+      return (tooltip) ? tooltip[0].text : ''
+    },
+    ttOfferingHelp () {
+      const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-offering-help')
+      return (tooltip) ? tooltip[0].text : ''
     },
     ttOnAuction () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)

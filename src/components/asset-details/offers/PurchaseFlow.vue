@@ -1,7 +1,7 @@
 <template>
 <div v-if="!loading">
   <div v-if="flowType === 1">
-    <purchase-offer-login :offerData="offerData" @registerByEmail="registerByEmail" @registerByConnect="registerByConnect"/>
+    <purchase-offer-login :offerData="offerData" @registerByEmail="registerByEmail" @registerByConnect="registerByConnect" @backStep="backStep"/>
   </div>
   <div v-else-if="flowType === 2">
     <purchase-offer-success :offerData="offerData" :contentKey="contentKey"/>
@@ -10,21 +10,28 @@
     <purchase-offer-failure :offerData="offerData"/>
   </div>
   <div v-else>
-    <div v-if="contractAsset && contractAsset.saleData.saleType === 1">
-      <purchase-buy-now :contractAsset="contractAsset" :saleData="contractAsset.saleData" @buyNow="buyNow"/>
-      <div class="text-danger" v-html="errorMessage"></div>
-    </div>
-    <div v-else-if="contractAsset && contractAsset.saleData.saleType === 2">
-      <purchase-place-bid :contractAsset="contractAsset" @placeBid="placeBid"/>
-      <div class="text-danger" v-html="errorMessage"></div>
-    </div>
-    <div v-else-if="contractAsset && contractAsset.saleData.saleType === 3">
-      <purchase-offer-amount :offerData="offerData" v-if="contractAsset.saleData.saleType === 3 && offerStage === 0" @collectEmail="collectEmail"/>
-      <purchase-offer-email :offerData="offerData" v-else-if="contractAsset.saleData.saleType === 3 && offerStage === 1" @backStep="backStep" @setEmail="setEmail"/>
+    <div v-if="contractAsset && forceOfferFlow">
+      <purchase-offer-amount :offerData="offerData" v-if="offerStage === 0" @collectEmail="collectEmail"/>
+      <purchase-offer-email :offerData="offerData" v-else-if="offerStage === 1" @backStep="backStep" @setEmail="setEmail"/>
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
     <div v-else>
-      Asset not on sale.
+      <div v-if="contractAsset && contractAsset.saleData.saleType === 1">
+        <purchase-buy-now :contractAsset="contractAsset" :saleData="contractAsset.saleData" @buyNow="buyNow"/>
+        <div class="text-danger" v-html="errorMessage"></div>
+      </div>
+      <div v-else-if="contractAsset && contractAsset.saleData.saleType === 2">
+        <purchase-place-bid :contractAsset="contractAsset" @placeBid="placeBid"/>
+        <div class="text-danger" v-html="errorMessage"></div>
+      </div>
+      <div v-else-if="contractAsset && contractAsset.saleData.saleType === 3">
+        <purchase-offer-amount :offerData="offerData" v-if="offerStage === 0" @collectEmail="collectEmail"/>
+        <purchase-offer-email :offerData="offerData" v-else-if="offerStage === 1" @backStep="backStep" @setEmail="setEmail"/>
+        <div class="text-danger" v-html="errorMessage"></div>
+      </div>
+      <div v-else>
+        Asset not on sale.
+      </div>
     </div>
   </div>
 </div>
@@ -62,7 +69,7 @@ export default {
     PurchaseBuyNow,
     PurchasePlaceBid
   },
-  props: ['gaiaAsset'],
+  props: ['gaiaAsset', 'forceOfferFlow'],
   data () {
     return {
       errorMessage: null,
@@ -104,7 +111,11 @@ export default {
     },
     setOfferData: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      const offer = this.$store.getters[APP_CONSTANTS.KEY_HIGHEST_OFFER_ON_ASSET](contractAsset.tokenInfo.assetHash)
       this.minimumOffer = (contractAsset.saleData.reservePrice)
+      if (offer && offer.amount) {
+        this.minimumOffer = Math.max(offer.amount, (contractAsset.saleData.reservePrice))
+      }
       this.offerData.minimumOffer = this.minimumOffer
       this.offerData.fbet = this.getFormattedBiddingEndTime(contractAsset)
       if (!this.offerData.offerAmount) {
@@ -116,6 +127,7 @@ export default {
     },
     backStep: function () {
       this.offerStage = 0
+      this.flowType = 0
     },
     collectEmail: function (data) {
       Object.assign(this.offerData, data)
@@ -123,12 +135,15 @@ export default {
     },
     setEmail: function (data) {
       this.offerData.email = data.email
-      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      // const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      this.flowType = 1
+      /**
       if (!profile.loggedIn) {
         this.flowType = 1
       } else {
         this.makeOffer()
       }
+      **/
     },
     registerByEmail: function () {
       this.offerData.registerByEmail = true
@@ -138,10 +153,16 @@ export default {
       this.offerData.registerByEmail = false
       this.makeOffer()
     },
+    emailText () {
+      const emailText = this.$store.getters[APP_CONSTANTS.KEY_EMAIL_TEXT]('offeremail')
+      const answer = (emailText) ? emailText[0].text.replaceAll('amount_stx', this.offerData.offerAmount) : 'Offer Registered'
+      return answer
+    },
     registerOfferOffChain: function (status) {
       this.flowType = 2
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       const data = {
+        emailContent: this.emailText(),
         status: status,
         domain: location.host,
         contractAddress: STX_CONTRACT_ADDRESS,

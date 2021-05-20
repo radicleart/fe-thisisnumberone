@@ -13,7 +13,7 @@
   <b-form-invalid-feedback id="email-feedback">
     Enter email
   </b-form-invalid-feedback>
-  <action-row :buttonLabel="'SUBMIT'" @clickButton="registerForUpdates"/>
+  <action-row :buttonLabel="'Submit'" @clickButton="registerForUpdates"/>
 </div>
 </template>
 

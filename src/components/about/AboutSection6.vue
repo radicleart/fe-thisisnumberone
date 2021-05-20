@@ -32,7 +32,6 @@ export default {
   mounted () {
     let change = this.content.section6rtf1[1].text
     change = change.replace('collaborate@thisisnumberone.com', '<span style="color: #FF9900">collaborate@thisisnumberone.com</span>')
-    console.log(change)
     this.adaptedText = change
   }
 }

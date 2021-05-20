@@ -5,6 +5,8 @@
     <div class="col-10">{{offer.offerer}}</div>
     <div class="col-2">Amount</div>
     <div class="col-10">{{offer.amount}} STX</div>
+    <div class="col-2">Email</div>
+    <div class="col-10">{{offer.email}} STX</div>
     <div class="col-2">Made</div>
     <div class="col-10">{{offerMade(offer.appTimestamp)}}</div>
     <div class="col-2"></div>
@@ -14,6 +16,8 @@
     <div class="col-10">{{dbOffer.offerer}}</div>
     <div class="col-2">Amount</div>
     <div class="col-10">{{dbOffer.amount}} STX</div>
+    <div class="col-2">Email</div>
+    <div class="col-10">{{dbOffer.email}} STX</div>
     <div class="col-2">Made</div>
     <div class="col-10">{{offerMade(dbOffer.appTimestamp)}}</div>
     <div class="col-2"></div>

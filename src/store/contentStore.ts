@@ -11,6 +11,7 @@ const contentStore = {
       homepage: null,
       about: null,
       tooltips: null,
+      emails: null,
       howItWorks: null
     },
     defaultArtist: 'chemicalx',
@@ -53,6 +54,10 @@ const contentStore = {
     getTooltip: state => tooltipId => {
       if (!state.content.tooltips || !state.content.tooltips[tooltipId]) return
       return state.content.tooltips[tooltipId]
+    },
+    getEmail: state => emailId => {
+      if (!state.content.emails || !state.content.emails[emailId]) return
+      return state.content.emails[emailId]
     },
     getTransactionDialogMessage: (state, getters) => data => {
       let dKey = data.dKey
@@ -109,6 +114,9 @@ const contentStore = {
   mutations: {
     addTooltips (state, o) {
       state.content.tooltips = o
+    },
+    addEmails (state, o) {
+      state.content.emails = o
     },
     addDialogs (state, o) {
       state.content.dialogs = o

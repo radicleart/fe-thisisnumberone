@@ -6,23 +6,15 @@
     </b-col>
   </b-row>
   <b-row class="row mt-2">
-    <b-col align-v="stretch" md="4" sm="12">
+    <b-col align-v="stretch" md="12" sm="12">
       <p v-if="makeOfferDialog[1]">{{makeOfferDialog[1].text}}</p>
       <p v-if="makeOfferDialog[2]">{{makeOfferDialog[2].text}}</p>
       <p v-if="makeOfferDialog[3]">{{makeOfferDialog[3].text}}</p>
       <p v-if="makeOfferDialog[4]">{{makeOfferDialog[4].text}}</p>
-      <div class="mt-5"><a href="#" @click.prevent="back()"><b-icon icon="chevron-left"/> Back</a></div>
-    </b-col>
-    <b-col md="8" sm="6">
-      <div class="mb-3 mt-4">Connect to wallet or..</div>
-      <div class="text-left mt-5"><b-link @click="registerByEmail">Register your offer by email</b-link></div>
+      <div class="mt-5"><b-link href="#" @click.prevent="$emit('backStep')"><b-icon icon="chevron-left"/> Back</b-link></div>
     </b-col>
   </b-row>
-  <div class="text-left mt-4" v-if="webWalletNeeded">
-    <div><a href="https://www.hiro.so/wallet/install-web" target="_blank">Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></div>
-    <div class="text-small">Follow these instructions to setup your decentralised id and web wallet - then reload this tab!</div>
-  </div>
-  <action-row v-else :buttonLabel="'CONNECT'" @clickButton="connect"/>
+  <action-row :buttonLabel2="'Send via email'" :buttonLabel="buttonLabel()" @clickButton="connect"/>
 </div>
 </template>
 
@@ -31,7 +23,7 @@ import ActionRow from '@/components/utils/ActionRow'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
-  name: 'PurchaseOfferAmount',
+  name: 'PurchaseOfferLogin',
   components: {
     ActionRow
   },
@@ -60,13 +52,27 @@ export default {
     rateMessage: function () {
       return 'Offers above ' + this.minimumOffer + ' STX will be considered'
     },
+    buttonLabel: function () {
+      if (this.webWalletNeeded) return 'Install Stacks Wallet'
+      return 'Send via Stacks Wallet'
+    },
     back: function () {
       this.$emit('backStep')
     },
     registerByEmail: function () {
       this.$emit('registerByEmail')
     },
-    connect: function () {
+    connect: function (data) {
+      if (data === 'Send via email') {
+        this.registerByEmail()
+        return
+      } else if (data === 'Install Stacks Wallet') {
+        window.open(
+          'https://www.hiro.so/wallet/install-web',
+          '_blank'
+        )
+        return
+      }
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       if (profile.loggedIn) {
         this.$emit('registerByConnect')
