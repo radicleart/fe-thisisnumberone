@@ -59,11 +59,6 @@
                   <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" @clickButton="openOfferPurchaceDialog()" :theme="'light'" :label1="'MAKE OFFER'" :icon="'eye'" :text-warning="true"/>
                 </b-col>
               </b-row>
-              <b-row class="text-right text-small my-4" v-if="false && usdAmount">
-                <b-col md="12" sm="12" class="mb-3">
-                  <span>{{usdAmount}}</span>
-                </b-col>
-              </b-row>
             </div>
           </b-col>
         </b-row>
@@ -73,7 +68,7 @@
     <purchase-flow v-if="showRpay === 1" :gaiaAsset="gaiaAsset" :forceOfferFlow="forceOfferFlow" @offerSent="offerSent"/>
     <asset-updates-modal v-if="showRpay === 2" :assetHash="gaiaAsset.assetHash" @registerForUpdates="registerForUpdates"/>
     <template #modal-header="{ close }">
-      <div class="text-black text-warning w-100 d-flex justify-content-end">
+      <div class=" text-warning w-100 d-flex justify-content-end">
         <b-button size="sm" variant="white" @click="close()"  class="m-0 p-1 text-dark" style="max-width: 30px !important; max-height: 30px !important;">
           <img :src="cross" class="filter-black" alt="close" style="max-width: 20px !important; max-height: 20px !important;"/>
         </b-button>
