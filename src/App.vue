@@ -54,6 +54,7 @@ export default {
           if (data.opcode === 'configured') {
             $self.$store.dispatch('initApplication').then(() => {
               // $self.$store.dispatch('rpaySearchStore/fetchContractData')
+              $self.$store.dispatch('rpayPurchaseStore/fetchOffers')
               $self.configured = true
             })
           } else if (data.opcode === 'stx-transaction-finished') {
