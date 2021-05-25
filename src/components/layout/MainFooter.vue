@@ -57,6 +57,9 @@
           <div>
             <a :href="'mailto:enquiries@thisisnumberone.com'" target="_blank">Get in touch</a>
           </div>
+          <div>
+            <b-link to="/information/faq">Read FAQ</b-link>
+          </div>
           <!--
           <div v-for="(item,index) of content.news_column" :key="index">
             <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href="item.link.url" target="_blank">{{ item.title_of_the_link[0].text }}</a></div>

@@ -13,8 +13,8 @@
         </div>
       </div>
     </b-col>
-    <b-col cols="12">
-      <div class="text-small">Need help? <a class="inline-link" href="mailto:info@thisisnumberone.com">Email us</a></div>
+    <b-col sm="12">
+      <div class="text-small">Need help? <b-link class="inline-link" to="/information/faq">Read FAQ</b-link> or <a class="inline-link" href="mailto:info@thisisnumberone.com">Email us</a></div>
     </b-col>
   </b-row>
 </template>
