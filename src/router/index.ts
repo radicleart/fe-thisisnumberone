@@ -71,7 +71,7 @@ const routes: Array<RouteConfig> = [
     components: { default: ItemPreview, header: MainNavbar, footer: MainFooter }
   },
   {
-    path: '/information/:infoId',
+    path: '/information',
     name: 'info-page',
     components: { default: Information, header: MainNavbar, footer: MainFooter }
   },

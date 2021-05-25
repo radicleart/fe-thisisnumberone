@@ -26,17 +26,17 @@ export default {
   },
   data () {
     return {
+      pageID: 'faq'
     }
   },
   methods: {
     getKey: function () {
-      return this.$route.params.infoId
+      return this.$route.params
     }
   },
   computed: {
     content () {
-      const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_INFO_PAGE](this.$route.params.infoId)
-      // if (!content) content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_INFO_PAGE]('info-privacy-policy')
+      const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_INFO_PAGE](this.pageID)
       if (content && content.data && content.data.information) return content.data.information
       return null
     }

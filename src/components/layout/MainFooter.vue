@@ -27,6 +27,9 @@
           <div v-scroll-to="{ offset: -60, element: '#collaborate', duration: 1000 }">
             <b-link to="/about">Collaborate</b-link>
           </div>
+          <div>
+            <b-link to="/information">FAQ</b-link>
+          </div>
           <!--
           <div v-for="(item,index) of content.column_about" :key="index">
             <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href="item.link.url" target="_blank">{{ item.title_of_the_link[0].text }}</a></div>
