@@ -10,13 +10,17 @@ import AdminNavbar from '@/components/layout/AdminNavbar.vue'
 // public pages
 import HomeFooter from '@/components/layout/HomeFooter.vue'
 import Login from '../views/Login.vue'
-// import Information from '../views/Information.vue'
-const Information = () => import('../views/Information.vue')
+import Information from '../views/Information.vue'
+// const Information = () => import('../views/Information.vue')
 
 const Charity = () => import('../views/Charity.vue')
 const AssetDetails = () => import('../views/AssetDetails.vue')
 const About = () => import('../views/About.vue')
 const NumberOne = () => import('../views/NumberOne.vue')
+// const Charity = () => import('../views/Charity.vue')
+// const AssetDetails = () => import('../views/AssetDetails.vue')
+// const About = () => import('../views/About.vue')
+// const NumberOne = () => import('../views/NumberOne.vue')
 
 // private pages
 const Admin = () => import('../views/Admin.vue')

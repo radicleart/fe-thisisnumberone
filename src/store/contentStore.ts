@@ -83,10 +83,10 @@ const contentStore = {
       return state.content.artists
     },
     getArtistById: state => id => {
-      return state.content.artists.find((o) => o.uid === id)
+      return (state.content.artists) ? state.content.artists.find((o) => o.uid === id) : null
     },
     getInformationById: state => id => {
-      return state.content.information.find((o) => o.uid === id)
+      return (state.content.information) ? state.content.information.find((o) => o.uid === id) : null
     },
     getArtistId: state => artist => {
       try {
