@@ -77,7 +77,6 @@ export default {
       window.open(link)
     },
     getLogo () {
-      if (this.$route.name === 'about') return this.rainbowOne
       return this.logo
     },
     transme () {
