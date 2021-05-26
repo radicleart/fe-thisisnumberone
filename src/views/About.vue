@@ -2,7 +2,7 @@
 <div v-if="content">
   <div class="p-5">
     <b-navbar toggleable="md" class="p-5" fixed="top" type="dark" variant="black">
-      <b-navbar-brand href="#"><b-link to="/"><img width="45px" :src="rainbowOne" /></b-link></b-navbar-brand>
+      <b-navbar-brand href="#"><b-link to="/"><img height="30px" :src="logo" /></b-link></b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse" class="text-white">
         <template #default="{ expanded }">
@@ -20,6 +20,10 @@
           <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -80, element: '#charity-grid', duration: 1000 }" href="#charity">Charity</a></b-nav-item>
           <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -60, element: '#about-section5', duration: 1000 }" href="#about-section5">Environment</a></b-nav-item>
           <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: 50, element: '#collaborate', duration: 1000 }" href="#collaborate">Collaborate</a></b-nav-item>
+        </b-navbar-nav>
+
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item><b-link class="text-white top-content" to="/about"><img height="30px" :src="wtf" alt="about link"/></b-link></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -54,9 +58,11 @@ export default {
   },
   data () {
     return {
+      wtf: 'https://images.prismic.io/dbid/5b31fbd1-ca16-4fa0-bd5c-2d82b3ef98cc_WTF.png?auto=compress,format',
       rainbowOne: require('@/assets/img/Group 76.svg'),
       grid: require('@/assets/img/navbar-footer/grid.svg'),
-      cross: require('@/assets/img/navbar-footer/cross.svg')
+      cross: require('@/assets/img/navbar-footer/cross.svg'),
+      logo: require('@/assets/img/navbar-footer/logo.svg')
     }
   },
   methods: {
