@@ -68,7 +68,10 @@ export default {
   },
   mounted () {
     this.minimumOffer = this.offerData.minimumOffer
-    this.offerAmount = this.offerData.offerAmount
+    this.offerAmount = this.offerData.offerAmount + 500
+    if (this.offerData.offerAmount > 20000) {
+      this.offerAmount = this.offerData.offerAmount + 1000
+    }
     this.offerAmountFiat = utils.toDecimals(this.currentRate.stxPrice * this.offerData.offerAmount)
     this.$emit('updateSaleDataInfo', { field: 'saleType', value: 3 })
     this.loading = false
