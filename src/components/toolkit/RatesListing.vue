@@ -3,7 +3,7 @@
   <div class="">
         <div class="">
           <div style="" class="text-right mr-4">
-            {{Number(amount).toLocaleString()}} <span style="font-weight: 600">STX</span>
+            {{(amount) ? Number(amount).toLocaleString() : 0}} <span style="font-weight: 600">STX</span>
           </div>
         </div>
         <div v-for="(rate, index) in rates" :key="index" class="">
@@ -55,6 +55,7 @@ export default {
     rates () {
       const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
       const options = []
+      if (!this.amount) return options
       const stxToBtc = tickerRates[0].stxPrice / tickerRates[0].last
       options.push({
         text: 'BTC',

@@ -126,7 +126,6 @@ export default {
   mounted () {
     const $self = this
     const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-    this.$store.dispatch('rpayPurchaseStore/fetchOffers')
     // if (item.uploader !== profile.username) throw new Error('Unexpected NFT ownership error')
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: item })
     if (window.eventBus && window.eventBus.$on) {

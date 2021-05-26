@@ -33,7 +33,8 @@
     </b-col>
     <b-col md="2" sm="4" class="text-small" style="border-left: 1pt solid #000;">
       <div>{{rateMessage()}}</div>
-      <div>{{Number(minimumOffer).toLocaleString()}} STX</div>
+      <div style="font-weight: 700;">{{offerData.minimumOffer}}  <span class="text-warning">STX</span></div>
+      <div style="font-weight: 700;">{{offerData.amountUsdFmt}} <span class="text-warning">USD</span></div>
     </b-col>
   </b-row>
   <action-row :buttonLabel="'Next'" @clickButton="next"/>
@@ -91,17 +92,6 @@ export default {
         return
       }
       this.$emit('collectEmail', { offerAmount: this.offerAmount })
-    },
-    checkAndConvertToDecimals: function () {
-      if (this.offerAmount < this.minimumOffer) {
-        // this.offerAmount = this.minimumOffer
-      }
-      if (this.offerAmount !== 0) this.offerAmount = Math.round(this.offerAmount * 100) / 100
-    },
-    updateOfferAmount: function () {
-      if (this.offerAmount < this.minimumOffer) {
-        this.offerAmount = this.minimumOffer
-      }
     }
   },
   computed: {

@@ -93,6 +93,8 @@ export default {
       this.loading = false
     }).catch(() => {
       this.loading = false
+      this.setOfferData()
+      this.setBiddingData()
     })
     const $self = this
     window.eventBus.$on('rpayEvent', function (data) {
@@ -112,14 +114,18 @@ export default {
     setOfferData: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       const offer = this.$store.getters[APP_CONSTANTS.KEY_HIGHEST_OFFER_ON_ASSET](contractAsset.tokenInfo.assetHash)
-      this.minimumOffer = (contractAsset.saleData.reservePrice)
+      this.offerData.minimumOffer = (contractAsset.saleData.reservePrice)
       if (offer && offer.amount) {
-        this.minimumOffer = Math.max(offer.amount, (contractAsset.saleData.reservePrice))
+        this.offerData.minimumOffer = Math.max(offer.amount, (contractAsset.saleData.reservePrice))
       }
-      this.offerData.minimumOffer = this.minimumOffer
       this.offerData.fbet = this.getFormattedBiddingEndTime(contractAsset)
-      if (!this.offerData.offerAmount) {
-        this.offerData.offerAmount = this.minimumOffer
+      this.offerData.offerAmount = this.offerData.minimumOffer
+      const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
+      const rate = tickerRates.find((o) => o.currency === 'USD')
+      this.offerData.amountUsdFmt = 0
+      if (this.offerData.minimumOffer) {
+        const amountUsd = Number(utils.toDecimals(rate.stxPrice * this.offerData.minimumOffer)).toLocaleString()
+        this.offerData.amountUsdFmt = amountUsd
       }
     },
     getFormattedBiddingEndTime: function (contractAsset) {

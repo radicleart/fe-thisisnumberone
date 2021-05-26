@@ -21,6 +21,9 @@
           <div v-scroll-to="{ offset: -60, element: '#charity-grid', duration: 1000 }">
             <b-link to="/about">Charities</b-link>
           </div>
+          <div v-scroll-to="{ offset: -60, element: '#about-section5', duration: 1000 }">
+            <b-link to="/about">Environment</b-link>
+          </div>
           <div v-scroll-to="{ offset: -60, element: '#collaborate', duration: 1000 }">
             <b-link to="/about">Collaborate</b-link>
           </div>
@@ -53,6 +56,9 @@
           </div>
           <div>
             <a :href="'mailto:enquiries@thisisnumberone.com'" target="_blank">Get in touch</a>
+          </div>
+          <div>
+            <b-link to="/information/faq">Read FAQ</b-link>
           </div>
           <!--
           <div v-for="(item,index) of content.news_column" :key="index">

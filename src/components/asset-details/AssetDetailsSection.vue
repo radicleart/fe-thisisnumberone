@@ -68,7 +68,7 @@
     <purchase-flow v-if="showRpay === 1" :gaiaAsset="gaiaAsset" :forceOfferFlow="forceOfferFlow" @offerSent="offerSent"/>
     <asset-updates-modal v-if="showRpay === 2" :assetHash="gaiaAsset.assetHash" @registerForUpdates="registerForUpdates"/>
     <template #modal-header="{ close }">
-      <div class="text-black text-warning w-100 d-flex justify-content-end">
+      <div class=" text-warning w-100 d-flex justify-content-end">
         <b-button size="sm" variant="white" @click="close()"  class="m-0 p-1 text-dark" style="max-width: 30px !important; max-height: 30px !important;">
           <img :src="cross" class="filter-black" alt="close" style="max-width: 20px !important; max-height: 20px !important;"/>
         </b-button>
@@ -317,6 +317,20 @@ export default {
     }
   },
   computed: {
+    usdAmount () {
+      try {
+        const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+        const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
+        const rate = tickerRates.find((o) => o.currency === 'USD')
+        const offer = this.$store.getters[APP_CONSTANTS.KEY_HIGHEST_OFFER_ON_ASSET](contractAsset.tokenInfo.assetHash)
+        const currentOffer = (offer && offer.amount) ? offer.amount : 0
+        const minimumOffer = Math.max(currentOffer, (contractAsset.saleData.reservePrice))
+        const amountUsd = Number(utils.toDecimals(rate.stxPrice * minimumOffer)).toLocaleString()
+        return 'Current highest offer: ' + amountUsd + ' USD'
+      } catch (e) {
+        return null
+      }
+    },
     currentCost: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
       if (!contractAsset) return
