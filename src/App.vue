@@ -148,7 +148,11 @@ export default {
   },
   computed: {
     getPixelBackground () {
+      console.log(this.$route.name)
       if (this.$route.name === 'about') {
+        return this.aboutBackground
+      }
+      if (this.$route.name === 'info-page') {
         return this.aboutBackground
       }
       return this.$store.getters[APP_CONSTANTS.KEY_PIXEL_BACKGROUND]
