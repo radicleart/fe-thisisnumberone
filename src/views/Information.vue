@@ -60,4 +60,12 @@ div >>> .child-information h3 {
   font-size: 2.5rem !important;
   margin-top: 3rem !important;
 }
+div >>> .child-information p {
+  max-width: 700px;
+  text-align: justify;
+}
+.child-information {
+  margin-bottom: 5rem;
+  margin-top: -3rem;
+}
 </style>
