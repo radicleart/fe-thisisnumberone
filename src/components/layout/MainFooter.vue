@@ -86,6 +86,8 @@
               <a :href="item.link.url" target="_blank"><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
             </div>
           </div>
+          <div v-if="!loggedIn"><b-link variant="light" @click.prevent="startLogin()">Own NFTs here?</b-link></div>
+          <div v-else><b-link variant="light" @click.prevent="startLogout()">Logout</b-link></div>
         </div>
       </div>
 
@@ -133,8 +135,32 @@ export default {
     }
   },
   methods: {
+    startLogout () {
+      this.$store.dispatch('rpayAuthStore/startLogout').then(() => {
+        // localStorage.clear()
+        // sessionStorage.clear()
+        if (this.$route.name !== 'splash') {
+          this.$router.push('/')
+        }
+      })
+    },
+    startLogin () {
+      this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
+        if (this.$route.name !== 'my-nfts') {
+          this.$router.push('/my-nfts')
+        }
+      }).catch((err) => {
+        console.log(err)
+        // https://www.hiro.so/wallet/install-web
+        this.webWalletNeeded = true
+      })
+    }
   },
   computed: {
+    loggedIn () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      return profile.loggedIn
+    },
     getBreakLine () {
       return this.$store.getters[APP_CONSTANTS.KEY_BREAK_LINE]
     },

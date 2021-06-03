@@ -25,10 +25,12 @@ const NumberOne = () => import('../views/NumberOne.vue')
 // private pages
 const Admin = () => import('../views/Admin.vue')
 const OfferAdmin = () => import('../views/OfferAdmin.vue')
+const NftPreview = () => import('../views/NftPreview.vue')
 const ItemPreview = () => import('../views/ItemPreview.vue')
 const UploadItem = () => import('../views/UploadItem.vue')
 const UpdateItem = () => import('../views/UpdateItem.vue')
 const MyItems = () => import('../views/MyItems.vue')
+const MyNfts = () => import('../views/MyNfts.vue')
 
 Vue.use(VueRouter)
 
@@ -168,6 +170,25 @@ const routes: Array<RouteConfig> = [
     meta: {
       requiresAuth: true,
       requiresAdmin: true
+    }
+  },
+  {
+    path: '/nft-preview/:assetHash',
+    name: 'nft-preview',
+    components: { default: NftPreview, header: MainNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Item preview'
+    }
+  },
+  {
+    path: '/my-nfts',
+    name: 'my-nfts',
+    components: { default: MyNfts, header: MainNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false
     }
   }
 ]

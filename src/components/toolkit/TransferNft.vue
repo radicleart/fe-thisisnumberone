@@ -1,6 +1,9 @@
 <template>
-<div  class="mt-3">
+<div  class="mt-5" id="transfer-nft">
   <div class="">
+    <div class="row mb-2">
+      <div class="col-12"><h5>Transfer NFT to new owner</h5></div>
+    </div>
     <div class="row mb-4" v-if="trackingUrl">
       <div class="col-12">Transferring - <a :href="trackingUrl" target="_blank">track progress here...</a></div>
     </div>
@@ -9,8 +12,8 @@
     </div>
     <div class="row mb-4" v-else>
       <div class="col-12 mb-3">
-        <b-input-group append="ADDR">
-          <b-form-input id="toAddress" :state="showTransferButton" v-model="toAddress" placeholder="The recipients Stacks Wallet address"></b-form-input>
+        <b-input-group append="STX ADDR">
+          <b-form-input style="height: 40px;" id="toAddress" :state="showTransferButton" v-model="toAddress" placeholder="The recipients Stacks Wallet address"></b-form-input>
         </b-input-group>
         <p class="my-3 text-danger" v-html="errorMessage">Enter the recipients {{network}} stacks address</p>
       </div>
@@ -82,4 +85,9 @@ export default {
 </script>
 
 <style>
+#transfer-nft .input-group-append .input-group-text {
+  width: 80px !important;
+  text-align: center;
+}
+
 </style>

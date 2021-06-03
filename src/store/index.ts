@@ -122,6 +122,10 @@ const lookAndFeel = {
 const gaiaAsset = {
   saleData: {}
 }
+const appDetails = {
+  name: 'Risidio #1 in NFTs',
+  icon: origin + '/img/logo/logo.png'
+}
 
 const setup = function (data) {
   if (!data.asset) data.asset = {}
@@ -134,6 +138,7 @@ const setup = function (data) {
   const risidioBaseApi = RISIDIO_API_PATH
   const configuration = {
     lookAndFeel: lookAndFeel,
+    appDetails: appDetails,
     gaiaAppDomains: ['localhost:8080', 'localhost:8081', 'localhost:8082'],
     gaiaAsset: (data.asset) ? data.asset : gaiaAsset,
     payment: payment,
