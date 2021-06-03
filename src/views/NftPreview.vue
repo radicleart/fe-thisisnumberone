@@ -46,24 +46,20 @@ export default {
   mounted () {
     this.loading = false
     this.assetHash = this.$route.params.assetHash
-    this.$store.dispatch('myItemStore/findItemByAssetHash', this.assetHash).then((item) => {
-      if (!item) {
-        this.$router.push('/my-items')
-      }
-    })
+    // this.$store.dispatch('myItemStore/findItemByAssetHash', this.assetHash)
   },
   methods: {
     preserveWhiteSpace: function (content) {
       return '<span class="text-description" style="white-space: break-spaces;">' + content + '</span>'
     },
     targetItem: function () {
-      const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
+      const item = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.assetHash)
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](item)
     }
   },
   computed: {
     videoOptions () {
-      const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
+      const item = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.assetHash)
       const videoOptions = {
         emitOnHover: true,
         playOnHover: false,
@@ -94,15 +90,12 @@ export default {
       return profile
     },
     item () {
-      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-      return item
+      const gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.assetHash)
+      return gaiaAsset
     },
     nftMedia () {
-      const item = this.$store.getters['myItemStore/myItem'](this.assetHash)
-      return item.nftMedia
-    },
-    keywords () {
-      return this.$store.getters['myItemStore/myItem'](this.assetHash)
+      const gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.assetHash)
+      return gaiaAsset.nftMedia
     }
   }
 }

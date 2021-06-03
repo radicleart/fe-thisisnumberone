@@ -23,15 +23,13 @@ export default {
     return {
       filter: 'pending',
       componentKey: 0,
-      backupItems: null,
       loaded: false
     }
   },
   mounted () {
     this.filter = this.$route.params.filter
     this.$store.dispatch('myItemStore/fetchItems').then((items) => {
-      if (!this.filter) this.$router.push('/my-nfts')
-      this.backupItems = items
+      // if (!this.filter) this.$router.push('/my-nfts')
       this.loaded = true
     })
   },
