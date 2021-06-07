@@ -67,6 +67,7 @@ export default {
     },
     getGaiaAssets () {
       const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      // resultSet = resultSet.filter((o) => o.maxEditions < 10)
       return resultSet
     }
   }
