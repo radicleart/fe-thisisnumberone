@@ -48,7 +48,7 @@
               </b-row>
               <b-row v-else>
                 <b-col v-if="webWalletNeeded" md="6" sm="12" class="mb-3">
-                    <b-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttWalletHelp" class="w-100" style="height: 61px;" variant="outline-light"><a href="https://www.hiro.so/wallet/install-web" class="text-white" target="_blank">Get Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-button>
+                    <b-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttWalletHelp" class="w-100" style="height: 61px;" variant="outline-light"><a :href="webWalletLink" class="text-white" target="_blank">Get Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-button>
                 </b-col>
                 <b-col md="6" sm="12" class="mb-3" v-else-if="getSaleType() > 0 && getSaleType() < 3">
                   <!-- <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link> -->
@@ -205,7 +205,7 @@ export default {
     },
     showEndTime: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return contractAsset.saleData.saleType === 2 || contractAsset.saleData.saleType === 3
+      return contractAsset.saleData.saleType === 2
     },
     biddingEndTime: function () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
@@ -253,7 +253,7 @@ export default {
           this.$emit('registerByConnect')
         }).catch((err) => {
           console.log(err)
-          // https://www.hiro.so/wallet/install-web
+          // https://chrome.google.com/webstore/detail/stacks-wallet/ldinpeekobnhjjdofggfgjlcehhmanlj
           this.webWalletNeeded = true
         })
       } else {
@@ -317,6 +317,12 @@ export default {
     }
   },
   computed: {
+    webWalletLink () {
+      if (this.$browserDetect.isFirefox) {
+        return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_FIREFOX]
+      }
+      return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_CHROME]
+    },
     usdAmount () {
       try {
         const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)

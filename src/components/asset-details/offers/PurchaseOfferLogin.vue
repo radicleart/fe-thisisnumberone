@@ -68,7 +68,7 @@ export default {
         return
       } else if (data === 'Install Stacks Wallet') {
         window.open(
-          'https://www.hiro.so/wallet/install-web',
+          this.webWalletLink,
           '_blank'
         )
         return
@@ -104,6 +104,12 @@ export default {
     }
   },
   computed: {
+    webWalletLink () {
+      if (this.$browserDetect.isFirefox) {
+        return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_FIREFOX]
+      }
+      return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_CHROME]
+    },
     profile () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile

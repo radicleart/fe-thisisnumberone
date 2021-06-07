@@ -4,6 +4,8 @@ export const APP_CONSTANTS = {
   SET_RPAY_FLOW: 'setRpayFlow',
   KEY_TRACKING_URL: 'getTrackingUrl',
   KEY_SECTION_HEIGHT: 'getSectionHeight',
+  KEY_WEB_WALLET_LINK_CHROME: 'getWebWalletLinkChrome',
+  KEY_WEB_WALLET_LINK_FIREFOX: 'getWebWalletLinkFirefox',
 
   KEY_ALL_OFFERS_ON_ASSET: 'assetGeneralStore/getAllOffersForAsset',
   KEY_HIGHEST_OFFER_ON_ASSET: 'assetGeneralStore/getHighestOfferForAsset',

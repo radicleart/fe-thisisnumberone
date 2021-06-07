@@ -18,7 +18,7 @@
           <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/offers">Offers</router-link></b-nav-item>
           <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/upload-item">Create NFT</router-link></b-nav-item>
           <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/admin">Admin</router-link></b-nav-item>
-          <b-nav-item v-if="!loggedIn && webWalletNeeded"><a href="https://www.hiro.so/wallet/install-web" class="text-white" target="_blank">Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-nav-item>
+          <b-nav-item v-if="!loggedIn && webWalletNeeded"><a class="mx-4 text-white" :href="webWalletLink" target="_blank">Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-nav-item>
           <b-nav-item v-if="!loggedIn"><b-link class="mx-4 text-white" to="/admin" @click.prevent="startLogin">Login</b-link></b-nav-item>
           <b-nav-item v-else><b-link class="mx-4 text-white" to="/admin" @click.prevent="logout">Logout</b-link></b-nav-item>
         </b-navbar-nav>
@@ -69,6 +69,12 @@ export default {
     }
   },
   computed: {
+    webWalletLink () {
+      if (this.$browserDetect.isFirefox) {
+        return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_FIREFOX]
+      }
+      return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_CHROME]
+    },
     avatar () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       if (profile.loggedIn) {

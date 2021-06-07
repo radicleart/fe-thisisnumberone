@@ -4,7 +4,7 @@
     <b-col cols="12" class="mb-5">
       <h1 class="mb-4">{{makeOfferDialog[0].text}}</h1>
       <h4 v-if="saleType === 2"><span class="mr-3">Auction finishes</span> <b>{{offerData.fbet}}</b></h4>
-      <h4 v-else><span class="mr-3">{{makeOfferDialog[1].text}}</span> <b>{{offerData.fbet}}</b></h4>
+      <!-- <h4 v-else><span class="mr-3">{{makeOfferDialog[1].text}}</span> <b>{{offerData.fbet}}</b></h4> -->
     </b-col>
   </b-row>
   <b-row class="row mt-2">

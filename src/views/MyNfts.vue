@@ -28,8 +28,7 @@ export default {
   },
   mounted () {
     this.filter = this.$route.params.filter
-    this.$store.dispatch('myItemStore/fetchItems').then((items) => {
-      // if (!this.filter) this.$router.push('/my-nfts')
+    this.$store.dispatch('myItemStore/fetchItems').then(() => {
       this.loaded = true
     })
   },

@@ -4,7 +4,7 @@
   <div class="text-white">
     <div class="mt-5 mb-2 d-flex justify-content-between">
       <div class="">
-        <b-link router-tag="a" :to="assetUrl">{{item.name}}</b-link>
+        <b-link router-tag="a" :to="assetUrl" v-if="contractAsset">{{item.name}} {{contractAsset.tokenInfo.edition}} / {{contractAsset.tokenInfo.maxEditions}}</b-link>
       </div>
       <div>
         <b-link class="mr-2" :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"></b-icon></b-link>

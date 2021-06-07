@@ -68,8 +68,7 @@ export default {
       rainbowOne: require('@/assets/img/Group 76.svg'),
       grid: require('@/assets/img/navbar-footer/grid.svg'),
       cross: require('@/assets/img/navbar-footer/cross.svg'),
-      collapsed: true,
-      webWalletNeeded: false
+      collapsed: true
     }
   },
   methods: {
@@ -108,8 +107,6 @@ export default {
     startLogin () {
       this.$store.dispatch('rpayAuthStore/startLogin').catch((err) => {
         console.log(err)
-        // https://www.hiro.so/wallet/install-web
-        this.webWalletNeeded = true
       })
     }
   },

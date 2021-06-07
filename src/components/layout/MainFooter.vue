@@ -86,8 +86,11 @@
               <a :href="item.link.url" target="_blank"><img width="50px" :src=item.title_of_the_link[0].url :alt=item.title_of_the_link[0].alt></a>
             </div>
           </div>
-          <div v-if="!loggedIn"><b-link variant="light" @click.prevent="startLogin()">Own NFTs here?</b-link></div>
-          <div v-else><b-link variant="light" @click.prevent="startLogout()">Logout</b-link></div>
+          <div v-if="webWalletNeeded"><a :href="webWalletLink" target="_blank">Get Stacks Wallet for Web</a></div>
+          <div v-else>
+            <div v-if="!loggedIn"><b-link variant="light" @click.prevent="startLogin()">Own NFTs here?</b-link></div>
+            <div v-else><b-link variant="light" @click.prevent="startLogout()">Logout</b-link></div>
+          </div>
         </div>
       </div>
 
@@ -131,6 +134,7 @@ export default {
   name: 'MainFooter',
   data () {
     return {
+      webWalletNeeded: false,
       logo: require('@/assets/img/navbar-footer/logo-footer.svg')
     }
   },
@@ -157,6 +161,12 @@ export default {
     }
   },
   computed: {
+    webWalletLink () {
+      if (this.$browserDetect.isFirefox) {
+        return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_FIREFOX]
+      }
+      return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_CHROME]
+    },
     loggedIn () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile.loggedIn
