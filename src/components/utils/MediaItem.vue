@@ -4,7 +4,7 @@
     <video-js-player v-on="$listeners" :style="videoOptions.dimensions" :options="videoOptions"/>
     <div :style="videoOptions.dimensions" class="p-4 d-flex justify-content-between" v-if="videoOptions.showMeta">
       <div class="text-small">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
-      <div><a href="#" @click.prevent="deleteMediaItem()" v-if="!contractAsset && (mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></a></div>
+      <div><a href="#" @click.prevent="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></a></div>
     </div>
     <!-- <video id="video1" controls style="max-height: 250px;" @loadedmetadata="cover"> -->
   </div>
@@ -13,7 +13,7 @@
     <video-js-player v-on="$listeners" :style="videoOptions.dimensions" :options="videoOptions"/>
     <div class="p-4 d-flex justify-content-between" v-if="videoOptions.showMeta">
       <div class="text-small">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
-      <div><a href="#" @click.prevent="deleteMediaItem()" v-if="(mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></a></div>
+      <div><a href="#" @click.prevent="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></a></div>
     </div>
     <!-- <video id="video1" controls style="max-height: 250px;" @loadedmetadata="cover"> -->
   </div>
@@ -22,7 +22,7 @@
     <audio v-on="$listeners" controls :src="mediaItem().fileUrl" :style="dimensions()">
       Your browser does not support the <code>audio</code> element.
     </audio>
-    <div class="p-4 d-flex justify-content-between">
+    <div class="p-4 d-flex justify-content-between" v-if="videoOptions.showMeta">
       <div class="text-small">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
       <div @click="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></div>
     </div>
@@ -35,7 +35,7 @@
     <img v-on="$listeners" :src="mediaItem().fileUrl" :alt="mediaItem().name" :style="dimensions()">
     <div class="p-4 d-flex justify-content-between" v-if="videoOptions.showMeta">
       <div class="text-small">{{mediaItem().type}}  ({{getSizeMeg(mediaItem().size)}})</div>
-      <div><a href="#" @click.prevent="deleteMediaItem()" v-if="(mediaItem().id === 'artworkClip' || mediaItem().id === 'coverImage')" class="text-small text-danger"><b-icon icon="trash"/></a></div>
+      <div><a href="#" @click.prevent="deleteMediaItem()" class="text-small text-danger"><b-icon icon="trash"/></a></div>
     </div>
   </div>
 </div>

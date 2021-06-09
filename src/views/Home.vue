@@ -42,10 +42,19 @@ export default {
       const resultSet = results.filter((o) => o.nftMedia.artworkFile.type.indexOf('video') > -1)
       return resultSet
     },
-    resultSet () { // FromIndex
-      let resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
-      resultSet = resultSet.filter((o) => o.maxEditions < 10)
-      return resultSet
+    resultSet () {
+      const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      const newAssets = []
+      if (resultSet && resultSet.length > 0) {
+        resultSet.forEach((ga) => {
+          const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](ga.assetHash)
+          if (contractAsset.nftIndex < 5) { // || o.artist === 'Chemical X'
+            ga.contractAsset = contractAsset
+            newAssets.push(ga)
+          }
+        })
+      }
+      return newAssets
     },
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]

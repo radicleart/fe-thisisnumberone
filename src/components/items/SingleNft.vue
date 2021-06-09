@@ -1,18 +1,20 @@
 <template>
-<div v-if="item && item.nftMedia" class="mt-1">
-  <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="item.nftMedia" :targetItem="targetItem()"/>
+<div v-if="myNft && myNft.nftMedia" class="mt-1">
+  <b-link router-tag="a" :to="assetUrl">
+    <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="myNft.nftMedia" :targetItem="targetItem()"/>
+  </b-link>
   <div class="text-white">
     <div class="mt-5 mb-2 d-flex justify-content-between">
       <div class="">
-        <b-link router-tag="a" :to="assetUrl">{{item.name}}</b-link>
+        <b-link router-tag="a" :to="assetUrl">{{myNft.name}}</b-link>
       </div>
+      <div class=""><b-link router-tag="a" :to="assetUrl">Ed. {{myNft.contractAsset.tokenInfo.edition}} / {{myNft.contractAsset.tokenInfo.maxEditions}}</b-link></div>
     </div>
   </div>
 </div>
 </template>
 
 <script>
-import utils from '@/services/utils'
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaItem from '@/components/utils/MediaItem'
 
@@ -21,65 +23,35 @@ export default {
   components: {
     MediaItem
   },
-  props: ['item'],
+  props: ['myNft'],
   data () {
     return {
-      dims: { width: 360, height: 360 },
-      likeIconTurquoise: require('@/assets/img/Favorite_button_turquoise_empty.png'),
-      likeIconPurple: require('@/assets/img/Favorite_button_purple_empty.png')
+      dims: { width: 360, height: 360 }
     }
   },
   methods: {
-    salesButtonLabel () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
-      if (!contractAsset) return 'NOT MINTED'
-      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
-    },
     targetItem: function () {
-      return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.item)
-    },
-    hoverIn (index) {
-      this.dHover[index] = true
-      this.componentKey += 1
-    },
-    isAllowed (opcode) {
-      if (opcode === 'delete' || opcode === 'edit') {
-        return this.item.nftIndex === -1
-      }
-    },
-    hoverOut () {
-      this.dHover = [false, false, false, false, false, false, false, false, false, false, false, false]
-      this.componentKey += 1
-    },
-    toggleFavourite () {
-      utils.makeFlasher(this.$refs.lndQrcode)
-    },
-    deleteItem () {
-      this.$store.dispatch('myItemStore/deleteItem', this.item)
+      return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.myNft)
     }
   },
   computed: {
-    contractAsset () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
-      return contractAsset
-    },
     videoOptions () {
-      let file = this.item.nftMedia.artworkFile
+      let file = this.myNft.nftMedia.artworkFile
       if (!file) {
-        file = this.item.nftMedia.artworkClip
+        file = this.myNft.nftMedia.artworkClip
       }
       if (!file) return {}
       const videoOptions = {
         emitOnHover: true,
         playOnHover: false,
         bigPlayer: false,
-        assetHash: this.item.assetHash,
+        assetHash: this.myNft.assetHash,
         autoplay: false,
         muted: true,
         controls: false,
         showMeta: false,
         aspectRatio: '1:1',
-        poster: (this.item.nftMedia.coverImage) ? this.item.nftMedia.coverImage.fileUrl : null,
+        poster: (this.myNft.nftMedia.coverImage) ? this.myNft.nftMedia.coverImage.fileUrl : null,
         sources: [
           { src: file.fileUrl, type: file.type }
         ],
@@ -87,15 +59,8 @@ export default {
       }
       return videoOptions
     },
-    bannerImage () {
-      let imageUrl = this.item.nftMedia.imageUrl
-      if (!imageUrl) {
-        imageUrl = this.waitingImage
-      }
-      return this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](imageUrl)
-    },
     assetUrl () {
-      return '/nft-preview/' + this.item.assetHash
+      return '/nft-preview/' + this.myNft.assetHash
     }
   }
 }

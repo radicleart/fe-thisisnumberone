@@ -1,5 +1,5 @@
 <template>
-<b-card-group class="">
+<b-card-group class="m-5">
   <b-card header-tag="header" footer-tag="footer" class="rpay-card">
     <!-- <header-screen :allowEdit="false" :item="item"/> -->
     <item-display :item="item"/>
@@ -7,8 +7,8 @@
     <beneficiaries :beneficiaries="beneficiaries" v-on="$listeners" :item="item"/>
     <b-card-text class="mx-4">
       <div class="d-flex justify-content-between">
-        <b-button @click="saveData()" class="w-50 py-4 mr-2" variant="outline-danger">CANCEL</b-button>
-        <b-button @click="mintToken()" v-if="allowMint()"  class="w-50 py-4 ml-2" variant="outline-primary">MINT NOW</b-button>
+        <b-button @click="saveData()" class="w-50 mr-2" variant="outline-danger">CANCEL</b-button>
+        <b-button @click="mintToken()" v-if="allowMint()"  class="w-50 ml-2" variant="outline-light">MINT NOW</b-button>
       </div>
     </b-card-text>
   </b-card>

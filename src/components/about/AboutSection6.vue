@@ -3,7 +3,7 @@
 <section class="bg-black" id="about-section6">
   <b-container class="py-5 center-section">
     <b-row style="min-height: 30vh">
-      <b-col class="offset-md-2 col-md-8" align-self="left">
+      <b-col class="offset-md-2 col-md-8">
         <h1 class="mb-4">{{content.section6rtf1[0].text}}</h1>
         <div class="mb-5 about-section6--text" v-html="adaptedText"></div>
         <!-- <div>

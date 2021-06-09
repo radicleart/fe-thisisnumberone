@@ -4,16 +4,19 @@
   <div class="text-white">
     <div class="mt-5 mb-2 d-flex justify-content-between">
       <div class="">
-        <b-link router-tag="a" :to="assetUrl">{{item.name}}</b-link> <span v-if="contractAsset">{{contractAsset.tokenInfo.edition}} / {{contractAsset.tokenInfo.maxEditions}}</span>
+        <b-link class="text-white" router-tag="a" :to="assetUrl">{{item.name}}</b-link>
       </div>
-      <div>
-        <b-link class="mr-2" :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"></b-icon></b-link>
-        <a v-if="!contractAsset" href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
+      <!--
+      <div class="">
+        <span v-if="contractAsset">Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</span>
+      </div>
+      -->
+    </div>
+    <div class="mt-5 mb-2 d-flex justify-content-between">
+      <div class="">
+        <EditionTrigger :assetHash="item.assetHash" @mintedEvent="mintedEvent"/>
       </div>
     </div>
-      <div class="text-small text-right">
-        <div><b-link router-tag="a" :to="assetUrl">{{salesButtonLabel()}}</b-link></div>
-      </div>
   </div>
 </div>
 </template>
@@ -22,10 +25,12 @@
 import utils from '@/services/utils'
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaItem from '@/components/utils/MediaItem'
+import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
 
 export default {
-  name: 'SingleItem',
+  name: 'MarketableNft',
   components: {
+    EditionTrigger,
     MediaItem
   },
   props: ['item'],
@@ -33,10 +38,32 @@ export default {
     return {
       dims: { width: 360, height: 360 },
       likeIconTurquoise: require('@/assets/img/Favorite_button_turquoise_empty.png'),
-      likeIconPurple: require('@/assets/img/Favorite_button_purple_empty.png')
+      likeIconPurple: require('@/assets/img/Favorite_button_purple_empty.png'),
+      explorer: 'https://explorer.stacks.co/txid/'
     }
   },
   methods: {
+    mintedEvent (data) {
+      this.$store.commit('setModalMessage', 'Sent request off to the blockchain - should be ready in an hour or so. <br/>You can find it on the /my-nfts page here and in your Stacks Wallet.<br/><br/><a href="' + this.explorer + data.txId + '?chain=mainnet" target="_blank">Track the transaction here</a>')
+      this.$root.$emit('bv::show::modal', 'waiting-modal')
+    },
+    mintEdition: function () {
+      this.errorMessage = 'Minting non fungible token - takes a minute or so..'
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
+      const methos = (process.env.VUE_APP_NETWORK === 'local') ? 'callContractRisidio' : 'callContractBlockstack'
+      const data = {
+        owner: contractAsset.owner,
+        editionCost: contractAsset.tokenInfo.editionCost,
+        action: methos,
+        nftIndex: contractAsset.nftIndex,
+        contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
+        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
+        functionName: 'mint-edition'
+      }
+      this.$store.dispatch('rpayPurchaseStore/mintEdition', data).then((result) => {
+        this.result = result
+      })
+    },
     salesButtonLabel () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
       if (!contractAsset) return 'NOT MINTED'
@@ -79,16 +106,17 @@ export default {
       const videoOptions = {
         emitOnHover: true,
         playOnHover: false,
-        bigPlayer: false,
+        bigPlayer: true,
         assetHash: this.item.assetHash,
         autoplay: false,
-        muted: true,
-        controls: false,
+        muted: false,
+        controls: true,
         showMeta: false,
+        dimensions: 'max-width: 100%; max-height: auto;',
         aspectRatio: '1:1',
         poster: (this.item.nftMedia.coverImage) ? this.item.nftMedia.coverImage.fileUrl : null,
         sources: [
-          { src: file.fileUrl, type: file.type }
+          { src: this.item.nftMedia.artworkFile.fileUrl, type: this.item.nftMedia.artworkFile.type }
         ],
         fluid: false
       }
@@ -102,16 +130,10 @@ export default {
       return this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](imageUrl)
     },
     assetUrl () {
-      if (this.item.assetHash) {
-        return '/item-preview/' + this.item.assetHash
-      }
-      return '/upload-item/' + this.item.assetHash
+      return '/nft-preview/' + this.item.assetHash
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-a {
-  color: #fff;
-}
 </style>

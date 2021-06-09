@@ -39,7 +39,7 @@ export default {
   components: {
     SquareButton
   },
-  props: ['assetHash'],
+  props: ['myNft'],
   data: function () {
     return {
       toAddress: null,
@@ -52,7 +52,7 @@ export default {
   methods: {
     transferNft: function () {
       this.transferring = 'transfer started...'
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
+      const contractAsset = this.myNft.contractAsset
       const data = {
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,

@@ -34,6 +34,8 @@ export default {
         }
       }
     }
+    this.setupGrid(padder)
+    /**
     if (this.resultSet.length > 4) {
       this.setupGrid(padder)
     } else {
@@ -51,6 +53,7 @@ export default {
         }
       }
     }
+    **/
     this.loaded = true
   },
   methods: {

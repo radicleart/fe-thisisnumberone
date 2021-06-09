@@ -14,6 +14,7 @@ import Information from '../views/Information.vue'
 // const Information = () => import('../views/Information.vue')
 import NftPreview from '../views/NftPreview.vue'
 import MyNfts from '../views/MyNfts.vue'
+import NftMarket from '../views/NftMarket.vue'
 
 const Charity = () => import('../views/Charity.vue')
 const AssetDetails = () => import('../views/AssetDetails.vue')
@@ -64,6 +65,12 @@ const routes: Array<RouteConfig> = [
     path: '/number-one',
     name: 'number-one',
     components: { default: NumberOne, header: MainNavbar, footer: MainFooter },
+    meta: { title: 'This is number one' }
+  },
+  {
+    path: '/nft-market',
+    name: 'nft-market',
+    components: { default: NftMarket, header: MainNavbar, footer: MainFooter },
     meta: { title: 'This is number one' }
   },
   {

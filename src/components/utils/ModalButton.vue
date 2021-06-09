@@ -52,6 +52,10 @@ export default {
   background: transparent;
   white-space: nowrap;
 }
+.btn > .btn:hover {
+  background: transparent;
+  color: #000;
+}
 .btn-group > .btn:hover {
   background: transparent;
   color: #000;

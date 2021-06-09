@@ -69,7 +69,7 @@
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="md" id="minting-modal">
-    <minting-flow :assetHash="assetHash" />
+    <MintTokenFlow :assetHash="assetHash" />
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="md" id="selling-modal">
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import MintingFlow from './mint-setup/MintingFlow'
+import MintTokenFlow from './mint-setup/MintTokenFlow'
 import SquareButton from '@/components/utils/SquareButton'
 import moment from 'moment'
 import { APP_CONSTANTS } from '@/app-constants'
@@ -99,7 +99,7 @@ const NETWORK = process.env.VUE_APP_NETWORK
 export default {
   name: 'MintingTools',
   components: {
-    MintingFlow,
+    MintTokenFlow,
     OfferHistory2,
     BidHistory,
     RisidioPay,

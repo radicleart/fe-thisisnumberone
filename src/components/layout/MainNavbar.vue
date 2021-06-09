@@ -8,6 +8,8 @@
   </b-navbar-brand>
   <b-navbar-nav class="ml-auto">
     <!--<b-nav-item class="d-xs-none d-sm-block" v-if="loggedIn"><b-link class="mr-4 text-white top-content" to="/my-items/minted">My NFTs</b-link></b-nav-item>-->
+    <!-- <b-nav-item class="mr-5"><b-link class="text-white top-content" to="/nft-market">Special Offers</b-link></b-nav-item> -->
+    <!-- <b-nav-item class="mr-5"><b-link class="text-white top-content" to="/nft-market">NO FUN TREATS</b-link></b-nav-item> -->
     <b-nav-item class="mr-5" v-if="hasNfts"><b-link class="text-white top-content" to="/my-nfts">My NFTs</b-link></b-nav-item>
     <b-nav-item><b-link class="text-white top-content" to="/about"><img height="30px" :src="wtf" alt="about link"/></b-link></b-nav-item>
   </b-navbar-nav>

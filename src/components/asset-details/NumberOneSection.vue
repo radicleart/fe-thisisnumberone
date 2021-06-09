@@ -1,6 +1,6 @@
 <template>
 <b-container fluid id="number-one-container">
-  <b-row align-h="center" style="min-height: 91vh" v-if="resultSet" class="mb-5">
+  <b-row align-h="center" style="min-height: 91vh" v-if="loaded" class="mb-5">
     <b-col lg="8" sm="10" class="mb-5" align-self="center">
       <div id="video-column" :style="dimensions">
         <result-grid id="grid-container" @videoHoverOut="resetContainer" @videoHover="updateContainer" class="container text-center" :outerOptions="videoOptions" :resultSet="resultSet"/>
@@ -48,6 +48,8 @@ export default {
   data () {
     return {
       show: true,
+      loaded: false,
+      resultSet: [],
       componentKey: null,
       // logo: require('@/assets/img/logo-rainbow.svg'),
       rainbowOne: require('@/assets/img/Group 76.svg'),
@@ -64,7 +66,7 @@ export default {
     }
   },
   mounted () {
-    // this.findAssets()
+    this.findAssets()
     this.resizeContainers()
   },
   updated () {
@@ -83,6 +85,26 @@ export default {
           $self.componentKey += 1
         }, 400)
       })
+    },
+    findAssets () {
+      this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {
+        this.fetchContractAssets(results)
+      })
+    },
+    fetchContractAssets (results) {
+      // const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      const newAssets = []
+      if (results && results.length > 0) {
+        results.forEach((ga) => {
+          const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](ga.assetHash)
+          if (contractAsset.nftIndex < 5) { // || o.artist === 'Chemical X'
+            ga.contractAsset = contractAsset
+            newAssets.push(ga)
+          }
+        })
+      }
+      this.resultSet = newAssets
+      this.loaded = true
     },
     dimensions () {
       const dims = { width: '100%', height: '100%' }
@@ -104,11 +126,6 @@ export default {
     gaiaAsset (assetHash) {
       const gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](assetHash)
       return gaiaAsset
-    },
-    findAssets () {
-      this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {
-        this.results = results
-      })
     },
     updateContainer (vo) {
       if (!vo || !vo.assetHash) return
@@ -157,14 +174,6 @@ export default {
         return address.substring(0, 5) + '...' + address.substring(address.length - 5)
       }
       return ''
-    },
-    resultSet () { // FromIndex
-      let resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
-      resultSet = resultSet.filter((o) => o.maxEditions < 10)
-      if (resultSet && resultSet.length > 0 && resultSet[0] && resultSet[0].nftMedia) {
-        return resultSet
-      }
-      return null
     }
   }
 }
