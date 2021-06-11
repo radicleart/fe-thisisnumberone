@@ -50,13 +50,13 @@
                 <b-col v-if="webWalletNeeded" md="6" sm="12" class="mb-3">
                     <b-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttWalletHelp" class="w-100" style="height: 61px;" variant="outline-light"><a :href="webWalletLink" class="text-white" target="_blank">Get Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-button>
                 </b-col>
-                <b-col md="6" sm="12" class="mb-3" v-else-if="getSaleType() > 0 && getSaleType() < 3">
+                <b-col md="6" sm="6" class="mb-3 text-center" v-else-if="getSaleType() > 0 && getSaleType() < 3">
                   <!-- <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link> -->
                   <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
                 </b-col>
-                <b-col md="6" sm="12" class="text-right">
+                <b-col md="6" sm="6" class="text-center">
                   <!-- <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link> -->
-                  <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" @clickButton="openOfferPurchaceDialog()" :theme="'light'" :label1="'MAKE OFFER'" :icon="'eye'" :text-warning="true"/>
+                  <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" @clickButton="openOfferPurchaceDialog()" :theme="'light'" :label1="'MAKE OFFER'" :svgImage="hammer" :text-warning="true"/>
                 </b-col>
               </b-row>
             </div>
