@@ -291,7 +291,7 @@ export default {
     },
     emailText () {
       const emailText = this.$store.getters[APP_CONSTANTS.KEY_EMAIL_TEXT]('registeremail')
-      const answer = (emailText) ? emailText[0].text.replaceAll('amount_stx', this.offerData.offerAmount) : 'Interest Registered'
+      const answer = (emailText) ? emailText[0].text : 'Interest Registered'
       return answer
     },
     registerForUpdates: function (email) {
