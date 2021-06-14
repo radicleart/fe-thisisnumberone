@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     mintedEvent (data) {
-      this.$store.commit('setModalMessage', 'Sent request off to the blockchain - should be ready in an hour or so. <br/>You can find it on the /my-nfts page here and in your Stacks Wallet.<br/><br/><a href="' + this.explorer + data.txId + '?chain=mainnet" target="_blank">Track the transaction here</a>')
+      this.$store.commit('setModalMessage', 'Sent request off to the blockchain - should be ready in an hour or so. <br/>You can find it on the /my-nfts page here and in your Stacks Wallet.<br/>Please fill <a style="font-size: 2.0rem !important" href="https://shrl.ink/HPyh">this short survey</a> to tell us more about your experience !<br/><a href="' + this.explorer + data.txId + '?chain=mainnet" target="_blank">Track the transaction here</a>')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
     },
     mintEdition: function () {
