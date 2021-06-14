@@ -51,14 +51,15 @@ export default {
 .btn-group > .btn {
   background: transparent;
   white-space: nowrap;
+  color: #000 ;
 }
 .btn > .btn:hover {
   background: transparent;
-  color: #000;
+  color: #000 ;
 }
 .btn-group > .btn:hover {
   background: transparent;
-  color: #000;
+  color: #000 ;
 }
 .btn-square {
   width: 61px;
