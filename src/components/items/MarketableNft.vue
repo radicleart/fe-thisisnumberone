@@ -4,7 +4,7 @@
   <div class="text-white">
     <div class="mt-5 mb-2 d-flex justify-content-between">
       <div class="">
-        <b-link class="text-white" router-tag="a" :to="assetUrl">{{item.name}}</b-link>
+        {{item.name}}
       </div>
       <!--
       <div class="">

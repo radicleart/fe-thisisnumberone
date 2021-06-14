@@ -17,6 +17,9 @@
 import SingleNft from '@/components/items/SingleNft'
 import { APP_CONSTANTS } from '@/app-constants'
 
+const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
+const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
+
 export default {
   name: 'MyItems',
   components: {
@@ -35,13 +38,14 @@ export default {
   },
   computed: {
     hasNfts () {
-      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      const purchased = this.$store.getters[APP_CONSTANTS.KEY_MY_PURCHASED_ITEMS]
-      return profile.loggedIn && purchased && purchased.length > 0
+      return this.myNfts && this.myNfts.length > 0
     },
     myNfts () {
-      const purchased = this.$store.getters[APP_CONSTANTS.KEY_MY_PURCHASED_ITEMS]
-      return purchased
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      const contractId = STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
+      const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_ASSETS_BY_CONTRACT_ID_AND_OWNER]({ contractId: contractId, stxAddress: profile.stxAddress })
+      // const purchased = this.$store.getters[APP_CONSTANTS.KEY_MY_PURCHASED_ITEMS]
+      return myContractAssets
     }
   }
 }

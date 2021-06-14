@@ -1,14 +1,12 @@
 <template>
-<div v-if="myNft && myNft.nftMedia" class="mt-1">
-  <b-link router-tag="a" :to="assetUrl">
-    <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="myNft.nftMedia" :targetItem="targetItem()"/>
-  </b-link>
+<div v-if="item && item.nftMedia" class="mt-1">
+  <div @click="routeTo()"><media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="item.nftMedia" :targetItem="targetItem()"/></div>
   <div class="text-white">
     <div class="mt-5 mb-2 d-flex justify-content-between">
       <div class="">
-        <b-link router-tag="a" :to="assetUrl">{{myNft.name}}</b-link>
+        <b-link router-tag="a" :to="assetUrl">{{item.name}}</b-link>
       </div>
-      <div class=""><b-link router-tag="a" :to="assetUrl">Ed. {{myNft.contractAsset.tokenInfo.edition}} / {{myNft.contractAsset.tokenInfo.maxEditions}}</b-link></div>
+      <div class=""><b-link router-tag="a" :to="assetUrl">Ed. {{myNft.tokenInfo.edition}} / {{myNft.tokenInfo.maxEditions}}</b-link></div>
     </div>
   </div>
 </div>
@@ -26,32 +24,42 @@ export default {
   props: ['myNft'],
   data () {
     return {
-      dims: { width: 360, height: 360 }
+      dims: { width: 360, height: 360 },
+      assetHash: null
     }
+  },
+  mounted () {
+    this.loading = false
+    this.assetHash = this.myNft.tokenInfo.assetHash
+    // this.$store.dispatch('myItemStore/findItemByAssetHash', this.assetHash)
   },
   methods: {
     targetItem: function () {
-      return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.myNft)
+      return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.item)
+    },
+    routeTo: function () {
+      this.$router.push(this.assetUrl)
     }
   },
   computed: {
     videoOptions () {
-      let file = this.myNft.nftMedia.artworkFile
+      const item = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.assetHash)
+      let file = item.nftMedia.artworkFile
       if (!file) {
-        file = this.myNft.nftMedia.artworkClip
+        file = item.nftMedia.artworkClip
       }
       if (!file) return {}
       const videoOptions = {
         emitOnHover: true,
         playOnHover: false,
         bigPlayer: false,
-        assetHash: this.myNft.assetHash,
+        assetHash: this.assetHash,
         autoplay: false,
         muted: true,
         controls: false,
         showMeta: false,
         aspectRatio: '1:1',
-        poster: (this.myNft.nftMedia.coverImage) ? this.myNft.nftMedia.coverImage.fileUrl : null,
+        poster: (item.nftMedia.coverImage) ? item.nftMedia.coverImage.fileUrl : null,
         sources: [
           { src: file.fileUrl, type: file.type }
         ],
@@ -59,8 +67,12 @@ export default {
       }
       return videoOptions
     },
+    item () {
+      const item = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.assetHash)
+      return item
+    },
     assetUrl () {
-      return '/nft-preview/' + this.myNft.assetHash
+      return '/nft-preview/' + this.assetHash
     }
   }
 }
