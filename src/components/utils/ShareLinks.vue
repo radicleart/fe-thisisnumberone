@@ -1,8 +1,8 @@
 <template>
 <div id="share-links" :class="themeClass">
-  <div class="d-flex justify-content-between">
+  <div class="d-flex justify-content-left">
     <!-- <b-icon style="width: 30px; height: 30px;" icon="share"/> -->
-    <span v-for="(link, index) in socialLinks" :key="index">
+    <span v-for="(link, index) in socialLinks" :key="index" class="mr-4">
       <share-content :gaiaAsset="gaiaAsset" :network="getNetwork(link)" :icon="getIcon(link)" />
     </span>
   </div>
