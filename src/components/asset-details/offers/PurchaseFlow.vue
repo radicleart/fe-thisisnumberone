@@ -49,6 +49,7 @@ import PurchaseOfferFailure from './PurchaseOfferFailure'
 import moment from 'moment'
 import {
   makeContractSTXPostCondition,
+  makeStandardSTXPostCondition,
   FungibleConditionCode
 } from '@stacks/transactions'
 import utils from '@/services/utils'
@@ -219,11 +220,17 @@ export default {
           this.webWalletNeeded = true
         })
       }
+      const standardSTXPostCondition = makeStandardSTXPostCondition(
+        profile.stxAddress,
+        FungibleConditionCode.LessEqual,
+        new BigNum(utils.toOnChainAmount(contractAsset.saleData.buyNowOrStartingPrice))
+      )
 
       if (NETWORK === 'local') {
         recipient = (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address
       }
       const buyNowData = {
+        postConditions: [standardSTXPostCondition],
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,
         sendAsSky: false,
@@ -231,8 +238,7 @@ export default {
         buyNowOrStartingPrice: contractAsset.saleData.buyNowOrStartingPrice,
         owner: contractAsset.owner,
         provider: 'risidio',
-        recipient: recipient,
-        pcAddress: contractAsset.owner
+        recipient: recipient
       }
       this.$store.dispatch('rpayPurchaseStore/buyNow', buyNowData).then((result) => {
         this.contentKey = 'successful-buy'
