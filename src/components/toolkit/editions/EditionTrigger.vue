@@ -6,7 +6,7 @@
         <b-icon icon="chevron-right" class="mr-3"/><span class="text-warning">{{currentMaxEditions - (editionCounter - 1)}} Editions available</span>! The next edition could be yours for a mere <span class="text-warning">{{currentCost}}</span> STX
         </b-link>
       -->
-      <div class="mb-3"><b-button @click.prevent="openEditionDialog()" style="font-size: 1.4rem;" variant="outline-warning">Available</b-button></div>
+      <div class="mb-3"><b-button @click.prevent="openEditionDialog()" style="font-size: 1.4rem;" variant="outline-warning">Start</b-button></div>
       <div class="text-white">Claim a Fatboy Slim meets Stacks NFT for <span class="text-warning">FREE</span></div>
   </div>
   <b-modal size="lg" id="edition-modal" class="text-left">
