@@ -13,14 +13,14 @@
       <b-collapse id="nav-collapse" is-nav align="right">
 
         <!-- Right aligned nav items -->
-        <b-navbar-nav class="ml-auto mt-3 ">
+        <b-navbar-nav class="ml-auto mt-3">
           <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/my-items/minted">NFT Library</router-link></b-nav-item>
           <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/offers">Offers</router-link></b-nav-item>
           <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/upload-item">Create NFT</router-link></b-nav-item>
           <b-nav-item v-if="loggedIn"><router-link class="mx-4 text-white" to="/admin">Admin</router-link></b-nav-item>
           <b-nav-item v-if="!loggedIn && webWalletNeeded"><a class="mx-4 text-white" :href="webWalletLink" target="_blank">Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-nav-item>
-          <b-nav-item v-if="!loggedIn"><b-link class="mx-4 text-white" to="/admin" @click.prevent="startLogin">Login</b-link></b-nav-item>
-          <b-nav-item v-else><b-link class="mx-4 text-white" to="/admin" @click.prevent="logout">Logout</b-link></b-nav-item>
+          <b-nav-item v-if="!loggedIn"><b-link class="mx-4 text-white logIn" to="/admin" @click.prevent="startLogin">Login</b-link></b-nav-item>
+          <b-nav-item v-else><b-link class="mx-4 text-white logOut" to="/admin" @click.prevent="logout">Logout</b-link></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -100,6 +100,26 @@ export default {
 /* NAVBAR PADDING AND WIDTH */
 .navbar-light .navbar-nav .nav-link {
     color: #fff;
+}
+
+.logIn{
+ border: 1px solid white;
+  padding: 0px 15px;
+}
+.logIn:hover {
+ border: 1px solid white;
+  background: rgb(65, 65, 65);
+  color: black;
+}
+
+.logOut{border: 1px solid white;
+  padding: 0px 15px;
+
+  }
+.logOut:hover{
+  border: 1px solid white;
+  background: rgb(65, 65, 65);
+  color: black;
 }
 /**
 #nav-collapse {
