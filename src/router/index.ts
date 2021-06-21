@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import store from '@/store'
+import { APP_CONSTANTS } from '@/app-constants'
 
 // templates
 import MainNavbar from '@/components/layout/MainNavbar.vue'
@@ -246,6 +247,26 @@ router.beforeEach((to, from, next) => {
   } else {
     return next() // make sure to always call next()!
   }
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.name !== 'asset-by-hash') return next()
+  const assetHash = to.params.assetHash
+  const gaiaAsset = store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](assetHash)
+  to.meta.metaTags = [
+    {
+      property: 'og:description',
+      content: gaiaAsset.description
+    },
+    {
+      property: 'og:name',
+      content: gaiaAsset.name
+    },
+    {
+      property: 'og:image',
+      content: gaiaAsset.imageUrl
+    }]
+  next()
 })
 
 router.beforeEach((to, from, next) => {
