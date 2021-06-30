@@ -7,7 +7,7 @@
       v-model="item.name"
       :state="itemNameState"
       aria-describedby="item-name-help item-name-feedback"
-      placeholder="Enter item name"
+      placeholder="Enter name of NFT"
       trim
     ></b-form-input>
     <b-form-invalid-feedback id="item-name-feedback">

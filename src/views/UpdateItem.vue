@@ -116,7 +116,7 @@ export default {
         id: 'artworkFile',
         title: 'UPLOAD FILE',
         buttonName: 'CHOOSE A FILE',
-        message: '<span class="text-small">Up to 20M</span><br/>Main Artwork File',
+        message: 'Main Artwork File',
         iconName: 'film',
         errorMessage: 'A mp4 file is required',
         popoverBody: 'The artwork file.'

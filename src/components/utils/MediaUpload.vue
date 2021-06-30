@@ -12,7 +12,7 @@
           <b-button variant="dark" v-html="contentModel.buttonName" @click="chooseFiles()"></b-button>
         </div>
       </div>
-      <div class="mt-5 pt-5">for big files paste a link</div>
+      <div class="mt-5 pt-5">for big files (> 20M) paste a link</div>
       <div class="mt-5 text-left mt-4 mb-3" style="font-size: 1.2rem; width: 100%;">
         <label for="item-name">enter url</label>
         <b-form-input
@@ -337,9 +337,9 @@ export default {
             img.onload = function () {
               if (this.width !== $self.dims.width || this.height !== $self.dims.height) {
                 if (this.width !== this.height) {
-                  const msg = 'Your image must be a square and not ' + this.width + 'x' + this.height
+                  const msg = 'Square images are good - this one is like ' + this.width + 'x' + this.height
                   $self.$notify({ type: 'error', title: 'Logo Upload', text: msg })
-                  // $self.$emit('updateMedia', { media: thisFile })
+                  $self.$emit('updateMedia', { media: thisFile })
                 } else {
                   this.width = '250px'
                   this.height = '250px'
