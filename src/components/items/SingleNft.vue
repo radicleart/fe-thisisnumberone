@@ -1,6 +1,6 @@
 <template>
-<div v-if="item && item.nftMedia" class="mt-1">
-  <div @click="routeTo()"><media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="item.nftMedia" :targetItem="targetItem()"/></div>
+<div v-if="item && item.attributes" class="mt-1">
+  <div @click="routeTo()"><media-item :videoOptions="videoOptions" :dims="dims" :attributes="item.attributes" :targetItem="targetItem()"/></div>
   <div class="text-white">
     <div class="mt-5 mb-2 d-flex justify-content-between">
       <div class="">
@@ -44,9 +44,9 @@ export default {
   computed: {
     videoOptions () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.assetHash)
-      let file = item.nftMedia.artworkFile
+      let file = item.attributes.artworkFile
       if (!file) {
-        file = item.nftMedia.artworkClip
+        file = item.attributes.artworkClip
       }
       if (!file) return {}
       const videoOptions = {
@@ -59,7 +59,7 @@ export default {
         controls: false,
         showMeta: false,
         aspectRatio: '1:1',
-        poster: (item.nftMedia.coverImage) ? item.nftMedia.coverImage.fileUrl : null,
+        poster: (item.attributes.coverImage) ? item.attributes.coverImage.fileUrl : null,
         sources: [
           { src: file.fileUrl, type: file.type }
         ],

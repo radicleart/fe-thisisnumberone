@@ -1,6 +1,6 @@
 <template>
-<div v-if="item && item.nftMedia" class="mt-1">
-  <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="item.nftMedia" :targetItem="targetItem()"/>
+<div v-if="item && item.attributes" class="mt-1">
+  <media-item :videoOptions="videoOptions" :dims="dims" :attributes="item.attributes" :targetItem="targetItem()"/>
   <div class="text-white">
     <div class="mt-5 mb-2 d-flex justify-content-between">
       <div class="">
@@ -98,9 +98,9 @@ export default {
       return contractAsset
     },
     videoOptions () {
-      let file = this.item.nftMedia.artworkFile
+      let file = this.item.attributes.artworkFile
       if (!file) {
-        file = this.item.nftMedia.artworkClip
+        file = this.item.attributes.artworkClip
       }
       if (!file) return {}
       const videoOptions = {
@@ -114,16 +114,16 @@ export default {
         showMeta: false,
         dimensions: 'max-width: 100%; max-height: auto;',
         aspectRatio: '1:1',
-        poster: (this.item.nftMedia.coverImage) ? this.item.nftMedia.coverImage.fileUrl : null,
+        poster: (this.item.attributes.coverImage) ? this.item.attributes.coverImage.fileUrl : null,
         sources: [
-          { src: this.item.nftMedia.artworkFile.fileUrl, type: this.item.nftMedia.artworkFile.type }
+          { src: this.item.attributes.artworkFile.fileUrl, type: this.item.attributes.artworkFile.type }
         ],
         fluid: false
       }
       return videoOptions
     },
     bannerImage () {
-      let imageUrl = this.item.nftMedia.imageUrl
+      let imageUrl = this.item.attributes.imageUrl
       if (!imageUrl) {
         imageUrl = this.waitingImage
       }

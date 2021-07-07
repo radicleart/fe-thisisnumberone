@@ -52,7 +52,7 @@ export default {
     VideoJsPlayer
     // BFormFile
   },
-  props: ['videoOptions', 'targetItem', 'nftMedia', 'dims'],
+  props: ['videoOptions', 'targetItem', 'attributes', 'dims'],
   data () {
     return {
       mediaObjects: [],
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     mediaItem: function () {
-      return this.nftMedia[this.targetItem]
+      return this.attributes[this.targetItem]
     },
     dimensions: function () {
       if (this.dims) {
@@ -85,7 +85,7 @@ export default {
       return Math.round(ksize * 100) / 100 + ' Mb'
     },
     deleteMediaItem: function () {
-      this.$emit('deleteMediaItem', this.nftMedia[this.targetItem].id)
+      this.$emit('deleteMediaItem', this.attributes[this.targetItem].id)
     },
     ispdf (file) {
       try {

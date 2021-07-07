@@ -4,7 +4,7 @@
     <label for="item-creator">Cover artist <a class="text-danger" href="#" @click.prevent="useMyAddress('cover')">(use my username)</a></label>
     <b-form-input
       id="item-cover-artist"
-      v-model="item.nftMedia.coverArtist"
+      v-model="item.attributes.coverArtist"
       :state="itemCoverArtistState"
       aria-describedby="item-cover-artist-help item-cover-artist-feedback"
       placeholder="Enter item maker"
@@ -37,14 +37,14 @@ export default {
     useMyAddress: function (type) {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       if (type === 'cover') {
-        this.item.nftMedia.coverArtist = profile.username
+        this.item.attributes.coverArtist = profile.username
       }
     }
   },
   computed: {
     itemCoverArtistState () {
-      if (!this.formSubmitted && !this.item.nftMedia.coverArtist) return null
-      return (this.item.nftMedia.coverArtist && this.item.nftMedia.coverArtist.length > 1)
+      if (!this.formSubmitted && !this.item.attributes.coverArtist) return null
+      return (this.item.attributes.coverArtist && this.item.attributes.coverArtist.length > 1)
     }
   }
 }

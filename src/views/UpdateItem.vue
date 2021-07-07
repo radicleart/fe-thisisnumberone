@@ -5,7 +5,7 @@
       <b-col md="4" sm="12" align-self="center" class=" text-center">
         <div  class="bg-white" style="width:100%;">
           <p class="p-3">Artwork File</p>
-          <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="item.nftMedia" :targetItem="'artworkFile'"/>
+          <media-item :videoOptions="videoOptions" :dims="dims" :attributes="item.attributes" :targetItem="'artworkFile'"/>
           <div v-if="superAdmin">
             <a href="#" @click.prevent="showAFUpload = !showAFUpload">show af</a>
             <media-upload v-if="showAFUpload" :myUploadId="'artworkFile'" :dims="dims" :contentModel="contentModelArtwork" :limit="1" :sizeLimit="20" :mediaTypes="'video'" @updateMedia="updateMedia($event)"/>
@@ -13,12 +13,12 @@
         </div>
         <div  class="mt-5 bg-white" style="width:100%;">
           <p class="p-3">Cover Image</p>
-          <media-item :videoOptions="videoOptions" v-if="hasFile('coverImage')" :dims="dims" :nftMedia="item.nftMedia" :targetItem="'coverImage'" @deleteMediaItem="deleteMediaItem"/>
+          <media-item :videoOptions="videoOptions" v-if="hasFile('coverImage')" :dims="dims" :attributes="item.attributes" :targetItem="'coverImage'" @deleteMediaItem="deleteMediaItem"/>
           <media-upload v-else :myUploadId="'coverImage'" :dims="dims" :contentModel="contentModelCoverImage" :mediaFiles="mediaFilesCoverImage()" :limit="1" :sizeLimit="2" :mediaTypes="'image'" @updateMedia="updateMedia($event)"/>
         </div>
         <div  class="mt-5 bg-white" style="width:100%;">
           <p class="p-3">Artwork Clip</p>
-          <media-item :videoOptions="videoOptions" v-if="hasFile('artworkClip')" :dims="dims" :nftMedia="item.nftMedia" :targetItem="'artworkClip'" @deleteMediaItem="deleteMediaItem"/>
+          <media-item :videoOptions="videoOptions" v-if="hasFile('artworkClip')" :dims="dims" :attributes="item.attributes" :targetItem="'artworkClip'" @deleteMediaItem="deleteMediaItem"/>
           <media-upload v-else :myUploadId="'artworkClip'" :dims="dims" :contentModel="contentModelClip" :mediaFiles="mediaFilesMusicFile()" :limit="1" :sizeLimit="4" :mediaTypes="'video,image'" @updateMedia="updateMedia($event)"/>
         </div>
       </b-col>
@@ -59,7 +59,7 @@
         <h4>{{contextTitle()}}</h4>
       </div>
     </div>
-    <media-handler :videoOptions="videoOptions()" :uploadState="uploadState" :nftMedia="item.nftMedia" @updateMedia="updateMedia" @deleteMediaItem="deleteMediaItem"/>
+    <media-handler :videoOptions="videoOptions()" :uploadState="uploadState" :attributes="item.attributes" @updateMedia="updateMedia" @deleteMediaItem="deleteMediaItem"/>
     <div class="row mt-4">
       <div class="col-md-6 offset-md-3 col-sm-12">
       </div>
@@ -107,7 +107,7 @@ export default {
         description: '',
         editions: null,
         keywords: '',
-        nftMedia: {
+        attributes: {
           coverImage: {},
           musicFile: {}
         }
@@ -157,16 +157,16 @@ export default {
     hasFile (file) {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       if (!item) return
-      if (file === 'artworkFile') return item.nftMedia.artworkFile && item.nftMedia.artworkFile.fileUrl
-      else if (file === 'artworkClip') return item.nftMedia.artworkClip && item.nftMedia.artworkClip.fileUrl
-      else if (file === 'coverImage') return item.nftMedia.coverImage && item.nftMedia.coverImage.fileUrl
+      if (file === 'artworkFile') return item.attributes.artworkFile && item.attributes.artworkFile.fileUrl
+      else if (file === 'artworkClip') return item.attributes.artworkClip && item.attributes.artworkClip.fileUrl
+      else if (file === 'coverImage') return item.attributes.coverImage && item.attributes.coverImage.fileUrl
     },
     mediaFilesMusicFile () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       if (!item) return
       const files = []
-      if (item.nftMedia.musicFile && item.nftMedia.musicFile.dataUrl) {
-        files.push(item.nftMedia.musicFile)
+      if (item.attributes.musicFile && item.attributes.musicFile.dataUrl) {
+        files.push(item.attributes.musicFile)
       }
       return files
     },
@@ -174,8 +174,8 @@ export default {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       if (!item) return
       const files = []
-      if (item.nftMedia.coverImage && item.nftMedia.coverImage.dataUrl) {
-        files.push(item.nftMedia.coverImage)
+      if (item.attributes.coverImage && item.attributes.coverImage.dataUrl) {
+        files.push(item.attributes.coverImage)
       }
       return files
     },
@@ -204,9 +204,9 @@ export default {
       } else if (data.media && data.media.dataHash) {
         const $self = this
         this.$store.commit('setModalMessage', 'Fetched. Saving file info to library.')
-        this.$store.dispatch('myItemStore/saveAttributesObject', { assetHash: this.assetHash, nftMedia: data.media }).then((nftMedia) => {
+        this.$store.dispatch('myItemStore/saveAttributesObject', { assetHash: this.assetHash, attributes: data.media }).then((attributes) => {
           const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-          myAsset.nftMedia[nftMedia.id] = nftMedia
+          myAsset.attributes[attributes.id] = attributes
           $self.$store.dispatch('myItemStore/saveItem', myAsset).then((item) => {
             $self.item = item
             $self.$store.commit('setModalMessage', '')
@@ -270,13 +270,13 @@ export default {
         autoplay: false,
         muted: true,
         controls: true,
-        poster: (myAsset && myAsset.nftMedia.coverImage) ? myAsset.nftMedia.coverImage.fileUrl : null,
+        poster: (myAsset && myAsset.attributes.coverImage) ? myAsset.attributes.coverImage.fileUrl : null,
         fluid: true
       }
-      if (myAsset && myAsset.nftMedia) {
-        videoOptions.poster = (myAsset.nftMedia.coverImage) ? myAsset.nftMedia.coverImage.fileUrl : null
+      if (myAsset && myAsset.attributes) {
+        videoOptions.poster = (myAsset.attributes.coverImage) ? myAsset.attributes.coverImage.fileUrl : null
         videoOptions.sources = [
-          { src: myAsset.nftMedia.artworkFile.fileUrl, type: myAsset.nftMedia.artworkFile.type }
+          { src: myAsset.attributes.artworkFile.fileUrl, type: myAsset.attributes.artworkFile.type }
         ]
       }
       return videoOptions

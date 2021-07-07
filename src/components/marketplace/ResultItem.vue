@@ -1,6 +1,6 @@
 <template>
 <div :style="dimensions" class="text-right" v-if="result">
-  <media-item v-on="$listeners" @videoClicked="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :nftMedia="result.nftMedia" :targetItem="targetItem()"/>
+  <media-item v-on="$listeners" @videoClicked="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :attributes="result.attributes" :targetItem="targetItem()"/>
 </div>
 </template>
 
@@ -71,13 +71,13 @@ export default {
         showMeta: false,
         dimensions: 'max-width: 100%; max-height: auto;',
         aspectRatio: '1:1',
-        poster: (this.result.nftMedia.coverImage) ? this.result.nftMedia.coverImage.fileUrl : null,
+        poster: (this.result.attributes.coverImage) ? this.result.attributes.coverImage.fileUrl : null,
         sources: [],
         fluid: false
       }
-      if (this.result.nftMedia.artworkFile) {
+      if (this.result.attributes.artworkFile) {
         videoOptions.sources = [
-          { src: this.result.nftMedia.artworkClip.fileUrl, type: this.result.nftMedia.artworkClip.type }
+          { src: this.result.attributes.artworkClip.fileUrl, type: this.result.attributes.artworkClip.type }
         ]
       }
       if (this.outerOptions) {

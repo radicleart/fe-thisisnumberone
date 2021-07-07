@@ -4,7 +4,7 @@
     <b-row align-h="center" :style="'min-height: ' + videoHeight + 'px'">
       <b-col lg="7" sm="10" class="mb-5">
         <div id="video-column" :style="dimensions">
-          <media-item :videoOptions="videoOptions" :nftMedia="gaiaAsset.nftMedia" :targetItem="targetItem()"/>
+          <media-item :videoOptions="videoOptions" :attributes="gaiaAsset.attributes" :targetItem="targetItem()"/>
         </div>
       </b-col>
       <b-col lg="5" sm="10">
@@ -220,8 +220,8 @@ export default {
       return 'max-width: ' + dims.height + '; max-height: ' + dims.height + ';'
     },
     poster: function () {
-      if (this.gaiaAsset.nftMedia.coverImage) {
-        return this.gaiaAsset.nftMedia.coverImage.fileUrl
+      if (this.gaiaAsset.attributes.coverImage) {
+        return this.gaiaAsset.attributes.coverImage.fileUrl
       }
     },
     getArtist: function () {
@@ -406,9 +406,9 @@ export default {
         showMeta: false,
         dimensions: 'max-width: 100%; max-height: auto;',
         aspectRatio: '1:1',
-        poster: (this.gaiaAsset.nftMedia.coverImage) ? this.gaiaAsset.nftMedia.coverImage.fileUrl : null,
+        poster: (this.gaiaAsset.attributes.coverImage) ? this.gaiaAsset.attributes.coverImage.fileUrl : null,
         sources: [
-          { src: this.gaiaAsset.nftMedia.artworkFile.fileUrl, type: this.gaiaAsset.nftMedia.artworkFile.type }
+          { src: this.gaiaAsset.attributes.artworkFile.fileUrl, type: this.gaiaAsset.attributes.artworkFile.type }
         ],
         fluid: false
       }

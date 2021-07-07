@@ -74,11 +74,11 @@ const myItemStore = {
     getItemParamValidity: state => (item, param) => {
       if (!state.rootFile) return
       if (param === 'artworkFile') {
-        return ((item.nftMedia.artworkFile && item.nftMedia.artworkFile.fileUrl))
+        return ((item.attributes.artworkFile && item.attributes.artworkFile.fileUrl))
       } else if (param === 'artworkClip') {
-        return ((item.nftMedia.artworkClip && item.nftMedia.artworkClip.fileUrl))
+        return ((item.attributes.artworkClip && item.attributes.artworkClip.fileUrl))
       } else if (param === 'coverImage') {
-        return ((item.nftMedia.coverImage && item.nftMedia.coverImage.fileUrl))
+        return ((item.attributes.coverImage && item.attributes.coverImage.fileUrl))
       } else if (param === 'artist') {
         return (item.artist && item.artist.length > 2)
       } else if (param === 'name') {
@@ -88,7 +88,7 @@ const myItemStore = {
       } else if (param === 'editions') {
         return (item.editions > 0)
       } else if (param === 'coverArtist') {
-        return (item.nftMedia.coverArtist && item.nftMedia.coverArtist.length > 1)
+        return (item.attributes.coverArtist && item.attributes.coverArtist.length > 1)
       }
       return true
     },
@@ -168,11 +168,11 @@ const myItemStore = {
           reject(new Error('Forbidden - item has been minted.'))
           return
         }
-        const artworkFile = item.nftMedia.artworkFile
+        const artworkFile = item.attributes.artworkFile
         if (artworkFile && artworkFile.storage === 'gaia') dispatch('deleteMediaItem', { id: 'artworkFile', item: item })
-        const artworkClip = item.nftMedia.artworkClip
+        const artworkClip = item.attributes.artworkClip
         if (artworkClip && artworkClip.storage === 'gaia') dispatch('deleteMediaItem', { id: 'artworkClip', item: item })
-        const coverImage = item.nftMedia.coverImage
+        const coverImage = item.attributes.coverImage
         if (coverImage && coverImage.storage === 'gaia') dispatch('deleteMediaItem', { id: 'coverImage', item: item })
 
         const index = state.rootFile.records.findIndex((o) => o.assetHash === item.assetHash)
@@ -189,22 +189,22 @@ const myItemStore = {
           reject(new Error('Unable to delete - unknown data...'))
           return
         }
-        if (data.item.nftMedia[data.id].storage !== 'gaia') {
-          data.item.nftMedia[data.id] = null
+        if (data.item.attributes[data.id].storage !== 'gaia') {
+          data.item.attributes[data.id] = null
           dispatch('saveItem', data.item).then((item) => {
             resolve(item)
           })
           return
         }
-        const lio = data.item.nftMedia[data.id].fileUrl.lastIndexOf('/')
-        const coverImageFileName = data.item.nftMedia[data.id].fileUrl.substring(lio + 1)
+        const lio = data.item.attributes[data.id].fileUrl.lastIndexOf('/')
+        const coverImageFileName = data.item.attributes[data.id].fileUrl.substring(lio + 1)
         myItemService.deleteFile(coverImageFileName).then(() => {
-          data.item.nftMedia[data.id] = null
+          data.item.attributes[data.id] = null
           dispatch('saveItem', data.item).then((item) => {
             resolve(item)
           })
         }).catch(() => {
-          data.item.nftMedia[data.id] = null
+          data.item.attributes[data.id] = null
           dispatch('saveItem', data.item).then((item) => {
             resolve(item)
           })
@@ -219,17 +219,17 @@ const myItemStore = {
     },
     saveAttributesObject ({ state }: any, data: any) {
       return new Promise((resolve, reject) => {
-        if (!data.nftMedia.dataUrl) {
+        if (!data.attributes.dataUrl) {
           // ok the file is stored externally - carry on..
-          resolve(data.nftMedia)
+          resolve(data.attributes)
           return
         }
-        data.nftMedia.storage = 'gaia'
-        const fileName = data.assetHash + '_' + data.nftMedia.id + utils.getFileExtension(data.nftMedia.fileUrl, data.nftMedia.type)
-        myItemService.uploadFileData(fileName, data.nftMedia).then((gaiaUrl: string) => {
+        data.attributes.storage = 'gaia'
+        const fileName = data.assetHash + '_' + data.attributes.id + utils.getFileExtension(data.attributes.fileUrl, data.attributes.type)
+        myItemService.uploadFileData(fileName, data.attributes).then((gaiaUrl: string) => {
           state.gaiaUrl = gaiaUrl
-          data.nftMedia.fileUrl = gaiaUrl
-          resolve(data.nftMedia)
+          data.attributes.fileUrl = gaiaUrl
+          resolve(data.attributes)
         }).catch((err) => {
           reject(err)
         })
@@ -241,17 +241,17 @@ const myItemStore = {
         item.uploader = profile.username
         if (!item.owner) item.owner = profile.username
         // the item can be saved once there is an asset hash - all other fields can be added later..
-        // e.g. || !item.nftMedia.musicFileUrl || !item.nftMedia.coverImage || !item.nftMedia.musicFile
+        // e.g. || !item.attributes.musicFileUrl || !item.attributes.coverImage || !item.attributes.musicFile
         if (!profile.loggedIn || !item.assetHash) {
           reject(new Error('Unable to save your data...'))
           return
         }
         if (item.contractAsset) item.contractAsset = null
         if (typeof item.nftIndex === 'undefined') item.nftIndex = -1
-        if (item.nftMedia && item.nftMedia.coverImage && item.nftMedia.coverImage.fileUrl) {
-          const mintedUrl = encodeURI(item.nftMedia.coverImage.fileUrl)
+        if (item.attributes && item.attributes.coverImage && item.attributes.coverImage.fileUrl) {
+          const mintedUrl = encodeURI(item.attributes.coverImage.fileUrl)
           item.externalUrl = location.origin + '/display?asset=' + mintedUrl
-          item.image = item.nftMedia.coverImage.fileUrl
+          item.image = item.attributes.coverImage.fileUrl
         }
         item.projectId = STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
         item.domain = location.hostname
@@ -263,9 +263,9 @@ const myItemStore = {
         } else {
           state.rootFile.records.splice(index, 1, item)
         }
-        if (item.nftMedia.artworkClip && item.nftMedia.artworkClip.dataUrl) item.nftMedia.artworkClip.dataUrl = null
-        if (item.nftMedia.artworkFile && item.nftMedia.artworkFile.dataUrl) item.nftMedia.artworkFile.dataUrl = null
-        if (item.nftMedia.coverImage && item.nftMedia.coverImage.dataUrl) item.nftMedia.coverImage.dataUrl = null
+        if (item.attributes.artworkClip && item.attributes.artworkClip.dataUrl) item.attributes.artworkClip.dataUrl = null
+        if (item.attributes.artworkFile && item.attributes.artworkFile.dataUrl) item.attributes.artworkFile.dataUrl = null
+        if (item.attributes.coverImage && item.attributes.coverImage.dataUrl) item.attributes.coverImage.dataUrl = null
         item.updated = moment({}).valueOf()
         if (!item.metaDataUrl && !profile.gaiaHubConfig) {
           throw new Error('profile needs to refresh - please reload current page..')

@@ -1,20 +1,20 @@
 <template>
 <div class="row" v-if="assetHash">
   <div class="col-md-4 col-sm-12 mb-4">
-    <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="nftMedia" :targetItem="'artworkFile'"/>
+    <media-item :videoOptions="videoOptions" :dims="dims" :attributes="attributes" :targetItem="'artworkFile'"/>
   </div>
   <div class="col-md-4 col-sm-12 mb-4" v-if="videoOptions.allowClip">
-    <media-item :videoOptions="videoOptions" v-if="hasFile('artworkClip')" :dims="dims" :nftMedia="nftMedia" :targetItem="'artworkClip'" v-on="$listeners"/>
+    <media-item :videoOptions="videoOptions" v-if="hasFile('artworkClip')" :dims="dims" :attributes="attributes" :targetItem="'artworkClip'" v-on="$listeners"/>
     <media-upload v-else :myUploadId="'artworkClip'" :dims="dims" :contentModel="contentModelClip" :mediaFiles="mediaFilesMusicFile" :limit="1" :sizeLimit="4" :mediaTypes="'video,image'" @updateMedia="updateMedia($event)"/>
   </div>
   <div class="col-md-4 col-sm-12 mb-4">
-    <media-item :videoOptions="videoOptions" v-if="hasFile('coverImage')" :dims="dims" :nftMedia="nftMedia" :targetItem="'coverImage'" v-on="$listeners"/>
+    <media-item :videoOptions="videoOptions" v-if="hasFile('coverImage')" :dims="dims" :attributes="attributes" :targetItem="'coverImage'" v-on="$listeners"/>
     <media-upload v-else :myUploadId="'coverImage'" :dims="dims" :contentModel="contentModelCoverImage" :mediaFiles="mediaFilesCoverImage" :limit="1" :sizeLimit="2" :mediaTypes="'image'" @updateMedia="updateMedia($event)"/>
   </div>
 </div>
 <div class="row mb-4" v-else>
   <div class="col-sm-12 col-md-4 mb-3">
-    <media-item :videoOptions="videoOptions" v-if="hasFile('artworkFile')" :dims="dims" :nftMedia="nftMedia" :targetItem="'artworkFile'"/>
+    <media-item :videoOptions="videoOptions" v-if="hasFile('artworkFile')" :dims="dims" :attributes="attributes" :targetItem="'artworkFile'"/>
     <media-upload v-else :myUploadId="'artworkFile'" :dims="dims" :contentModel="contentModelArtwork" :mediaFiles="mediaFilesMusicFile" :limit="1" :sizeLimit="20" :mediaTypes="'video'" @updateMedia="updateMedia($event)"/>
   </div>
 </div>
@@ -30,7 +30,7 @@ export default {
     MediaUpload,
     MediaItem
   },
-  props: ['uploadState', 'nftMedia', 'videoOptions', 'useClip'],
+  props: ['uploadState', 'attributes', 'videoOptions', 'useClip'],
   data: function () {
     return {
       artworkFileUrl: null,
@@ -69,16 +69,16 @@ export default {
       this.$emit('updateMedia', data)
     },
     hasFile (file) {
-      if (file === 'artworkFile') return this.nftMedia.artworkFile && this.nftMedia.artworkFile.fileUrl
-      else if (file === 'artworkClip') return this.nftMedia.artworkClip && this.nftMedia.artworkClip.fileUrl
-      else if (file === 'coverImage') return this.nftMedia.coverImage && this.nftMedia.coverImage.fileUrl
+      if (file === 'artworkFile') return this.attributes.artworkFile && this.attributes.artworkFile.fileUrl
+      else if (file === 'artworkClip') return this.attributes.artworkClip && this.attributes.artworkClip.fileUrl
+      else if (file === 'coverImage') return this.attributes.coverImage && this.attributes.coverImage.fileUrl
     }
   },
   computed: {
     mediaFilesCoverImage () {
       const files = []
-      if (this.nftMedia.coverImage && this.nftMedia.coverImage.dataUrl) {
-        files.push(this.nftMedia.coverImage)
+      if (this.attributes.coverImage && this.attributes.coverImage.dataUrl) {
+        files.push(this.attributes.coverImage)
       }
       return files
     },
@@ -88,8 +88,8 @@ export default {
     },
     mediaFilesMusicFile () {
       const files = []
-      if (this.nftMedia.musicFile && this.nftMedia.musicFile.dataUrl) {
-        files.push(this.nftMedia.musicFile)
+      if (this.attributes.musicFile && this.attributes.musicFile.dataUrl) {
+        files.push(this.attributes.musicFile)
       }
       return files
     }

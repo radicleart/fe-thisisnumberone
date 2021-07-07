@@ -39,7 +39,7 @@ export default {
     resultSetFromSearch () {
       const results = this.$store.getters[APP_CONSTANTS.KEY_SEARCH_RESULTS]
       if (!results) return
-      const resultSet = results.filter((o) => o.nftMedia.artworkFile.type.indexOf('video') > -1)
+      const resultSet = results.filter((o) => o.attributes.artworkFile.type.indexOf('video') > -1)
       return resultSet
     },
     resultSet () {

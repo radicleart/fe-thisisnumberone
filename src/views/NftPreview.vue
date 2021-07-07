@@ -7,7 +7,7 @@
     <b-row style="min-height: 40vh" >
       <b-col md="4" sm="12" align-self="start" class=" text-center">
         <div  class="bg-white" style="width:100%;">
-          <media-item :videoOptions="videoOptions" :dims="dims" :nftMedia="myNft.nftMedia" :targetItem="'artworkFile'"/>
+          <media-item :videoOptions="videoOptions" :dims="dims" :attributes="myNft.attributes" :targetItem="'artworkFile'"/>
         </div>
       </b-col>
       <b-col md="8" sm="12" align-self="start" class="mb-4 text-white">
@@ -68,9 +68,9 @@ export default {
         muted: false,
         controls: true,
         showMeta: false,
-        poster: (this.myNft.nftMedia.coverImage) ? this.myNft.nftMedia.coverImage.fileUrl : null,
+        poster: (this.myNft.attributes.coverImage) ? this.myNft.attributes.coverImage.fileUrl : null,
         sources: [
-          { src: this.myNft.nftMedia.artworkFile.fileUrl, type: this.myNft.nftMedia.artworkFile.type }
+          { src: this.myNft.attributes.artworkFile.fileUrl, type: this.myNft.attributes.artworkFile.type }
         ],
         fluid: true
       }

@@ -27,7 +27,7 @@ export default {
   mounted () {
     const padder = {
       imageUrl: this.padderSrc,
-      nftMedia: {
+      attributes: {
         coverImage: {
           fileUrl: this.padderSrc,
           type: 'image'

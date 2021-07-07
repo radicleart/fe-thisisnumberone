@@ -8,16 +8,16 @@
         <div class="mb-4">
           <h6><b-icon icon="film"/> Artwork File</h6>
           <b-icon  v-if="itemSummary.loadingState === 1" icon="cylon-vertical"/>
-          <a class="text-success" href="#" @click.prevent="showHash = !showHash"> {{ itemSummary.item.nftMedia.musicFile.name }}</a>
+          <a class="text-success" href="#" @click.prevent="showHash = !showHash"> {{ itemSummary.item.attributes.musicFile.name }}</a>
           <div v-if="showHash">{{ itemSummary.item.assetHash }}</div>
         </div>
       </div>
       <div v-if="hasFile('cover')" class="mb-4">
         <div class="">
           <h6><b-icon icon="film"/> Artwork Clip File</h6>
-          <span class="text-success">{{ itemSummary.item.nftMedia.coverImage.name }}</span>
+          <span class="text-success">{{ itemSummary.item.attributes.coverImage.name }}</span>
         </div>
-        <div class="mb-2" v-if="itemSummary.item.nftMedia.coverArtist">Cover Art: <span class="text-success">{{ itemSummary.item.nftMedia.coverArtist }}</span></div>
+        <div class="mb-2" v-if="itemSummary.item.attributes.coverArtist">Cover Art: <span class="text-success">{{ itemSummary.item.attributes.coverArtist }}</span></div>
       </div>
     </div>
     <div class="mb-2" v-if="itemSummary.item.description"><span class="text-small">{{itemSummary.item.description}}</span></div>
@@ -59,16 +59,16 @@ export default {
     },
     hasFile: function (type) {
       if (type === 'music') {
-        return (this.itemSummary.item.nftMedia.musicFile) ? this.itemSummary.item.nftMedia.musicFile.name : null
+        return (this.itemSummary.item.attributes.musicFile) ? this.itemSummary.item.attributes.musicFile.name : null
       }
-      return (this.itemSummary.item.nftMedia.coverImage) ? this.itemSummary.item.nftMedia.coverImage.name : null
+      return (this.itemSummary.item.attributes.coverImage) ? this.itemSummary.item.attributes.coverImage.name : null
     }
   },
   computed: {
     bannerImage () {
-      let imageUrl = this.itemSummary.item.nftMedia.imageUrl
-      if (this.itemSummary.item.nftMedia.coverImage && this.itemSummary.item.nftMedia.coverImage.dataUrl) {
-        imageUrl = this.itemSummary.item.nftMedia.coverImage.dataUrl
+      let imageUrl = this.itemSummary.item.attributes.imageUrl
+      if (this.itemSummary.item.attributes.coverImage && this.itemSummary.item.attributes.coverImage.dataUrl) {
+        imageUrl = this.itemSummary.item.attributes.coverImage.dataUrl
       }
       return this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](imageUrl)
     }
