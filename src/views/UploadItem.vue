@@ -114,7 +114,7 @@ export default {
         }
         const $self = this
         this.$store.commit('setModalMessage', 'Fetched. Saving file info to library.')
-        this.$store.dispatch('myItemStore/saveNftMediaObject', { assetHash: data.media.dataHash, nftMedia: data.media }).then((nftMedia) => {
+        this.$store.dispatch('myItemStore/saveAttributesObject', { assetHash: data.media.dataHash, nftMedia: data.media }).then((nftMedia) => {
           const myAsset = {
             assetHash: data.media.dataHash,
             nftMedia: {}

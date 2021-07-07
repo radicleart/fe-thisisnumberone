@@ -150,16 +150,6 @@ export default {
         return
       }
       this.item = item
-      /**
-      if (!this.item.nftMedia.coverImage) {
-        this.item.nftMedia.coverImage = {}
-      }
-      if (!this.item.nftMedia.musicFile) {
-        this.item.nftMedia.musicFile = {}
-      }
-      this.setImage(item.nftMedia.imageUrl)
-      if (item.nftMedia.imageUrl) this.item.nftMedia.imageUrl = item.nftMedia.imageUrl
-      **/
       this.loaded = true
     })
   },
@@ -214,7 +204,7 @@ export default {
       } else if (data.media && data.media.dataHash) {
         const $self = this
         this.$store.commit('setModalMessage', 'Fetched. Saving file info to library.')
-        this.$store.dispatch('myItemStore/saveNftMediaObject', { assetHash: this.assetHash, nftMedia: data.media }).then((nftMedia) => {
+        this.$store.dispatch('myItemStore/saveAttributesObject', { assetHash: this.assetHash, nftMedia: data.media }).then((nftMedia) => {
           const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
           myAsset.nftMedia[nftMedia.id] = nftMedia
           $self.$store.dispatch('myItemStore/saveItem', myAsset).then((item) => {

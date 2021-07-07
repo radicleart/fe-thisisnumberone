@@ -217,7 +217,7 @@ const myItemStore = {
         resolve(state.rootFile.records[index])
       })
     },
-    saveNftMediaObject ({ state }: any, data: any) {
+    saveAttributesObject ({ state }: any, data: any) {
       return new Promise((resolve, reject) => {
         if (!data.nftMedia.dataUrl) {
           // ok the file is stored externally - carry on..
@@ -251,7 +251,7 @@ const myItemStore = {
         if (item.nftMedia && item.nftMedia.coverImage && item.nftMedia.coverImage.fileUrl) {
           const mintedUrl = encodeURI(item.nftMedia.coverImage.fileUrl)
           item.externalUrl = location.origin + '/display?asset=' + mintedUrl
-          item.imageUrl = item.nftMedia.coverImage.fileUrl
+          item.image = item.nftMedia.coverImage.fileUrl
         }
         item.projectId = STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
         item.domain = location.hostname
