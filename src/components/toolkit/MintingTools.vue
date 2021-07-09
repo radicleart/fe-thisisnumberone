@@ -7,7 +7,7 @@
         <b-alert show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}} / Cost {{contractAsset.tokenInfo.editionCost}} STX</b-alert>
       </div>
       <div v-else-if="isValid" show variant="danger">
-        <square-button @clickButton="mintToken()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
+        <square-button @clickButton="startMinting()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
       </div>
       <b-alert v-else show variant="danger">not valid - information required</b-alert>
     </div>
@@ -38,7 +38,7 @@
                   <gaia-hub-relay :assetHash="assetHash"/>
                 </b-tab>
                 <b-tab title="Next" v-if="contractNameNext">
-                  <square-button @clickButton="mintToken()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
+                  <square-button @clickButton="startMinting()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
                 </b-tab>
               </b-tabs>
             </div>
@@ -168,7 +168,7 @@ export default {
     minting: function () {
       return this.mintTxId
     },
-    mintToken: function () {
+    startMinting: function () {
       this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: this.item })
       this.$store.commit('rpayStore/setDisplayCard', 100)
       this.$bvModal.show('minting-modal')

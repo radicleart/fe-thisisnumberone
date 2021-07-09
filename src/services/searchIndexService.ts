@@ -187,15 +187,6 @@ const searchIndexService = {
       })
     })
   },
-  findByProjectId: function (projectId: string) {
-    return new Promise(function (resolve, reject) {
-      axios.get(SEARCH_API_PATH + '/findByProjectId' + '?q=' + projectId).then((result) => {
-        resolve(result.data.details)
-      }).catch((error) => {
-        reject(new Error('Unable index record: ' + error))
-      })
-    })
-  },
   findByDomainAndObjectTypeAndTitleOrDescriptionOrCategoryOrKeyword: function (domain: string, objType: string, term: string, query: string) {
     return new Promise(function (resolve, reject) {
       axios.get(SEARCH_API_PATH + '/findByDomainAndObjectTypeAndTitleOrDescriptionOrCategoryOrKeyword/' + domain + '/' + objType + '/' + term + '?q=' + query).then((result) => {
@@ -209,15 +200,6 @@ const searchIndexService = {
     return new Promise(function (resolve, reject) {
       axios.get(SEARCH_API_PATH + '/v1/asset/' + assetHash).then((asset: any) => {
         resolve(asset)
-      }).catch((error) => {
-        reject(new Error('Unable index record: ' + error))
-      })
-    })
-  },
-  findByTitleOrDescriptionOrCategoryOrKeyword: function (query: string) {
-    return new Promise(function (resolve, reject) {
-      axios.get(SEARCH_API_PATH + '/findByTitleOrDescriptionOrCategoryOrKeyword/title' + '?q=' + query).then((result) => {
-        resolve(result.data.details)
       }).catch((error) => {
         reject(new Error('Unable index record: ' + error))
       })

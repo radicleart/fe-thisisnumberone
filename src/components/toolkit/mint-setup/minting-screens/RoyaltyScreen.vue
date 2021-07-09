@@ -8,7 +8,7 @@
     <b-card-text class="mx-4">
       <div class="d-flex justify-content-between">
         <b-button @click="saveData()" class="w-50 mr-2" variant="outline-danger">CANCEL</b-button>
-        <b-button @click="mintToken()" v-if="allowMint()"  class="w-50 ml-2" variant="outline-light">MINT NOW</b-button>
+        <b-button @click="sendMintEvent()" v-if="allowMint()"  class="w-50 ml-2" variant="outline-light">MINT NOW</b-button>
       </div>
     </b-card-text>
   </b-card>
@@ -55,7 +55,7 @@ export default {
       configuration.opcode = 'cancel-minting'
       window.eventBus.$emit('rpayEvent', configuration)
     },
-    mintToken: function () {
+    sendMintEvent: function () {
       this.$emit('mintToken')
     }
   },
