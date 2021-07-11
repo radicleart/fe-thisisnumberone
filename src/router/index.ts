@@ -252,20 +252,30 @@ router.beforeEach((to, from, next) => {
 router.beforeEach((to, from, next) => {
   if (to.name !== 'asset-by-hash') return next()
   const assetHash = to.params.assetHash
-  const gaiaAsset = store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](assetHash)
-  to.meta.metaTags = [
-    {
-      property: 'og:description',
-      content: gaiaAsset.description
-    },
-    {
-      property: 'og:name',
-      content: gaiaAsset.name
-    },
-    {
-      property: 'og:image',
-      content: gaiaAsset.imageUrl
-    }]
+  try {
+    const gaiaAsset = store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](assetHash)
+    to.meta.metaTags = [
+      {
+        property: 'og:description',
+        content: gaiaAsset.description
+      },
+      {
+        property: 'og:name',
+        content: gaiaAsset.name
+      },
+      {
+        property: 'og:image',
+        content: gaiaAsset.imageUrl
+      }
+    ]
+  } catch (err) {
+    to.meta.metaTags = [
+      {
+        property: 'og:description',
+        content: 'NFT Asset Details'
+      }
+    ]
+  }
   next()
 })
 
