@@ -260,7 +260,6 @@ const myItemStore = {
         if (item.attributes.artworkClip && item.attributes.artworkClip.dataUrl) item.attributes.artworkClip.dataUrl = null
         if (item.attributes.artworkFile && item.attributes.artworkFile.dataUrl) item.attributes.artworkFile.dataUrl = null
         if (item.attributes.coverImage && item.attributes.coverImage.dataUrl) item.attributes.coverImage.dataUrl = null
-        item.attributes = item.attributes
         if (!item.metaDataUrl && !profile.gaiaHubConfig) {
           throw new Error('profile needs to refresh - please reload current page..')
         }
