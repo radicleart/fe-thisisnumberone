@@ -38,7 +38,7 @@ export default {
       }).catch((err) => {
         this.result = err
       })
-      this.$store.dispatch('myItemStore/indexRootFile').then((result) => {
+      this.$store.dispatch('rpayMyItemStore/indexRootFile').then((result) => {
         this.result = result
       }).catch((err) => {
         this.result = err

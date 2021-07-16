@@ -6,7 +6,7 @@
   </div>
   <div :key="componentKey" v-else>
     <router-view name="header" style="z-index: 10;"/>
-    <router-view style="min-height: 90vh;" />
+    <router-view style="min-height: 99vh;" />
     <router-view name="footer"/>
     <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
     <waiting-modal/>
@@ -165,15 +165,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.splash-screen {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  height: 100vh;
-  background-color: aqua;
-  text-align: center;
-  vertical-align: middle;
-}
 </style>

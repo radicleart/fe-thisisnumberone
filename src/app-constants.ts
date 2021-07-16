@@ -6,19 +6,19 @@ export const APP_CONSTANTS = {
   KEY_SECTION_HEIGHT: 'getSectionHeight',
   KEY_WEB_WALLET_LINK_CHROME: 'getWebWalletLinkChrome',
   KEY_WEB_WALLET_LINK_FIREFOX: 'getWebWalletLinkFirefox',
+  KEY_MODAL_MESSAGE: 'getModalMessage',
 
   KEY_ALL_OFFERS_ON_ASSET: 'assetGeneralStore/getAllOffersForAsset',
   KEY_HIGHEST_OFFER_ON_ASSET: 'assetGeneralStore/getHighestOfferForAsset',
 
   KEY_CONTENT_ABOUT: 'contentStore/getAbout',
 
-  KEY_MY_ITEMS: 'myItemStore/getMyItems',
-  KEY_MY_UNMINTED_ITEMS: 'myItemStore/getMyUnmintedItems',
-  KEY_MY_MINTED_ITEMS: 'myItemStore/getMyMintedItems',
-  KEY_MY_PURCHASED_ITEMS: 'myItemStore/getMyPurchasedItems',
-  KEY_MY_ITEM: 'myItemStore/myItem',
-  KEY_MODAL_MESSAGE: 'getModalMessage',
-  KEY_ITEM_VALIDITY: 'myItemStore/getItemValidity',
+  KEY_MY_ITEMS: 'rpayMyItemStore/getMyItems',
+  KEY_MY_UNMINTED_ITEMS: 'rpayMyItemStore/getMyUnmintedItems',
+  KEY_MY_MINTED_ITEMS: 'rpayMyItemStore/getMyMintedItems',
+  KEY_MY_PURCHASED_ITEMS: 'rpayMyItemStore/getMyPurchasedItems',
+  KEY_MY_ITEM: 'rpayMyItemStore/myItem',
+  KEY_ITEM_VALIDITY: 'rpayMyItemStore/getItemValidity',
 
   KEY_BIDDING_CURRENT_BID: 'rpayPurchaseStore/getCurrentBid',
   KEY_BIDDING_NEXT_BID: 'rpayPurchaseStore/getNextBid',

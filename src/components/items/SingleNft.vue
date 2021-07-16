@@ -31,7 +31,7 @@ export default {
   mounted () {
     this.loading = false
     this.assetHash = this.myNft.tokenInfo.assetHash
-    // this.$store.dispatch('myItemStore/findItemByAssetHash', this.assetHash)
+    // this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash)
   },
   methods: {
     targetItem: function () {

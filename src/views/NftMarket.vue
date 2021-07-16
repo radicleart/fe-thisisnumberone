@@ -28,7 +28,7 @@ export default {
   },
   mounted () {
     this.filter = this.$route.params.filter
-    this.$store.dispatch('myItemStore/fetchItems').then(() => {
+    this.$store.dispatch('rpayMyItemStore/fetchItems').then(() => {
       this.loaded = true
     })
   },

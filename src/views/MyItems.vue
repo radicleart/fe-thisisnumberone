@@ -1,5 +1,5 @@
 <template>
-<div class="container" style="min-height: 85vh;" v-if="loaded">
+<b-container v-if="loaded">
   <div class="mb-5" :key="componentKey">
     <div class="d-flex justify-content-end">
       <b-button class="ml-3" :variant="(filter === 'pending') ? 'info' : 'light'" @click="updateFilter('pending')">Pending</b-button>
@@ -13,7 +13,7 @@
       </div>
     </div>
   </div>
-</div>
+</b-container>
 </template>
 
 <script>
@@ -35,7 +35,7 @@ export default {
   },
   mounted () {
     this.filter = this.$route.params.filter
-    this.$store.dispatch('myItemStore/fetchItems').then((items) => {
+    this.$store.dispatch('rpayMyItemStore/fetchItems').then((items) => {
       if (!this.filter) this.$router.push('/my-items/minted')
       this.backupItems = items
       this.loaded = true

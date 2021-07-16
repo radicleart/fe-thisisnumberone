@@ -1,32 +1,7 @@
 <template>
 <div v-if="content">
   <div class="p-5">
-    <b-navbar toggleable="md" class="p-5" fixed="top" type="dark" variant="black">
-      <b-navbar-brand href="#"><b-link to="/"><img height="30px" :src="logo" /></b-link></b-navbar-brand>
-
-      <b-navbar-toggle target="nav-collapse" class="text-white">
-        <template #default="{ expanded }">
-          <img width="60px" height="30px" class="text-white" v-if="expanded" :src="cross">
-          <img width="60px" height="30px" class="text-white" v-else :src="grid">
-        </template>
-      </b-navbar-toggle>
-
-      <b-collapse id="nav-collapse" is-nav align="center">
-
-        <!-- Right aligned nav items -->
-        <b-navbar-nav class="mx-auto mt-3 ">
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -60, element: '#thisisone', duration: 1000 }" href="#thisisone">This Is #1</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -60, element: '#chemicalx', duration: 1000 }" href="#chemicalx">Chemical X</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -80, element: '#charity-grid', duration: 1000 }" href="#charity">Charity</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -60, element: '#about-section5', duration: 1000 }" href="#about-section5">Environment</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: 50, element: '#collaborate', duration: 1000 }" href="#collaborate">Collaborate</a></b-nav-item>
-        </b-navbar-nav>
-
-        <b-navbar-nav class="ml-auto">
-          <b-nav-item><b-link class="text-white top-content" to="/about"><img height="30px" :src="wtf" alt="about link"/></b-link></b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
+    <AboutNavbar/>
   </div>
   <about-section1 :content="content"></about-section1>
   <about-section2 :content="content"></about-section2>
@@ -38,6 +13,7 @@
 </template>
 
 <script>
+import AboutNavbar from '@/components/layout/AboutNavbar'
 import AboutSection1 from '@/components/about/AboutSection1'
 import AboutSection2 from '@/components/about/AboutSection2'
 import AboutSection3 from '@/components/about/AboutSection3'
@@ -49,6 +25,7 @@ import { APP_CONSTANTS } from '@/app-constants'
 export default {
   name: 'Gallery',
   components: {
+    AboutNavbar,
     AboutSection1,
     AboutSection2,
     AboutSection3,

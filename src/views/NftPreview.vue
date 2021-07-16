@@ -46,7 +46,7 @@ export default {
   mounted () {
     this.loading = false
     this.assetHash = this.$route.params.assetHash
-    // this.$store.dispatch('myItemStore/findItemByAssetHash', this.assetHash)
+    // this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash)
   },
   methods: {
     preserveWhiteSpace: function (content) {

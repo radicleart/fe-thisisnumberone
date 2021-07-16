@@ -4,9 +4,8 @@ import store from '@/store'
 import { APP_CONSTANTS } from '@/app-constants'
 
 // templates
-import MainNavbar from '@/components/layout/MainNavbar.vue'
+import AboutNavbar from '@/components/layout/AboutNavbar.vue'
 import MainFooter from '@/components/layout/MainFooter.vue'
-import AdminNavbar from '@/components/layout/AdminNavbar.vue'
 
 // public pages
 import HomeFooter from '@/components/layout/HomeFooter.vue'
@@ -53,25 +52,25 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'splash',
-    components: { default: NumberOne, header: MainNavbar, footer: MainFooter },
+    components: { default: NumberOne, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'This is number one' }
   },
   {
     path: '/home',
     name: 'home',
-    components: { default: NumberOne, header: MainNavbar, footer: MainFooter },
+    components: { default: NumberOne, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'This is number one' }
   },
   {
     path: '/number-one',
     name: 'number-one',
-    components: { default: NumberOne, header: MainNavbar, footer: MainFooter },
+    components: { default: NumberOne, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'This is number one' }
   },
   {
     path: '/nft-market',
     name: 'nft-market',
-    components: { default: NftMarket, header: MainNavbar, footer: MainFooter },
+    components: { default: NftMarket, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'This is number one' }
   },
   {
@@ -83,36 +82,36 @@ const routes: Array<RouteConfig> = [
   {
     path: '/login',
     name: 'login',
-    components: { default: Login, header: AdminNavbar, footer: HomeFooter },
+    components: { default: Login, header: AboutNavbar, footer: HomeFooter },
     meta: { title: 'Login page' }
   },
   {
     path: '/profile',
     name: 'profile',
-    components: { default: ItemPreview, header: MainNavbar, footer: MainFooter },
+    components: { default: ItemPreview, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'Your profile' }
   },
   {
     path: '/information/:infoId',
     name: 'info-page',
-    components: { default: Information, header: MainNavbar, footer: MainFooter }
+    components: { default: Information, header: AboutNavbar, footer: MainFooter }
   },
   {
     path: '/charity/:charityId',
     name: 'charity-page',
-    components: { default: Charity, header: MainNavbar, footer: MainFooter }
+    components: { default: Charity, header: AboutNavbar, footer: MainFooter }
   },
   {
     path: '/assets/:assetHash',
     name: 'asset-by-hash',
-    components: { default: AssetDetails, header: MainNavbar, footer: MainFooter },
+    components: { default: AssetDetails, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'Asset informations' }
   },
   // admin routes
   {
     path: '/item-preview/:assetHash',
     name: 'item-preview',
-    components: { default: ItemPreview, header: AdminNavbar, footer: MainFooter },
+    components: { default: ItemPreview, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true,
@@ -122,7 +121,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/offers',
     name: 'offers',
-    components: { default: OfferAdmin, header: AdminNavbar, footer: MainFooter },
+    components: { default: OfferAdmin, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -131,7 +130,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/create',
     name: 'create',
-    components: { default: UploadItem, header: AdminNavbar, footer: MainFooter },
+    components: { default: UploadItem, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -140,7 +139,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/admin',
     name: 'admin',
-    components: { default: Admin, header: AdminNavbar, footer: MainFooter },
+    components: { default: Admin, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -149,7 +148,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/edit-item/:assetHash',
     name: 'edit-item',
-    components: { default: UpdateItem, header: AdminNavbar, footer: MainFooter },
+    components: { default: UpdateItem, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -158,7 +157,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/upload-item',
     name: 'upload-item',
-    components: { default: UploadItem, header: AdminNavbar, footer: MainFooter },
+    components: { default: UploadItem, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -167,25 +166,25 @@ const routes: Array<RouteConfig> = [
   {
     path: '/my-items',
     name: 'my-items',
-    components: { default: MyItems, header: AdminNavbar, footer: MainFooter },
+    components: { default: MyItems, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
-      requiresAdmin: true
+      requiresAdmin: false
     }
   },
   {
     path: '/my-items/:filter',
     name: 'my-items-filter',
-    components: { default: MyItems, header: AdminNavbar, footer: MainFooter },
+    components: { default: MyItems, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
-      requiresAdmin: true
+      requiresAdmin: false
     }
   },
   {
     path: '/nft-preview/:assetHash',
     name: 'nft-preview',
-    components: { default: NftPreview, header: MainNavbar, footer: MainFooter },
+    components: { default: NftPreview, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -195,7 +194,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/my-nfts',
     name: 'my-nfts',
-    components: { default: MyNfts, header: MainNavbar, footer: MainFooter },
+    components: { default: MyNfts, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: false

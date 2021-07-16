@@ -62,7 +62,7 @@ export default {
       utils.makeFlasher(this.$refs.lndQrcode)
     },
     deleteItem () {
-      this.$store.dispatch('myItemStore/deleteItem', this.item)
+      this.$store.dispatch('rpayMyItemStore/deleteItem', this.item)
     }
   },
   computed: {

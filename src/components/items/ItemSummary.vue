@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     deleteMediaItem: function () {
-      this.$store.dispatch('myItemStore/deleteMediaItem', { item: this.itemSummary.item, mediaId: 'coverImage' }).then(() => {
+      this.$store.dispatch('rpayMyItemStore/deleteMediaItem', { item: this.itemSummary.item, mediaId: 'coverImage' }).then(() => {
         this.$emit('delete-cover')
       })
     },

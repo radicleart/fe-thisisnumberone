@@ -6,7 +6,7 @@
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
-import myItemStore from './myItemStore'
+// import myItemStore from './myItemStore'
 import assetGeneralStore from './assetGeneralStore'
 import contentStore from './contentStore'
 import publicItemsStore from './publicItemsStore'
@@ -161,7 +161,6 @@ export default new Vuex.Store({
   modules: {
     assetGeneralStore,
     contentStore,
-    myItemStore,
     publicItemsStore
   },
   state: {
@@ -214,7 +213,7 @@ export default new Vuex.Store({
         dispatch('rpayAuthStore/fetchMyAccount').then(profile => {
           if (profile.loggedIn) {
             dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
-            dispatch('myItemStore/initSchema').then(rootFile => {
+            dispatch('rpayMyItemStore/initSchema').then(rootFile => {
               resolve(rootFile)
             })
           } else {

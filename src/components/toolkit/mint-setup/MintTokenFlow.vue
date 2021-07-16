@@ -144,7 +144,7 @@ export default {
     updateItem () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       item.beneficiaries = this.beneficiaries
-      this.$store.dispatch('myItemStore/saveItem', item).then((item) => {
+      this.$store.dispatch('rpayMyItemStore/saveItem', item).then((item) => {
         this.beneficiaries = item.beneficiaries
       })
     },
