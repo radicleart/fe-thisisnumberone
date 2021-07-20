@@ -3,7 +3,7 @@
   <div class="">
     <div class="row mb-4">
       <div class="col-12">
-        <square-button @clickButton="indexRootFile()" :theme="'light'" :label1="'RE-INDEX ITEM'" :icon="'eye'"/>
+        <b-button @click="indexRootFile()" >Index Item</b-button>
         <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttReindex" class="text-white ml-3" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
       </div>
       <div class="col-12 mt-5" v-if="showTips">
@@ -15,13 +15,11 @@
 </template>
 
 <script>
-import SquareButton from '@/components/utils/SquareButton'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'GaiaHubRelay',
   components: {
-    SquareButton
   },
   props: ['assetHash'],
   data: function () {

@@ -4,12 +4,18 @@ export const APP_CONSTANTS = {
   SET_RPAY_FLOW: 'setRpayFlow',
   KEY_TRACKING_URL: 'getTrackingUrl',
   KEY_SECTION_HEIGHT: 'getSectionHeight',
+  KEY_WEB_WALLET_NEEDED: 'getWebWalletNeeded',
+  SET_WEB_WALLET_NEEDED: 'setWebWalletNeeded',
   KEY_WEB_WALLET_LINK_CHROME: 'getWebWalletLinkChrome',
   KEY_WEB_WALLET_LINK_FIREFOX: 'getWebWalletLinkFirefox',
   KEY_MODAL_MESSAGE: 'getModalMessage',
 
+  KEY_CATEGORIES: 'rpayCategoryStore/getCategories',
+
   KEY_ALL_OFFERS_ON_ASSET: 'assetGeneralStore/getAllOffersForAsset',
   KEY_HIGHEST_OFFER_ON_ASSET: 'assetGeneralStore/getHighestOfferForAsset',
+
+  KEY_HAS_PRIVILEGE: 'rpayPrivilegeStore/hasPrivilege',
 
   KEY_CONTENT_ABOUT: 'contentStore/getAbout',
 
@@ -77,6 +83,7 @@ export const APP_CONSTANTS = {
   KEY_ASSET_TRANSACTIONS: 'rpayStacksContractStore/getAssetTransactions',
   KEY_ASSET_LAST_TRANSACTION: 'rpayStacksContractStore/getAssetLastTransaction',
   KEY_ASSET_TRANSACTION: 'rpayStacksContractStore/getAssetTransaction',
+  KEY_MY_CONTRACT_ASSETS: 'rpayStacksContractStore/getMyContractAsses',
 
   SET_CURRENT_SEARCH: 'rpaySearchStore/setCurrentSearch',
   KEY_CURRENT_SEARCH: 'rpaySearchStore/getCurrentSearch',

@@ -1,7 +1,8 @@
 <template>
 <div class="container" style="min-height: 85vh;" v-if="loaded">
-  <div class="mb-5" :key="componentKey">
-    <div :key="componentKey" class="row mb-4" v-if="resultSet && resultSet.length > 0">
+  <div class="my-5">
+    <h1 class="text-white">#1 NFT Gallery</h1>
+    <div class="row mb-4" v-if="resultSet && resultSet.length > 0">
       <div v-for="(item, index) in resultSet" :key="index" class="mt-5 col-md-4 col-sm-4 col-6">
         <MarketableNft class="mb-2" :item="item"/>
       </div>
@@ -22,7 +23,6 @@ export default {
   data () {
     return {
       filter: 'pending',
-      componentKey: 0,
       loaded: false
     }
   },

@@ -6,9 +6,9 @@
   <b-container class="my-5 pt-5" v-if="item">
     <b-row style="min-height: 40vh" >
       <b-col md="4" sm="12" align-self="start" class=" text-center">
-        <div  class="bg-white" style="width:100%;">
-          <p class="p-3">Artwork File</p>
-          <media-item :videoOptions="videoOptions" :dims="dims" :attributes="item.attributes" :targetItem="'artworkFile'"/>
+        <div  class="" style="width:100%;">
+          <!-- <media-item :videoOptions="videoOptions" :dims="dims" :attributes="item.attributes" :targetItem="'artworkFile'"/> -->
+          <NftCoverImage :item="item" :displayHeader="false"/>
         </div>
       </b-col>
       <b-col md="8" sm="12" align-self="start" class="mb-4 text-white">
@@ -36,14 +36,14 @@
 
 <script>
 import MintingTools from '@/components/toolkit/MintingTools'
-import MediaItem from '@/components/utils/MediaItem'
 import { APP_CONSTANTS } from '@/app-constants'
+import NftCoverImage from '@/components/upload/NftCoverImage'
 
 export default {
   name: 'ItemPreview',
   components: {
     MintingTools,
-    MediaItem
+    NftCoverImage
   },
   data: function () {
     return {
@@ -110,5 +110,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+#minting-modal .modal-content {
+  border: none !important;
+  background-color: transparent !important;
+}
+
 </style>

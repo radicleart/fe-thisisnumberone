@@ -138,8 +138,7 @@ export default {
       assetHash: null,
       mintResult: null,
       mintResultTxId: null,
-      message: 'No item available...',
-      webWalletNeeded: false
+      message: 'No item available...'
     }
   },
   watch: {
@@ -423,6 +422,10 @@ export default {
     owner () {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       return contractAsset.owner
+    },
+    webWalletNeeded () {
+      const webWalletNeeded = this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_NEEDED]
+      return webWalletNeeded
     }
   }
 }

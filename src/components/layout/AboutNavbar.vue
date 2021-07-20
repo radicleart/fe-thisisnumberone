@@ -23,16 +23,30 @@
 
         <b-navbar-nav class="wtf-menu mx-auto" v-else>
           <b-nav-item><b-link class="text-white top-content" to="/about"><img height="30px" :src="wtf" alt="about link"/></b-link></b-nav-item>
-          <b-nav-item active><b-link to="/gallery">Gallery</b-link></b-nav-item>
+          <b-nav-item active><b-link to="/nft-market">Gallery</b-link></b-nav-item>
+          <b-nav-item v-if="canUpload()"><b-link to="/my-items/all">My Items</b-link></b-nav-item>
           <b-nav-item v-if="canUpload()"><b-link to="/upload-item">Create NFT</b-link></b-nav-item>
-          <b-nav-item active v-else><b-link to="/exhibit">Exhibit Here?</b-link></b-nav-item>
-          <b-nav-item class="mt-5 pt-5 border-top" v-if="profile.loggedIn"><b-link to="/my-items/all">My NFTs</b-link></b-nav-item>
-          <b-nav-item v-if="profile.superAdmin"><b-link to="/user-admin">User Admin</b-link></b-nav-item>
+          <b-nav-item active v-else><b-link @click.prevent="startExhibit()">Exhibit Here?</b-link></b-nav-item>
+          <b-nav-item class="mt-5 pt-5 border-top" v-if="profile.loggedIn"><b-link to="/my-nfts">My NFTs</b-link></b-nav-item>
           <b-nav-item v-if="profile.superAdmin"><b-link to="/offers">Offers</b-link></b-nav-item>
           <b-nav-item v-if="profile.superAdmin"><b-link to="/admin">Admin</b-link></b-nav-item>
-          <b-nav-item v-if="!profile.loggedIn && webWalletNeeded"><a class="mx-4 text-white" :href="webWalletLink" target="_blank">Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-nav-item>
+          <b-nav-item v-if="!profile.loggedIn && webWalletNeeded">
+            <h1><a :href="webWalletLink" target="_blank">Get a Stacks Web Wallet <b-icon class="ml-3 mb-3" icon="arrow-up-right-square-fill"/></a></h1>
+          </b-nav-item>
           <b-nav-item v-if="profile.loggedIn"><b-link @click.prevent="logout()">Logout</b-link></b-nav-item>
-          <b-nav-item v-else><b-link @click.prevent="startLogin()">Login</b-link></b-nav-item>
+          <b-nav-item v-else-if="!webWalletNeeded"><b-link @click.prevent="startLogin()">Login</b-link></b-nav-item>
+          <div v-if="profile.loggedIn" class="p-3 mb-5 border-bottom text-left">
+            <h4 id="sidebar-no-header-title"><b-icon class="mr-3" icon="wallet2"/> Wallet</h4>
+            <p class="text-center">
+              <nav class="mb-3">
+                <b-nav vertical>
+                  <b-nav-item><span>Address</span></b-nav-item>
+                  <b-nav-item><span class="stx-address">{{profile.stxAddress}}</span></b-nav-item>
+                  <b-nav-item v-if="profile.accountInfo" active><span>Balance: <span class="text-secondary">{{profile.accountInfo.balance}}</span> STX</span></b-nav-item>
+                </b-nav>
+              </nav>
+            </p>
+          </div>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -53,16 +67,20 @@ export default {
       rainbowOne: require('@/assets/img/Group 76.svg'),
       grid: require('@/assets/img/navbar-footer/grid.svg'),
       cross: require('@/assets/img/navbar-footer/cross.svg'),
-      collapsed: true,
-      webWalletNeeded: false
+      collapsed: true
     }
   },
   methods: {
     canUpload () {
-      if (this.profile && this.profile.privileges) {
-        return this.profile.privileges[location.hostname]
+      const hasUploadPriv = this.$store.getters[APP_CONSTANTS.KEY_HAS_PRIVILEGE]('can-upload')
+      return hasUploadPriv
+    },
+    startExhibit () {
+      if (!this.profile.loggedIn) {
+        this.$router.push('/login?referer=exhibit-here')
+      } else {
+        this.$router.push('/exhibit-here')
       }
-      return false
     },
     showAbout () {
       return this.$route.name === 'about'
@@ -94,6 +112,9 @@ export default {
       } else {
         this.$store.dispatch('rpayAuthStore/startLogin').catch(() => {
           this.$store.commit(APP_CONSTANTS.SET_WEB_WALLET_NEEDED)
+          if (!this.profile.loggedIn) {
+            this.$router.push('/login?referer=navbar')
+          }
         })
       }
     }
@@ -104,6 +125,10 @@ export default {
         return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_FIREFOX]
       }
       return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_CHROME]
+    },
+    webWalletNeeded () {
+      const webWalletNeeded = this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_NEEDED]
+      return webWalletNeeded
     },
     profile () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]

@@ -15,7 +15,7 @@
       <div class="">
         <div>
           <div class="bg-dark p-3 d-flex justify-content-between">
-            <square-button @clickButton="backData()" :theme="'light'" :label1="'BACK'" :icon="'eye'"/>
+            <b-button variant="outline-primary" @click="backData()">Back</b-button>
          </div>
         </div>
       </div>

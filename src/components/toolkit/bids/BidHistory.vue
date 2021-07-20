@@ -1,25 +1,20 @@
 <template>
-<div class="upload-preview text-small">
-  <div class="row upload-preview text-small">
-    <div class="col-2">Sale Type</div><div class="col-4">{{contractAsset.saleData.saleType}}</div>
-    <div class="col-2">Cycle</div><div class="col-4">{{contractAsset.saleData.saleCycleIndex}}</div>
-    <div class="col-2">Amount</div><div class="col-4">{{contractAsset.saleData.buyNowOrStartingPrice}}</div>
-    <div class="col-2">Reserve</div><div class="col-4">{{contractAsset.saleData.reservePrice}}</div>
-    <div class="col-2">Increment</div><div class="col-4">{{contractAsset.saleData.incrementPrice}}</div>
-    <div class="col-2">biddingEndTime</div><div class="col-4">{{appTimestamp(contractAsset.saleData.biddingEndTime)}}</div>
+<div class=" text-small mx-5 mt-4">
+  <div class="row text-small">
+    <div class="col-2">Sale Type</div><div class="col-2">{{contractAsset.saleData.saleType}}</div>
+    <div class="col-2">Cycle</div><div class="col-2">{{contractAsset.saleData.saleCycleIndex}}</div>
+    <div class="col-2">Amount</div><div class="col-2">{{contractAsset.saleData.buyNowOrStartingPrice}}</div>
+    <div class="col-2">Reserve</div><div class="col-2">{{contractAsset.saleData.reservePrice}}</div>
+    <div class="col-2">Increment</div><div class="col-2">{{contractAsset.saleData.incrementPrice}}</div>
+    <div class="col-2">biddingEndTime</div><div class="col-2">{{appTimestamp(contractAsset.saleData.biddingEndTime)}}</div>
   </div>
-  <div class="row upload-preview text-small text-right">
+  <div class="row text-small text-right">
     <div class="col-12">
       <a class="text-white mr-5" href="#" @click.prevent="closeBidding(1)">Transfer & Close</a>
       <a class="text-white" href="#" @click.prevent="closeBidding(2)">Refund & Close</a>
     </div>
   </div>
-    <b-table striped hover class="bg-light text-dark"
-      :items="values()"
-      :fields="fields()"
-    >
-    </b-table>
-  <div class="upload-preview text-small">
+  <div class=" text-small">
     <b-table striped hover class="bg-light text-dark"
       :items="valuesAll()"
       :fields="fields()"

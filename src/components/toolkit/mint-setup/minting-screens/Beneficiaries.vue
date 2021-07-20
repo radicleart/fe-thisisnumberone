@@ -1,38 +1,51 @@
 <template>
 <b-card-text class="mx-4">
-  <div class="mb-3" role="group">
-    <b-form v-on:submit.prevent inline>
-      <label class="sr-only" for="chain-address">Editions</label>
-      <b-input-group prepend="Editions" class="bg-white mb-2 mr-sm-2 mb-sm-0">
+  <b-row>
+    <b-col cols="6">
+      <label for="editions">Editions <a class="fs-16" v-b-tooltip.hover="{ variant: 'light' }" :title="'Set the number of editions to allow users to mint'" href="#"><b-icon icon="question-circle"/></a></label>
         <b-form-input
-          style="border-radius: none !important;"
-          id="chain-address"
-          v-model="editions"
-          :state="editionsState"
+          id="editions"
+          v-model="item.editions"
+          @blur="updateItem"
+          :state="itemEditionsState"
           aria-describedby="editions-help editions-feedback"
-          placeholder="Enter number of NFT editions to mint"
+          placeholder="Number of editions to mint"
           trim
         ></b-form-input>
-      </b-input-group>
       <b-form-invalid-feedback id="editions-feedback">
-        Enter at least 3 letters
+        How many editions of this NFT do you want to allow? At least 1 - at most 100
       </b-form-invalid-feedback>
-    </b-form>
-  </div>
+    </b-col>
+    <b-col cols="6">
+      <label for="editions">Edition Cost <a class="fs-16" v-b-tooltip.hover="{ variant: 'light' }" :title="'Set the cost for a user to mint a new edition - you can change this price at any time'" href="#"><b-icon icon="question-circle"/></a></label>
+        <b-form-input
+          id="editionCost"
+          @blur="updateItem"
+          v-model="item.editionCost"
+          :state="itemEditionCostState"
+          aria-describedby="edition-cost-help editions-feedback"
+          placeholder="Cost of minting an edition (STX)"
+          trim
+        ></b-form-input>
+      <b-form-invalid-feedback id="edition-cost-feedback">
+        Cost of minting an edition (STX) - the amount is split between the royalties
+      </b-form-invalid-feedback>
+    </b-col>
+  </b-row>
   <div class="upload-preview">
-    <h2 class="text-bold">Royalties</h2>
+    <h2 class="text-bold">Royalties <a class="fs-16" v-b-tooltip.hover="{ variant: 'light' }" :title="'The first sale splits the payment between the following addresses - on secondary sale the pay is reduced to 10% of these amounts'" href="#"><b-icon icon="question-circle"/></a></h2>
     <span v-for="(beneficiary, index) in beneficiaries" :key="index">
       <beneficiary v-on="$listeners" :beneficiary="beneficiary"/>
     </span>
-    <div style="font-size: 1.6rem;" class="d-flex justify-content-between">
-      <div>Sum</div>
+    <div style="font-size: 1.6rem;" class="mt-3 py-3 border-top d-flex justify-content-between">
+      <div></div>
       <div class=" d-flex justify-content-between">
         <div class="mr-5">{{getRoyaltySum()}} %</div>
         <div style="width: 40px;">
         </div>
       </div>
     </div>
-    <div class="mt-4 text-right">Add a contributer <a href="#" class="ml-2 text-two" style="font-size: 24px;" @click="addBeneficiary"><b-icon scale="1em" icon="plus-circle"/></a></div>
+    <div class="mt-4 text-right"><a href="#" class="ml-2 text-two" style="font-size: 1.4rem; font-weight: 700;" @click="addBeneficiary">include more royalties <b-icon class="ml-2" scale="1em" icon="plus-circle"/></a></div>
   </div>
 </b-card-text>
 </template>
@@ -46,15 +59,15 @@ export default {
   components: {
     Beneficiary
   },
-  props: ['beneficiaries'],
+  props: ['beneficiaries', 'item'],
   data () {
     return {
-      editions: 9
+      formSubmitted: false
     }
   },
   watch: {
-    'editions' () {
-      this.updateEditions()
+    'item.editions' () {
+      // this.updateItem()
     }
   },
   methods: {
@@ -69,23 +82,32 @@ export default {
         sum += o.royalty
       })
       sum = Math.round(sum * 100) / 100
-      return sum
+      return sum.toFixed(2)
     },
-    updateEditions: function () {
-      if (!this.editions || this.editions < 1) {
-        this.editions = 100
+    updateItem: function () {
+      if (!this.item.editions || this.item.editions < 1) {
+        this.item.editions = 1
+      }
+      if (!this.item.editionCost || this.item.editionCost < 0) {
+        this.item.editionCost = 0
       }
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      configuration.gaiaAsset.editions = this.editions
+      this.item.editions = Number(this.item.editions)
+      this.item.editionCost = Number(this.item.editionCost)
+      configuration.gaiaAsset = this.item // .editionCost = Number(this.item.editionCost)
       this.$store.commit('rpayStore/addConfiguration', configuration)
       configuration.opcode = 'stx-update-mint-data'
       window.eventBus.$emit('rpayEvent', configuration)
     }
   },
   computed: {
-    editionsState () {
-      // if (!this.editions) return null
-      return (this.editions > 0)
+    itemEditionsState () {
+      if (!this.formSubmitted && !this.item.editions) return null
+      return (this.item.editions > 0 && this.item.editions < 101)
+    },
+    itemEditionCostState () {
+      if (!this.formSubmitted && !this.item.editionCost) return null
+      return (this.item.editionCost >= 0)
     }
   }
 }

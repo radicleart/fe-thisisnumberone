@@ -1,7 +1,7 @@
 <template>
-<div>
+<div class="mx-5 px-5">
   <div style="font-size: 1.6rem;" class="d-flex justify-content-between" v-if="beneficiary">
-    <div><a href="#" @click.prevent="showBeneficiary = !showBeneficiary">{{displayAddress()}} / {{chainAddress()}}</a></div>
+    <div><a href="#" @click.prevent="showBeneficiary = !showBeneficiary">{{displayAddress()}}</a></div>
     <div class=" d-flex justify-content-between">
       <div class="mr-5">{{displayBeneficiary(beneficiary.royalty)}} %</div>
       <div style="width: 40px;">

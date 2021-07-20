@@ -5,23 +5,21 @@
     <div class="col-10">{{offer.offerer}}</div>
     <div class="col-2">Amount</div>
     <div class="col-10">{{offer.amount}} STX</div>
-    <div class="col-2">Email</div>
-    <div class="col-10">{{offer.email}} STX</div>
     <div class="col-2">Made</div>
     <div class="col-10">{{offerMade(offer.appTimestamp)}}</div>
     <div class="col-2"></div>
   </div>
+  <!--
   <div class="row text-small mb-4" v-for="(dbOffer, index) in dbOffers" :key="index">
     <div class="col-2">Offerer</div>
     <div class="col-10">{{dbOffer.offerer}}</div>
     <div class="col-2">Amount</div>
     <div class="col-10">{{dbOffer.amount}} STX</div>
-    <div class="col-2">Email</div>
-    <div class="col-10">{{dbOffer.email}} STX</div>
     <div class="col-2">Made</div>
     <div class="col-10">{{offerMade(dbOffer.appTimestamp)}}</div>
     <div class="col-2"></div>
   </div>
+  -->
 </div>
 </template>
 
@@ -42,9 +40,6 @@ export default {
   mounted () {
     this.$store.dispatch('rpayPurchaseStore/fetchOffers').then((dbOffers) => {
       this.dbOffers = dbOffers
-    })
-    this.$store.dispatch('assetGeneralStore/fetchTransactions').then((transactions) => {
-      this.transactions = transactions
     })
   },
   methods: {

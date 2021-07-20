@@ -11,6 +11,7 @@
 import { APP_CONSTANTS } from '@/app-constants'
 import RoyaltyScreen from './minting-screens/RoyaltyScreen'
 import AddBeneficiaryScreen from './minting-screens/AddBeneficiaryScreen'
+import utils from '@/services/utils'
 
 export default {
   name: 'MintingFlow',
@@ -49,31 +50,33 @@ export default {
   },
   methods: {
     mintToken: function () {
-      this.errorMessage = 'Minting non fungible token - takes a minute or so..'
+      // this.$notify({ type: 'warning', title: 'Minting', text: 'Minting non fungible token - takes a minute or so..' })
       // the post condition applies to the address the funds are going to not from!!!
       // when minting the funds go to the contract admin.
-      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      // const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      const contractAddress = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
       let contractName = process.env.VUE_APP_STACKS_CONTRACT_NAME
       if (process.env.VUE_APP_STACKS_CONTRACT_NAME_NEXT) {
         contractName = process.env.VUE_APP_STACKS_CONTRACT_NAME_NEXT
       }
+      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](contractAddress + '.' + contractName)
       const data = {
-        mintingFee: 1.1,
-        owner: profile.stxAddress, // process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
+        mintingFee: application.tokenContract.mintPrice,
+        owner: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS, // profile.stxAddress,
         assetHash: this.item.assetHash,
         metaDataUrl: this.item.metaDataUrl,
         beneficiaries: this.item.beneficiaries,
         editions: this.item.editions,
-        editionCost: (this.item.editionCost) ? this.item.editionCost : 0,
+        editionCost: utils.toOnChainAmount(this.item.editionCost),
         sendAsSky: true,
-        contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
+        contractAddress: contractAddress,
         contractName: contractName,
         functionName: 'mint-token'
       }
       this.$store.dispatch('rpayPurchaseStore/mintToken', data).then((result) => {
         this.result = result
-      }).catch((err) => {
-        this.errorMessage = 'Minting error: ' + err
+      }).catch(() => {
+        this.$notify({ type: 'danger', title: 'Minting Error', text: 'Minting error - do you have enough STX to  pay the gas fee? Check the network is correct?' })
       })
     },
     addNewBeneficiary: function () {
@@ -103,20 +106,15 @@ export default {
     addBeneficiary: function (beneficiary) {
       this.errorMessage = null
       if (!beneficiary || !beneficiary.royalty || !beneficiary.chainAddress) {
-        this.errorMessage = 'Bad value for beneficiary'
+        this.$notify({ type: 'error', title: 'Minting Error', text: 'Bad value for beneficiary' })
         return
       }
-      // if (beneficiary.chainAddress === this.beneficiaries[0].chainAddress) {
-      //  this.errorMessage = 'Can not have the same address as owner!'
-      //  return
-      // }
-      // this.beneficiaries[0].royalty = this.beneficiaries[0].royalty - beneficiary.royalty
       const index = this.beneficiaries.findIndex((obj) => obj.chainAddress === beneficiary.chainAddress)
       if (index > -1) {
         this.beneficiaries.splice(index, 1, beneficiary)
       } else {
         if (this.beneficiaries.length === 10) {
-          this.errorMessage = 'No more beneficiaries allowed'
+          this.$notify({ type: 'error', title: 'Minting Error', text: 'No more beneficiaries allowed' })
         } else {
           this.beneficiaries.push(beneficiary)
         }
@@ -138,7 +136,7 @@ export default {
         sum += o.royalty
       })
       if (sum !== 100) {
-        this.errorMessage = 'Royalties must add up to 100%'
+        this.$notify({ type: 'error', title: 'Minting Error', text: 'Royalties must add up to 100%' })
       }
     },
     updateItem () {

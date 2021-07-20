@@ -98,8 +98,8 @@
     </b-card-text>
     <b-card-text class="mx-4">
       <div class="d-flex justify-content-between">
-        <b-button @click="cancel()" class="w-50 py-4 mr-2" variant="outline-danger">CANCEL</b-button>
-        <b-button @click="addBeneficiary()" class="w-50 py-4 ml-2" variant="outline-primary">SAVE</b-button>
+        <b-button @click="cancel()" class="w-50 mr-4" variant="outline-light">go back</b-button>
+        <b-button @click="addBeneficiary()" class="w-50 ml-4" variant="outline-dark">save</b-button>
       </div>
     </b-card-text>
   </b-card>

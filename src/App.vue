@@ -10,7 +10,7 @@
     <router-view name="footer"/>
     <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
     <waiting-modal/>
-    <success-modal />
+    <success-modal/>
   </div>
 </div>
 </template>

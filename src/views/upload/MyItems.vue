@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import SingleItem from '@/components/items/SingleItem'
+import SingleItem from '@/components/upload/SingleItem'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {

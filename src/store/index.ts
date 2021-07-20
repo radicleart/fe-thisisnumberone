@@ -6,7 +6,6 @@
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import myItemStore from './myItemStore'
 import assetGeneralStore from './assetGeneralStore'
 import contentStore from './contentStore'
 import publicItemsStore from './publicItemsStore'
@@ -165,6 +164,7 @@ export default new Vuex.Store({
   },
   state: {
     configuration: setup({}),
+    webWalletNeeded: false,
     windims: { innerWidth: window.innerWidth, innerHeight: window.innerHeight },
     modalMessage: 'Your request is being processed',
     stacksPath: 'extended/v1/tx/',
@@ -174,6 +174,9 @@ export default new Vuex.Store({
   getters: {
     getWebWalletLinkChrome: state => {
       return state.chromeLink
+    },
+    getWebWalletNeeded: state => {
+      return state.webWalletNeeded
     },
     getWebWalletLinkFirefox: state => {
       return state.firefoxLink
@@ -198,6 +201,9 @@ export default new Vuex.Store({
     setRpayFlow (state, data) {
       state.configuration = setup(data)
     },
+    setWebWalletNeeded (state) {
+      state.webWalletNeeded = true
+    },
     setModalMessage (state, modalMessage) {
       state.modalMessage = modalMessage
     },
@@ -214,6 +220,7 @@ export default new Vuex.Store({
           if (profile.loggedIn) {
             dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
             dispatch('rpayMyItemStore/initSchema').then(rootFile => {
+              dispatch('rpayStacksContractStore/fetchAssetsByOwner')
               resolve(rootFile)
             })
           } else {

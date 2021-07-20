@@ -1,60 +1,72 @@
 <template>
 <div id="minting-tools" class="mt-3">
-  <div class="text-white">
+  <div class="">
     <div class="w-100 text-small">
       <div v-if="contractAsset">
         <div v-if="minting()">Minting - <a :href="transactionUrl()" target="_blank">track progress here...</a></div>
-        <b-alert show variant="success">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}} / Cost {{contractAsset.tokenInfo.editionCost}} STX</b-alert>
+        <b-alert show variant="success">
+          <div class="d-flex justify-content-between">
+            <div class="w-100 text-small">Minted: Series Number {{contractAsset.nftIndex}} : Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</div>
+            <div>{{contractAsset.owner}}</div>
+          </div>
+        </b-alert>
       </div>
-      <div v-else-if="isValid" show variant="danger">
-        <square-button @clickButton="startMinting()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
+      <div v-else-if="isValid">
+        <div>
+          <b-button variant="outline-primary" @click="startMinting()">Mint File</b-button>
+        </div>
+        <div v-if="mintTxId">
+          <a :href="transactionUrl" target="_blank">Show in Explorer</a>
+        </div>
       </div>
-      <b-alert v-else show variant="danger">not valid - information required</b-alert>
+      <b-alert v-else show variant="danger">Information required - <b-link :to="'/edit-item/' + item.assetHash">edit this item</b-link></b-alert>
     </div>
 
-    <div v-if="contractAsset">
-      <b-tabs justified content-class="mt-3">
+    <div v-if="contractAsset" class="mt-5">
+      <b-tabs justified content-class="mt-3 text-small">
         <b-tab title="General" active>
-          <div class="row">
-            <div class="col-12">
-              <p>owned by:<br/>{{contractAsset.owner}}</p>
-              <p v-if="profile">you:<br/>{{profile.stxAddress}}</p>
-            </div>
+          <div class="row" v-if="contractAsset && application">
             <div class="col-12 mb-5">
               <div class="">{{saleDataText}}</div>
             </div>
             <div class="col-12 mb-5">
-              <b-tabs  content-class="p-4">
-                <b-tab title="Editions" active>
-                  <manage-editions :assetHash="assetHash"/>
-                </b-tab>
-                <b-tab title="Beneficiaries">
-                  <list-beneficiaries :assetHash="assetHash"/>
-                </b-tab>
-                <b-tab title="Transfers">
-                  <transfer-nft :assetHash="assetHash"/>
-                </b-tab>
-                <b-tab title="Gaia">
-                  <gaia-hub-relay :assetHash="assetHash"/>
-                </b-tab>
-                <b-tab title="Next" v-if="contractNameNext">
-                  <square-button @clickButton="startMinting()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
-                </b-tab>
-              </b-tabs>
+              <div class="">
+                <a :href="contractAsset.tokenInfo.metaDataUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Meta Data URL: ' + contractAsset.tokenInfo.metaDataUrl" target="_blank">Meta Data URL</a>
+                / <a :href="application.tokenContract.baseTokenUri + contractAsset.nftIndex" v-b-tooltip.hover="{ variant: 'light' }" :title="'Base Token URL: ' + application.tokenContract.baseTokenUri + contractAsset.nftIndex" target="_blank">Base Token URL</a>
+              </div>
             </div>
           </div>
         </b-tab>
-        <b-tab title="Sales" class="text-white">
-          <div>
-            <div class="my-5">{{saleDataText}}</div>
-            <square-button @clickButton="openSaleDataDialog()" :theme="'light'" :label1="'UPDATE SALE INFO'" :icon="'eye'"/>
-          </div>
+        <b-tab title="Royalties">
+          <ListBeneficiaries :assetHash="assetHash"/>
         </b-tab>
-        <b-tab :title="contractAsset.offerCounter + ' Offers'">
-          <OfferHistory2 :assetHash="assetHash"/>
+        <b-tab title="Transfers">
+          <TransferNft :assetHash="assetHash"/>
         </b-tab>
-        <b-tab :title="contractAsset.bidCounter + ' Bids'">
-          <BidHistory :assetHash="assetHash"/>
+        <b-tab title="Gaia" v-if="profile.superAdmin">
+          <GaiaHubRelay :assetHash="assetHash"/>
+        </b-tab>
+        <b-tab title="Next" v-if="contractNameNext">
+          <b-button @click="startMinting()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
+        </b-tab>
+        <b-tab title="Editions">
+          <ManageEditions :assetHash="assetHash"/>
+        </b-tab>
+        <b-tab title="Sales" class="">
+          <b-tabs justified content-class="mt-3">
+            <b-tab :title="'Info'">
+              <div>
+                <div class="my-5">{{saleDataText}}</div>
+                <b-button variant="outline-primary" @click="openSaleDataDialog()">Update Sale Info</b-button>
+              </div>
+            </b-tab>
+            <b-tab :title="'Offers'">
+              <OfferHistory :assetHash="assetHash"/>
+            </b-tab>
+            <b-tab :title="'Bids'">
+              <BidHistory :assetHash="assetHash"/>
+            </b-tab>
+          </b-tabs>
         </b-tab>
       </b-tabs>
     </div>
@@ -69,19 +81,25 @@
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="md" id="minting-modal">
-    <MintTokenFlow :assetHash="assetHash" />
+    <MintingFlow :assetHash="assetHash" />
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
+  <b-modal size="lg" id="selling-modal">
+    <SellingFlow :assetHash="assetHash" />
+    <template #modal-footer class="text-center"><div class="w-100"></div></template>
+  </b-modal>
+  <!--
   <b-modal size="md" id="selling-modal">
     <risidio-pay v-if="showRpay" :configuration="configuration"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
+  -->
 </div>
 </template>
 
 <script>
-import MintTokenFlow from './mint-setup/MintTokenFlow'
-import SquareButton from '@/components/utils/SquareButton'
+import MintingFlow from './mint-setup/MintingFlow'
+import SellingFlow from './sell-setup/SellingFlow'
 import moment from 'moment'
 import { APP_CONSTANTS } from '@/app-constants'
 import AcceptOffer from '@/components/toolkit/AcceptOffer'
@@ -89,25 +107,25 @@ import ManageEditions from '@/components/toolkit/editions/ManageEditions'
 import TransferNft from '@/components/toolkit/TransferNft'
 import ListBeneficiaries from '@/components/toolkit/ListBeneficiaries'
 import GaiaHubRelay from '@/components/toolkit/GaiaHubRelay'
-import OfferHistory2 from '@/components/toolkit/offers/OfferHistory2'
+import OfferHistory from '@/components/toolkit/offers/OfferHistory'
 import BidHistory from '@/components/toolkit/bids/BidHistory'
 
-const RisidioPay = () => import('risidio-pay')
+// const RisidioPay = () => import('risidio-pay')
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
 export default {
   name: 'MintingTools',
   components: {
-    MintTokenFlow,
-    OfferHistory2,
+    MintingFlow,
+    SellingFlow,
+    OfferHistory,
     BidHistory,
-    RisidioPay,
+    // RisidioPay,
     AcceptOffer,
     TransferNft,
     ListBeneficiaries,
     GaiaHubRelay,
-    SquareButton,
     ManageEditions
   },
   props: ['assetHash'],
@@ -141,13 +159,16 @@ export default {
           $self.mintResult = txResult
           // $self.$bvModal.show('result-modal')
         } else if (data.opcode === 'stx-update-mint-data') {
-          // $self.$bvModal.hide('minting-modal')
+          if (data.gaiaAsset) $self.$store.dispatch('rpayMyItemStore/saveItem', data.gaiaAsset)
         } else if (data.opcode === 'stx-save-and-close-mint-data') {
           // $self.$bvModal.hide('minting-modal')
         } else if (data.opcode === 'stx-transaction-sent') {
           $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
           $self.mintResult = txResult
+          setInterval(function () {
+            $self.$store.dispatch('rpayTransactionStore/fetchTransactionInfo', $self.mintTxId)
+          }, 10000)
           // $self.$bvModal.show('result-modal')
         } else if (data.opcode === 'cancel-minting') {
           $self.$bvModal.hide('selling-modal')
@@ -203,9 +224,17 @@ export default {
     }
   },
   computed: {
+    transaction () {
+      const transaction = this.$store.getters[APP_CONSTANTS.KEY_TRANSACTION](this.mintTxId)
+      return transaction
+    },
     profile () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile
+    },
+    application () {
+      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME)
+      return application
     },
     configuration () {
       const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
@@ -244,13 +273,10 @@ export default {
 }
 #minting-modal .modal-content {
   border: none !important;
-  background-color: #fff !important;
+  background-color: transparent !important;
 }
 #minting-tools  .nav-link.active {
   color: #000;
-}
-#minting-tools .nav-link {
-  color: #fff;
 }
 #minting-tools .nav-link:hover {
   color: #ccc;

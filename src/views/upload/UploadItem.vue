@@ -1,15 +1,9 @@
 <template>
 <section class="" id="section-upload">
-  <b-container class="mt-5 pt-5">
-    <b-row style="min-height: 40vh" >
-      <b-col md="6" sm="12" align-self="start" class=" text-center">
-        <div  class="bg-white" style="width:80%;">
-          <media-upload :myUploadId="'artworkFile'" :dims="dims" :contentModel="contentModelArtwork" :limit="1" :sizeLimit="20" :mediaTypes="'video'" @updateMedia="updateMedia($event)"/>
-        </div>
-      </b-col>
-      <b-col md="6" sm="12" align-self="end"  class="mb-4 text-white">
-        <h1 class="border-bottom mb-5">Upload Item</h1>
-        <div>First step to creating your NFT is to upload it here.</div>
+  <b-container class="mt-5 pt-5 text-white">
+    <b-row>
+      <b-col md="6" offset-md="3" sm="12" align-self="start" class=" text-center">
+        <media-upload :myUploadId="'artworkFile'" :dims="dims" :contentModel="contentModelArtwork" :limit="1" :sizeLimit="20" :mediaTypes="'video,image,threed,audio,pdf'" @updateMedia="updateMedia($event)"/>
       </b-col>
     </b-row>
   </b-container>
@@ -18,7 +12,7 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import MediaUpload from '@/components/utils/MediaUpload'
+import MediaUpload from '@/components/upload/MediaUpload'
 import utils from '@/services/utils'
 
 export default {
@@ -52,16 +46,18 @@ export default {
       defaultBadgeData: null,
       contentModelArtwork: {
         id: 'artworkFile',
-        title: 'UPLOAD FILE',
-        buttonName: 'CHOOSE A FILE',
-        message: 'Main Artwork File',
-        iconName: 'film',
+        title: 'Upload a new item',
+        buttonName: 'choose a file',
+        message: 'Drop your NFT file',
+        iconName: 'file-earmark-arrow-down',
         errorMessage: 'A mp4 file is required',
-        popoverBody: 'The artwork file.'
+        popoverBody: 'The NFT file.'
       }
     }
   },
   mounted () {
+    const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+    if (!profile.loggedIn) this.$router.push('/')
     const assetHash = this.$route.params.assetHash
     if (assetHash) {
       this.assetHash = assetHash
@@ -74,28 +70,6 @@ export default {
       if (file === 'artworkFile') return this.attributes.artworkFile && this.attributes.artworkFile.fileUrl
       else if (file === 'artworkClip') return this.attributes.artworkClip && this.attributes.artworkClip.fileUrl
       else if (file === 'coverImage') return this.attributes.coverImage && this.attributes.coverImage.fileUrl
-    },
-    videoOptions () {
-      if (this.assetHash) return
-      const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-      if (!myAsset) return
-      const videoOptions = {
-        allowClip: true,
-        emitOnHover: true,
-        playOnHover: true,
-        bigPlayer: false,
-        showMeta: true,
-        assetHash: this.assetHash,
-        autoplay: false,
-        muted: true,
-        controls: true,
-        poster: (myAsset.attributes.coverImage) ? myAsset.attributes.coverImage.fileUrl : null,
-        sources: [
-          { src: myAsset.attributes.artworkFile.fileUrl, type: myAsset.attributes.artworkFile.type }
-        ],
-        fluid: false
-      }
-      return videoOptions
     },
     setHandler: function (data) {
       this.handler = data.handler
@@ -120,8 +94,11 @@ export default {
             attributes: {}
           }
           myAsset.attributes[attributes.id] = data.media
+          if (data.media.type.indexOf('image') > -1) {
+            myAsset.attributes.coverImage = data.media
+          }
           $self.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then(() => {
-            $self.$store.commit('setModalMessage', 'Saved artwork file.')
+            $self.$store.commit('setModalMessage', 'Saved NFT file.')
             this.$root.$emit('bv::hide::modal', 'waiting-modal')
             $self.$router.push('/edit-item/' + data.media.dataHash)
           }).catch((error) => {
@@ -129,15 +106,6 @@ export default {
             $self.result = error
           })
         })
-      }
-    },
-    updateUploadState: function (data) {
-      if (data.change === 'done') {
-        this.$router.push('/edit-item/' + this.item.assetHash)
-      } else if (data.change === 'up') {
-        this.uploadState++
-      } else {
-        this.uploadState--
       }
     },
     isValid: function () {
@@ -170,7 +138,7 @@ export default {
       this.showWaitingModal = true
       this.$store.commit('setModalMessage', 'Uploading files - can take a while.. <a target="_blank" href="https://radiclesociety.medium.com/radicle-peer-to-peer-marketplaces-whats-the-deal-767960da195b">read why</a>')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
-      this.$store.dispatch('rpayMyItemStore/saveItem', { item: this.item, musicFile: this.item.attributes.musicFile[0], coverImage: this.item.attributes.coverImage[0] }).then(() => {
+      this.$store.dispatch('rpayMyItemStore/saveItem', { item: this.item, artworkFile: this.item.attributes.artworkFile[0], coverImage: this.item.attributes.coverImage[0] }).then(() => {
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
         this.$root.$emit('bv::show::modal', 'success-modal')
         this.$store.commit('setModalMessage', 'Uploading... once its saved you\'ll be able to mint this artowrk - registering your ownership on the blockchain. Once registered you\'ll be able to prove you own this artwork and be able to benefit not only from its sale but also from all secondary sales.')

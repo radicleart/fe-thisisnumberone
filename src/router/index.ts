@@ -15,6 +15,7 @@ import Information from '../views/Information.vue'
 import NftPreview from '../views/NftPreview.vue'
 import MyNfts from '../views/MyNfts.vue'
 import NftMarket from '../views/NftMarket.vue'
+import ExhibitHere from '../views/ExhibitHere.vue'
 
 const Charity = () => import('../views/Charity.vue')
 const AssetDetails = () => import('../views/AssetDetails.vue')
@@ -30,9 +31,9 @@ const Admin = () => import('../views/Admin.vue')
 const OfferAdmin = () => import('../views/OfferAdmin.vue')
 // const NftPreview = () => import('../views/NftPreview.vue')
 const ItemPreview = () => import('../views/ItemPreview.vue')
-const UploadItem = () => import('../views/UploadItem.vue')
-const UpdateItem = () => import('../views/UpdateItem.vue')
-const MyItems = () => import('../views/MyItems.vue')
+const UploadItem = () => import('../views/upload/UploadItem.vue')
+const UpdateItem = () => import('../views/upload/UpdateItem.vue')
+const MyItems = () => import('../views/upload/MyItems.vue')
 // const MyNfts = () => import('../views/MyNfts.vue')
 
 Vue.use(VueRouter)
@@ -72,6 +73,12 @@ const routes: Array<RouteConfig> = [
     name: 'nft-market',
     components: { default: NftMarket, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'This is number one' }
+  },
+  {
+    path: '/exhibit-here',
+    name: 'exhibit-here',
+    components: { default: ExhibitHere, header: AboutNavbar, footer: MainFooter },
+    meta: { title: 'Join #1 and exhibit your artwork in decentralised gallery and marketplace' }
   },
   {
     path: '/about',
@@ -122,15 +129,6 @@ const routes: Array<RouteConfig> = [
     path: '/offers',
     name: 'offers',
     components: { default: OfferAdmin, header: AboutNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: true
-    }
-  },
-  {
-    path: '/create',
-    name: 'create',
-    components: { default: UploadItem, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
