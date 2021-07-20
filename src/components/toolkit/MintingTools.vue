@@ -49,10 +49,10 @@
         <b-tab title="Next" v-if="contractNameNext">
           <b-button @click="startMinting()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
         </b-tab>
-        <b-tab title="Editions">
+        <b-tab title="Editions" v-if="profile.superAdmin">
           <ManageEditions :assetHash="assetHash"/>
         </b-tab>
-        <b-tab title="Sales" class="">
+        <b-tab title="Sales">
           <b-tabs justified content-class="mt-3">
             <b-tab :title="'Info'">
               <div>
@@ -60,10 +60,10 @@
                 <b-button variant="outline-primary" @click="openSaleDataDialog()">Update Sale Info</b-button>
               </div>
             </b-tab>
-            <b-tab :title="'Offers'">
+            <b-tab :title="'Offers'" v-if="profile.superAdmin">
               <OfferHistory :assetHash="assetHash"/>
             </b-tab>
-            <b-tab :title="'Bids'">
+            <b-tab :title="'Bids'" v-if="profile.superAdmin">
               <BidHistory :assetHash="assetHash"/>
             </b-tab>
           </b-tabs>
@@ -167,8 +167,10 @@ export default {
           $self.$bvModal.hide('minting-modal')
           $self.mintResult = txResult
           setInterval(function () {
-            $self.$store.dispatch('rpayTransactionStore/fetchTransactionInfo', $self.mintTxId)
-          }, 10000)
+            $self.$store.dispatch('rpayTransactionStore/fetchTransactionInfo', $self.mintTxId).then((txData) => {
+              $self.$notify({ type: 'warning', title: 'Transaction News', text: 'Transaction ' + txData.contract_call.function_name + ' has status ' + txData.tx_status + ' sent at ' + txData.receipt_time_iso })
+            })
+          }, 30000)
           // $self.$bvModal.show('result-modal')
         } else if (data.opcode === 'cancel-minting') {
           $self.$bvModal.hide('selling-modal')

@@ -262,3 +262,33 @@ body a:hover {
   color: #2255A4;
   text-decoration: underline;
 }
+.r-notifs {
+  padding: 5px !important;
+  margin: 5px !important;
+  font-size: 1.6rem !important;
+}
+.success {
+  background: $success;
+  color: #fff !important;
+}
+.error {
+  background: $danger;
+  color: #fff !important;
+}
+.danger {
+  background: $danger;
+  color: #fff !important;
+}
+.warning {
+  background: $warning;
+  color: #fff !important;
+}
+.center {
+  margin: auto;
+  width: 70%;
+  border: 0px solid green;
+  padding: 10px;
+}
+.pointer {
+  cursor: pointer;
+}
