@@ -7,7 +7,7 @@
       </b-col>
       <b-col md="6" sm="10" xs="8" align-self="end" class="text-left text-white pr-5" style="position: relative; top: 5px;">
         <prismic-items :prismicItems="content.data.description"></prismic-items>
-        <div class="w-50 mt-5"><social-links :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" /></div>
+        <div class="mt-5" :class="[ content.data['social_links'].length <= 2 ? 'w-25' : 'w-50' ]"><social-links :themeClass="getArtistText1()" :socialLinks="content.data['social_links']" /></div>
       </b-col>
     </b-row>
   </b-container>
