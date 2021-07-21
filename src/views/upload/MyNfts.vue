@@ -58,9 +58,6 @@ export default {
       return myContractAssets && myContractAssets.length > 0
     },
     myNfts () {
-      // const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      // const contractId = STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
-      // const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_ASSETS_BY_CONTRACT_ID_AND_OWNER]({ contractId: contractId, stxAddress: profile.stxAddress })
       const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
       return myContractAssets
     }
