@@ -18,7 +18,6 @@
               <div class="text-white p-5" style="position: absolute; bottom: 0;">
                 <p class="my-0 text-artist">{{gaiaAsset.artist}}</p>
                 <p class="mb-2 text-artwork">{{gaiaAsset.name}}</p>
-                <!-- <div class="my-0 text-action" v-scroll-to="{ element: '#app', duration: 1000 }"><b-link @click.prevent="routeTo(gaiaAsset.assetHash)" class="text-white">Find out more</b-link></div> -->
               </div>
             </div>
           </div>

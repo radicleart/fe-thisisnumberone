@@ -2,17 +2,15 @@
 <div v-if="item && item.attributes" class="mt-1">
   <media-item :videoOptions="videoOptions" :dims="dims" :attributes="item.attributes" :targetItem="targetItem()"/>
   <div class="text-white">
-    <div class="mt-5 mb-2 d-flex justify-content-between">
+    <div class="mt-2 mb-2 d-flex justify-content-between">
       <div class="">
         {{item.name}}
       </div>
-      <!--
-      <div class="">
-        <span v-if="contractAsset">Edition {{contractAsset.tokenInfo.edition}} of {{contractAsset.tokenInfo.maxEditions}}</span>
+      <div class="text-small">
+        <span class="text-warning">{{item.artist}}</span>
       </div>
-      -->
     </div>
-    <div class="mt-5 mb-2 d-flex justify-content-between">
+    <div class="mt-2 mb-2 d-flex justify-content-center">
       <div class="">
         <EditionTrigger :assetHash="item.assetHash" @mintedEvent="mintedEvent"/>
       </div>

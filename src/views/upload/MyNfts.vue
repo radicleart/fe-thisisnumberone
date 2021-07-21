@@ -1,5 +1,7 @@
 <template>
-<div v-if="hasNfts">
+<b-container class="text-white mt-5" v-if="hasNfts">
+  <h1>Your NFTs</h1>
+  <p>NFTs here may be files you uploaded and minted or NFTs you bought on the marketplace</p>
   <div class="container" style="min-height: 85vh;">
     <div class="mb-5" :key="componentKey">
       <div :key="componentKey" class="row mb-4" v-if="myNfts && myNfts.length > 0">
@@ -20,7 +22,7 @@
     </b-row>
     <b-button class="mt-3" href="https://shrl.ink/HPyh" target="_blank" rel="noopener noreferrer">Sure</b-button>
   </b-container>
-</div>
+</b-container>
 <div class="container" style="min-height: 85vh;" v-else>
   Please <b-link to="/login">login</b-link> to find your NFTs
 </div>
@@ -52,7 +54,8 @@ export default {
   },
   computed: {
     hasNfts () {
-      return this.myNfts && this.myNfts.length > 0
+      const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
+      return myContractAssets && myContractAssets.length > 0
     },
     myNfts () {
       // const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]

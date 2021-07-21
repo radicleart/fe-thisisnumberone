@@ -1,6 +1,6 @@
 <template>
 <div :style="dimensions" class="text-right" v-if="result">
-  <media-item v-on="$listeners" @videoClicked="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :attributes="result.attributes" :targetItem="targetItem()"/>
+  <b-link @click="openAssetDetails"><media-item v-on="$listeners" @videoClicked="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :attributes="result.attributes" :targetItem="targetItem()"/></b-link>
 </div>
 </template>
 
@@ -71,13 +71,13 @@ export default {
         showMeta: false,
         dimensions: 'max-width: 100%; max-height: auto;',
         aspectRatio: '1:1',
-        poster: (this.result.attributes.coverImage) ? this.result.attributes.coverImage.fileUrl : null,
+        poster: this.result.image,
         sources: [],
         fluid: false
       }
       if (this.result.attributes.artworkFile) {
         videoOptions.sources = [
-          { src: this.result.attributes.artworkClip.fileUrl, type: this.result.attributes.artworkClip.type }
+          { src: this.result.attributes.artworkFile.fileUrl, type: this.result.attributes.artworkFile.type }
         ]
       }
       if (this.outerOptions) {

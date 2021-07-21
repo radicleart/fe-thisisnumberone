@@ -20,33 +20,33 @@
           <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: 50, element: '#collaborate', duration: 1000 }" href="#collaborate">Collaborate</a></b-nav-item>
           <b-nav-item class="mt-5" href="#"><b-link to="/">Home</b-link></b-nav-item>
         </b-navbar-nav>
-
         <b-navbar-nav class="wtf-menu mx-auto" v-else>
           <b-nav-item><b-link class="text-white top-content" to="/about"><img height="30px" :src="wtf" alt="about link"/></b-link></b-nav-item>
+          <div v-if="profile.loggedIn" class="mt-5 my-4 text-white text-center">
+            <div>
+              <span class="mr-3">Welcome</span>
+              <span class="mr-3 stx-username">{{profile.username}}</span>
+            </div>
+            <div class="text-small mt-0">
+              <span class="text-warning">{{profile.stxAddress}}</span>
+            </div>
+            <div v-if="profile.accountInfo" class="text-small">
+              <span class="mr-5">Balance: <span class="text-warning">{{profile.accountInfo.balance}}</span> STX</span>
+              <span v-if="profile.accountInfo.balance === 0">Get Some STX</span>
+            </div>
+          </div>
           <b-nav-item active><b-link to="/nft-market">Gallery</b-link></b-nav-item>
-          <b-nav-item v-if="canUpload()"><b-link to="/my-items/all">My Items</b-link></b-nav-item>
-          <b-nav-item v-if="canUpload()"><b-link to="/upload-item">Create NFT</b-link></b-nav-item>
-          <b-nav-item active v-else><b-link @click.prevent="startExhibit()">Exhibit Here?</b-link></b-nav-item>
+          <b-nav-item v-if="!canUpload()"><b-link to="/exhibit-here">Exhibit Here?</b-link></b-nav-item>
           <b-nav-item class="mt-5 pt-5 border-top" v-if="profile.loggedIn"><b-link to="/my-nfts">My NFTs</b-link></b-nav-item>
           <b-nav-item v-if="profile.superAdmin"><b-link to="/offers">Offers</b-link></b-nav-item>
-          <b-nav-item v-if="profile.superAdmin"><b-link to="/admin">Admin</b-link></b-nav-item>
+          <b-nav-item v-if="canUpload()"><b-link to="/my-items">My Items</b-link></b-nav-item>
+          <b-nav-item v-if="canUpload()"><b-link to="/upload-item">Create NFT</b-link></b-nav-item>
+          <b-nav-item v-if="profile.superAdmin" active><b-link to="/app-admin">Admin</b-link></b-nav-item>
           <b-nav-item v-if="!profile.loggedIn && webWalletNeeded">
             <h1><a :href="webWalletLink" target="_blank">Get a Stacks Web Wallet <b-icon class="ml-3 mb-3" icon="arrow-up-right-square-fill"/></a></h1>
           </b-nav-item>
           <b-nav-item v-if="profile.loggedIn"><b-link @click.prevent="logout()">Logout</b-link></b-nav-item>
           <b-nav-item v-else-if="!webWalletNeeded"><b-link @click.prevent="startLogin()">Login</b-link></b-nav-item>
-          <div v-if="profile.loggedIn" class="p-3 mb-5 border-bottom text-left">
-            <h4 id="sidebar-no-header-title"><b-icon class="mr-3" icon="wallet2"/> Wallet</h4>
-            <p class="text-center">
-              <nav class="mb-3">
-                <b-nav vertical>
-                  <b-nav-item><span>Address</span></b-nav-item>
-                  <b-nav-item><span class="stx-address">{{profile.stxAddress}}</span></b-nav-item>
-                  <b-nav-item v-if="profile.accountInfo" active><span>Balance: <span class="text-secondary">{{profile.accountInfo.balance}}</span> STX</span></b-nav-item>
-                </b-nav>
-              </nav>
-            </p>
-          </div>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>

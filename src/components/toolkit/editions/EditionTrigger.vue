@@ -1,9 +1,11 @@
 <template>
-<div class="my-5 row text-small" v-if="editionsMintable">
+<div class="row text-small" v-if="editionsMintable">
   <div class="col-12">
-    <b-link router-tag="span" class="text-white" @click.prevent="openEditionDialog()">
-      <b-icon icon="chevron-right" class="mr-3"/><span class="text-warning">{{currentMaxEditions - (editionCounter - 1)}} Editions available</span>! The next edition could be yours for a mere <span class="text-warning">{{currentCost}}</span> STX
-    </b-link>
+    <div>
+      <b-link router-tag="span" class="text-white" @click.prevent="openEditionDialog()">
+        <span class="text-warning">{{currentMaxEditions - (editionCounter - 1)}} editions available at <span class="text-warning">{{currentCost}}</span> STX</span>
+      </b-link>
+    </div>
   </div>
   <b-modal size="lg" id="edition-modal" class="text-left">
     <edition-flow v-if="showRpayEditions" :assetHash="assetHash"/>

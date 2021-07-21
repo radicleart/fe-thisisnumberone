@@ -3,6 +3,9 @@
   <p>No applciation registry detected - are the contracts deployed?</p>
 </div>
 <div v-else>
+<div class="upload-preview bg-info text-white  my-5 p-4">
+  <b-button variant="success" @click="buildCache">Build Cache</b-button>
+</div>
 <div class="upload-preview bg-info text-white  my-5 p-4" v-if="registry">
   <div class="row mb-5 pb-2">
     <div class="col-12"><h3>Environment Variables</h3></div>
@@ -47,7 +50,7 @@
         <div class="col-2">Mint Fee</div><div class="col-10">{{application.tokenContract.mintCounter}}</div>
         <div class="ml-4 py-5 border-top" v-for="(token, index) in application.tokenContract.tokens" :key="index">
           <div class="row" v-if="gaiaAsset(token.tokenInfo.assetHash)">
-            <div class="col-2 my-4"><div><img width="70px" :src="gaiaAsset(token.tokenInfo.assetHash).imageUrl"/></div></div>
+            <div class="col-2 my-4"><div><img width="70px" :src="gaiaAsset(token.tokenInfo.assetHash).image"/></div></div>
             <div class="col-10 my-4">
               <div>{{gaiaAsset(token.tokenInfo.assetHash).name}}</div>
               <div>[#{{token.nftIndex}}] : Edition {{token.tokenInfo.edition}} / {{token.tokenInfo.maxEditions}} / {{token.tokenInfo.editionCost}}</div>
@@ -137,6 +140,9 @@ export default {
     })
   },
   methods: {
+    buildCache: function () {
+      this.$store.dispatch()
+    },
     formatDate: function (date) {
       const loaclEndM = moment(date)
       return loaclEndM.format('DD-MM-YY hh:mm')

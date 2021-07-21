@@ -9,11 +9,12 @@ import MainFooter from '@/components/layout/MainFooter.vue'
 
 // public pages
 import HomeFooter from '@/components/layout/HomeFooter.vue'
+import ApplicationAdmin from '../views/admin/ApplicationAdmin.vue'
 import Login from '../views/Login.vue'
 import Information from '../views/Information.vue'
 // const Information = () => import('../views/Information.vue')
 import NftPreview from '../views/NftPreview.vue'
-import MyNfts from '../views/MyNfts.vue'
+import MyNfts from '../views/upload/MyNfts.vue'
 import NftMarket from '../views/NftMarket.vue'
 import ExhibitHere from '../views/ExhibitHere.vue'
 
@@ -158,7 +159,7 @@ const routes: Array<RouteConfig> = [
     components: { default: UploadItem, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
-      requiresAdmin: true
+      requiresAdmin: false
     }
   },
   {
@@ -196,6 +197,15 @@ const routes: Array<RouteConfig> = [
     meta: {
       requiresAuth: true,
       requiresAdmin: false
+    }
+  },
+  {
+    path: '/app-admin',
+    name: 'app-admin',
+    components: { default: ApplicationAdmin, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
     }
   }
 ]
