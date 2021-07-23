@@ -7,7 +7,7 @@
         <ul>
           <li v-if="canUpload()"><h2><b-link to="/exhibit-here">Become a resident artist and exhibit your Artwork here</b-link></h2></li>
           <li v-else><h2><b-link to="/create">Become a resident artist and exhibit your Artwork here</b-link></h2></li>
-          <li><h2><b-link to="/nft-market">Visit the #1 Gallery</b-link></h2></li>
+          <li><h2><b-link to="/nft-gallery">Visit the #1 Gallery</b-link></h2></li>
         </ul>
       </b-col>
     </b-row>
@@ -23,7 +23,7 @@
               <b-link @click.prevent="startLogin()">Please login to apply for Artist Status <span router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'You\'ll need a Stacks Wallet - this is so you can own your NFTs (aka digital artwork) '" class="text-white ml-3" variant="outline-success"> <b-icon class="ml-0" icon="question-circle"/></span></b-link>
             </h2>
           </li>
-          <li><h2><b-link to="/nft-market">Visit the #1 Gallery</b-link></h2></li>
+          <li><h2><b-link to="/nft-gallery">Visit the #1 Gallery</b-link></h2></li>
         </ul>
       </b-col>
     </b-row>

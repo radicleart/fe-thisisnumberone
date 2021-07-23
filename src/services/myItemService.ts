@@ -20,7 +20,7 @@ const getNewRootFile = function () {
   const now = moment({}).valueOf()
   const newRootFile = {
     created: now,
-    artistProfile: {},
+    userProfile: {},
     records: []
   }
   return newRootFile

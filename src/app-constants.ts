@@ -9,6 +9,7 @@ export const APP_CONSTANTS = {
   KEY_WEB_WALLET_LINK_CHROME: 'getWebWalletLinkChrome',
   KEY_WEB_WALLET_LINK_FIREFOX: 'getWebWalletLinkFirefox',
   KEY_MODAL_MESSAGE: 'getModalMessage',
+  KEY_STACKS_MATE_URL: 'getStacksMateUrl',
 
   KEY_CATEGORIES: 'rpayCategoryStore/getCategories',
 
@@ -16,6 +17,9 @@ export const APP_CONSTANTS = {
   KEY_HIGHEST_OFFER_ON_ASSET: 'assetGeneralStore/getHighestOfferForAsset',
 
   KEY_HAS_PRIVILEGE: 'rpayPrivilegeStore/hasPrivilege',
+  KEY_AVAILABLE_PRIVILEGES: 'rpayPrivilegeStore/getAvailablePrivileges',
+  KEY_AUTHORISATIONS: 'rpayPrivilegeStore/getAuthorisations',
+  KEY_AUTHORISATION: 'rpayPrivilegeStore/getAuthorisation',
 
   KEY_CONTENT_ABOUT: 'contentStore/getAbout',
 

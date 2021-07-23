@@ -15,7 +15,7 @@ import Information from '../views/Information.vue'
 // const Information = () => import('../views/Information.vue')
 import NftPreview from '../views/NftPreview.vue'
 import MyNfts from '../views/upload/MyNfts.vue'
-import NftMarket from '../views/NftMarket.vue'
+import NftGallery from '../views/NftGallery.vue'
 import ExhibitHere from '../views/ExhibitHere.vue'
 
 const Charity = () => import('../views/Charity.vue')
@@ -70,16 +70,20 @@ const routes: Array<RouteConfig> = [
     meta: { title: 'This is number one' }
   },
   {
-    path: '/nft-market',
-    name: 'nft-market',
-    components: { default: NftMarket, header: AboutNavbar, footer: MainFooter },
+    path: '/nft-gallery',
+    name: 'nft-gallery',
+    components: { default: NftGallery, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'This is number one' }
   },
   {
     path: '/exhibit-here',
     name: 'exhibit-here',
     components: { default: ExhibitHere, header: AboutNavbar, footer: MainFooter },
-    meta: { title: 'Join #1 and exhibit your artwork in decentralised gallery and marketplace' }
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Join #1 and exhibit your artwork in decentralised gallery and marketplace'
+    }
   },
   {
     path: '/about',
@@ -122,7 +126,7 @@ const routes: Array<RouteConfig> = [
     components: { default: ItemPreview, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
-      requiresAdmin: true,
+      requiresAdmin: false,
       title: 'Item preview'
     }
   },
@@ -150,7 +154,7 @@ const routes: Array<RouteConfig> = [
     components: { default: UpdateItem, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
-      requiresAdmin: true
+      requiresAdmin: false
     }
   },
   {
@@ -205,7 +209,7 @@ const routes: Array<RouteConfig> = [
     components: { default: ApplicationAdmin, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
-      requiresAdmin: true
+      requiresAdmin: false
     }
   }
 ]

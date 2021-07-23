@@ -3,12 +3,24 @@ import dataUriToBuffer from 'data-uri-to-buffer'
 import {
   hexToCV
 } from '@stacks/transactions'
+import { c32address, c32addressDecode } from 'c32check'
 
 const precision = 1000000
 
 const utils = {
   buildHash: function (hashable) {
     return crypto.createHash('sha256').update(hashable).digest('hex')
+  },
+  convertAddress: function (network, b160Address) {
+    let version = 26
+    if (network === 'mainnet') version = 22
+    const address = c32address(version, b160Address) // 22 for mainnet
+    return address
+  },
+  convertAddressFrom: function (stxAddress) {
+    if (!stxAddress) return '?'
+    const decoded = c32addressDecode(stxAddress)
+    return decoded
   },
   toDecimals: function (amount, precision) {
     if (!precision) precision = 100

@@ -70,6 +70,7 @@
             <div class="col-2">SHA(256)</div><div class="col-10">{{token.tokenInfo.assetHash}}</div>
             <div class="col-2">Meta Data Url</div><div class="col-10">{{token.tokenInfo.metaDataUrl}}</div>
             <div class="col-2">Owner</div><div class="col-10">{{token.owner}}</div>
+            <div class="col-2">Owner B32</div><div class="col-10">{{b32Address(token.owner)}}</div>
             <div class="col-2">Sale Data</div><div class="col-10">Type={{token.saleData.saleType}} Cycle={{token.saleData.saleCycleIndex}}, Amount={{token.saleData.buyNowOrStartingPrice}} Reserve={{token.saleData.reservePrice}} Increment={{token.saleData.incrementPrice}}</div>
             <div class="col-2">End time</div><div class="col-10">{{formatDate(token.saleData.biddingEndTime)}}</div>
             <div class="col-2">Block-height</div><div class="col-10">{{token.tokenInfo.date}}</div>
@@ -114,6 +115,7 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import moment from 'moment'
+import utils from '@/services/utils'
 
 export default {
   name: 'Registry',
@@ -140,6 +142,10 @@ export default {
     })
   },
   methods: {
+    b32Address: function (stxAddress) {
+      const b32Address = utils.convertAddressFrom(stxAddress)
+      return b32Address[0] + ' : ' + b32Address[1]
+    },
     buildCache: function () {
       this.$store.dispatch()
     },

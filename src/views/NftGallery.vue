@@ -19,7 +19,7 @@ const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 
 export default {
-  name: 'NftMarket',
+  name: 'NftGallery',
   components: {
     MarketableNft
   },

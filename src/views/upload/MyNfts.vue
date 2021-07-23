@@ -11,6 +11,7 @@
       </div>
     </div>
   </div>
+  <!--
   <b-container class="text-center" id="linkModal">
     <div class="d-flex flex-row-reverse">
       <img width="30px" height="15px" class="text-white mt-3" :src="cross" @click="closeModal()">
@@ -22,9 +23,13 @@
     </b-row>
     <b-button class="mt-3" href="https://shrl.ink/HPyh" target="_blank" rel="noopener noreferrer">Sure</b-button>
   </b-container>
+  -->
 </b-container>
 <div class="container" style="min-height: 85vh;" v-else>
-  Please <b-link to="/login">login</b-link> to find your NFTs
+<b-container class="text-white mt-5">
+  <h1>No NFTs</h1>
+  <p>Upload a file and mint it to create your first NFT</p>
+</b-container>
 </div>
 </template>
 

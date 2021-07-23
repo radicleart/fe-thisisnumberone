@@ -32,10 +32,10 @@
             </div>
             <div v-if="profile.accountInfo" class="text-small">
               <span class="mr-5">Balance: <span class="text-warning">{{profile.accountInfo.balance}}</span> STX</span>
-              <span v-if="profile.accountInfo.balance === 0">Get Some STX</span>
+              <span v-if="profile.accountInfo.balance === 0"><b-link variant="outline-warning" @click="gotoStacksMateUrl">Get some STX</b-link></span>
             </div>
           </div>
-          <b-nav-item active><b-link to="/nft-market">Gallery</b-link></b-nav-item>
+          <b-nav-item active><b-link to="/nft-gallery">Gallery</b-link></b-nav-item>
           <b-nav-item v-if="!canUpload()"><b-link to="/exhibit-here">Exhibit Here?</b-link></b-nav-item>
           <b-nav-item class="mt-5 pt-5 border-top" v-if="profile.loggedIn"><b-link to="/my-nfts">My NFTs</b-link></b-nav-item>
           <b-nav-item v-if="profile.superAdmin"><b-link to="/offers">Offers</b-link></b-nav-item>
@@ -71,6 +71,9 @@ export default {
     }
   },
   methods: {
+    gotoStacksMateUrl: function () {
+      location.href = this.getStacksMateUrl
+    },
     canUpload () {
       const hasUploadPriv = this.$store.getters[APP_CONSTANTS.KEY_HAS_PRIVILEGE]('can-upload')
       return hasUploadPriv
@@ -120,6 +123,10 @@ export default {
     }
   },
   computed: {
+    getStacksMateUrl () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      return this.$store.getters[APP_CONSTANTS.KEY_STACKS_MATE_URL](profile)
+    },
     webWalletLink () {
       if (this.$browserDetect.isFirefox) {
         return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_FIREFOX]

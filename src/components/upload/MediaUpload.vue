@@ -8,20 +8,22 @@
       <div>
         <input style="width: 80%;" class="input-file" type="file" :ref="getUploadId()" @change="loadMediaObjects"/>
       </div>
-      <div class="mx-auto" style="position:relative; top: 20px;">
+      <div class="mx-auto" style="position:relative; top: 35px;">
         <b-button variant="light" v-html="contentModel.buttonName" @click="chooseFiles()"></b-button>
       </div>
     </div>
-    <div class="mt-5 pt-5 text-small">for files > 20M paste a link! <br/>Need hosting? E.g. see <a href="https://docs.stacks.co/build-apps/references/gaia" target="_blank">Gaia</a>, <a href="https://ipfs.io/" target="_blanK">IPFS</a> or <a href="https://cloudinary.com/" target="_blanK">Cloudinary</a></div>
-    <div class="mt-3 text-left mt-4 mb-3" style="font-size: 1.2rem; width: 80%;">
-      <b-form-input
-        id="item-name"
-        v-model="directUrl"
-        @keyup="startDownload()"
-        aria-describedby="item-name-help item-name-feedback"
-        placeholder="Paste link"
-        trim
-      ></b-form-input>
+    <div v-if="hideLinkPaste">
+      <div class="mt-5 pt-5 text-small">for files > 20M paste a link! <br/>Need hosting? E.g. see <a href="https://docs.stacks.co/build-apps/references/gaia" target="_blank">Gaia</a>, <a href="https://ipfs.io/" target="_blanK">IPFS</a> or <a href="https://cloudinary.com/" target="_blanK">Cloudinary</a></div>
+      <div class="mt-3 text-left mt-4 mb-3" style="font-size: 1.2rem; width: 100%;">
+        <b-form-input
+          id="item-name"
+          v-model="directUrl"
+          @keyup="startDownload()"
+          aria-describedby="item-name-help item-name-feedback"
+          placeholder="Paste link"
+          trim
+        ></b-form-input>
+      </div>
     </div>
     <div class="invalid-feedback d-block" v-if="showError">
       {{contentModel.errorMessage}}
@@ -43,6 +45,11 @@ export default {
     // BFormFile
   },
   props: {
+    hideLinkPaste: {
+      type: Boolean,
+      default: () => (false),
+      required: false
+    },
     showError: {
       type: Boolean,
       default: () => (false),

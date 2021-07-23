@@ -169,7 +169,8 @@ export default new Vuex.Store({
     modalMessage: 'Your request is being processed',
     stacksPath: 'extended/v1/tx/',
     chromeLink: 'https://chrome.google.com/webstore/detail/stacks-wallet/ldinpeekobnhjjdofggfgjlcehhmanlj',
-    firefoxLink: 'https://addons.mozilla.org/en-US/firefox/addon/stacks-wallet/'
+    firefoxLink: 'https://addons.mozilla.org/en-US/firefox/addon/stacks-wallet/',
+    separator: '/'
   },
   getters: {
     getWebWalletLinkChrome: state => {
@@ -195,6 +196,10 @@ export default new Vuex.Store({
     },
     getSectionHeight: state => {
       return (state.windims.innerHeight)
+    },
+    getStacksMateUrl: state => profile => {
+      const redirect = '?stxAddress=' + profile.stxAddress + '&redirectUrl=' + location.origin
+      return process.env.VUE_APP_STACKS_MATE_URL + state.separator + redirect
     }
   },
   mutations: {
@@ -218,11 +223,13 @@ export default new Vuex.Store({
       return new Promise(resolve => {
         dispatch('rpayAuthStore/fetchMyAccount').then(profile => {
           if (profile.loggedIn) {
-            dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
             dispatch('rpayMyItemStore/initSchema').then(rootFile => {
-              dispatch('rpayStacksContractStore/fetchAssetsByOwner', profile.stxAddress).then((assets) => {
-                console.log(assets)
-              })
+              dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
+              if (process.env.VUE_APP_NETWORK === 'local') {
+                dispatch('rpayStacksContractStore/fetchAssetsByOwner', 'ST1ESYCGJB5Z5NBHS39XPC70PGC14WAQK5XXNQYDW')
+              } else {
+                dispatch('rpayStacksContractStore/fetchAssetsByOwner', profile.stxAddress)
+              }
               resolve(rootFile)
             })
           } else {

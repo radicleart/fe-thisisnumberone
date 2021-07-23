@@ -49,7 +49,7 @@
         <b-tab title="Next" v-if="contractNameNext">
           <b-button @click="startMinting()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
         </b-tab>
-        <b-tab title="Editions" v-if="profile.superAdmin">
+        <b-tab title="Editions">
           <ManageEditions :assetHash="assetHash"/>
         </b-tab>
         <b-tab title="Sales">
