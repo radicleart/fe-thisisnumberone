@@ -35,25 +35,6 @@ export default {
       }
     }
     this.setupGrid(padder)
-    /**
-    if (this.resultSet.length > 4) {
-      this.setupGrid(padder)
-    } else {
-      if (this.resultSet.length === 5) {
-        this.resultSet.splice(1, 0, padder)
-        this.resultSet.splice(3, 0, padder)
-        this.resultSet.splice(5, 0, padder)
-        this.resultSet.splice(7, 0, padder)
-      }
-      this.paddedResults = this.resultSet
-      const numbs = this.resultSet.length
-      for (let i = numbs; i < 10; i++) {
-        if (this.paddedResults.length < 9) {
-          this.paddedResults.push(this.resultSet[i - numbs])
-        }
-      }
-    }
-    **/
     this.loaded = true
   },
   methods: {

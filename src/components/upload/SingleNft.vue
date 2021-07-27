@@ -1,6 +1,8 @@
 <template>
 <div v-if="item && item.attributes" class="mt-1">
-  <div @click="routeTo()"><media-item :videoOptions="videoOptions" :dims="dims" :attributes="item.attributes" :targetItem="targetItem()"/></div>
+  <div @click="routeTo()">
+    <MediaItemGeneral :classes="'item-image'" :options="options" :mediaItem="item.attributes.artworkFile"/>
+  </div>
   <div class="text-white">
     <div class="mt-5 mb-2 d-flex justify-content-between">
       <div class="">
@@ -14,12 +16,12 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import MediaItem from '@/components/utils/MediaItem'
+import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
 
 export default {
   name: 'SingleNft',
   components: {
-    MediaItem
+    MediaItemGeneral
   },
   props: ['myNft'],
   data () {
@@ -42,7 +44,7 @@ export default {
     }
   },
   computed: {
-    videoOptions () {
+    options () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.assetHash)
       let file = item.attributes.artworkFile
       if (!file) {
@@ -72,7 +74,7 @@ export default {
       return item
     },
     assetUrl () {
-      return '/nft-preview/' + this.assetHash
+      return '/nft-display/' + this.assetHash
     }
   }
 }

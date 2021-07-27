@@ -67,7 +67,9 @@ export default {
         functionName: 'mint-edition'
       }
       this.$store.dispatch('rpayPurchaseStore/mintEdition', data).then((result) => {
-        this.result = result
+        this.$emit('mintedEvent', result)
+      }).catch(() => {
+        this.$emit('mintedEvent', { opcode: 'mint-edition-failed' })
       })
     }
   },

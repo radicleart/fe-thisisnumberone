@@ -57,19 +57,7 @@ export default {
       loaded: false,
       result: 'Saving data to your storage - back in a mo!',
       assetHash: null,
-      item: {
-        owner: null,
-        coverArtist: null,
-        private: false,
-        name: '',
-        description: '',
-        editions: null,
-        keywords: '',
-        attributes: {
-          coverImage: {},
-          artworkFile: {}
-        }
-      },
+      item: null,
       contentModelArtwork: {
         id: 'artworkFile',
         title: 'UPLOAD NFT FILE',

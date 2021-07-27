@@ -4,7 +4,7 @@
     <h1 class="text-white">#1 NFT Gallery</h1>
     <div class="row mb-4" v-if="resultSet && resultSet.length > 0">
       <div v-for="(item, index) in resultSet" :key="index" class="mt-5 col-md-4 col-sm-4 col-6">
-        <MarketableNft class="mb-2" :item="item"/>
+        <GalleryNft class="mb-2" :item="item"/>
       </div>
     </div>
   </div>
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import MarketableNft from '@/components/marketplace/MarketableNft'
+import GalleryNft from '@/components/marketplace/GalleryNft'
 import { APP_CONSTANTS } from '@/app-constants'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
@@ -21,7 +21,7 @@ const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 export default {
   name: 'NftGallery',
   components: {
-    MarketableNft
+    GalleryNft
   },
   data () {
     return {

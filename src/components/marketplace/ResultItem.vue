@@ -1,19 +1,21 @@
 <template>
 <div :style="dimensions" class="text-right" v-if="result">
-  <b-link @click="openAssetDetails"><media-item v-on="$listeners" @videoClicked="openAssetDetails" class="p-0 m-0" :videoOptions="videoOptions" :attributes="result.attributes" :targetItem="targetItem()"/></b-link>
+  <b-link @click="openAssetDetails">
+    <MediaItemGeneral :classes="'item-image p-0 m-0'" @videoClicked="openAssetDetails" class="p-0 m-0" v-on="$listeners" :options="videoOptions" :mediaItem="result.attributes.coverImage"/>
+  </b-link>
 </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import MediaItem from '@/components/utils/MediaItem'
+import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
 import { APP_CONSTANTS } from '@/app-constants'
 import VueScrollTo from 'vue-scrollto'
 
 export default {
   name: 'ResultItem',
   components: {
-    MediaItem
+    MediaItemGeneral
   },
   props: ['result', 'dims', 'outerOptions'],
   data () {
@@ -75,9 +77,9 @@ export default {
         sources: [],
         fluid: false
       }
-      if (this.result.attributes.artworkFile) {
+      if (this.result.attributes.coverImage) {
         videoOptions.sources = [
-          { src: this.result.attributes.artworkFile.fileUrl, type: this.result.attributes.artworkFile.type }
+          { src: this.result.attributes.coverImage.fileUrl, type: this.result.attributes.coverImage.type }
         ]
       }
       if (this.outerOptions) {

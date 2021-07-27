@@ -19,7 +19,7 @@
       </div>
       <div class="col-12 text-right" v-if="showTransferButton">
         <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttTransfers" class="text-white mr-3" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
-        <b-button variant="outline-primary" @click="transferNft()">Transfer NFT</b-button>
+        <b-button variant="outline-warning" style="width: 170px;" @click="transferNft()">Transfer NFT</b-button>
       </div>
     </div>
   </div>

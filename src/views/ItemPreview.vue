@@ -7,7 +7,6 @@
     <b-row style="min-height: 40vh" >
       <b-col md="4" sm="12" align-self="start" class=" text-center">
         <div  class="" style="width:100%;">
-          <!-- <media-item :videoOptions="videoOptions" :dims="dims" :attributes="item.attributes" :targetItem="'artworkFile'"/> -->
           <NftCoverImage :item="item" :displayHeader="false"/>
         </div>
       </b-col>
@@ -47,7 +46,6 @@ export default {
   },
   data: function () {
     return {
-      dims: { width: 768, height: 432 },
       showHash: false,
       assetHash: null,
       message: 'No item available...'
@@ -57,8 +55,9 @@ export default {
     this.loading = false
     this.assetHash = this.$route.params.assetHash
     this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
-      if (!item) {
-        this.$router.push('/my-items')
+      if (item) {
+        const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](item.assetHash)
+        item.contractAsset = contractAsset
       }
     })
   },

@@ -1,58 +1,71 @@
 <template>
-<b-container class="text-white mt-5" v-if="hasNfts">
-  <h1>Your NFTs</h1>
-  <p>NFTs here may be files you uploaded and minted or NFTs you bought on the marketplace</p>
-  <div class="container" style="min-height: 85vh;">
-    <div class="mb-5" :key="componentKey">
-      <div :key="componentKey" class="row mb-4" v-if="myNfts && myNfts.length > 0">
-        <div v-for="(myNft, index) in myNfts" :key="index" class="mt-5 col-md-4 col-sm-4 col-6">
-          <single-nft class="mb-2" :myNft="myNft"/>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--
-  <b-container class="text-center" id="linkModal">
-    <div class="d-flex flex-row-reverse">
-      <img width="30px" height="15px" class="text-white mt-3" :src="cross" @click="closeModal()">
-    </div>
-    <h5>Fill in our survey</h5>
-    <b-row class="text-center">
-      <b-col cols="1"></b-col>
-      <b-col cols="10"><p>If you haven't already, please fill in this survey to help us improve our future giveaways</p></b-col>
-    </b-row>
-    <b-button class="mt-3" href="https://shrl.ink/HPyh" target="_blank" rel="noopener noreferrer">Sure</b-button>
-  </b-container>
-  -->
+<b-container class="text-white mt-5" v-if="hasNfts || gaiaItems.length > 0">
+  <h1>My Library</h1>
+  <b-tabs justified content-class="text-white">
+    <b-tab :title="'My Uploads: ' + gaiaItems.length" active>
+      <p class="mt-4">Files you uploaded to your Gaia storage bucket.</p>
+      <p>If you minted them (to create NFTs) you may also have
+        sold or transferred the NFT to another wallet. </p>
+      <b-row>
+        <b-col v-for="(gaiaItem, index) in gaiaItems" :key="index" lg="3" md="4" sm="6" xs="12">
+          <SingleItem class="mb-2" :item="gaiaItem"/>
+        </b-col>
+      </b-row>
+    </b-tab>
+    <b-tab :title="'NFTs: ' + myNfts.length" v-if="myNfts && myNfts.length > 0">
+        <p class="mt-4">NFTs you currently own - these may be files you
+          uploaded and minted and still own or NFTs you bought from other
+          users or that were transferred to you. They also include editions
+          of NFT files you minted.</p>
+      <b-row>
+        <b-col class="text-center" v-for="(myNft, index) in myNfts" :key="index" lg="3" md="4" sm="6" xs="12">
+          <SingleItem class="mb-2" :item="getGaiaItem(myNft)"/>
+        </b-col>
+      </b-row>
+    </b-tab>
+  </b-tabs>
 </b-container>
 <div class="container" style="min-height: 85vh;" v-else>
-<b-container class="text-white mt-5">
-  <h1>No NFTs</h1>
-  <p>Upload a file and mint it to create your first NFT</p>
-</b-container>
+  <b-container class="text-white mt-5">
+    <h1>No NFTs</h1>
+    <p>Upload a file and mint it to create your first NFT</p>
+  </b-container>
 </div>
 </template>
 
 <script>
-import SingleNft from '@/components/my-nfts/SingleNft'
+import SingleItem from '@/components/upload/SingleItem'
+// import SingleNft from '@/components/upload/SingleNft'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
-  name: 'MyItems',
+  name: 'MyNfts',
   components: {
-    SingleNft
+    SingleItem
   },
   data () {
     return {
       cross: require('@/assets/img/navbar-footer/cross.svg'),
       filter: 'pending',
-      componentKey: 0
+      componentKey: 0,
+      gaiaItems: []
     }
   },
   mounted () {
     this.filter = this.$route.params.filter
+    this.$store.dispatch('rpayMyItemStore/fetchItems').then((rootFile) => {
+      if (rootFile) this.gaiaItems = rootFile.records
+      this.loaded = true
+    })
   },
   methods: {
+    getGaiaItem (myNft) {
+      const gaiaItem = this.gaiaItems.find((o) => o.assetHash === myNft.tokenInfo.assetHash)
+      if (gaiaItem) {
+        gaiaItem.contractAsset = myNft
+      }
+      return gaiaItem
+    },
     closeModal () {
       document.getElementById('linkModal').style.display = 'none'
     }

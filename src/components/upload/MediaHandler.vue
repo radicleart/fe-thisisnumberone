@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import MediaUpload from '@/components/utils/MediaUpload'
+import MediaUpload from '@/components/upload/MediaUpload'
 import MediaItem from '@/components/upload/MediaItem'
 
 export default {

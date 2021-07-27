@@ -1,6 +1,9 @@
 <template>
-<div v-if="item && item.attributes" class="mt-1">
-  <media-item :videoOptions="videoOptions" :dims="dims" :attributes="item.attributes" :targetItem="targetItem()"/>
+<div v-if="item && item.attributes" class="mt-1 text-center">
+  <div>
+    <ItemActionMenu class="item-action-menu" :assetHash="item.assetHash" :variant="'white'" />
+    <MediaItemGeneral :classes="'item-image'" :options="options" :mediaItem="item.attributes.artworkFile"/>
+  </div>
   <div class="text-white">
     <div class="mt-5 mb-2 d-flex justify-content-between">
       <div class="">
@@ -21,12 +24,14 @@
 <script>
 import utils from '@/services/utils'
 import { APP_CONSTANTS } from '@/app-constants'
-import MediaItem from '@/components/utils/MediaItem'
+import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
+import ItemActionMenu from '@/components/items/ItemActionMenu'
 
 export default {
   name: 'SingleItem',
   components: {
-    MediaItem
+    MediaItemGeneral,
+    ItemActionMenu
   },
   props: ['item'],
   data () {
@@ -70,13 +75,13 @@ export default {
       const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
       return contractAsset
     },
-    videoOptions () {
+    options () {
       let file = this.item.attributes.artworkFile
       if (!file) {
         file = this.item.attributes.artworkClip
       }
       if (!file) return {}
-      const videoOptions = {
+      return {
         emitOnHover: true,
         playOnHover: false,
         bigPlayer: false,
@@ -92,7 +97,6 @@ export default {
         ],
         fluid: false
       }
-      return videoOptions
     },
     bannerImage () {
       let imageUrl = this.item.attributes.imageUrl

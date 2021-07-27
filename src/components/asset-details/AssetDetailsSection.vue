@@ -104,7 +104,7 @@ import Vue from 'vue'
 import AssetUpdatesModal from './offers/AssetUpdatesModal'
 import PurchaseFlow from './offers/PurchaseFlow'
 import { APP_CONSTANTS } from '@/app-constants'
-import MediaItem from '@/components/utils/MediaItem'
+import MediaItem from '@/components/upload/MediaItem'
 import SquareButton from '@/components/utils/SquareButton'
 import ShareLinks from '@/components/utils/ShareLinks'
 import moment from 'moment'
@@ -131,7 +131,6 @@ export default {
       cross: require('@/assets/img/navbar-footer/cross.svg'),
       hammer: require('@/assets/img/auction.svg'),
       showRpay: 0,
-      dims: { width: 768, height: 768 },
       videoHeight: 0,
       componentKey: 0,
       showHash: false,

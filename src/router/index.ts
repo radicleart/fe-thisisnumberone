@@ -13,7 +13,7 @@ import ApplicationAdmin from '../views/admin/ApplicationAdmin.vue'
 import Login from '../views/Login.vue'
 import Information from '../views/Information.vue'
 // const Information = () => import('../views/Information.vue')
-import NftPreview from '../views/NftPreview.vue'
+import NftDisplay from '../views/NftDisplay.vue'
 import MyNfts from '../views/upload/MyNfts.vue'
 import NftGallery from '../views/NftGallery.vue'
 import ExhibitHere from '../views/ExhibitHere.vue'
@@ -30,12 +30,9 @@ const NumberOne = () => import('../views/NumberOne.vue')
 // private pages
 const Admin = () => import('../views/Admin.vue')
 const OfferAdmin = () => import('../views/OfferAdmin.vue')
-// const NftPreview = () => import('../views/NftPreview.vue')
 const ItemPreview = () => import('../views/ItemPreview.vue')
 const UploadItem = () => import('../views/upload/UploadItem.vue')
 const UpdateItem = () => import('../views/upload/UpdateItem.vue')
-const MyItems = () => import('../views/upload/MyItems.vue')
-// const MyNfts = () => import('../views/MyNfts.vue')
 
 Vue.use(VueRouter)
 
@@ -167,31 +164,13 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: '/my-items',
-    name: 'my-items',
-    components: { default: MyItems, header: AboutNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: false
-    }
-  },
-  {
-    path: '/my-items/:filter',
-    name: 'my-items-filter',
-    components: { default: MyItems, header: AboutNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: false
-    }
-  },
-  {
-    path: '/nft-preview/:assetHash',
-    name: 'nft-preview',
-    components: { default: NftPreview, header: AboutNavbar, footer: MainFooter },
+    path: '/nft-display/:assetHash',
+    name: 'nft-display',
+    components: { default: NftDisplay, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
-      title: 'Item preview'
+      title: 'NFT display'
     }
   },
   {

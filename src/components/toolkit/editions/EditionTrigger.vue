@@ -1,14 +1,15 @@
 <template>
 <div class="row text-small" v-if="editionsMintable">
   <div class="col-12">
+    <div class="mt-4 mb-3">
+      <b-button variant="outline-warning" @click.prevent="openEditionDialog()">Mint Token</b-button>
+    </div>
     <div>
-      <b-link router-tag="span" class="text-white" @click.prevent="openEditionDialog()">
-        <span class="text-warning">{{currentMaxEditions - (editionCounter - 1)}} editions available at <span class="text-warning">{{currentCost}}</span> STX</span>
-      </b-link>
+      <span>{{currentMaxEditions - (editionCounter - 1)}} editions available at <span class="">{{currentCost}}</span> STX</span>
     </div>
   </div>
   <b-modal size="lg" id="edition-modal" class="text-left">
-    <edition-flow v-if="showRpayEditions" :assetHash="assetHash"/>
+    <edition-flow @mintedEvent="mintedEvent" v-if="showRpayEditions" :assetHash="assetHash"/>
     <template #modal-header></template>
     <template #modal-footer><div></div></template>
   </b-modal>
@@ -34,6 +35,10 @@ export default {
     openEditionDialog: function () {
       this.showRpayEditions = true
       this.$bvModal.show('edition-modal')
+    },
+    mintedEvent (data) {
+      this.$bvModal.hide('edition-modal')
+      this.$emit('mintedEvent', data)
     }
   },
   computed: {

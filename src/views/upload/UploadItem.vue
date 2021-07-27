@@ -33,7 +33,7 @@ export default {
       item: {
         owner: null,
         coverArtist: null,
-        private: false,
+        privacy: 'public',
         name: '',
         description: '',
         editions: null,

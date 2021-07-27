@@ -1,23 +1,24 @@
 <template>
-<div class="pt-5">
+<div>
   <div v-if="contentType === 'threed'" :style="options.dimensions" id="video-demo-container">
-    <img v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name" :style="dimensions()">
+    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name">
   </div>
-  <div v-else-if="contentType === 'video'" :style="options.dimensions" id="video-demo-container">
-    <VideoJsPlayer v-on="$listeners" :style="options.dimensions" @error="setAltImg()" :options="options"/>
+  <div :class="classes" v-else-if="contentType === 'video'" :style="options.dimensions" id="video-demo-container">
+    <VideoJsPlayer :class="classes" v-on="$listeners" :style="options.dimensions" @error="setAltImg()" :options="options"/>
   </div>
   <div v-else-if="contentType === 'audio'" id="audio-demo-container">
-    <img v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name" :style="dimensions()">
-    <audio v-on="$listeners" controls :src="mediaItem.fileUrl" :style="dimensions()">
+    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name" >
+    <audio :class="classes" v-on="$listeners" controls :src="mediaItem.fileUrl">
       Your browser does not support the <code>audio</code> element.
     </audio>
   </div>
-  <div v-else-if="contentType === 'document'">
-    <img v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name" :style="dimensions()">
+  <div v-else-if="contentType === 'document'" :class="classes">
+    <img v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name">
   </div>
-  <div v-else-if="contentType === 'image'">
-    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name" :style="dimensions()">
+  <div v-else-if="contentType === 'image'" :class="classes">
+    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name">
   </div>
+
   <div v-if="options.showMeta" :style="options.dimensions" class="py-4" style="font-size: 1.2rem;">
     <!--
     <div class="p-2 d-flex justify-content-start">
@@ -46,11 +47,11 @@ import { APP_CONSTANTS } from '@/app-constants'
 import VideoJsPlayer from './VideoJsPlayer'
 
 export default {
-  name: 'MediaItem',
+  name: 'MediaItemGeneral',
   components: {
     VideoJsPlayer
   },
-  props: ['classes', 'options', 'targetItem', 'mediaItem'],
+  props: ['classes', 'options', 'mediaItem'],
   data () {
     return {
       mediaObjects: [],
@@ -91,13 +92,6 @@ export default {
     },
     deleteAllowed: function () {
       return true
-    },
-    dimensions: function () {
-      if (this.dims) {
-        // return 'width: ' + this.dims.width + 'px; height: ' + this.dims.height + 'px;'
-        return 'padding-top: 20px; width: auto; height: 300px; min-height: 50px;'
-      }
-      return 'width: 100%; height: auto'
     },
     getNFTSizeMeg () {
       if (!this.mediaItem) return 0

@@ -31,7 +31,7 @@
               <span class="text-warning">{{profile.stxAddress}}</span>
             </div>
             <div v-if="profile.accountInfo" class="text-small">
-              <span class="mr-5">Balance: <span class="text-warning">{{profile.accountInfo.balance}}</span> STX</span>
+              <span class="mr-5"><a style="font-size: 1.2rem;" :href="getStacksMateUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Top up your Stacks at Stacks Mate'" class="text-white text-small ml-3" target="_blank">Balance:</a> <span class="text-warning">{{profile.accountInfo.balance}}</span> STX</span>
               <span v-if="profile.accountInfo.balance === 0"><b-link variant="outline-warning" @click="gotoStacksMateUrl">Get some STX</b-link></span>
             </div>
           </div>

@@ -1,9 +1,9 @@
 <template>
 <div>
-  <div class="text-right">
-    <b-form-checkbox @change="togglePrivacy" v-model="publicAvailable" name="check-button" switch class="text-secondary">
-      <span v-if="!publicAvailable"><b>Private</b> <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'Not displayed in Risidio Xchange Marketplace'" class="ml-2" variant="outline-success"><b-icon icon="question-circle"/></b-link></span>
-      <span v-else><b>Public</b> <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'Displayed in Risidio Xchange Marketplace'" class="ml-2" variant="outline-success"><b-icon icon="question-circle"/></b-link></span>
+  <div class="text-left">
+    <b-form-checkbox size="lg" @change="togglePrivacy" v-model="publicAvailable" name="check-button" switch class="text-warning">
+      <h2 v-if="!publicAvailable" class="text-danger"><b>Private</b> <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'Not visible in search and not displayed in the Marketplace'" class="ml-2" variant="outline-success"><b-icon icon="question-circle"/></b-link></h2>
+      <h2 v-else class="text-success"><b>Public</b> <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'Visible in search and displayed in the Marketplace'" class="ml-2" variant="outline-success"><b-icon icon="question-circle"/></b-link></h2>
     </b-form-checkbox>
   </div>
   <div class="mb-3" role="group">
@@ -63,12 +63,10 @@ export default {
     }
   },
   mounted () {
-    if (!this.item.privacy && !this.item.privacy === 'private') {
+    if (!this.item.privacy) {
       this.item.privacy = 'public'
-      this.publicAvailable = true
-    } else {
-      this.publicAvailable = false
     }
+    this.publicAvailable = this.item.privacy === 'public'
   },
   methods: {
     togglePrivacy: function () {
