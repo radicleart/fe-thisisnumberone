@@ -74,7 +74,7 @@ export default {
       return item
     },
     assetUrl () {
-      return '/nft-display/' + this.assetHash
+      return '/assets/' + this.assetHash
     }
   }
 }

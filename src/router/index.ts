@@ -183,12 +183,30 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: '/app-admin',
+    path: '/admin/add-privileges',
+    name: 'add-privileges',
+    components: { default: ApplicationAdmin, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/admin/exhibit-requests',
+    name: 'exhibit-requests',
+    components: { default: ApplicationAdmin, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/admin/app-admin',
     name: 'app-admin',
     components: { default: ApplicationAdmin, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
-      requiresAdmin: false
+      requiresAdmin: true
     }
   }
 ]
@@ -255,7 +273,7 @@ router.beforeEach((to, from, next) => {
       },
       {
         property: 'og:image',
-        content: gaiaAsset.imageUrl
+        content: gaiaAsset.image
       }
     ]
   } catch (err) {

@@ -6,7 +6,7 @@
         <h1 class="my-5 pointer" @click.prevent="startLogin()">Welcome to #1</h1>
         <ul>
           <li v-if="canUpload()"><h2><b-link to="/exhibit-here">Become a resident artist and exhibit your Artwork here</b-link></h2></li>
-          <li v-else><h2><b-link to="/create">Become a resident artist and exhibit your Artwork here</b-link></h2></li>
+          <li v-else><h2><b-link to="/upload-item">Become a resident artist and exhibit your Artwork here</b-link></h2></li>
           <li><h2><b-link to="/nft-gallery">Visit the #1 Gallery</b-link></h2></li>
         </ul>
       </b-col>

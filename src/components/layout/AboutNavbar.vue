@@ -35,13 +35,13 @@
               <span v-if="profile.accountInfo.balance === 0"><b-link variant="outline-warning" @click="gotoStacksMateUrl">Get some STX</b-link></span>
             </div>
           </div>
-          <b-nav-item active><b-link to="/nft-gallery">Gallery</b-link></b-nav-item>
+          <b-nav-item><b-link to="/nft-gallery">Gallery</b-link></b-nav-item>
           <b-nav-item v-if="!canUpload()"><b-link to="/exhibit-here">Exhibit Here?</b-link></b-nav-item>
+          <b-nav-item v-if="canUpload()"><b-link to="/upload-item">Create NFT</b-link></b-nav-item>
           <b-nav-item class="mt-5 pt-5 border-top" v-if="profile.loggedIn"><b-link to="/my-nfts">My NFTs</b-link></b-nav-item>
           <b-nav-item v-if="profile.superAdmin"><b-link to="/offers">Offers</b-link></b-nav-item>
-          <b-nav-item v-if="canUpload()"><b-link to="/my-items">My Items</b-link></b-nav-item>
-          <b-nav-item v-if="canUpload()"><b-link to="/upload-item">Create NFT</b-link></b-nav-item>
-          <b-nav-item v-if="profile.superAdmin" active><b-link to="/app-admin">Admin</b-link></b-nav-item>
+          <b-nav-item v-if="profile.superAdmin"><b-link to="/admin/app-admin">Admin</b-link></b-nav-item>
+          <b-nav-item v-if="profile.superAdmin"><b-link to="/admin/exhibit-requests">Requests</b-link></b-nav-item>
           <b-nav-item v-if="!profile.loggedIn && webWalletNeeded">
             <h1><a :href="webWalletLink" target="_blank">Get a Stacks Web Wallet <b-icon class="ml-3 mb-3" icon="arrow-up-right-square-fill"/></a></h1>
           </b-nav-item>

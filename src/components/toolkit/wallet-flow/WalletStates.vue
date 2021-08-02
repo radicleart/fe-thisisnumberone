@@ -3,13 +3,13 @@
   <b-col cols="12" v-if="getBalance > 0">
     <p>You have {{getBalance}} STX tokens in this account - more than enough to pay the
       mint fees!</p>
-    <p><b-button variant="outline-success" to="/create">Upload and Mint Your NFTs</b-button></p>
+    <p><b-button variant="outline-success" to="/upload-item">Upload and Mint Your NFTs</b-button></p>
   </b-col>
   <b-col cols="12" v-else>
     <p>Minting NFT's requires a tiny amount of STX - get some now?</p>
     <p><b-button variant="outline-warning" @click="gotoStacksMateUrl">Get some STX</b-button></p>
     <p class="mt-5">Get STX later - uploading files is completely free</p>
-    <p><b-button variant="outline-success" to="/create">Upload Files</b-button></p>
+    <p><b-button variant="outline-success" to="/upload-item">Upload Files</b-button></p>
   </b-col>
 </b-row>
 <b-row style="min-height: 30vh" class="text-center" v-else-if="webWalletNeeded">
@@ -36,7 +36,7 @@ export default {
   mounted () {
     const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
     if (profile.loggedIn) {
-      // this.$router.push('/create')
+      // this.$router.push('/upload-item')
       this.nftState = 3
     } else {
       this.nftState = 1

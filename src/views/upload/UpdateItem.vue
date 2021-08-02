@@ -23,7 +23,7 @@
       </b-col>
     </b-row>
     <b-row v-else>
-      <b-col md="6" offset-md="3" sm="12" align-self="start" class=" text-center">
+      <b-col md="6" offset-md="3" sm="12" align-self="start" class="text-center">
         <NftCoverImage :item="item" :displayHeader="true" />
       </b-col>
     </b-row>
@@ -92,7 +92,7 @@ export default {
     this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
       // this.uploadState++
       if (!item) {
-        this.$router.push('/my-items')
+        this.$router.push('/my-nfts')
         return
       }
       this.item = item

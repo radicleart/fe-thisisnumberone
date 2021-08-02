@@ -7,17 +7,14 @@
     <b-row style="min-height: 40vh" >
       <b-col md="4" sm="12" align-self="start" class=" text-center">
         <div  class="" style="width:100%;">
-          <NftCoverImage :item="item" :displayHeader="false"/>
+          <NftCoverImage :item="item" :displayHeader="false" @deleteMediaItem="deleteMediaItem"/>
         </div>
       </b-col>
       <b-col md="8" sm="12" align-self="start" class="mb-4 text-white">
         <div>
           <div class="mb-2 d-flex justify-content-between">
             <h2 class="d-block border-bottom mb-5">{{item.name}}</h2>
-            <div class="">
-              <router-link v-if="!contractAsset" class="mr-2" :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"></b-icon></router-link>
-              <a v-if="!contractAsset" href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
-            </div>
+            <ItemActionMenu :item="item" />
           </div>
           <h6 class="text-small">By : {{item.artist}}</h6>
         </div>
@@ -26,7 +23,12 @@
           <span class="text-small mr-1" v-for="(kw, index) in item.keywords" :key="index">#{{kw.name}}</span>
         -->
         <p class="pt-4 text-small" v-html="preserveWhiteSpace(item.description)"></p>
-        <minting-tools class="w-100" :assetHash="item.assetHash" />
+        <div v-if="item.contractAsset">
+          <span class="text-small text-warning">{{item.contractAsset.owner}}</span>
+        </div>
+        <div v-else>
+          <minting-tools class="w-100" :assetHash="item.assetHash"  />
+        </div>
       </b-col>
     </b-row>
   </b-container>
@@ -37,12 +39,14 @@
 import MintingTools from '@/components/toolkit/MintingTools'
 import { APP_CONSTANTS } from '@/app-constants'
 import NftCoverImage from '@/components/upload/NftCoverImage'
+import ItemActionMenu from '@/components/items/ItemActionMenu'
 
 export default {
   name: 'ItemPreview',
   components: {
     MintingTools,
-    NftCoverImage
+    NftCoverImage,
+    ItemActionMenu
   },
   data: function () {
     return {
@@ -54,20 +58,18 @@ export default {
   mounted () {
     this.loading = false
     this.assetHash = this.$route.params.assetHash
-    this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
-      if (item) {
-        const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](item.assetHash)
-        item.contractAsset = contractAsset
-      }
-    })
   },
   methods: {
+    deleteMediaItem: function (mediaId) {
+      this.$store.dispatch('rpayMyItemStore/deleteMediaItem', { item: this.item, id: mediaId }).then(() => {
+        this.$emit('delete-cover')
+      })
+    },
     preserveWhiteSpace: function (content) {
       return '<span class="text-description" style="white-space: break-spaces;">' + content + '</span>'
     },
     targetItem: function () {
-      const item = this.$store.getters['rpayMyItemStore/myItem'](this.assetHash)
-      return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](item)
+      return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.item)
     }
   },
   computed: {
@@ -89,10 +91,6 @@ export default {
         fluid: true
       }
       return videoOptions
-    },
-    contractAsset () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
-      return contractAsset
     },
     item () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)

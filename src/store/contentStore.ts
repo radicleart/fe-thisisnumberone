@@ -34,6 +34,26 @@ const contentStore = {
         border: '1pt solid #ccc'
       }
     },
+    getWaitingImage: state => gaiaItem => {
+      let attrs = gaiaItem.attributes
+      if (!attrs || !attrs.artworkFile) {
+        attrs = {
+          artworkFile: {
+            fileUrl: state.waitingImage,
+            type: 'image/jpg',
+            name: 'Waiting Image'
+          }
+        }
+      }
+      if (!attrs.coverImage) {
+        attrs.coverImage = {
+          fileUrl: state.waitingImage,
+          type: 'image/jpg',
+          name: 'Waiting Image'
+        }
+      }
+      return attrs
+    },
     getCharityByArtistId: state => id => {
       try {
         const charities = state.content.charities.filter((o) => o.data.artist_id[0].text === id)

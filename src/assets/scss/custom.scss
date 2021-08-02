@@ -151,6 +151,10 @@ body a:hover {
   width: 150px;
   white-space: 'nowrap';
 }
+.btn-action {
+  border-radius: 20px;
+  padding: 4px;
+}
 .bg-black {
   background-color: #000;
 }
@@ -298,8 +302,9 @@ body a:hover {
   border-radius: 50%;
 }
 .item-image {
-  height: 200px;
-  width: auto;
+  height: 250px;
+  width: 250px;
+  border: 2pt solid $danger;
   align-items: center;
 }
 .nft-display-image {

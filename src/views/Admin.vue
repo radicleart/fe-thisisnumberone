@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Registry from '@/components/admin/Registry'
+import Registry from '@/components/admin/cache/Registry'
 
 export default {
   name: 'Admin',

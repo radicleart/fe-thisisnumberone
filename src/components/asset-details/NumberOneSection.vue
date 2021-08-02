@@ -3,7 +3,7 @@
   <b-row align-h="center" style="min-height: 91vh" v-if="loaded" class="mb-5">
     <b-col lg="8" sm="10" class="mb-5" align-self="center">
       <div id="video-column" :style="dimensions">
-        <result-grid id="grid-container" @videoHoverOut="resetContainer" @videoHover="updateContainer" class="container text-center" :outerOptions="videoOptions" :resultSet="resultSet"/>
+        <result-grid id="grid-container" @videoHoverOut="resetContainer" @videoHover="updateContainer" class="container text-center" :outerOptions="videoOptions"/>
       </div>
     </b-col>
     <b-col lg="4" sm="10" align-self="center" :key="componentKey">
@@ -35,9 +35,6 @@ import Vue from 'vue'
 import PrismicItems from '@/components/prismic/PrismicItems'
 import VueScrollTo from 'vue-scrollto'
 
-const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
-const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
-
 export default {
   name: 'NumberOneSection',
   components: {
@@ -47,8 +44,7 @@ export default {
   data () {
     return {
       show: true,
-      loaded: false,
-      resultSet: [],
+      loaded: true,
       componentKey: null,
       // logo: require('@/assets/img/logo-rainbow.svg'),
       rainbowOne: require('@/assets/img/Group 76.svg'),
@@ -65,7 +61,6 @@ export default {
     }
   },
   mounted () {
-    this.findAssets()
     this.resizeContainers()
   },
   updated () {
@@ -84,26 +79,6 @@ export default {
           $self.componentKey += 1
         }, 400)
       })
-    },
-    findAssets () {
-      this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {
-        this.fetchContractAssets(results)
-      })
-    },
-    fetchContractAssets (results) {
-      // const resultSet = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
-      const newAssets = []
-      if (results && results.length > 0) {
-        results.forEach((ga) => {
-          const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](ga.assetHash)
-          if (contractAsset.nftIndex < 5) { // || o.artist === 'Chemical X'
-            ga.contractAsset = contractAsset
-            newAssets.push(ga)
-          }
-        })
-      }
-      this.resultSet = newAssets
-      this.loaded = true
     },
     dimensions () {
       const dims = { width: '100%', height: '100%' }

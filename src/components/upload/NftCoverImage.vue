@@ -5,7 +5,7 @@
     <p class="text-small"><a class="text-secondary pointer" style="font-size: 1.2rem;" @click="useNftFileAsCover">click here to use the NFT file as the cover image!</a> ...or</p>
   </div>
   <div class="bg-black text-white" style="width:100%;">
-    <MediaItem v-if="hasFile()" :videoOptions="videoOptions" :attributes="item.attributes" :targetItem="'coverImage'" @deleteMediaItem="deleteMediaItem"/>
+    <MediaItem v-if="hasFile()" :videoOptions="videoOptions" :attributes="item.attributes" :targetItem="'coverImage'" v-on="$listeners"/>
     <MediaUpload v-else class="text-center" :myUploadId="'coverImage'" :dims="dims" :contentModel="contentModel" :mediaFiles="mediaFilesImage()" :limit="1" :sizeLimit="2" :mediaTypes="'image'" @updateMedia="updateMedia($event)"/>
   </div>
 </div>
@@ -91,11 +91,6 @@ export default {
     },
     downable: function () {
       return this.uploadState > 2
-    },
-    deleteMediaItem: function (mediaId) {
-      this.$store.dispatch('rpayMyItemStore/deleteMediaItem', { item: this.item, id: mediaId }).then(() => {
-        this.$emit('delete-cover')
-      })
     }
   },
   computed: {

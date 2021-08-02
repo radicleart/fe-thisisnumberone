@@ -40,7 +40,7 @@ export const APP_CONSTANTS = {
   KEY_DB_OFFERS: 'rpayPurchaseStore/getDbOffers',
 
   KEY_TRANSACTION_DIALOG_MESSAGE: 'contentStore/getTransactionDialogMessage',
-  KEY_WAITING_IMAGE: 'contentStore/getWaitingCSS',
+  KEY_WAITING_IMAGE: 'contentStore/getWaitingImage',
   KEY_EMAIL_TEXT: 'contentStore/getEmail',
   KEY_TOOL_TIP: 'contentStore/getTooltip',
   KEY_DIALOG_CONTENT: 'contentStore/getDialog',

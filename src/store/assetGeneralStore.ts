@@ -8,7 +8,8 @@ const assetGeneralStore = {
   state: {
     emailData: [],
     offers: [],
-    transactions: []
+    transactions: [],
+    cacheState: 0
   },
   getters: {
     getTransactions: state => {
@@ -48,14 +49,24 @@ const assetGeneralStore = {
     }
   },
   mutations: {
-    addRegisteredEmail (state, data) {
-      state.emailData.push(data)
-    },
     setTransactions (state, transactions) {
       state.transactions = transactions
+    },
+    setCacheState (state, data) {
+      state.cacheState = data
     }
   },
   actions: {
+    buildCache ({ commit }) {
+      return new Promise(function (resolve, reject) {
+        axios.get(MESH_API_PATH + '/v2/build-cache').then((result) => {
+          commit('setCacheState', result.data)
+          resolve(result.data)
+        }).catch((error) => {
+          reject(new Error('Unable to register email: ' + error))
+        })
+      })
+    },
     fetchTransactions ({ commit }) {
       return new Promise(function (resolve, reject) {
         // const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]

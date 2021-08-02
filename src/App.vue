@@ -8,7 +8,7 @@
     <router-view name="header" style="z-index: 10;"/>
     <router-view style="min-height: 99vh;" />
     <router-view name="footer"/>
-    <notifications :duration="10000" classes="r-notifs" position="bottom right" width="30%"/>
+    <notifications :duration="10000" classes="r-notifs" position="bottom left" width="50%"/>
     <waiting-modal/>
     <success-modal/>
   </div>

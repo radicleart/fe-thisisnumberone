@@ -223,14 +223,15 @@ export default new Vuex.Store({
       return new Promise(resolve => {
         dispatch('rpayAuthStore/fetchMyAccount').then(profile => {
           if (profile.loggedIn) {
-            dispatch('rpayMyItemStore/initSchema').then(rootFile => {
-              dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
-              if (process.env.VUE_APP_NETWORK === 'local') {
-                dispatch('rpayStacksContractStore/fetchAssetsByOwner', 'ST1ESYCGJB5Z5NBHS39XPC70PGC14WAQK5XXNQYDW')
-              } else {
-                dispatch('rpayStacksContractStore/fetchAssetsByOwner', profile.stxAddress)
-              }
-              resolve(rootFile)
+            const data = { stxAddress: 'ST1ESYCGJB5Z5NBHS39XPC70PGC14WAQK5XXNQYDW', mine: true }
+            if (process.env.VUE_APP_NETWORK === 'local') {
+              data.stxAddress = profile.stxAddress
+            }
+            dispatch('rpayStacksContractStore/fetchAssetsByOwner', data).then(() => {
+              dispatch('rpayMyItemStore/initSchema').then(rootFile => {
+                dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
+                resolve(rootFile)
+              })
             })
           } else {
             resolve(null)

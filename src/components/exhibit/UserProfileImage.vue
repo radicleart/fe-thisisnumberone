@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="bg-black text-white" style="width:100%;">
+  <div class="text-white" style="">
     <MediaItemGeneral :classes="'avatar-image'" :options="options" v-if="avatar" :hideLinkPaste="true" :mediaItem="avatar" @deleteMediaItem="deleteMediaItem"/>
     <MediaUpload v-else class="text-center" :myUploadId="'coverImage'" :dims="dims" :contentModel="contentModel" :mediaFiles="mediaFilesImage()" :limit="1" :sizeLimit="2" :mediaTypes="'image'" @updateMedia="updateMedia($event)"/>
   </div>

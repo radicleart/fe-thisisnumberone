@@ -1,21 +1,21 @@
 <template>
 <div :style="dimensions" class="text-right" v-if="result">
   <b-link @click="openAssetDetails">
-    <MediaItemGeneral :classes="'item-image p-0 m-0'" @videoClicked="openAssetDetails" class="p-0 m-0" v-on="$listeners" :options="videoOptions" :mediaItem="result.attributes.coverImage"/>
+    <MediaItem class="p-0 m-0" @videoClicked="openAssetDetails" v-on="$listeners" :videoOptions="videoOptions" :attributes="result.attributes" :targetItem="targetItem()"/>
   </b-link>
 </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
+import MediaItem from '@/components/upload/MediaItem'
 import { APP_CONSTANTS } from '@/app-constants'
 import VueScrollTo from 'vue-scrollto'
 
 export default {
   name: 'ResultItem',
   components: {
-    MediaItemGeneral
+    MediaItem
   },
   props: ['result', 'dims', 'outerOptions'],
   data () {
@@ -50,9 +50,9 @@ export default {
       VueScrollTo.scrollTo('#app', 2000)
     },
     assetUrl () {
-      let assetUrl = '/assets/' + this.result.assetHash + '#app'
-      if (this.$route.name === 'my-items') {
-        assetUrl = '/my-items/' + this.result.assetHash
+      let assetUrl = '/assets/' + this.result.assetHash
+      if (this.$route.name === 'my-nfts') {
+        assetUrl = '/my-nfts/' + this.result.assetHash
       }
       return assetUrl
     }
@@ -73,13 +73,13 @@ export default {
         showMeta: false,
         dimensions: 'max-width: 100%; max-height: auto;',
         aspectRatio: '1:1',
-        poster: this.result.image,
+        poster: (this.result.attributes.coverImage) ? this.result.attributes.coverImage.fileUrl : null,
         sources: [],
         fluid: false
       }
-      if (this.result.attributes.coverImage) {
+      if (this.result.attributes.artworkClip) {
         videoOptions.sources = [
-          { src: this.result.attributes.coverImage.fileUrl, type: this.result.attributes.coverImage.type }
+          { src: this.result.attributes.artworkClip.fileUrl, type: this.result.attributes.artworkClip.type }
         ]
       }
       if (this.outerOptions) {

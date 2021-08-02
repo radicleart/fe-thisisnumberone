@@ -1,6 +1,6 @@
 <template>
 <div v-if="item && item.attributes" class="mt-1">
-  <b-link :to="'/nft-display/' + item.assetHash">
+  <b-link :to="'/assets/' + item.assetHash">
     <MediaItemGeneral :classes="'item-image text-center'" class="p-0 m-0" v-on="$listeners" :options="videoOptions" :mediaItem="item.attributes.coverImage"/>
   </b-link>
   <div class="text-white mx-5">
@@ -87,15 +87,8 @@ export default {
       }
       return videoOptions
     },
-    bannerImage () {
-      let imageUrl = this.item.attributes.imageUrl
-      if (!imageUrl) {
-        imageUrl = this.waitingImage
-      }
-      return this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](imageUrl)
-    },
     assetUrl () {
-      return '/nft-display/' + this.item.assetHash
+      return '/assets/' + this.item.assetHash
     }
   }
 }

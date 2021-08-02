@@ -1,10 +1,16 @@
 <template>
 <b-container>
   <b-row class="my-5">
-    <b-col md="6" sm="12">
+    <b-col>
+      <h1>Tell us about yourself</h1>
+      <p>Fill in the form below - you'll hear back from us within 2 working days!</p>
+    </b-col>
+  </b-row>
+  <b-row class="my-5">
+    <b-col md="8" sm="12">
       <ExhibitApplicationForm :referer="referer" :userProfile="userProfile" @updateProfile="updateProfile" />
     </b-col>
-    <b-col md="6" sm="12" class="w-100 text-center">
+    <b-col md="4" sm="12" class="text-center">
       <UserProfileImage :referer="referer" @updateProfile="updateProfile" :avatar="userProfile.avatar" class="mt-5"/>
     </b-col>
   </b-row>
@@ -28,6 +34,7 @@ export default {
       userProfile: {
         avatar: null,
         name: null,
+        email: null,
         description: null,
         links: {
           website: null,
@@ -53,25 +60,24 @@ export default {
       const answer = (emailText) ? emailText[0].text : 'Interest Registered'
       return answer
     },
-    registerForUpdates: function () {
+    registerExhibitRequest: function () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       const data = {
-        emailContent: this.emailText(),
         status: 1,
-        domain: location.host,
-        assetHash: this.assetHash,
-        email: 'mike@risidio.com'
+        domain: location.hostname,
+        name: this.userProfile.name,
+        stxAddress: profile.stxAddress,
+        email: this.userProfile.email
       }
-      this.$store.dispatch('rpayPurchaseStore/registerForUpdates', data).then((result) => {
-        this.$store.commit('setModalMessage', 'Thanks for registering to exhibit artwork here - we will get back to you within the next day or two.')
+      this.$store.dispatch('rpayMyItemStore/registerExhibitRequest', data).then((result) => {
+        this.$store.commit('setModalMessage', 'Thanks for registering to exhibit your artwork - we will get back to you very soon.')
         this.showRpay = 0
         this.$bvModal.hide('asset-offer-modal')
-        this.$root.$emit('bv::show::modal', 'success-modal')
         this.message = result
       }).catch(() => {
-        this.$store.commit('setModalMessage', 'Thanks for re-registering an interest - we will keep you updated.')
+        this.$store.commit('setModalMessage', 'Error - we will keep you updated.')
         this.showRpay = 0
         this.$bvModal.hide('asset-offer-modal')
-        this.$root.$emit('bv::show::modal', 'success-modal')
       })
     },
     updateProfile: function (data) {
@@ -86,11 +92,10 @@ export default {
       this.$store.dispatch('rpayMyItemStore/saveUserProfile', this.userProfile).then((rootFile) => {
         this.userProfile = rootFile.userProfile
         this.$store.commit('setModalMessage', 'Letting everyone know you\'d like to exhibit your artwork here.')
-        this.registerForUpdates()
+        this.registerExhibitRequest()
         this.$notify({ type: 'warning', title: 'Profile', text: 'Profile has been saved!' })
       }).catch(() => {
         this.$store.commit('setModalMessage', 'Error occurred processing file upload.')
-        this.$root.$emit('bv::show::modal', 'waiting-modal')
       })
     }
   },

@@ -43,7 +43,7 @@
       Enter the privileges this user can enact
     </b-form-invalid-feedback>
   </div>
-  <div class="my-4"><b-button class="btn-sm pointer mr-3" variant="info" @click.prevent="addPrivilege(priv.name)" v-for="(priv, index) in availablePrivileges" :key="index">{{priv.name}}</b-button></div>
+  <div class="my-4"><b-badge class="pointer mr-3" variant="info" @click.prevent="addPrivilege(priv.name)" v-for="(priv, index) in availablePrivileges" :key="index">{{priv.name}}</b-badge></div>
   <div class="my-4 text-right"><b-button class="" variant="warning" @click.prevent="saveAuthorisation()">Save</b-button></div>
 </div>
 <div v-else>
@@ -67,7 +67,8 @@ export default {
       result: null,
       stxAddress: null,
       domain: null,
-      privileges: null
+      privileges: null,
+      currentAuth: null
     }
   },
   watch: {
@@ -76,9 +77,13 @@ export default {
     }
   },
   mounted () {
-    this.loaded = true
+    if (this.$route.query.stxAddress) {
+      this.stxAddress = this.$route.query.stxAddress
+      this.fetchUserAuthorisation()
+    }
     if (!this.domain) this.domain = location.hostname
     this.$store.dispatch('rpayPrivilegeStore/fetchAvailablePrivileges')
+    this.loaded = true
   },
   methods: {
     addPrivilege: function (priv) {
@@ -96,23 +101,39 @@ export default {
         this.$notify({ type: 'warning', title: 'Privileges', text: 'Stacks address is required!' })
         return
       }
-      const auth = {
-        stxAddress: this.stxAddress,
-        domains: [
-          {
-            host: this.domain,
-            privileges: (this.privileges) ? this.privileges.split(' ') : []
-          }
-        ]
+      const privileges = (this.privileges) ? this.privileges.split(' ') : []
+      if (!this.currentAuth) {
+        this.currentAuth = {
+          stxAddress: this.stxAddress,
+          domains: [
+            {
+              host: this.domain,
+              privileges: privileges
+            }
+          ]
+        }
+      } else {
+        const index = this.currentAuth.domains.findIndex((o) => o.host === this.domain)
+        if (index === -1) {
+          this.currentAuth.domains.push({ host: this.domain, privileges: privileges })
+        } else {
+          this.currentAuth.domains[index].privileges = privileges
+        }
       }
-      this.$store.dispatch('rpayPrivilegeStore/saveAuthorisation', auth).then((attributes) => {
+      this.$store.dispatch('rpayPrivilegeStore/saveAuthorisation', this.currentAuth).then((attributes) => {
         this.result = attributes
       })
     },
     fetchUserAuthorisation: function () {
       if (!this.stxAddress) return
       this.$store.dispatch('rpayPrivilegeStore/fetchUserAuthorisation', { stxAddress: this.stxAddress }).then((result) => {
-        this.result = result
+        this.currentAuth = result
+        if (this.currentAuth.domains) {
+          const index = this.currentAuth.domains.findIndex((o) => o.host === this.domain)
+          if (index > -1) {
+            this.privileges = this.currentAuth.domains[index].privileges.join(' ')
+          }
+        }
       })
     }
   },

@@ -22,9 +22,9 @@
         <div class="w-100">
           <p class="pt-4 text-small" v-html="preserveWhiteSpace(item.description)"></p>
         </div>
-          <p class="px-4"><a class="text-white" :href="marketplaceLink()" target="_blank"><b-icon class="mr-3" icon="arrow-up-right-square"/> View on marketplace</a></p>
-          <p class="px-4"><a class="text-white" href="#" @click.prevent="action = 1"><b-icon class="mr-3" icon="chevron-right"/> Transfer NFT</a></p>
-          <p class="px-4"><a class="text-white" href="#" @click.prevent="action = 2"><b-icon class="mr-3" icon="chevron-right"/> Mint Edition</a></p>
+        <p class="px-4"><a class="text-white" :href="marketplaceLink()" target="_blank"><b-icon class="mr-3" icon="arrow-up-right-square"/> View on marketplace</a></p>
+        <p class="px-4"><a class="text-white" href="#" @click.prevent="action = 1"><b-icon class="mr-3" icon="chevron-right"/> Transfer NFT</a></p>
+        <p class="px-4"><a class="text-white" href="#" @click.prevent="action = 2"><b-icon class="mr-3" icon="chevron-right"/> Mint Edition</a></p>
         <TransferNft :myNft="item" v-if="action === 1" />
         <EditionTrigger v-if="action === 2" :assetHash="item.assetHash" @mintedEvent="mintedEvent"/>
       </b-col>

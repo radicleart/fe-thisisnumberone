@@ -1,22 +1,18 @@
 <template>
-<div v-if="item && item.attributes" class="mt-1 text-center">
+<div v-if="item && item.attributes" class="mt-1 mx-4 text-center">
   <div>
-    <ItemActionMenu class="item-action-menu" :assetHash="item.assetHash" :variant="'white'" />
-    <MediaItemGeneral :classes="'item-image'" :options="options" :mediaItem="item.attributes.artworkFile"/>
+    <MediaItemGeneral :classes="'item-image'" :options="options" :mediaItem="getMediaItem().artworkFile"/>
   </div>
-  <div class="text-white">
-    <div class="mt-5 mb-2 d-flex justify-content-between">
-      <div class="">
-        <b-link router-tag="a" :to="assetUrl">{{item.name}}</b-link> <span v-if="contractAsset">{{contractAsset.tokenInfo.edition}} / {{contractAsset.tokenInfo.maxEditions}}</span>
-      </div>
-      <div>
-        <b-link class="mr-2" :to="'/edit-item/' + item.assetHash"><b-icon icon="pencil"></b-icon></b-link>
-        <a v-if="!contractAsset" href="#" @click.prevent="deleteItem" class="text-danger"><b-icon icon="trash"></b-icon></a>
-      </div>
+  <div class="mt-4 d-flex justify-content-end" style="width: 250px;">
+    <div class="text-small text-right">
+      <ItemActionMenu :item="item" :variant="'white'" />
     </div>
-      <div class="text-small text-right">
-        <div><b-link router-tag="a" :to="assetUrl">{{salesButtonLabel()}}</b-link></div>
-      </div>
+  </div>
+  <div class="text-left">
+    <b-link router-tag="a" :to="assetUrl">{{item.name}}</b-link> <span v-if="contractAsset">{{contractAsset.tokenInfo.edition}} / {{contractAsset.tokenInfo.maxEditions}}</span>
+  </div>
+  <div class="text-small text-left">
+    <div><b-link router-tag="a" :to="assetUrl">{{salesButtonLabel()}}</b-link></div>
   </div>
 </div>
 </template>
@@ -41,11 +37,18 @@ export default {
       likeIconPurple: require('@/assets/img/Favorite_button_purple_empty.png')
     }
   },
+  mounted () {
+    this.filter = this.$route.params.filter
+  },
   methods: {
+    getMediaItem () {
+      const attributes = this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](this.item)
+      return attributes
+    },
     salesButtonLabel () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
+      const contractAsset = this.item.contractAsset
       if (!contractAsset) return 'NOT MINTED'
-      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
+      return 'MINTED' // this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
     },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.item)
@@ -76,11 +79,7 @@ export default {
       return contractAsset
     },
     options () {
-      let file = this.item.attributes.artworkFile
-      if (!file) {
-        file = this.item.attributes.artworkClip
-      }
-      if (!file) return {}
+      const attributes = this.getMediaItem()
       return {
         emitOnHover: true,
         playOnHover: false,
@@ -91,19 +90,12 @@ export default {
         controls: false,
         showMeta: false,
         aspectRatio: '1:1',
-        poster: (this.item.attributes.coverImage) ? this.item.attributes.coverImage.fileUrl : null,
+        poster: (attributes.coverImage) ? attributes.coverImage.fileUrl : attributes.artworkFile.fileUrl,
         sources: [
-          { src: file.fileUrl, type: file.type }
+          { src: attributes.artworkFile.fileUrl, type: attributes.artworkFile.type }
         ],
         fluid: false
       }
-    },
-    bannerImage () {
-      let imageUrl = this.item.attributes.imageUrl
-      if (!imageUrl) {
-        imageUrl = this.waitingImage
-      }
-      return this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](imageUrl)
     },
     assetUrl () {
       if (this.item.assetHash) {

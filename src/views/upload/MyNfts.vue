@@ -2,12 +2,12 @@
 <b-container class="text-white mt-5" v-if="hasNfts || gaiaItems.length > 0">
   <h1>My Library</h1>
   <b-tabs justified content-class="text-white">
-    <b-tab :title="'My Uploads: ' + gaiaItems.length" active>
+    <b-tab v-if="canUpload()" :title="'My Uploads: ' + gaiaItems.length" active>
       <p class="mt-4">Files you uploaded to your Gaia storage bucket.</p>
       <p>If you minted them (to create NFTs) you may also have
         sold or transferred the NFT to another wallet. </p>
       <b-row>
-        <b-col v-for="(gaiaItem, index) in gaiaItems" :key="index" lg="3" md="4" sm="6" xs="12">
+        <b-col v-for="(gaiaItem, index) in gaiaItems" :key="index" lg="3" md="6" sm="6" xs="12">
           <SingleItem class="mb-2" :item="gaiaItem"/>
         </b-col>
       </b-row>
@@ -46,17 +46,8 @@ export default {
   data () {
     return {
       cross: require('@/assets/img/navbar-footer/cross.svg'),
-      filter: 'pending',
-      componentKey: 0,
-      gaiaItems: []
+      componentKey: 0
     }
-  },
-  mounted () {
-    this.filter = this.$route.params.filter
-    this.$store.dispatch('rpayMyItemStore/fetchItems').then((rootFile) => {
-      if (rootFile) this.gaiaItems = rootFile.records
-      this.loaded = true
-    })
   },
   methods: {
     getGaiaItem (myNft) {
@@ -66,11 +57,19 @@ export default {
       }
       return gaiaItem
     },
+    canUpload () {
+      const hasUploadPriv = this.$store.getters[APP_CONSTANTS.KEY_HAS_PRIVILEGE]('can-upload')
+      return hasUploadPriv
+    },
     closeModal () {
       document.getElementById('linkModal').style.display = 'none'
     }
   },
   computed: {
+    gaiaItems () {
+      const gaiaItems = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEMS]
+      return gaiaItems
+    },
     hasNfts () {
       const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
       return myContractAssets && myContractAssets.length > 0

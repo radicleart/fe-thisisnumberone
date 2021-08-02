@@ -10,19 +10,28 @@
   <div class="row mb-5 pb-2">
     <div class="col-12"><h3>Environment Variables</h3></div>
     <div class="col-2">RISIDIO_API</div><div class="col-10">{{RISIDIO_API}}</div>
-    <div class="col-2">Address</div><div class="col-10">{{STACKS_CONTRACT_ADDRESS}}</div>
+    <div class="col-2">STX Address</div><div class="col-10">{{STACKS_CONTRACT_ADDRESS}}</div>
+    <div class="col-2">b32 address</div><div class="col-10">{{b32Address(STACKS_CONTRACT_ADDRESS)}}</div>
     <div class="col-2">Name</div><div class="col-10">{{STACKS_CONTRACT_NAME}}</div>
     <div class="col-2">Network</div><div class="col-10">{{NETWORK}}</div>
+  </div>
+  <div class="row mb-5 pb-2">
+    <div class="col-12"><h3>Logged In As</h3></div>
+    <div class="col-2">Username</div><div class="col-10">{{profile.username}}</div>
+    <div class="col-2">STX Address</div><div class="col-10">{{profile.stxAddress}}</div>
+    <div class="col-2">b32 address</div><div class="col-10">{{b32Address(profile.stxAddress)}}</div>
   </div>
   <div class="row mb-3">
     <div class="col-2"><b>Mac Wallet</b></div><div class="col-10"></div>
     <div class="col-2">address</div><div class="col-10">{{mac.keyInfo.address}}</div>
+    <div class="col-2">b32 address</div><div class="col-10">{{b32Address(mac.keyInfo.address)}}</div>
     <div class="col-2">nonce</div><div class="col-10">{{mac.nonce}}</div>
     <div class="col-2">balance</div><div class="col-10">{{mac.balance}}</div>
   </div>
   <div class="row">
     <div class="col-2"><b>Sky Wallet</b></div><div class="col-10"></div>
     <div class="col-2">address</div><div class="col-10">{{sky.keyInfo.address}}</div>
+    <div class="col-2">b32 address</div><div class="col-10">{{b32Address(sky.keyInfo.address)}}</div>
     <div class="col-2">nonce</div><div class="col-10">{{sky.nonce}}</div>
     <div class="col-2">balance</div><div class="col-10">{{sky.balance}}</div>
   </div>
@@ -48,65 +57,9 @@
         <div class="col-2">administrator</div><div class="col-10">{{application.tokenContract.administrator}}</div>
         <div class="col-2">Platform Fee</div><div class="col-10">{{application.tokenContract.platformFee}}</div>
         <div class="col-2">Mint Fee</div><div class="col-10">{{application.tokenContract.mintCounter}}</div>
-        <div class="ml-4 py-5 border-top" v-for="(token, index) in application.tokenContract.tokens" :key="index">
-          <div class="row" v-if="gaiaAsset(token.tokenInfo.assetHash)">
-            <div class="col-2 my-4"><div><img width="70px" :src="gaiaAsset(token.tokenInfo.assetHash).image"/></div></div>
-            <div class="col-10 my-4">
-              <div>{{gaiaAsset(token.tokenInfo.assetHash).name}}</div>
-              <div>[#{{token.nftIndex}}] : Edition {{token.tokenInfo.edition}} / {{token.tokenInfo.maxEditions}} / {{token.tokenInfo.editionCost}}</div>
-              <div>Uploaded by:     {{gaiaAsset(token.tokenInfo.assetHash).owner}}</div>
-              <div>MetaDataUrl:       {{token.tokenInfo.metaDataUrl}}</div>
-            </div>
-          </div>
-          <div class="row" v-else>
-            <div class="col-2 my-4"><div>No Gaia Record?</div></div>
-            <div class="col-10 my-4">
-              <div>{{token.tokenInfo.assetHash}}</div>
-              <div>[#{{token.nftIndex}}] : Edition {{token.tokenInfo.edition}} / {{token.tokenInfo.maxEditions}} / {{token.tokenInfo.editionCost}}</div>
-              <div>Uploaded by:     {{token.owner}}</div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-2">SHA(256)</div><div class="col-10">{{token.tokenInfo.assetHash}}</div>
-            <div class="col-2">Meta Data Url</div><div class="col-10">{{token.tokenInfo.metaDataUrl}}</div>
-            <div class="col-2">Owner</div><div class="col-10">{{token.owner}}</div>
-            <div class="col-2">Owner B32</div><div class="col-10">{{b32Address(token.owner)}}</div>
-            <div class="col-2">Sale Data</div><div class="col-10">Type={{token.saleData.saleType}} Cycle={{token.saleData.saleCycleIndex}}, Amount={{token.saleData.buyNowOrStartingPrice}} Reserve={{token.saleData.reservePrice}} Increment={{token.saleData.incrementPrice}}</div>
-            <div class="col-2">End time</div><div class="col-10">{{formatDate(token.saleData.biddingEndTime)}}</div>
-            <div class="col-2">Block-height</div><div class="col-10">{{token.tokenInfo.date}}</div>
-            <div class="col-2">Original</div><div class="col-10">{{token.tokenInfo.seriesOriginal}}</div>
-            <div class="col-2">Royalties:</div>
-            <div class="col-10">
-              <div class="row" v-for="(beneficiary, index) in token.beneficiaries" :key="index">
-                <div class="col-2">{{beneficiary.username}}</div>
-                <div class="col-2">{{beneficiary.royalty}}</div>
-                <div class="col-8">{{beneficiary.chainAddress}}</div>
-              </div>
-            </div>
-            <div class="col-2">Bids</div><div class="col-10">{{token.bidCounter}}</div>
-            <div class="col-2"></div>
-            <div class="col-10">
-              <div class="row bg-dark p-2 my-3" v-for="(bid, index1) in token.bidHistory" :key="index1">
-                <div class="col-2">Amount</div><div class="col-10">{{bid.amount}}</div>
-                <div class="col-2">Bidder</div><div class="col-10">{{bid.bidder}}</div>
-                <div class="col-2">Placed</div><div class="col-10">{{formatDate(bid.whenBid)}}</div>
-                <div class="col-2">Cycle</div><div class="col-10">{{bid.saleCycle}}</div>
-              </div>
-            </div>
-            <div class="col-2">Offers</div><div class="col-10">{{token.offerCounter}}</div>
-            <div class="col-2"></div>
-            <div class="col-10">
-              <div v-for="(offer, index1) in token.offerHistory" :key="index1">
-                <div>{{offer.amount}}</div>
-                <div>{{offer.offerer}}</div>
-                <div>{{offer.saleCycle}}</div>
-                <div>{{formatDate(offer.madeDate)}}</div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
+    <GaiaAssetCache />
   </div>
 
 </div>
@@ -114,12 +67,13 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import moment from 'moment'
 import utils from '@/services/utils'
+import GaiaAssetCache from './GaiaAssetCache'
 
 export default {
   name: 'Registry',
   components: {
+    GaiaAssetCache
   },
   data () {
     return {
@@ -147,11 +101,7 @@ export default {
       return b32Address[0] + ' : ' + b32Address[1]
     },
     buildCache: function () {
-      this.$store.dispatch()
-    },
-    formatDate: function (date) {
-      const loaclEndM = moment(date)
-      return loaclEndM.format('DD-MM-YY hh:mm')
+      this.$store.dispatch('assetGeneralStore/buildCache')
     },
     gaiaAsset (hash) {
       const gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](hash)
@@ -163,6 +113,10 @@ export default {
       const registry = this.$store.getters[APP_CONSTANTS.KEY_REGISTRY]
       if (!registry) return {}
       return registry
+    },
+    profile () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      return profile
     },
     sky () {
       const mac = this.$store.getters[APP_CONSTANTS.KEY_SKYS_WALLET]

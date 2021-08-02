@@ -60,11 +60,6 @@ export default {
       default: () => ('file-input'),
       required: true
     },
-    imageUrl: {
-      type: String,
-      default: () => (''),
-      required: false
-    },
     sizeLimit: {
       type: Number,
       default: () => (450),
