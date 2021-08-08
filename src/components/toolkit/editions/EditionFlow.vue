@@ -17,7 +17,7 @@
         <h5>{{currentMaxEditions - (editionCounter - 1)}} available in current run</h5>
       </div>
       <div class="text-small">
-        <rates-listing :message="''" :amount="currentCost"/>
+        <RatesListing :message="''" :amount="currentCost"/>
       </div>
     </b-col>
   </b-row>
@@ -36,7 +36,7 @@ export default {
     ActionRow,
     RatesListing
   },
-  props: ['assetHash'],
+  props: ['item'],
   data () {
     return {
       icon: require('@/assets/img/check-square.svg'),
@@ -55,13 +55,12 @@ export default {
     },
     mintEdition: function () {
       this.errorMessage = 'Minting non fungible token - takes a minute or so..'
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
       const methos = (process.env.VUE_APP_NETWORK === 'local') ? 'callContractRisidio' : 'callContractBlockstack'
       const data = {
-        owner: contractAsset.owner,
+        owner: this.item.contractAsset.owner,
         editionCost: this.currentCost,
         action: methos,
-        nftIndex: contractAsset.nftIndex,
+        nftIndex: this.item.contractAsset.nftIndex,
         contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
         contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
         functionName: 'mint-edition'
@@ -79,24 +78,16 @@ export default {
       return dialog
     },
     currentCost: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      if (!contractAsset) return
-      return contractAsset.tokenInfo.editionCost
+      return this.item.contractAsset.tokenInfo.editionCost
     },
     editionsMintable: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      if (!contractAsset) return
-      return (contractAsset.tokenInfo.maxEditions >= contractAsset.editionCounter)
+      return (this.item.contractAsset.tokenInfo.maxEditions >= this.item.contractAsset.editionCounter)
     },
     editionCounter: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      if (!contractAsset) return
-      return contractAsset.editionCounter
+      return this.item.contractAsset.editionCounter
     },
     currentMaxEditions: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      if (!contractAsset) return
-      return contractAsset.tokenInfo.maxEditions
+      return this.item.contractAsset.tokenInfo.maxEditions
     }
   }
 }

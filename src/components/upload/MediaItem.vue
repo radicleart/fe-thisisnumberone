@@ -1,22 +1,26 @@
 <template>
 <div>
   <div v-if="contentType === 'threed'" :style="videoOptions.dimensions" id="video-demo-container">
-    <img v-on="$listeners" :src="attributes.coverImage.fileUrl" @error="setAltImg()" :alt="attributes.artworkFile.name" :style="dimensions()">
+    <img v-if="attributes.coverImage" v-on="$listeners" :src="attributes.coverImage.fileUrl" @error="setAltImg()" :alt="attributes.artworkFile.name" :style="dimensions()">
+    <img v-else v-on="$listeners" :src="waitingImage" @error="setAltImg()" :alt="'waitingImage'" :style="dimensions()">
   </div>
   <div v-else-if="contentType === 'video'" :style="videoOptions.dimensions" id="video-demo-container">
     <VideoJsPlayer v-on="$listeners" :style="videoOptions.dimensions" @error="setAltImg()" :options="videoOptions"/>
   </div>
   <div v-else-if="contentType === 'audio'" id="audio-demo-container">
-    <img v-on="$listeners" :src="attributes.coverImage.fileUrl" @error="setAltImg()" :alt="attributes.artworkFile.name" :style="dimensions()">
+    <img v-if="attributes.coverImage" v-on="$listeners" :src="attributes.coverImage.fileUrl" @error="setAltImg()" :alt="attributes.artworkFile.name" :style="dimensions()">
+    <img v-else v-on="$listeners" :src="waitingImage" @error="setAltImg()" :alt="'waitingImage'" :style="dimensions()">
     <audio v-on="$listeners" controls :src="attributes.artworkFile.fileUrl" :style="dimensions()">
       Your browser does not support the <code>audio</code> element.
     </audio>
   </div>
   <div v-else-if="contentType === 'document'">
-    <img v-on="$listeners" :src="attributes.coverImage.fileUrl" @error="setAltImg()" :alt="attributes.artworkFile.name" :style="dimensions()">
+    <img v-if="attributes.coverImage" v-on="$listeners" :src="attributes.coverImage.fileUrl" @error="setAltImg()" :alt="attributes.artworkFile.name" :style="dimensions()">
+    <img v-else v-on="$listeners" :src="waitingImage" @error="setAltImg()" :alt="'waitingImage'" :style="dimensions()">
   </div>
   <div v-else-if="contentType === 'image'">
-    <img v-on="$listeners" :src="attributes.coverImage.fileUrl" @error="setAltImg()" :alt="attributes.artworkFile.name" :style="dimensions()">
+    <img v-if="attributes.coverImage" v-on="$listeners" :src="attributes.coverImage.fileUrl" @error="setAltImg()" :alt="attributes.artworkFile.name" :style="dimensions()">
+    <img v-else v-on="$listeners" :src="waitingImage" @error="setAltImg()" :alt="'waitingImage'" :style="dimensions()">
   </div>
   <div v-if="videoOptions.showMeta" :style="videoOptions.dimensions" class="py-4" style="font-size: 1.2rem;">
     <div class="p-2 d-flex justify-content-start">
@@ -108,6 +112,7 @@ export default {
       return Math.round(ksize * 100) / 100 + ' Mb'
     },
     deleteCoverImage: function () {
+      if (!this.attributes.coverImage) return
       this.$emit('deleteMediaItem', this.attributes.coverImage.id)
     }
   }

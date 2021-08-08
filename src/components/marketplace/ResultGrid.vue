@@ -1,6 +1,6 @@
 <template>
-  <b-row class="center" v-if="loaded">
-    <b-col cols="4" class="p-0 m-0" v-for="(result, index) in paddedResults" :key="index">
+  <b-row class="center">
+    <b-col cols="4" class="p-0 m-0" v-for="(result, index) in resultSet" :key="index">
       <result-item v-on="$listeners" :result="result" :dims="dims100" :outerOptions="outerOptions"/>
     </b-col>
   </b-row>
@@ -30,22 +30,9 @@ export default {
     }
   },
   mounted () {
-    const padder = {
-      imageUrl: this.padderSrc,
-      attributes: {
-        coverImage: {
-          fileUrl: this.padderSrc,
-          type: 'image'
-        },
-        artworkFile: {
-          fileUrl: this.padderSrc,
-          type: 'image'
-        }
-      }
-    }
-    this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((searchResults) => {
-      this.results = this.resultSet(searchResults)
-      this.setupGrid(padder)
+    this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then(() => {
+      // this.results = this.resultSet(searchResults)
+      // this.setupGrid(padder)
       this.loaded = true
     })
   },
@@ -53,7 +40,7 @@ export default {
     numbEntries: function () {
       return this.results.length
     },
-    resultSet (searchResults) {
+    resultSetOld (searchResults) {
       const newAssets = []
       if (searchResults.length > 0) {
         searchResults.forEach((ga) => {
@@ -65,25 +52,44 @@ export default {
         })
       }
       return newAssets
-    },
-    setupGrid: function (padder) {
-      const dave = this.results.find((o) => o.artist === 'Dave Stewart') || this.results[0]
-      const orbital = this.results.find((o) => o.artist === 'Orbital') || this.results[1]
-      const fatboy = this.results.find((o) => o.artist === 'Fatboy Slim') || this.results[2]
-      const marc = this.results.find((o) => o.artist === 'Chemical X') || this.results[3]
-      const cara = this.results.find((o) => o.artist === 'Cara Delevingne') || this.results[4]
-      this.paddedResults.push(marc)
-      this.paddedResults.push(padder)
-      this.paddedResults.push(orbital)
-      this.paddedResults.push(padder)
-      this.paddedResults.push(cara)
-      this.paddedResults.push(padder)
-      this.paddedResults.push(fatboy)
-      this.paddedResults.push(padder)
-      this.paddedResults.push(dave)
     }
   },
   computed: {
+    resultSet () {
+      const padder = {
+        imageUrl: this.padderSrc,
+        attributes: {
+          coverImage: {
+            fileUrl: this.padderSrc,
+            type: 'image'
+          },
+          artworkFile: {
+            fileUrl: this.padderSrc,
+            type: 'image'
+          }
+        }
+      }
+      const results = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      const paddedResults = []
+      paddedResults.push(padder)
+      paddedResults.push(padder)
+      paddedResults.push(padder)
+      paddedResults.push(padder)
+      paddedResults.push(padder)
+      paddedResults.push(padder)
+      paddedResults.push(padder)
+      paddedResults.push(padder)
+      paddedResults.push(padder)
+      if (results) {
+        results.sort((g1, g2) => g1.contractAsset.nftIndex - g2.contractAsset.nftIndex)
+        if (results.length >= 4) paddedResults[0] = this.results.find((o) => o.artist === 'Chemical X') || results[3]
+        if (results.length >= 2) paddedResults[2] = this.results.find((o) => o.artist === 'Orbital') || results[1]
+        if (results.length >= 1) paddedResults[8] = this.results.find((o) => o.artist === 'Dave Stewart') || results[0]
+        if (results.length >= 3) paddedResults[6] = this.results.find((o) => o.artist === 'Fatboy Slim') || results[2]
+        if (results.length >= 5) paddedResults[4] = this.results.find((o) => o.artist === 'Cara Delevingne') || results[4]
+      }
+      return paddedResults
+    }
   }
 }
 </script>

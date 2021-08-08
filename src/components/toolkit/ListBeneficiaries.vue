@@ -1,26 +1,27 @@
 <template>
 <div  class="mt-3">
-  <div class="upload-preview text-small">
-    <div >
-      <div class="row mb-4">
-        <div class="col-10">Address</div><div class="col-2">Royalty</div>
-      </div>
-      <div class="row mb-4" v-for="(address, index) in contractAsset.beneficiaries.addresses" :key="index">
-        <div v-if="getShare(index) > 0" class="col-10">{{getAddress(address)}}</div><div v-if="getShare(index) > 0" class="col-2">{{getShare(index)}}</div>
-      </div>
-    </div>
+  <div v-if="item.contractAsset.beneficiaries">
+    <b-row class="mb-4">
+      <b-col cols="10">Address</b-col><b-col cols="2">Royalty</b-col>
+    </b-row>
+    <b-row class="mb-4" v-for="(address, index) in item.contractAsset.beneficiaries.addresses" :key="index">
+      <b-col v-if="getShare(index) > 0" md="10" sm="12">{{getAddress(address)}}</b-col>
+      <b-col v-if="getShare(index) > 0" md="2" sm="12">{{getShare(index)}}</b-col>
+    </b-row>
+  </div>
+  <div v-else>
+    <p>Royalties are set by the first edition of the series.</p>
   </div>
 </div>
 </template>
 
 <script>
-import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'ListBeneficiaries',
   components: {
   },
-  props: ['assetHash'],
+  props: ['item'],
   data: function () {
     return {
       toAddress: null,
@@ -33,17 +34,13 @@ export default {
       return (address.valueHex)
     },
     getShare: function (index) {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
+      const contractAsset = this.item.contractAsset
       const share = contractAsset.beneficiaries.shares[index]
       if (!share) return
       return (share.value)
     }
   },
   computed: {
-    contractAsset () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      return contractAsset
-    }
   }
 }
 </script>

@@ -3,23 +3,15 @@
   <b-link :to="'/assets/' + item.assetHash">
     <MediaItemGeneral :classes="'item-image text-center'" class="p-0 m-0" v-on="$listeners" :options="videoOptions" :mediaItem="item.attributes.coverImage"/>
   </b-link>
-  <div class="text-white mx-5">
+  <div class="mt-3 text-white">
     <div class="mt-2 mb-2">
-      <div class="">
-        {{item.name}}
+      <div v-if="item.contractAsset">
+        #{{item.contractAsset.nftIndex}} {{item.name}}
       </div>
       <div class="text-small">
         by <span class="text-warning">{{item.artist}}</span>
       </div>
     </div>
-    <!--
-    <p><a class="text-white" :href="marketplaceLink()" target="_blank">View on marketplace</a></p>
-    <div class="mt-2 mb-2">
-      <div class="">
-        <EditionTrigger :assetHash="item.assetHash" @mintedEvent="mintedEvent"/>
-      </div>
-    </div>
-    -->
   </div>
 </div>
 </template>

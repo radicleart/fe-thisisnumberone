@@ -17,6 +17,7 @@ import NftDisplay from '../views/NftDisplay.vue'
 import MyNfts from '../views/upload/MyNfts.vue'
 import NftGallery from '../views/NftGallery.vue'
 import ExhibitHere from '../views/ExhibitHere.vue'
+import ManageProfile from '../views/ManageProfile.vue'
 
 const Charity = () => import('../views/Charity.vue')
 const AssetDetails = () => import('../views/AssetDetails.vue')
@@ -97,8 +98,12 @@ const routes: Array<RouteConfig> = [
   {
     path: '/profile',
     name: 'profile',
-    components: { default: ItemPreview, header: AboutNavbar, footer: MainFooter },
-    meta: { title: 'Your profile' }
+    components: { default: ManageProfile, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Manage Profile'
+    }
   },
   {
     path: '/information/:infoId',
@@ -116,9 +121,18 @@ const routes: Array<RouteConfig> = [
     components: { default: AssetDetails, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'Asset informations' }
   },
-  // admin routes
   {
-    path: '/item-preview/:assetHash',
+    path: '/nfts/:nftIndex',
+    name: 'asset-by-index',
+    components: { default: AssetDetails, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: false,
+      requiresAdmin: false,
+      title: 'NFT display'
+    }
+  },
+  {
+    path: '/item-preview/:assetHash/:edition',
     name: 'item-preview',
     components: { default: ItemPreview, header: AboutNavbar, footer: MainFooter },
     meta: {

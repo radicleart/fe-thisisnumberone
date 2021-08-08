@@ -5,9 +5,12 @@
   </div>
   <b-container class="my-5 pt-5" v-if="item">
     <b-row style="min-height: 40vh" >
-      <b-col md="4" sm="12" align-self="start" class=" text-center">
-        <div  class="" style="width:100%;">
-          <NftCoverImage :item="item" :displayHeader="false" @deleteMediaItem="deleteMediaItem"/>
+      <b-col md="4" sm="12" align-self="start" class="text-center">
+        <div class="">
+          <MediaItemGeneral :classes="'item-image-preview'" :options="options" :mediaItem="getMediaItem().artworkFile"/>
+        </div>
+        <div class="text-left text-small mt-3">
+          <b-link to="/my-nfts"><b-icon icon="chevron-left"/> Back</b-link>
         </div>
       </b-col>
       <b-col md="8" sm="12" align-self="start" class="mb-4 text-white">
@@ -18,16 +21,21 @@
           </div>
           <h6 class="text-small">By : {{item.artist}}</h6>
         </div>
-        <!--
-          <div class="mb-2 text-bold">Editions {{item.editions}}</div>
-          <span class="text-small mr-1" v-for="(kw, index) in item.keywords" :key="index">#{{kw.name}}</span>
-        -->
         <p class="pt-4 text-small" v-html="preserveWhiteSpace(item.description)"></p>
         <div v-if="item.contractAsset">
-          <span class="text-small text-warning">{{item.contractAsset.owner}}</span>
+          <b-alert show :variant="(iAmOwner) ? 'warning' : 'danger'">
+            <b-row>
+              <b-col md="4" sm="12" class="text-small">
+                <span>Minted</span><br/><span class="text-bold">NFT #{{item.contractAsset.nftIndex}} : Edition {{item.contractAsset.tokenInfo.edition}} of {{item.contractAsset.tokenInfo.maxEditions}}</span>
+              </b-col>
+              <b-col md="8" sm="12" class="text-small">
+                <span>Owner</span><br/><span class="">{{item.contractAsset.owner}}</span>
+              </b-col>
+            </b-row>
+          </b-alert>
         </div>
-        <div v-else>
-          <minting-tools class="w-100" :assetHash="item.assetHash"  />
+        <div>
+          <MintingTools class="w-100" :item="item" v-if="iAmOwner || edition === 0" />
         </div>
       </b-col>
     </b-row>
@@ -38,14 +46,14 @@
 <script>
 import MintingTools from '@/components/toolkit/MintingTools'
 import { APP_CONSTANTS } from '@/app-constants'
-import NftCoverImage from '@/components/upload/NftCoverImage'
+import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
 import ItemActionMenu from '@/components/items/ItemActionMenu'
 
 export default {
   name: 'ItemPreview',
   components: {
     MintingTools,
-    NftCoverImage,
+    MediaItemGeneral,
     ItemActionMenu
   },
   data: function () {
@@ -58,8 +66,15 @@ export default {
   mounted () {
     this.loading = false
     this.assetHash = this.$route.params.assetHash
+    this.edition = Number(this.$route.params.edition)
+    this.$store.dispatch('rpayStacksContractStore/fetchAssetByHashAndEdition', { assetHash: this.assetHash, edition: this.edition })
+    this.$store.dispatch('assetGeneralStore/cacheUpdate', { assetHash: this.assetHash })
   },
   methods: {
+    getMediaItem () {
+      const attributes = this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](this.item)
+      return attributes
+    },
     deleteMediaItem: function (mediaId) {
       this.$store.dispatch('rpayMyItemStore/deleteMediaItem', { item: this.item, id: mediaId }).then(() => {
         this.$emit('delete-cover')
@@ -73,8 +88,7 @@ export default {
     }
   },
   computed: {
-    videoOptions () {
-      const item = this.$store.getters['rpayMyItemStore/myItem'](this.assetHash)
+    options () {
       const videoOptions = {
         emitOnHover: true,
         playOnHover: false,
@@ -83,25 +97,37 @@ export default {
         autoplay: false,
         muted: false,
         controls: true,
-        showMeta: true,
-        poster: (item.attributes.coverImage) ? item.attributes.coverImage.fileUrl : null,
+        showMeta: false,
+        poster: (this.item.attributes.coverImage) ? this.item.attributes.coverImage.fileUrl : null,
         sources: [
-          { src: item.attributes.artworkFile.fileUrl, type: item.attributes.artworkFile.type }
+          { src: this.item.attributes.artworkFile.fileUrl, type: this.item.attributes.artworkFile.type }
         ],
         fluid: true
       }
       return videoOptions
     },
     item () {
-      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      // get the item from my uploads - then try my nfts
+      let item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      if (this.edition > 0) {
+        item = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH_EDITION]({ assetHash: this.assetHash, edition: this.edition })
+      }
       return item
     },
-    attributes () {
-      const item = this.$store.getters['rpayMyItemStore/myItem'](this.assetHash)
-      return item.attributes
+    profile () {
+      const profile = this.$store.getters['rpayAuthStore/getMyProfile']
+      return profile
     },
-    keywords () {
-      return this.$store.getters['rpayMyItemStore/myItem'](this.assetHash)
+    iAmOwner () {
+      return this.item.contractAsset.owner === this.profile.stxAddress
+    },
+    minted () {
+      // const profile = this.$store.getters['rpayAuthStore/getMyProfile']
+      // return !this.item.contractAsset && this.item.contractAsset.owner === profile.stxAddress
+      return this.item.contractAsset
+    },
+    attributes () {
+      return this.item.attributes
     }
   }
 }

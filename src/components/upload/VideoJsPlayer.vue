@@ -97,7 +97,8 @@ export default {
 }
 .vjs-big-play-button {
   width: 8rem;
-  border-radius: 12px !important;
-  left: 51% !important;
+  border-radius: 0px !important;
+  left: 53% !important;
+  margin: auto;
 }
 </style>

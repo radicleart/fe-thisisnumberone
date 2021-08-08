@@ -1,5 +1,5 @@
 <template>
-    <b-navbar toggleable="true" class="p-4" :fixed="getFixed()" type="dark" variant="transparent">
+    <b-navbar toggleable="true" class="p-4" :fixed="getFixed()" type="dark" :variant="bgVariant()">
       <b-navbar-brand href="#"><b-link to="/"><img height="30px" :src="logo" /></b-link></b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse" class="text-white">
@@ -32,12 +32,15 @@
             </div>
             <div v-if="profile.accountInfo" class="text-small">
               <span class="mr-5"><a style="font-size: 1.2rem;" :href="getStacksMateUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Top up your Stacks at Stacks Mate'" class="text-white text-small ml-3" target="_blank">Balance:</a> <span class="text-warning">{{profile.accountInfo.balance}}</span> STX</span>
-              <span v-if="profile.accountInfo.balance === 0"><b-link variant="outline-warning" @click="gotoStacksMateUrl">Get some STX</b-link></span>
             </div>
           </div>
           <b-nav-item><b-link to="/nft-gallery">Gallery</b-link></b-nav-item>
-          <b-nav-item v-if="!canUpload()"><b-link to="/exhibit-here">Exhibit Here?</b-link></b-nav-item>
+          <b-nav-item v-if="!canUpload()">
+            <b-link v-if="profile.loggedIn" to="/exhibit-here">Apply to Exhibit</b-link>
+            <b-link v-else to="/login?redirect=%2Fexhibit-here">Exhibit Here?</b-link>
+          </b-nav-item>
           <b-nav-item v-if="canUpload()"><b-link to="/upload-item">Create NFT</b-link></b-nav-item>
+          <b-nav-item v-if="profile.loggedIn"><b-link to="/profile">My Profile</b-link></b-nav-item>
           <b-nav-item class="mt-5 pt-5 border-top" v-if="profile.loggedIn"><b-link to="/my-nfts">My NFTs</b-link></b-nav-item>
           <b-nav-item v-if="profile.superAdmin"><b-link to="/offers">Offers</b-link></b-nav-item>
           <b-nav-item v-if="profile.superAdmin"><b-link to="/admin/app-admin">Admin</b-link></b-nav-item>
@@ -71,6 +74,10 @@ export default {
     }
   },
   methods: {
+    bgVariant: function () {
+      if (this.$route.name === 'profile') return 'black'
+      return 'transparent'
+    },
     gotoStacksMateUrl: function () {
       location.href = this.getStacksMateUrl
     },
@@ -80,7 +87,7 @@ export default {
     },
     startExhibit () {
       if (!this.profile.loggedIn) {
-        this.$router.push('/login?referer=exhibit-here')
+        this.$router.push('/login?redirect=exhibit-here')
       } else {
         this.$router.push('/exhibit-here')
       }

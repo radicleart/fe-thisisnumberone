@@ -24,20 +24,26 @@ export default {
   },
   mounted () {
     const $self = this
-    this.player = videojs(this.$refs.videoPlayer, this.options, function onPlayerReady () {
-      $self.player.controls($self.options.controls)
-    })
-    if (this.options.autoplay) {
-      this.player.play()
+    try {
+      this.player = videojs(this.$refs.videoPlayer, this.options, function onPlayerReady () {
+        $self.player.controls($self.options.controls)
+      })
+      if (this.player && this.options.autoplay) {
+        this.player.play()
+      }
+      if (this.player) {
+        this.player.on('pause', function () {
+          this.bigPlayButton.show()
+          // Now the issue is that we need to hide it again if we start playing
+          // So every time we do this, we can create a one-time listener for play events.
+        })
+        this.player.on('play', function () {
+          this.bigPlayButton.hide()
+        })
+      }
+    } catch (e) {
+      console.log('Error', this.options)
     }
-    this.player.on('pause', function () {
-      this.bigPlayButton.show()
-      // Now the issue is that we need to hide it again if we start playing
-      // So every time we do this, we can create a one-time listener for play events.
-    })
-    this.player.on('play', function () {
-      this.bigPlayButton.hide()
-    })
   },
   beforeDestroy () {
     if (this.player) {
@@ -50,22 +56,23 @@ export default {
       if (this.options.emitOnHover) {
         this.$emit('videoHover', this.options)
       }
-      if (this.options.playOnHover) {
+      if (this.player && this.options.playOnHover) {
         this.player.play()
       }
     },
     pauseMe: function () {
+      if (!this.player) return
       if (this.options.bigPlayer) return
       if (this.options.emitOnHover) {
         this.$emit('videoHoverOut', this.options)
       }
-      if (this.options.playOnHover) {
+      if (this.player && this.options.playOnHover) {
         this.player.pause()
       }
     },
     clickedMe: function () {
       if (this.options.bigPlayer) return
-      this.player.pause()
+      if (this.player) this.player.pause()
       this.$emit('videoClicked')
     },
     poster: function () {

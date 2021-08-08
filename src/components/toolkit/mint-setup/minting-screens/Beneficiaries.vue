@@ -24,7 +24,7 @@
           v-model="item.editionCost"
           :state="itemEditionCostState"
           aria-describedby="edition-cost-help editions-feedback"
-          placeholder="Cost of minting an edition (STX)"
+          placeholder="Cost in STX"
           trim
         ></b-form-input>
       <b-form-invalid-feedback id="edition-cost-feedback">
@@ -45,7 +45,7 @@
         </div>
       </div>
     </div>
-    <div class="mt-4 text-right"><a href="#" class="ml-2 text-two" style="font-size: 1.4rem; font-weight: 700;" @click="addBeneficiary">include more royalties <b-icon class="ml-2" scale="1em" icon="plus-circle"/></a></div>
+    <div class="mt-4 text-right"><a href="#" class="ml-2 text-two text-warning" style="font-size: 1.4rem; font-weight: 700;" @click="addBeneficiary">include more royalties <b-icon class="ml-2" scale="1em" icon="plus-circle"/></a></div>
   </div>
 </b-card-text>
 </template>

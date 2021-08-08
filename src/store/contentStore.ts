@@ -63,6 +63,10 @@ const contentStore = {
         return state.content.charities
       }
     },
+    getCollaboration: state => {
+      if (!state.content.collaboration) return
+      return state.content.collaboration
+    },
     getPixelBackground: state => {
       if (!state.content.homepage) return
       return state.content.homepage.pixelbackground.url
@@ -146,6 +150,9 @@ const contentStore = {
     },
     addAboutContent (state, o) {
       state.content.about = o
+    },
+    addCollaboration (state, o) {
+      state.content.collaboration = o
     },
     addMainFooter (state, o) {
       state.content.mainFooter = o

@@ -124,7 +124,7 @@ export default {
     updateUploadState: function (data) {
       this.$store.dispatch('rpayMyItemStore/saveItem', this.item).then(() => {
         if (data.change === 'done') {
-          this.$router.push('/item-preview/' + this.assetHash)
+          this.$router.push(this.itemPreviewUrl)
         } else if (data.change === 'up') {
           this.uploadState++
         } else {
@@ -188,7 +188,7 @@ export default {
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
         this.$root.$emit('bv::hide::modal', 'success-modal')
         this.$store.commit('setModalMessage', '')
-        this.$router.push('/item-preview/' + this.item.assetHash)
+        this.$router.push(this.itemPreviewUrl)
       }).catch((error) => {
         this.$store.commit('setModalMessage', 'Error occurred processing transaction.')
         this.result = error
@@ -196,6 +196,13 @@ export default {
     }
   },
   computed: {
+    itemPreviewUrl () {
+      let edition = 0
+      if (this.item.contractAsset) {
+        edition = this.item.contractAsset.tokenInfo.edition
+      }
+      return '/item-preview/' + this.item.assetHash + '/' + edition
+    },
     superAdmin: function () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile.superAdmin

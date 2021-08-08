@@ -26,7 +26,7 @@
         <p class="px-4"><a class="text-white" href="#" @click.prevent="action = 1"><b-icon class="mr-3" icon="chevron-right"/> Transfer NFT</a></p>
         <p class="px-4"><a class="text-white" href="#" @click.prevent="action = 2"><b-icon class="mr-3" icon="chevron-right"/> Mint Edition</a></p>
         <TransferNft :myNft="item" v-if="action === 1" />
-        <EditionTrigger v-if="action === 2" :assetHash="item.assetHash" @mintedEvent="mintedEvent"/>
+        <EditionTrigger v-if="action === 2" :item="item" @mintedEvent="mintedEvent"/>
       </b-col>
     </b-row>
   </b-container>
@@ -59,6 +59,7 @@ export default {
   mounted () {
     this.loading = false
     this.assetHash = this.$route.params.assetHash
+    this.$store.dispatch('assetGeneralStore/cacheUpdate', { assetHash: this.$route.params.assetHash })
     this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
       if (item) {
         const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](item.assetHash)

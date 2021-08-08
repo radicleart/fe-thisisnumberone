@@ -27,7 +27,7 @@
     <div class="col-2">Original</div><div class="col-10">{{gaiaAsset.contractAsset.tokenInfo.seriesOriginal}}</div>
     <!-- <div class="col-2">Beneficiaries</div><div class="col-10">{{gaiaAsset.contractAsset.beneficiaries}}</div> -->
     <div class="col-2">Royalties:</div>
-    <div class="col-10">
+    <div class="col-10" v-if="gaiaAsset.contractAsset.beneficiaries">
       <div class="row" v-for="(beneficiary, index) in gaiaAsset.contractAsset.beneficiaries" :key="index">
         <div class="col-2">{{beneficiary.username}}</div>
         <div class="col-2">{{beneficiary.royalty}}</div>

@@ -1,6 +1,6 @@
 <template>
 <div class="">
-  <div class="row text-small mb-4" v-for="(offer, index1) in contractAsset.offerHistory" :key="index1">
+  <div class="row text-small mb-4" v-for="(offer, index1) in item.contractAsset.offerHistory" :key="index1">
     <div class="col-2">Offerer</div>
     <div class="col-10">{{offer.offerer}}</div>
     <div class="col-2">Amount</div>
@@ -24,14 +24,13 @@
 </template>
 
 <script>
-import { APP_CONSTANTS } from '@/app-constants'
 import moment from 'moment'
 
 export default {
   name: 'OfferHistory',
   components: {
   },
-  props: ['assetHash'],
+  props: ['item'],
   data: function () {
     return {
       dbOffers: null
@@ -48,10 +47,6 @@ export default {
     }
   },
   computed: {
-    contractAsset () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      return contractAsset
-    }
   }
 }
 </script>

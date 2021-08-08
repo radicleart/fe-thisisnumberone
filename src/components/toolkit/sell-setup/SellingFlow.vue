@@ -3,8 +3,8 @@
   <div class="mx-auto">
     <b-card-group class="" :key="componentKey" style="width: 450px;">
       <b-card header-tag="header" footer-tag="footer" v-if="minted">
-        <selling-header :allowEdit="true"/>
-        <selling-options v-if="displayCard === 100" @updateSaleDataInfo="updateSaleDataInfo"/>
+        <SellingHeader :allowEdit="true"/>
+        <SellingOptions v-if="displayCard === 100" @updateSaleDataInfo="updateSaleDataInfo"/>
         <div class="text-center">
           <div class="text-info" v-html="sellingMessage"></div>
         </div>
@@ -48,6 +48,7 @@ export default {
     SellingOptions,
     SellingHeader
   },
+  props: ['item'],
   data () {
     return {
       componentKey: 0,
@@ -59,12 +60,6 @@ export default {
   mounted () {
     this.errorMessage = null
     const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-    const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](configuration.gaiaAsset.assetHash)
-    configuration.gaiaAsset.saleData = contractAsset.saleData
-    // configuration.gaiaAsset.saleData.buyNowOrStartingPrice = utils.fromMicroAmount(configuration.gaiaAsset.saleData.buyNowOrStartingPrice)
-    // configuration.gaiaAsset.saleData.incrementPrice = utils.fromMicroAmount(configuration.gaiaAsset.saleData.incrementPrice)
-    // configuration.gaiaAsset.saleData.reservePrice = utils.fromMicroAmount(configuration.gaiaAsset.saleData.reservePrice)
-
     this.$store.commit('rpayStore/addConfiguration', configuration)
     this.$store.commit('rpayCategoryStore/setModalMessage', '')
     this.$store.dispatch('rpayStacksStore/fetchMacSkyWalletInfo').then(() => {
@@ -82,23 +77,18 @@ export default {
       window.eventBus.$emit('rpayEvent', configuration)
     },
     minted () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](configuration.gaiaAsset.assetHash)
-      return contractAsset
+      return this.item.contractAsset
     },
     setTradeInfo () {
       this.errorMessage = null
       if (!this.isValid()) return
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](configuration.gaiaAsset.assetHash)
-      const network = this.$store.getters[APP_CONSTANTS.KEY_PREFERRED_NETWORK]
       const data = {
-        contractAddress: network.contractAddress,
-        contractName: network.contractName,
-        owner: contractAsset.owner,
-        assetHash: configuration.gaiaAsset.assetHash,
-        nftIndex: contractAsset.nftIndex,
-        saleData: configuration.gaiaAsset.saleData
+        contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
+        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
+        owner: this.item.contractAsset.owner,
+        assetHash: this.item.assetHash,
+        nftIndex: this.item.contractAsset.nftIndex,
+        saleData: this.item.contractAsset.saleData
       }
       this.$store.dispatch('rpayPurchaseStore/setTradeInfo', data).then((result) => {
         this.result = result
@@ -111,8 +101,7 @@ export default {
     },
     isValid: function () {
       this.errorMessage = null
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      const saleData = configuration.gaiaAsset.saleData
+      const saleData = this.item.contractAsset.saleData
       if (saleData.saleType < 0 || saleData.saleType > 3) {
         this.$notify({ type: 'danger', title: 'Sell Error', text: 'Sale type outside of allowed range' })
         return false
@@ -150,8 +139,7 @@ export default {
       }
     },
     updateSaleDataInfo (data) {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      const saleDataTemp = configuration.gaiaAsset.saleData
+      const saleDataTemp = this.item.contractAsset.saleData
       if (data.moneyField) {
         saleDataTemp[data.field] = data.value
       } else {
@@ -167,14 +155,8 @@ export default {
   },
   computed: {
     saleData () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      const gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](configuration.gaiaAsset.assetHash)
-      const saleData = gaiaAsset.saleData
+      const saleData = this.item.contractAsset.saleData
       return saleData
-    },
-    configuration () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      return configuration
     },
     displayCard () {
       const displayCard = this.$store.getters[APP_CONSTANTS.KEY_DISPLAY_CARD]

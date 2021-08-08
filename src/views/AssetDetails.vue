@@ -18,9 +18,6 @@ import CharitySection from '@/components/asset-details/CharitySection'
 import NumberOneSection from '@/components/asset-details/NumberOneSection'
 import { APP_CONSTANTS } from '@/app-constants'
 
-const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
-const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
-
 export default {
   name: 'AssetDetails',
   components: {
@@ -34,8 +31,13 @@ export default {
     }
   },
   mounted () {
-    this.assetHash = this.$route.params.assetHash
-    this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME)
+    if (this.$route.name === 'asset-by-index') {
+      this.$store.dispatch('rpayStacksContractStore/fetchAssetByNftIndex', this.$route.params.nftIndex)
+      this.$store.dispatch('assetGeneralStore/cacheUpdate', { nftIndex: this.$route.params.nftIndex })
+    } else {
+      this.$store.dispatch('rpayStacksContractStore/fetchAssetByHash', this.$route.params.assetHash)
+      this.$store.dispatch('assetGeneralStore/cacheUpdate', { assetHash: this.$route.params.assetHash })
+    }
   },
   methods: {
     getArtistPrismicId (artist) {
@@ -45,9 +47,11 @@ export default {
   },
   computed: {
     gaiaAsset () {
-      const gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.$route.params.assetHash)
-      // if (!gaiaAsset) gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET](this.$route.params.assetHash)
-      return gaiaAsset
+      if (this.$route.name === 'asset-by-index') {
+        return this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_NFT_INDEX](Number(this.$route.params.nftIndex))
+      } else {
+        return this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](this.$route.params.assetHash)
+      }
     }
   }
 }

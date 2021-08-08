@@ -1,23 +1,28 @@
 <template>
 <div  class="mt-3">
   <div class="">
-    <div class="row mb-4">
-      <div class="my-5 col-12">
+    <div class="row">
+      <div class="col-12">
         <div class="d-flex justify-content-between">
-          <div v-if="editionsMintable">Editions are <span class="text-success">available</span></div>
-          <div v-else>Editions are <span class="text-danger">unavailable</span></div>
-          <div class="text-right" v-if="editionsMintable">
+          <b-badge class="mb-3 p-3" variant="warning" v-if="editionsMintable">Editions are <span >available</span></b-badge>
+          <b-badge class="mb-3 p-3" variant="danger" v-else>Editions are <span class="">unavailable</span></b-badge>
+          <div class="text-right" v-if="editionsMintable && profile.superAdmin">
             <a class="mr-3 text-danger" @click="disableEditions()">switch editions off</a>
           </div>
         </div>
       </div>
-      <div class="col-12 mb-5"><span class="text-warning">{{editionCounter - 1}}</span> edition(s) in print.
-        Up to <span class="text-warning">{{currentMaxEditions}}</span> can be minted.
-        Minting cost for new editions is <span class="text-warning">{{currentCost}}</span> STX.
-        <br/><br/>You can change these setting here.
+      <div class="col-12 mb-3">
+        <span class="text-warning">{{editionCounter - 1}}</span> edition(s) minted so far.
+        Up to <span class="text-warning">{{currentMaxEditions}}</span> were allowed when the first edition
+        of this NFT was minted.
+      </div>
+      <div class="col-12 mb-3">
+        The cost for minting an edition is <span class="text-warning">{{currentCost}}</span> STX,
+        split according to the royalties set when the original NFT was
+        minted.
       </div>
     </div>
-    <div class="row">
+    <div class="row" v-if="profile.superAdmin">
       <div class="col-12 mb-4">
         <b-input-group append="STX" prepend="Cost">
           <b-form-input type="number" id="editionCost" v-model="editionCost" placeholder="The cost of minting editions of this artwork"></b-form-input>
@@ -41,7 +46,6 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import utils from '@/services/utils'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
@@ -51,7 +55,7 @@ export default {
   name: 'ManageEditions',
   components: {
   },
-  props: ['assetHash'],
+  props: ['item'],
   data: function () {
     return {
       editionCost: null,
@@ -63,9 +67,8 @@ export default {
     }
   },
   mounted () {
-    const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-    this.editionCost = contractAsset.tokenInfo.editionCost
-    this.maxEditions = contractAsset.tokenInfo.maxEditions
+    this.editionCost = this.item.contractAsset.tokenInfo.editionCost
+    this.maxEditions = this.item.contractAsset.tokenInfo.maxEditions
   },
   methods: {
     disableEditions: function () {
@@ -82,13 +85,12 @@ export default {
       if (!editionCost) {
         editionCost = 0
       }
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
       const data = {
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,
-        seriesOriginal: contractAsset.nftIndex,
+        seriesOriginal: this.item.contractAsset.nftIndex,
         maxEditions: maxEditions,
-        editionCost: utils.toOnChainAmount(editionCost)
+        editionCost: editionCost
       }
       return this.$store.dispatch('rpayPurchaseStore/setEditionCost', data).then((result) => {
         this.transferring = null
@@ -101,21 +103,22 @@ export default {
     }
   },
   computed: {
+    profile () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      return profile
+    },
     editionsMintable: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      return (contractAsset.tokenInfo.maxEditions >= contractAsset.editionCounter)
+      return (this.item.contractAsset.tokenInfo.maxEditions >= this.item.contractAsset.editionCounter)
     },
     editionCounter: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      return contractAsset.editionCounter
+      const firstEdition = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH_EDITION]({ assetHash: this.item.assetHash, edition: 1 })
+      return (firstEdition) ? firstEdition.contractAsset.editionCounter : 0
     },
     currentMaxEditions: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      return contractAsset.tokenInfo.maxEditions
+      return this.item.contractAsset.tokenInfo.maxEditions
     },
     currentCost: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      return contractAsset.tokenInfo.editionCost
+      return this.item.contractAsset.tokenInfo.editionCost
     }
   }
 }

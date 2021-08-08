@@ -1,9 +1,9 @@
 <template>
-<div :style="dimensions" class="text-right" v-if="result">
-  <b-link @click="openAssetDetails">
-    <MediaItem class="p-0 m-0" @videoClicked="openAssetDetails" v-on="$listeners" :videoOptions="videoOptions" :attributes="result.attributes" :targetItem="targetItem()"/>
-  </b-link>
-</div>
+  <div :style="dimensions" class="text-right" v-if="result">
+    <b-link @click="openAssetDetails">
+      <MediaItem class="p-0 m-0" @videoClicked="openAssetDetails" v-on="$listeners" :videoOptions="videoOptions" :attributes="result.attributes" :targetItem="targetItem()"/>
+    </b-link>
+  </div>
 </template>
 
 <script>
@@ -41,6 +41,10 @@ export default {
       if (!this.result.assetHash) {
         return 'coverImage'
       }
+      if (!this.result.attributes) {
+        this.result.attributes = {}
+        console.log(this.result)
+      }
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.result)
     },
     openAssetDetails () {
@@ -73,11 +77,11 @@ export default {
         showMeta: false,
         dimensions: 'max-width: 100%; max-height: auto;',
         aspectRatio: '1:1',
-        poster: (this.result.attributes.coverImage) ? this.result.attributes.coverImage.fileUrl : null,
+        poster: (this.result.attributes && this.result.attributes.coverImage) ? this.result.attributes.coverImage.fileUrl : null,
         sources: [],
         fluid: false
       }
-      if (this.result.attributes.artworkClip) {
+      if (this.result.attributes && this.result.attributes.artworkClip) {
         videoOptions.sources = [
           { src: this.result.attributes.artworkClip.fileUrl, type: this.result.attributes.artworkClip.type }
         ]

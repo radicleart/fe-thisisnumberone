@@ -1,25 +1,25 @@
 <template>
-<b-container class="text-white mt-5" v-if="hasNfts || gaiaItems.length > 0">
+<b-container class="text-white mt-5" v-if="loaded">
   <h1>My Library</h1>
-  <b-tabs justified content-class="text-white">
-    <b-tab v-if="canUpload()" :title="'My Uploads: ' + gaiaItems.length" active>
+  <b-tabs justified content-class="text-white mb-5">
+    <b-tab :title="'NFTs (' + hasNfts + ')'" active>
+      <p class="mt-4">NFTs you currently own - these may be files you
+        uploaded and minted and still own or NFTs you bought from other
+        users or that were transferred to you. They also include editions
+        of NFT files you minted.</p>
+      <b-row>
+        <b-col class="text-center" v-for="(myNft, index1) in myNfts" :key="index1" lg="3" md="4" sm="6" xs="12">
+          <MySingleNft class="mb-2" :item="myNft" :token="myTokens[index1]"/>
+        </b-col>
+      </b-row>
+    </b-tab>
+    <b-tab v-if="canUpload()" :title="'Uploads (' + gaiaAssets.length + ')'">
       <p class="mt-4">Files you uploaded to your Gaia storage bucket.</p>
       <p>If you minted them (to create NFTs) you may also have
         sold or transferred the NFT to another wallet. </p>
       <b-row>
-        <b-col v-for="(gaiaItem, index) in gaiaItems" :key="index" lg="3" md="6" sm="6" xs="12">
-          <SingleItem class="mb-2" :item="gaiaItem"/>
-        </b-col>
-      </b-row>
-    </b-tab>
-    <b-tab :title="'NFTs: ' + myNfts.length" v-if="myNfts && myNfts.length > 0">
-        <p class="mt-4">NFTs you currently own - these may be files you
-          uploaded and minted and still own or NFTs you bought from other
-          users or that were transferred to you. They also include editions
-          of NFT files you minted.</p>
-      <b-row>
-        <b-col class="text-center" v-for="(myNft, index) in myNfts" :key="index" lg="3" md="4" sm="6" xs="12">
-          <SingleItem class="mb-2" :item="getGaiaItem(myNft)"/>
+        <b-col v-for="(gaiaAsset, index) in gaiaAssets" :key="index" lg="3" md="6" sm="6" xs="12">
+          <MySingleNft class="mb-2" :item="gaiaAsset"/>
         </b-col>
       </b-row>
     </b-tab>
@@ -34,29 +34,32 @@
 </template>
 
 <script>
-import SingleItem from '@/components/upload/SingleItem'
+import MySingleNft from '@/components/upload/MySingleNft'
 // import SingleNft from '@/components/upload/SingleNft'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'MyNfts',
   components: {
-    SingleItem
+    MySingleNft
   },
   data () {
     return {
-      cross: require('@/assets/img/navbar-footer/cross.svg'),
-      componentKey: 0
+      loaded: false,
+      myNfts: []
     }
   },
+  mounted () {
+    this.data = { stxAddress: this.profile.stxAddress, mine: true }
+    const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
+    for (let i = 0; i < myContractAssets.length; i++) {
+      const ga = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](myContractAssets[i].tokenInfo.assetHash)
+      ga.contractAsset = Object.assign({}, myContractAssets[i])
+      this.myNfts.push(ga)
+    }
+    this.loaded = true
+  },
   methods: {
-    getGaiaItem (myNft) {
-      const gaiaItem = this.gaiaItems.find((o) => o.assetHash === myNft.tokenInfo.assetHash)
-      if (gaiaItem) {
-        gaiaItem.contractAsset = myNft
-      }
-      return gaiaItem
-    },
     canUpload () {
       const hasUploadPriv = this.$store.getters[APP_CONSTANTS.KEY_HAS_PRIVILEGE]('can-upload')
       return hasUploadPriv
@@ -66,15 +69,19 @@ export default {
     }
   },
   computed: {
-    gaiaItems () {
-      const gaiaItems = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEMS]
-      return gaiaItems
+    gaiaAssets () {
+      const gaiaAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEMS]
+      return gaiaAssets
     },
     hasNfts () {
       const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
-      return myContractAssets && myContractAssets.length > 0
+      return myContractAssets && myContractAssets.length
     },
-    myNfts () {
+    profile () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      return profile
+    },
+    myTokens () {
       const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
       return myContractAssets
     }

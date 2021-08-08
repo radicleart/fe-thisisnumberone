@@ -1,21 +1,16 @@
 <template>
 <div>
-  <div class="text-white" style="">
-    <MediaItemGeneral :classes="'avatar-image'" :options="options" v-if="avatar" :hideLinkPaste="true" :mediaItem="avatar" @deleteMediaItem="deleteMediaItem"/>
-    <MediaUpload v-else class="text-center" :myUploadId="'coverImage'" :dims="dims" :contentModel="contentModel" :mediaFiles="mediaFilesImage()" :limit="1" :sizeLimit="2" :mediaTypes="'image'" @updateMedia="updateMedia($event)"/>
-  </div>
+  <MediaUpload class="text-center" :myUploadId="'coverImage'" :dims="dims" :contentModel="contentModel" :mediaFiles="mediaFilesImage()" :limit="1" :sizeLimit="3" :mediaTypes="'image'" @updateMedia="updateMedia($event)"/>
 </div>
 </template>
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
 import MediaUpload from '@/components/upload/MediaUpload'
 
 export default {
-  name: 'UserProfileImage',
+  name: 'MyAvatar',
   components: {
-    MediaItemGeneral,
     MediaUpload
   },
   props: ['avatar', 'referer'],
@@ -24,7 +19,7 @@ export default {
       dims: { width: 'auto', height: 300 },
       contentModel: {
         id: 'coverImage',
-        title: '<h2>Upload a Profile Image</h2><br/><span class="text-small">Up to 2M</span>',
+        title: '<h1>Upload a Profile Image</h1><br/><span class="text-small">Up to 3M</span>',
         buttonName: 'Choose Image',
         iconName: 'file-image',
         errorMessage: 'A image file is required.',
@@ -62,30 +57,9 @@ export default {
         files.push(this.avatar.attributes.coverImage)
       }
       return files
-    },
-    deleteMediaItem: function () {
-      this.$store.dispatch('rpayMyItemStore/deleteMediaItemSimple', this.avatar).then(() => {
-        this.$emit('updateProfile', { deleteMedia: true })
-      })
     }
   },
   computed: {
-    options () {
-      return {
-        emitOnHover: false,
-        playOnHover: false,
-        assetHash: 'userAvatar',
-        bigPlayer: false,
-        autoplay: false,
-        muted: true,
-        controls: true,
-        showMeta: true,
-        aspectRatio: '1:1',
-        poster: (this.avatar) ? this.avatar.fileUrl : null,
-        sources: [],
-        fluid: false
-      }
-    }
   }
 }
 </script>

@@ -224,7 +224,7 @@ export default new Vuex.Store({
         dispatch('rpayAuthStore/fetchMyAccount').then(profile => {
           if (profile.loggedIn) {
             const data = { stxAddress: 'ST1ESYCGJB5Z5NBHS39XPC70PGC14WAQK5XXNQYDW', mine: true }
-            if (process.env.VUE_APP_NETWORK === 'local') {
+            if (process.env.VUE_APP_NETWORK !== 'local') {
               data.stxAddress = profile.stxAddress
             }
             dispatch('rpayStacksContractStore/fetchAssetsByOwner', data).then(() => {

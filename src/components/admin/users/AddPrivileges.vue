@@ -121,6 +121,7 @@ export default {
         }
       }
       this.$store.dispatch('rpayPrivilegeStore/saveAuthorisation', this.currentAuth).then((attributes) => {
+        this.$notify({ type: 'warning', title: 'Privileges', text: 'Privileges saved for this user!' })
         this.result = attributes
       })
     },

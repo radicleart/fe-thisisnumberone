@@ -32,7 +32,7 @@ export default {
   name: 'BidHistory',
   components: {
   },
-  props: ['assetHash'],
+  props: ['item'],
   data: function () {
     return {
       dbOffers: null
@@ -76,8 +76,7 @@ export default {
   },
   computed: {
     contractAsset () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      return contractAsset
+      return this.item.contractAsset
     }
   }
 }

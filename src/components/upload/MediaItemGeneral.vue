@@ -19,7 +19,7 @@
     <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name">
   </div>
 
-  <div v-if="options.showMeta" class="py-4" style="font-size: 1.2rem;">
+  <div v-if="options.showMeta" class="py-0" style="font-size: 1.2rem;">
     <!--
     <div class="p-2 d-flex justify-content-start">
       <div class="mr-3 text-small">NFT File:</div>
@@ -34,9 +34,9 @@
       <div>{{mediaItem.name}}</div>
     </div>
     -->
-    <div class="p-2 d-flex justify-content-between" v-if="mediaItem">
+    <div class="p-0 d-flex justify-content-between text-bold" v-if="mediaItem">
       <div>{{mediaItem.type || 'image'}}  ({{getCoverImageSizeMeg()}})</div>
-      <div v-if="deleteAllowed()"><a v-b-tooltip.hover="{ variant: 'light' }" :title="'Replace this image?'" href="#" @click.prevent="deleteCoverImage()" class="text-small text-danger"><b-icon icon="trash"/></a></div>
+      <div v-if="deleteAllowed()"><a v-b-tooltip.hover="{ variant: 'light' }" :title="'Replace this image?'" href="#" @click.prevent="$emit('deleteMediaItem', mediaItem.id)" class="text-small">change</a></div>
     </div>
   </div>
 </div>
@@ -102,9 +102,6 @@ export default {
       if (!this.mediaItem) return 0
       const ksize = this.mediaItem.size / 1000000
       return Math.round(ksize * 100) / 100 + ' Mb'
-    },
-    deleteCoverImage: function () {
-      this.$emit('deleteMediaItem', this.mediaItem.id)
     }
   }
 }

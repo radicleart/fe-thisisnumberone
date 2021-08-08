@@ -44,6 +44,7 @@ export const APP_CONSTANTS = {
   KEY_EMAIL_TEXT: 'contentStore/getEmail',
   KEY_TOOL_TIP: 'contentStore/getTooltip',
   KEY_DIALOG_CONTENT: 'contentStore/getDialog',
+  KEY_CONTENT_COLLABORATION: 'contentStore/getCollaboration',
   KEY_CONTENT_CHARITY_BY_ARTIST_ID: 'contentStore/getCharityByArtistId',
   KEY_CONTENT_ARTIST_BY_ID: 'contentStore/getArtistById',
   KEY_CONTENT_ARTIST_ID: 'contentStore/getArtistId',
@@ -74,6 +75,7 @@ export const APP_CONSTANTS = {
   KEY_MACS_WALLET: 'rpayStacksStore/getMacsWallet',
   KEY_SKYS_WALLET: 'rpayStacksStore/getSkysWallet',
 
+  KEY_GAIA_ASSET_BY_HASH_EDITION: 'rpayStacksContractStore/getAssetByHashAndEdition',
   KEY_TARGET_FILE_FOR_DISPLAY: 'rpayStacksContractStore/getTargetFileForDisplay',
   KEY_GAIA_ASSET_BY_HASH: 'rpayStacksContractStore/getGaiaAssetByHash',
   KEY_GAIA_ASSETS: 'rpayStacksContractStore/getGaiaAssets',
@@ -88,6 +90,7 @@ export const APP_CONSTANTS = {
   KEY_ASSET_LAST_TRANSACTION: 'rpayStacksContractStore/getAssetLastTransaction',
   KEY_ASSET_TRANSACTION: 'rpayStacksContractStore/getAssetTransaction',
   KEY_MY_CONTRACT_ASSETS: 'rpayStacksContractStore/getMyContractAssets',
+  KEY_ASSET_FROM_NFT_INDEX: 'rpayStacksContractStore/getContractAssetByNftIndex',
 
   SET_CURRENT_SEARCH: 'rpaySearchStore/setCurrentSearch',
   KEY_CURRENT_SEARCH: 'rpaySearchStore/getCurrentSearch',

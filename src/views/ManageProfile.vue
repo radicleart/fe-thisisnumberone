@@ -1,10 +1,7 @@
 <template>
-<section class="text-white my-5" id="homeSection" style="min-height: 85vh;">
+<section class="bg-black text-white py-5" style="min-height: 100vh;">
   <b-container fluid v-if="loaded && content">
-    <ExhibitRequestPending :content="content" v-if="exhibitRequest.status === 1"/>
-    <ExhibitRequestAllSet   :content="content" v-else-if="exhibitRequest.status === 2"/>
-    <ExhibitRequestSuspended :content="content" v-else-if="exhibitRequest.status === 3"/>
-    <UserProfile :exhibitRequest="exhibitRequest" :content="content" v-else-if="profile.loggedIn" :redirect="'exhibit-here'"/>
+    <UserProfile :exhibitRequest="exhibitRequest" :content="content" v-if="profile.loggedIn"/>
     <PrismicItems v-else :prismicItems="content.general" class="child-information"/>
   </b-container>
 </section>
@@ -13,18 +10,12 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import UserProfile from '@/components/exhibit/UserProfile'
-import ExhibitRequestPending from '@/components/exhibit/ExhibitRequestPending'
-import ExhibitRequestSuspended from '@/components/exhibit/ExhibitRequestSuspended'
-import ExhibitRequestAllSet from '@/components/exhibit/ExhibitRequestAllSet'
 import PrismicItems from '@/components/prismic/PrismicItems'
 
 export default {
-  name: 'ExhibitHere',
+  name: 'ManageProfile',
   components: {
     UserProfile,
-    ExhibitRequestPending,
-    ExhibitRequestSuspended,
-    ExhibitRequestAllSet,
     PrismicItems
   },
   data () {

@@ -3,7 +3,7 @@
   <b-container class="mt-5 pt-5 text-white">
     <b-row>
       <b-col md="6" offset-md="3" sm="12" align-self="start" class=" text-center">
-        <media-upload :myUploadId="'artworkFile'" :dims="dims" :contentModel="contentModelArtwork" :limit="1" :sizeLimit="20" :mediaTypes="'video,image,threed,audio,pdf'" @updateMedia="updateMedia($event)"/>
+        <MediaUpload :hideLinkPaste="false" :myUploadId="'artworkFile'" :dims="dims" :contentModel="contentModelArtwork" :limit="1" :sizeLimit="20" :mediaTypes="'video,image,threed,audio,pdf'" @updateMedia="updateMedia($event)"/>
       </b-col>
     </b-row>
   </b-container>

@@ -1,42 +1,40 @@
 <template>
 <section id="homeSection" style="min-height: 85vh;">
-  <div class="container text-white text-left home-content mt-5">
-    <b-row class="my-5" v-if="profile.loggedIn">
-      <b-col>
-        <h1 class="my-5 pointer" @click.prevent="startLogin()">Welcome to #1</h1>
-        <ul>
-          <li v-if="canUpload()"><h2><b-link to="/exhibit-here">Become a resident artist and exhibit your Artwork here</b-link></h2></li>
-          <li v-else><h2><b-link to="/upload-item">Become a resident artist and exhibit your Artwork here</b-link></h2></li>
-          <li><h2><b-link to="/nft-gallery">Visit the #1 Gallery</b-link></h2></li>
-        </ul>
-      </b-col>
-    </b-row>
-    <b-row class="my-5" v-else>
+  <b-container class="my-5 container text-white" v-if="!content">
+    <div class="row">
+      <div class="col-12">
+        Content missing for key {{getKey()}}
+      </div>
+    </div>
+  </b-container>
+  <b-container class="text-white text-left home-content mt-5" v-else>
+    <b-row class="my-5" v-if="!profile.loggedIn">
       <b-col v-if="webWalletNeeded">
         <h1><a :href="webWalletLink" target="_blank">Get a Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></h1>
       </b-col>
       <b-col v-else>
-        <h1 class="pointer" @click.prevent="startLogin()">Welcome to #1</h1>
-        <ul>
-          <li>
-            <h2>
-              <b-link @click.prevent="startLogin()">Please login to apply for Artist Status <span router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'You\'ll need a Stacks Wallet - this is so you can own your NFTs (aka digital artwork) '" class="text-white ml-3" variant="outline-success"> <b-icon class="ml-0" icon="question-circle"/></span></b-link>
-            </h2>
-          </li>
-          <li><h2><b-link to="/nft-gallery">Visit the #1 Gallery</b-link></h2></li>
-        </ul>
+        <PrismicItems :prismicItems="content" class="child-information"/>
+        <div class="mt-5 text-left"><b-button class="btn-action" variant="outline-warning" @click.prevent="startLogin()">Login to Begin</b-button> <span router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'You\'ll need a Stacks Wallet to own your NFTs - NFTs are a new form of digital property that you own!'" class="text-white ml-3" variant="outline-success"> <b-icon class="ml-0" icon="question-circle"/></span></div>
       </b-col>
     </b-row>
-  </div>
+    <b-row class="my-5" v-else>
+      <b-col>
+        <prismic-items :prismicItems="content" class="child-information"/>
+        <div class="mt-5 text-left"><b-button class="btn-action" to="/exhibit-here" variant="outline-warning">Apply Now!</b-button> <span router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'You\'ll need a Stacks Wallet to own your NFTs - NFTs are a new form of digital property that you own!'" class="text-white ml-3" variant="outline-success"> <b-icon class="ml-0" icon="question-circle"/></span></div>
+      </b-col>
+    </b-row>
+  </b-container>
 </section>
 </template>
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
+import PrismicItems from '@/components/prismic/PrismicItems'
 
 export default {
   name: 'Login',
   components: {
+    PrismicItems
   },
   data () {
     return {
@@ -45,9 +43,10 @@ export default {
     }
   },
   mounted () {
-    if (this.$route.query && this.$route.query.referer === 'exhibit-here') {
+    if (this.$route.query && this.$route.query.redirect === '/exhibit-here') {
       this.exhibitFlow = true
     }
+    if (this.profile.loggedIn) this.$router.push('/exhibit-here')
     this.loaded = true
   },
   methods: {
@@ -66,6 +65,12 @@ export default {
     }
   },
   computed: {
+    content () {
+      const content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_INFO_PAGE]('login-page')
+      // if (!content) content = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_INFO_PAGE]('info-privacy-policy')
+      if (content && content.data && content.data.information) return content.data.information
+      return null
+    },
     webWalletLink () {
       if (this.$browserDetect.isFirefox) {
         return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_FIREFOX]

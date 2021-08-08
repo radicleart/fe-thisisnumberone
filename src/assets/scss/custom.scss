@@ -86,14 +86,21 @@ body a:hover {
   box-shadow: 0px 6px 9px #00000029;
   border: none;
 }
+label {
+  padding: 0;
+  margin: 0;
+  font-size: 1.5rem;
+}
 .form-control {
   width: 100%;
-  padding: 15px;
-  margin-bottom: 5px;
+  height: 4.0rem;
+  padding: 5px;
+  margin-top: 0px;
+  margin-bottom: 15px;
   background: #fefefe;
   border: 0pt solid #000;
   box-shadow: 0px 6px 9px #00000029;
-  border-radius: 5px;
+  border-radius: 0px;
   box-shadow: 5px 5px 5px #00000029;
   font-size: 1.8rem;
   font-weight: 300;
@@ -106,7 +113,7 @@ body a:hover {
   color: #000;
   background: #fff;
   box-shadow: 0px 6px 9px #00000029;
-  border-radius: 5px;
+  border-radius: 0px;
   border: 0pt solid #000;
 }
 .input-group-prepend .input-group-text {
@@ -115,7 +122,7 @@ body a:hover {
   background: #fff;
   font-size: 1.4rem;
   box-shadow: 0px 6px 9px #00000029;
-  border-radius: 5px;
+  border-radius: 0px;
   border: 0pt solid #000;
 }
 
@@ -152,8 +159,9 @@ body a:hover {
   white-space: 'nowrap';
 }
 .btn-action {
-  border-radius: 20px;
-  padding: 4px;
+  width: auto;
+  border-radius: 0px;
+  padding: 4px 10px;
 }
 .bg-black {
   background-color: #000;
@@ -163,8 +171,8 @@ body a:hover {
   font-weight: 500;
 }
 .text-bold {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.3rem;
+  font-weight: 600;
 }
 .text-underline {
   text-decoration: underline;
@@ -199,7 +207,7 @@ body a:hover {
   border: 0pt dashed rgb(146, 146, 38);
   background-color: #FCFCFC 0% 0% no-repeat padding-box;
   box-shadow: 0px 6px 9px #00000029;
-  border-radius: 6px;
+  border-radius: 0px;
 }
 .hundred-vh {
   min-height: 100vh !important;
@@ -230,6 +238,14 @@ body a:hover {
   filter: invert(100%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%);
 }
 .text-description {
+  font-size: 1.4rem;
+  font-family: 'Baloo Bhaina 2';
+  padding: 5px;
+  background-color: #FCFCFC 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 2px #00000029;
+  color: #000;
+}
+.text-bio {
   font-size: 1.4rem;
   font-family: 'Baloo Bhaina 2';
 }
@@ -267,26 +283,45 @@ body a:hover {
   color: #2255A4;
   text-decoration: underline;
 }
+.vue-notification-template {
+  background: none;
+}
+.tabs {
+  border-radius: 0 !important;
+}
+.nav-tabs .nav-link {
+  border-radius: 0 !important;
+}
+.tab {
+  border-radius: 0 !important;
+}
+.alert {
+  border-radius: 0 !important;
+}
+.badge {
+  border-radius: 0 !important;
+}
 .r-notifs {
   padding: 5px !important;
   margin: 5px !important;
   font-size: 1.6rem !important;
+  background: $success !important;
+  color: #000 !important;
 }
 .success {
-  background: $success;
-  color: #fff !important;
+  background: $success !important;
+  color: #000 !important;
 }
 .error {
-  background: $danger;
+  background: $danger !important;
   color: #fff !important;
 }
 .danger {
-  background: $danger;
+  background: $danger !important;
   color: #fff !important;
 }
 .warning {
-  background: $warning;
-  color: #fff !important;
+  background: $warning !important;
 }
 .center {
   margin: auto;
@@ -298,13 +333,19 @@ body a:hover {
   cursor: pointer;
 }
 .avatar-image {
-  max-width: 200px;
-  border-radius: 50%;
+  max-width: 100%;
+  border-radius: 0%;
 }
 .item-image {
-  height: 250px;
-  width: 250px;
-  border: 2pt solid $danger;
+  height: auto;
+  width: 100%;
+  border: 0pt solid $danger;
+  align-items: center;
+}
+.item-image-preview {
+  height: auto;
+  width: 100%;
+  border: 0pt solid $danger;
   align-items: center;
 }
 .nft-display-image {
@@ -325,6 +366,6 @@ body a:hover {
   width: 40px;
   background-color: rgb(94, 90, 90);
   text-align: center;
-  border-radius: 5px;
+  border-radius: 0px;
   color: #fff;
 }

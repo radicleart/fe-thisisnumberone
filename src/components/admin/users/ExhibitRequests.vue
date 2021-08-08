@@ -72,6 +72,16 @@ export default {
             this.exhibitRequests[index] = result.data
             this.componentKey++
           }
+          const pData = { stxAddress: result.data.stxAddress, domain: location.hostname, privilege: 'can-upload' }
+          if (data.status === 2) {
+            this.$store.dispatch('rpayPrivilegeStore/addPrivilege', pData).then(() => {
+              this.$notify({ type: 'warning', title: 'Privileges', text: 'Added upload privilege!' })
+            })
+          } else {
+            this.$store.dispatch('rpayPrivilegeStore/removePrivilege', pData).then(() => {
+              this.$notify({ type: 'warning', title: 'Privileges', text: 'Removed upload privilege!' })
+            })
+          }
         })
       }
     }

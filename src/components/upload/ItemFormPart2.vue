@@ -23,7 +23,7 @@
       v-model="item.editionCost"
       :state="itemEditionCostState"
       aria-describedby="item-edition-cost-help item-edition-cost-feedback"
-      placeholder="Enter editions"
+      placeholder="Cost to mint an edition"
       trim
     ></b-form-input>
     <b-form-invalid-feedback id="item-editions-feedback">

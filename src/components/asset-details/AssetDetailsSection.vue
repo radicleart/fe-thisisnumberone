@@ -1,5 +1,5 @@
 <template>
-<section :key="componentKey" id="asset-details-section" v-if="gaiaAsset" class="text-white">
+<section :key="componentKey" id="asset-details-section" v-if="gaiaAsset && gaiaAsset.contractAsset" class="text-white">
   <b-container class="center-section" style="min-height: 50vh;">
     <b-row align-h="center" :style="'min-height: ' + videoHeight + 'px'">
       <b-col lg="7" sm="10" class="mb-5">
@@ -42,7 +42,10 @@
                 </b-col>
               </b-row>
               <b-row v-if="getSaleType() === 0">
-                <b-col md="6" sm="12">
+                <b-col md="6" sm="12" v-if="editionsAvailable">
+                  <EditionTrigger :item="gaiaAsset" @mintedEvent="mintedEvent"/>
+                </b-col>
+                <b-col md="6" sm="12" v-else>
                   <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>
                 </b-col>
               </b-row>
@@ -51,11 +54,9 @@
                     <b-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttWalletHelp" class="w-100" style="height: 61px;" variant="outline-light"><a :href="webWalletLink" class="text-white" target="_blank">Get Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-button>
                 </b-col>
                 <b-col md="6" sm="6" class="mb-3 text-center" v-else-if="getSaleType() > 0 && getSaleType() < 3">
-                  <!-- <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link> -->
                   <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
                 </b-col>
                 <b-col md="6" sm="6" class="text-center">
-                  <!-- <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link> -->
                   <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" @clickButton="openOfferPurchaceDialog()" :theme="'light'" :label1="'MAKE OFFER'" :svgImage="hammer" :text-warning="true"/>
                 </b-col>
               </b-row>
@@ -108,7 +109,7 @@ import MediaItem from '@/components/upload/MediaItem'
 import SquareButton from '@/components/utils/SquareButton'
 import ShareLinks from '@/components/utils/ShareLinks'
 import moment from 'moment'
-// import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
+import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
 import utils from '@/services/utils'
 
 const NETWORK = process.env.VUE_APP_NETWORK
@@ -117,7 +118,7 @@ export default {
   name: 'AssetDetailsSection',
   components: {
     AssetUpdatesModal,
-    // EditionTrigger,
+    EditionTrigger,
     PurchaseFlow,
     MediaItem,
     SquareButton,
@@ -149,8 +150,6 @@ export default {
   mounted () {
     this.assetHash = this.$route.params.assetHash
     const $self = this
-    const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-    this.gaiaAsset.saleData = contractAsset.saleData
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'purchase-flow', asset: this.gaiaAsset })
     this.resizeContainers()
     if (window.eventBus && window.eventBus.$on) {
@@ -178,6 +177,10 @@ export default {
     }, this)
   },
   methods: {
+    mintedEvent (data) {
+      this.$store.commit('setModalMessage', 'Request to mint an edition sent to the blockchain - thanks for using #1. Transaction Id: ' + data.txId)
+      this.$root.$emit('bv::show::modal', 'success-modal')
+    },
     resizeContainers () {
       let resizeTimer
       const $self = this
@@ -202,13 +205,10 @@ export default {
       // local notification
     },
     showEndTime: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return contractAsset.saleData.saleType === 2
+      return this.gaiaAsset.contractAsset.saleData.saleType === 2
     },
     biddingEndTime: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      // return moment(contractAsset.saleData.biddingEndTime).format('DD-MM-YY hh:mm')
-      return moment(contractAsset.saleData.biddingEndTime).format('ddd, MMMM Do, h:mma') + ' BST'
+      return moment(this.gaiaAsset.contractAsset.saleData.biddingEndTime).format('ddd, MMMM Do, h:mma') + ' BST'
     },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.gaiaAsset)
@@ -236,8 +236,7 @@ export default {
       this.$bvModal.show('asset-offer-modal', { assetHash: this.assetHash })
     },
     getSaleType: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return contractAsset.saleData.saleType
+      return this.gaiaAsset.contractAsset.saleData.saleType
     },
     transactionUrl: function (txId) {
       return 'https://explorer.stacks.co/txid/' + txId + '?chain=' + NETWORK
@@ -245,8 +244,7 @@ export default {
     openPurchaceDialog: function () {
       this.forceOfferFlow = false
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      if (!profile.loggedIn && contractAsset.saleData.saleType !== 3) {
+      if (!profile.loggedIn && this.gaiaAsset.contractAsset.saleData.saleType !== 3) {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
           this.$emit('registerByConnect')
         }).catch((err) => {
@@ -255,7 +253,7 @@ export default {
           this.webWalletNeeded = true
         })
       } else {
-        if (contractAsset.saleData.saleType === 0) {
+        if (this.gaiaAsset.contractAsset.saleData.saleType === 0) {
           return
         }
         this.showRpay = 1
@@ -315,6 +313,9 @@ export default {
     }
   },
   computed: {
+    editionsAvailable: function () {
+      return this.gaiaAsset.contractAsset.editionCounter < this.gaiaAsset.contractAsset.tokenInfo.maxEditions
+    },
     webWalletLink () {
       if (this.$browserDetect.isFirefox) {
         return this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_LINK_FIREFOX]
@@ -323,12 +324,11 @@ export default {
     },
     usdAmount () {
       try {
-        const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
         const tickerRates = this.$store.getters[APP_CONSTANTS.KEY_TICKER_RATES]
         const rate = tickerRates.find((o) => o.currency === 'USD')
-        const offer = this.$store.getters[APP_CONSTANTS.KEY_HIGHEST_OFFER_ON_ASSET](contractAsset.tokenInfo.assetHash)
+        const offer = this.$store.getters[APP_CONSTANTS.KEY_HIGHEST_OFFER_ON_ASSET](this.gaiaAsset.contractAsset.tokenInfo.assetHash)
         const currentOffer = (offer && offer.amount) ? offer.amount : 0
-        const minimumOffer = Math.max(currentOffer, (contractAsset.saleData.reservePrice))
+        const minimumOffer = Math.max(currentOffer, (this.gaiaAsset.contractAsset.saleData.reservePrice))
         const amountUsd = Number(utils.toDecimals(rate.stxPrice * minimumOffer)).toLocaleString()
         return 'Current highest offer: ' + amountUsd + ' USD'
       } catch (e) {
@@ -336,25 +336,21 @@ export default {
       }
     },
     currentCost: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
-      if (!contractAsset) return
-      return contractAsset.tokenInfo.editionCost
+      return this.gaiaAsset.contractAsset.tokenInfo.editionCost
     },
     salesButtonLabel () {
       if (this.webWalletNeeded) return 'GET STACKS WALLET'
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      if (!profile.loggedIn && contractAsset.saleData.saleType !== 3) return 'LOGIN TO BID'
-      const label = this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](contractAsset.saleData.saleType)
-      if (contractAsset.saleData.saleType === 2) {
-        const bid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](contractAsset)
+      if (!profile.loggedIn && this.gaiaAsset.contractAsset.saleData.saleType !== 3) return 'LOGIN TO BID'
+      const label = this.$store.getters[APP_CONSTANTS.KEY_SALES_BUTTON_LABEL](this.gaiaAsset.contractAsset.saleData.saleType)
+      if (this.gaiaAsset.contractAsset.saleData.saleType === 2) {
+        const bid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](this.gaiaAsset.contractAsset)
         if (bid) return 'BID: ' + bid.amountFmt + ' STX'
       }
       return label
     },
     salesBadgeLabel () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BADGE_LABEL](contractAsset.saleData.saleType)
+      return this.$store.getters[APP_CONSTANTS.KEY_SALES_BADGE_LABEL](this.gaiaAsset.contractAsset)
     },
     confirmOfferDialog () {
       const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('confirm-offer')
@@ -373,13 +369,12 @@ export default {
       return (tooltip) ? tooltip[0].text : ''
     },
     ttOnAuction () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
       let tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-not-selling')
-      if (contractAsset.saleData.saleType === 1) {
+      if (this.gaiaAsset.contractAsset.saleData.saleType === 1) {
         tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-buy-now')
-      } else if (contractAsset.saleData.saleType === 2) {
+      } else if (this.gaiaAsset.contractAsset.saleData.saleType === 2) {
         tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-on-auction')
-      } else if (contractAsset.saleData.saleType === 3) {
+      } else if (this.gaiaAsset.contractAsset.saleData.saleType === 3) {
         tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-make-offer')
       }
       return (tooltip) ? tooltip[0].text : ''
@@ -413,14 +408,12 @@ export default {
       return videoOptions
     },
     isOwner: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      if (!contractAsset || !profile || !profile.loggedIn) return false
-      return profile.stxAddress === contractAsset.owner
+      if (!this.gaiaAsset.contractAsset || !profile || !profile.loggedIn) return false
+      return profile.stxAddress === this.gaiaAsset.contractAsset.owner
     },
     owner () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return contractAsset.owner
+      return this.gaiaAsset.contractAsset.owner
     },
     webWalletNeeded () {
       const webWalletNeeded = this.$store.getters[APP_CONSTANTS.KEY_WEB_WALLET_NEEDED]
