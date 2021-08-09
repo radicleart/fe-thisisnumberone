@@ -6,7 +6,7 @@
         <prismic-items :prismicItems="charity.data.description"></prismic-items>
         <social-links :type="'socials'" class="mt-4" :themeClass="getArtistText1()" :socialLinks="charity.data['social_links']" />
         <div v-if="showButton">
-          <square-button :theme="'dark'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + charity.data.artist_id[0].text" :usePixelBg="true"/>
+          <SquareButton :theme="'dark'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + charity.data.artist_id[0].text" :usePixelBg="true"/>
         </div>
       </b-col>
       <b-col align-self="end" md="6" sm="10" xs="8" class="d-flex justify-content-start">
@@ -21,7 +21,7 @@
         <prismic-items :prismicItems="charity.data.description"></prismic-items>
         <social-links :type="'socials'" class="mt-4" :themeClass="getArtistText1()" :socialLinks="charity.data['social_links']" />
         <div v-if="showButton">
-          <square-button :theme="'dark'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + charity.data.artist_id[0].text" :usePixelBg="true"/>
+          <SquareButton :theme="'dark'" :label1="'Find out more'" :icon="'chat-left'" :route="'/charity/' + charity.data.artist_id[0].text" :usePixelBg="true"/>
         </div>
       </b-col>
     </b-row>

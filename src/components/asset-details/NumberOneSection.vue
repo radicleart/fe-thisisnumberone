@@ -33,7 +33,6 @@ import { APP_CONSTANTS } from '@/app-constants'
 import ResultGrid from '@/components/marketplace/ResultGrid'
 import Vue from 'vue'
 import PrismicItems from '@/components/prismic/PrismicItems'
-import VueScrollTo from 'vue-scrollto'
 
 export default {
   name: 'NumberOneSection',
@@ -86,12 +85,6 @@ export default {
     },
     intoBoxStyle () {
       return 'width: ' + 350 + 'px; height: ' + 350 + 'px;'
-    },
-    routeTo (assetHash) {
-      if (assetHash !== this.$route.params.assetHash) {
-        this.$router.push('/assets/' + assetHash)
-      }
-      VueScrollTo.scrollTo('#app', 2000)
     },
     ttStacksAddress () {
       const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-stacks-address')

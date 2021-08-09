@@ -50,7 +50,7 @@
             <b-tab :title="'Info'">
               <div>
                 <div class="my-5">{{saleDataText}}</div>
-                <b-button variant="outline-primary" @click="openSaleDataDialog()">Update Sale Info</b-button>
+                <b-button class="btn-action" variant="outline-warning" @click="openSaleDataDialog()">Update Sale Info</b-button>
               </div>
             </b-tab>
             <b-tab :title="'Offers'" v-if="profile.superAdmin">

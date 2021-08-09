@@ -14,7 +14,7 @@
       <div class="mt-5"><b-link href="#" @click.prevent="$emit('backStep')"><b-icon icon="chevron-left"/> Back</b-link></div>
     </b-col>
   </b-row>
-  <action-row :buttonLabel2="'Send via email'" :buttonLabel="buttonLabel()" @clickButton="connect"/>
+  <ActionRow :buttonLabel2="'Send via email'" :buttonLabel="buttonLabel()" @clickButton="connect"/>
 </div>
 </template>
 
@@ -117,10 +117,6 @@ export default {
     makeOfferDialog () {
       const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('login-to-offer')
       return dialog
-    },
-    gaiaAsset () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      return configuration.gaiaAsset
     },
     offerState () {
       return (this.offerAmount >= this.minimumOffer)

@@ -39,7 +39,7 @@
       </b-row>
     </b-col>
   </b-row>
-  <action-row :buttonLabel="'Next'" @clickButton="makeOffer()"/>
+  <ActionRow :buttonLabel="'Next'" @clickButton="makeOffer()"/>
 </div>
 </template>
 

@@ -4,11 +4,11 @@
     <b-row align-h="center" :style="'min-height: ' + videoHeight + 'px'">
       <b-col lg="7" sm="10" class="mb-5">
         <div id="video-column" :style="dimensions">
-          <media-item :videoOptions="videoOptions" :attributes="gaiaAsset.attributes" :targetItem="targetItem()"/>
+          <MediaItem :videoOptions="videoOptions" :attributes="gaiaAsset.attributes" :targetItem="targetItem()"/>
         </div>
       </b-col>
       <b-col lg="5" sm="10">
-        <b-row align-v="stretch" :style="'min-height: ' + videoHeight + 'px'">
+        <b-row align-v="stretch" :style="'height: ' + videoHeight - 100 + 'px'">
           <b-col cols="12" class="">
             <div class="d-flex justify-content-between mb-5">
               <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
@@ -26,12 +26,11 @@
             <div class="w-100">
               <h1 class="text-white">{{gaiaAsset.name}}</h1>
               <h2>{{gaiaAsset.artist}}</h2>
-              <p class="border-bottom pb-4" style="font-size: 1.2rem;">{{owner}} <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }"  :title="ttStacksAddress" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link></p>
-              <div class="w-100">
-                <p class="pt-4 text-small" v-html="preserveWhiteSpace(gaiaAsset.description)"></p>
+              <MintInfo :item="gaiaAsset" />
+              <div class="w-100 text-white" v-html="preserveWhiteSpace(gaiaAsset.description)">
               </div>
               <div class="w-25">
-                <share-links class="mt-4" :socialLinks="getSocialLinks()" :gaiaAsset="gaiaAsset" />
+                <ShareLinks class="mt-4" :socialLinks="getSocialLinks()" :gaiaAsset="gaiaAsset" />
               </div>
               <b-row class="my-4">
                 <b-col md="6" sm="12" class="mb-3">
@@ -46,7 +45,7 @@
                   <EditionTrigger :item="gaiaAsset" @mintedEvent="mintedEvent"/>
                 </b-col>
                 <b-col md="6" sm="12" v-else>
-                  <square-button @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>
+                  <SquareButton @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>
                 </b-col>
               </b-row>
               <b-row v-else>
@@ -54,10 +53,10 @@
                     <b-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttWalletHelp" class="w-100" style="height: 61px;" variant="outline-light"><a :href="webWalletLink" class="text-white" target="_blank">Get Stacks Web Wallet <b-icon class="ml-3" icon="arrow-up-right-square-fill"/></a></b-button>
                 </b-col>
                 <b-col md="6" sm="6" class="mb-3 text-center" v-else-if="getSaleType() > 0 && getSaleType() < 3">
-                  <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
+                  <SquareButton v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
                 </b-col>
                 <b-col md="6" sm="6" class="text-center">
-                  <square-button v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" @clickButton="openOfferPurchaceDialog()" :theme="'light'" :label1="'MAKE OFFER'" :svgImage="hammer" :text-warning="true"/>
+                  <SquareButton v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" @clickButton="openOfferPurchaceDialog()" :theme="'light'" :label1="'MAKE OFFER'" :svgImage="hammer" :text-warning="true"/>
                 </b-col>
               </b-row>
             </div>
@@ -66,8 +65,8 @@
       </b-col>
     </b-row>
   <b-modal size="lg" id="asset-offer-modal" class="text-left">
-    <purchase-flow v-if="showRpay === 1" :gaiaAsset="gaiaAsset" :forceOfferFlow="forceOfferFlow" @offerSent="offerSent"/>
-    <asset-updates-modal v-if="showRpay === 2" :assetHash="gaiaAsset.assetHash" @registerForUpdates="registerForUpdates"/>
+    <PurchaseFlow v-if="showRpay === 1" :gaiaAsset="gaiaAsset" :forceOfferFlow="forceOfferFlow" @offerSent="offerSent"/>
+    <AssetUpdatesModal v-if="showRpay === 2" @registerForUpdates="registerForUpdates"/>
     <template #modal-header="{ close }">
       <div class=" text-warning w-100 d-flex justify-content-end">
         <b-button size="sm" variant="white" @click="close()"  class="m-0 p-1 text-dark" style="max-width: 30px !important; max-height: 30px !important;">
@@ -111,6 +110,7 @@ import ShareLinks from '@/components/utils/ShareLinks'
 import moment from 'moment'
 import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
 import utils from '@/services/utils'
+import MintInfo from '@/components/toolkit/mint-setup/MintInfo'
 
 const NETWORK = process.env.VUE_APP_NETWORK
 
@@ -122,7 +122,8 @@ export default {
     PurchaseFlow,
     MediaItem,
     SquareButton,
-    ShareLinks
+    ShareLinks,
+    MintInfo
   },
   props: ['gaiaAsset'],
   data: function () {
@@ -377,10 +378,6 @@ export default {
       } else if (this.gaiaAsset.contractAsset.saleData.saleType === 3) {
         tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-make-offer')
       }
-      return (tooltip) ? tooltip[0].text : ''
-    },
-    ttStacksAddress () {
-      const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-stacks-address')
       return (tooltip) ? tooltip[0].text : ''
     },
     configuration () {

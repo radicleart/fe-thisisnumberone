@@ -21,7 +21,7 @@
       </div>
     </b-col>
   </b-row>
-  <action-row :buttonLabel="'MINT EDITION'" @clickButton="mintEdition" :svgImage="icon"/>
+  <ActionRow :buttonLabel="'MINT EDITION'" @clickButton="mintEdition" :svgImage="icon"/>
 </div>
 </template>
 

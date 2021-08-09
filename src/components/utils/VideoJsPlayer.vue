@@ -85,14 +85,26 @@ export default {
 </script>
 
 <style>
-  .video-js {
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
+.video-js {
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
 }
 .vjs-big-play-centered .vjs-big-play-button {
-    left: 53.5% !important;
+    left: 48% !important;
+    top: 48% !important;
     opacity: 0.5 !important;
+}
+@media only screen and (max-width: 900px) {
+  .vjs-big-play-centered .vjs-big-play-button {
+    left: 48.5% !important;
+    top: 48.5% !important;
+    opacity: 0.5 !important;
+  }
+}
+
+.video-js .vjs-big-play-button {
+  line-height: 160% !important;
 }
 .vjs-paused.vjs-big-play-button {
   display: none;
@@ -101,8 +113,16 @@ export default {
   display: none;
 }
 .vjs-big-play-button {
-  width: 8rem;
+  width: 4%;
+  height: 4%;
   border-radius: 12px !important;
-  left: 51% !important;
 }
+@media only screen and (max-width: 900px) {
+  .vjs-big-play-button {
+    width: 3%;
+    height: 3%;
+    border-radius: 12px !important;
+  }
+}
+
 </style>

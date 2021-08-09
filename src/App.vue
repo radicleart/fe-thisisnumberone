@@ -2,19 +2,18 @@
 <splash v-if="loading"/>
 <div id="app" v-else :style="'z-index: -40; min-height: 90vh; background-size: contain; background-image: url(' + getPixelBackground + ')'">
   <div v-if="!configured">
-    <risidio-pay :configuration="configuration"/>
+    <RisidioPay :configuration="configuration"/>
   </div>
   <div :key="componentKey" v-else>
     <router-view name="header" style="z-index: 10;"/>
     <router-view style="min-height: 99vh;" />
     <router-view name="footer"/>
     <notifications :duration="10000" classes="r-notifs" position="bottom left" width="50%"/>
-    <waiting-modal/>
-    <success-modal/>
+    <WaitingModal/>
+    <SuccessModal/>
   </div>
 </div>
 </template>
-
 <script>
 import Splash from '@/views/Splash'
 import SuccessModal from '@/components/utils/SuccessModal'
@@ -76,58 +75,58 @@ export default {
       }
     },
     readPrismicContent () {
-      this.$prismic.client.getSingle('emails').then(document => {
-        if (document) {
-          this.$store.commit('contentStore/addEmails', document.data)
-        }
-      })
-      this.$prismic.client.getSingle('tooltips').then(document => {
-        if (document) {
-          this.$store.commit('contentStore/addTooltips', document.data)
-        }
-      })
-      this.$prismic.client.getSingle('dialogs').then(document => {
-        if (document) {
-          this.$store.commit('contentStore/addDialogs', document.data)
-        }
-      })
       this.$prismic.client.getSingle('homepage').then(document => {
         if (document) {
           this.$store.commit('contentStore/addHomeContent', document.data)
-        }
-      })
-      this.$prismic.client.getSingle('about').then(document => {
-        if (document) {
-          this.$store.commit('contentStore/addAboutContent', document.data)
-        }
-      })
-      this.$prismic.client.getSingle('collaboration').then(document => {
-        if (document) {
-          this.$store.commit('contentStore/addCollaboration', document.data)
         }
       })
       this.$prismic.client.getSingle('mainfooter').then((document) => {
         if (document) {
           this.$store.commit('contentStore/addMainFooter', document.data)
         }
-      })
-      this.$prismic.client.query(
-        this.$prismic.Predicates.at('document.type', 'information_page'),
-        { pageSize: 40, page: 1 }
-      ).then((response) => {
-        this.$store.commit('contentStore/addInformation', response.results)
+        this.$prismic.client.getSingle('dialogs').then(document => {
+          if (document) {
+            this.$store.commit('contentStore/addDialogs', document.data)
+          }
+          this.$prismic.client.getSingle('emails').then(document => {
+            if (document) {
+              this.$store.commit('contentStore/addEmails', document.data)
+            }
+            this.$prismic.client.getSingle('tooltips').then(document => {
+              if (document) {
+                this.$store.commit('contentStore/addTooltips', document.data)
+              }
+              this.$prismic.client.getSingle('about').then(document => {
+                if (document) {
+                  this.$store.commit('contentStore/addAboutContent', document.data)
+                }
+                this.$prismic.client.getSingle('collaboration').then(document => {
+                  if (document) {
+                    this.$store.commit('contentStore/addCollaboration', document.data)
+                  }
+                })
+              })
+            })
+          })
+        })
       })
       this.$prismic.client.query(
         this.$prismic.Predicates.at('document.type', 'charity'),
         { pageSize: 20, page: 1 }
       ).then((response) => {
         this.$store.commit('contentStore/addCharities', response.results)
-      })
-      this.$prismic.client.query(
-        this.$prismic.Predicates.at('document.type', 'artist'),
-        { pageSize: 20, page: 1 }
-      ).then((response) => {
-        this.$store.commit('contentStore/addArtists', response.results)
+        this.$prismic.client.query(
+          this.$prismic.Predicates.at('document.type', 'information_page'),
+          { pageSize: 40, page: 1 }
+        ).then((response) => {
+          this.$store.commit('contentStore/addInformation', response.results)
+          this.$prismic.client.query(
+            this.$prismic.Predicates.at('document.type', 'artist'),
+            { pageSize: 20, page: 1 }
+          ).then((response) => {
+            this.$store.commit('contentStore/addArtists', response.results)
+          })
+        })
       })
     },
     resizeContainers () {

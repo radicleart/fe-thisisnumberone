@@ -74,7 +74,11 @@ export default {
       return item
     },
     assetUrl () {
-      return '/assets/' + this.assetHash
+      let assetUrl = '/assets/' + this.myNft.assetHash + '/1'
+      if (this.myNft.contractAsset) {
+        assetUrl = '/my-nfts/' + this.myNft.contractAsset.nftIndex
+      }
+      return assetUrl
     }
   }
 }

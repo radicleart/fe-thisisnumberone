@@ -108,7 +108,7 @@ export default {
       this.$bvModal.show('filter-modal')
     },
     deleteFilter (data) {
-      this.$store.dispatch('assetGeneralStore/deleteTokenFilter', data.item.Id).then((result) => {
+      this.$store.dispatch('assetGeneralStore/deleteTokenFilter', data.item.Id).then(() => {
         const index = this.tokenFilters.findIndex((o) => o.id === data.item.Id)
         if (index > -1) {
           this.tokenFilters.splice(index, 1)

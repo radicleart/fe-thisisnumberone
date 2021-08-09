@@ -22,18 +22,7 @@
           <h6 class="text-small">By : {{item.artist}}</h6>
         </div>
         <p class="pt-4 text-small" v-html="preserveWhiteSpace(item.description)"></p>
-        <div v-if="item.contractAsset">
-          <b-alert show :variant="(iAmOwner) ? 'warning' : 'danger'">
-            <b-row>
-              <b-col md="4" sm="12" class="text-small">
-                <span>Minted</span><br/><span class="text-bold">NFT #{{item.contractAsset.nftIndex}} : Edition {{item.contractAsset.tokenInfo.edition}} of {{item.contractAsset.tokenInfo.maxEditions}}</span>
-              </b-col>
-              <b-col md="8" sm="12" class="text-small">
-                <span>Owner</span><br/><span class="">{{item.contractAsset.owner}}</span>
-              </b-col>
-            </b-row>
-          </b-alert>
-        </div>
+        <MintInfo :item="item" />
         <div>
           <MintingTools class="w-100" :item="item" v-if="iAmOwner || edition === 0" />
         </div>
@@ -44,6 +33,7 @@
 </template>
 
 <script>
+import MintInfo from '@/components/toolkit/mint-setup/MintInfo'
 import MintingTools from '@/components/toolkit/MintingTools'
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
@@ -54,7 +44,8 @@ export default {
   components: {
     MintingTools,
     MediaItemGeneral,
-    ItemActionMenu
+    ItemActionMenu,
+    MintInfo
   },
   data: function () {
     return {

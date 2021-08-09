@@ -6,9 +6,6 @@
       <b-col class="offset-md-2 col-md-8">
         <h1 class="mb-4">{{content.section6rtf1[0].text}}</h1>
         <div class="mb-5 about-section6--text" v-html="adaptedText"></div>
-        <!-- <div>
-          <square-button @clickButton="$router.push('/home')" class="button-style" :label1="'Get in touch'" :icon="'chat-left'" :colorOnHover="'black'"/>
-        </div> -->
       </b-col>
     </b-row>
   </b-container>
@@ -17,7 +14,6 @@
 </template>
 
 <script>
-// import SquareButton from '@/components/utils/SquareButton'
 export default {
   name: 'AboutSection6',
   props: ['content'],

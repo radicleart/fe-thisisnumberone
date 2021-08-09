@@ -28,7 +28,7 @@
       </div>
     </b-col>
   </b-row>
-  <action-row :buttonLabel="'BID: ' + nextBidAmountFmt + ' STX'" @clickButton="$emit('placeBid')" :svgImage="hammer"/>
+  <ActionRow :buttonLabel="'BID: ' + nextBidAmountFmt + ' STX'" @clickButton="$emit('placeBid')" :svgImage="hammer"/>
 </div>
 </template>
 

@@ -49,19 +49,19 @@ export default {
     },
     openAssetDetails () {
       if (this.result.assetHash !== this.$route.params.assetHash) {
-        this.$router.push('/assets/' + this.result.assetHash)
+        this.$router.push(this.assetUrl)
       }
       VueScrollTo.scrollTo('#app', 2000)
-    },
-    assetUrl () {
-      let assetUrl = '/assets/' + this.result.assetHash
-      if (this.$route.name === 'my-nfts') {
-        assetUrl = '/my-nfts/' + this.result.assetHash
-      }
-      return assetUrl
     }
   },
   computed: {
+    assetUrl () {
+      let assetUrl = '/assets/' + this.result.assetHash + '/1'
+      if (this.result.contractAsset) {
+        assetUrl = '/nfts/' + this.result.contractAsset.nftIndex
+      }
+      return assetUrl
+    },
     dimensions () {
       return 'max-width: ' + this.dims.height + '; max-height: ' + this.dims.height + ';'
     },

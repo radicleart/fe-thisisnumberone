@@ -37,7 +37,7 @@
       <div style="font-weight: 700;">{{offerData.amountUsdFmt}} <span class="text-warning">USD</span></div>
     </b-col>
   </b-row>
-  <action-row :buttonLabel="'Next'" @clickButton="next"/>
+  <ActionRow :buttonLabel="'Next'" @clickButton="next"/>
 </div>
 </template>
 
@@ -53,7 +53,7 @@ export default {
     RatesListing,
     ActionRow
   },
-  props: ['offerData'],
+  props: ['gaiaAsset', 'offerData'],
   data () {
     return {
       icon: require('@/assets/img/check-square.svg'),
@@ -107,13 +107,8 @@ export default {
       const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('make-offer')
       return dialog
     },
-    gaiaAsset () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      return configuration.gaiaAsset
-    },
     saleType () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return contractAsset.saleData.saleType
+      return this.gaiaAsset.contractAsset.saleData.saleType
     },
     offerState () {
       return (this.offerAmount > this.minimumOffer)

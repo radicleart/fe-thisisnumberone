@@ -1,32 +1,27 @@
 <template>
 <div v-if="!loading">
   <div v-if="flowType === 1">
-    <purchase-offer-login :offerData="offerData" @registerByEmail="registerByEmail" @registerByConnect="registerByConnect" @backStep="backStep"/>
+    <PurchaseOfferLogin :offerData="offerData" @registerByEmail="registerByEmail" @registerByConnect="registerByConnect" @backStep="backStep"/>
   </div>
   <div v-else-if="flowType === 2">
-    <purchase-offer-success :offerData="offerData" :contentKey="contentKey"/>
+    <PurchaseOfferSuccess :offerData="offerData" :contentKey="contentKey"/>
   </div>
   <div v-else-if="flowType === 3">
-    <purchase-offer-failure :offerData="offerData"/>
+    <PurchaseOfferFailure :offerData="offerData"/>
   </div>
   <div v-else>
-    <div v-if="contractAsset && forceOfferFlow">
-      <purchase-offer-amount :offerData="offerData" v-if="offerStage === 0" @collectEmail="collectEmail"/>
-      <purchase-offer-email :offerData="offerData" v-else-if="offerStage === 1" @backStep="backStep" @setEmail="setEmail"/>
+    <div v-if="contractAsset && (forceOfferFlow || contractAsset.saleData.saleType === 3)">
+      <PurchaseOfferAmount :gaiaAsset="gaiaAsset" :offerData="offerData" v-if="offerStage === 0" @collectEmail="collectEmail"/>
+      <PurchaseOfferEmail :offerData="offerData" v-else-if="offerStage === 1" @backStep="backStep" @setEmail="setEmail"/>
       <div class="text-danger" v-html="errorMessage"></div>
     </div>
     <div v-else>
       <div v-if="contractAsset && contractAsset.saleData.saleType === 1">
-        <purchase-buy-now :contractAsset="contractAsset" :saleData="contractAsset.saleData" @buyNow="buyNow"/>
+        <PurchaseBuyNow :contractAsset="contractAsset" :saleData="contractAsset.saleData" @buyNow="buyNow"/>
         <div class="text-danger" v-html="errorMessage"></div>
       </div>
       <div v-else-if="contractAsset && contractAsset.saleData.saleType === 2">
-        <purchase-place-bid :contractAsset="contractAsset" @placeBid="placeBid"/>
-        <div class="text-danger" v-html="errorMessage"></div>
-      </div>
-      <div v-else-if="contractAsset && contractAsset.saleData.saleType === 3">
-        <purchase-offer-amount :offerData="offerData" v-if="offerStage === 0" @collectEmail="collectEmail"/>
-        <purchase-offer-email :offerData="offerData" v-else-if="offerStage === 1" @backStep="backStep" @setEmail="setEmail"/>
+        <PurchasePlaceBid :contractAsset="contractAsset" @placeBid="placeBid"/>
         <div class="text-danger" v-html="errorMessage"></div>
       </div>
       <div v-else>
@@ -106,14 +101,14 @@ export default {
   },
   methods: {
     setBiddingData () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      const contractAsset = this.gaiaAsset.contractAsset
       this.biddingData.currentBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_CURRENT_BID](contractAsset)
       this.biddingData.nextBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](contractAsset)
       this.biddingData.biddingEndTime = contractAsset.saleData.biddingEndTime
       this.biddingData.fbet = this.getFormattedBiddingEndTime(contractAsset)
     },
     setOfferData: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      const contractAsset = this.gaiaAsset.contractAsset
       const offer = this.$store.getters[APP_CONSTANTS.KEY_HIGHEST_OFFER_ON_ASSET](contractAsset.tokenInfo.assetHash)
       this.offerData.minimumOffer = (contractAsset.saleData.reservePrice)
       if (offer && offer.amount) {
@@ -167,7 +162,7 @@ export default {
     },
     registerOfferOffChain: function (status) {
       this.flowType = 2
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      const contractAsset = this.gaiaAsset.contractAsset
       const data = {
         emailContent: this.emailText(),
         status: status,
@@ -188,7 +183,7 @@ export default {
     },
     makeOffer: function () {
       this.flowType = 2
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      const contractAsset = this.gaiaAsset.contractAsset
       this.errorMessage = null
       this.offerData.biddingEndTime = moment(contractAsset.saleData.biddingEndTime).valueOf()
       this.sellingMessage = 'Sending your request to the blockchain... this takes a few minutes to confirm!'
@@ -206,7 +201,7 @@ export default {
       })
     },
     buyNow: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      const contractAsset = this.gaiaAsset.contractAsset
       const mac = this.$store.getters[APP_CONSTANTS.KEY_MACS_WALLET]
       const sky = this.$store.getters[APP_CONSTANTS.KEY_SKYS_WALLET]
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
@@ -250,16 +245,17 @@ export default {
       })
     },
     isOpeneningBid () {
+      const contractAsset = this.gaiaAsset.contractAsset
       // simple case - no bids ever
-      if (this.contractAsset.bidCounter === 0 || this.contractAsset.bidHistory.length === 0) {
+      if (contractAsset.bidCounter === 0 || contractAsset.bidHistory.length === 0) {
         return true
       }
       // less simple case - start of a new sale cycle
-      const index = this.contractAsset.bidHistory.findIndex((o) => o.saleCycle === this.contractAsset.saleData.saleCycleIndex)
+      const index = contractAsset.bidHistory.findIndex((o) => o.saleCycle === contractAsset.saleData.saleCycleIndex)
       return index === -1
     },
     placeBid: function () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      const contractAsset = this.gaiaAsset.contractAsset
       const nextBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](contractAsset)
       this.errorMessage = null
       let functionName = 'place-bid'
@@ -295,15 +291,14 @@ export default {
       })
     },
     minted () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
+      const contractAsset = this.gaiaAsset.contractAsset
       if (!contractAsset) return
       return contractAsset.nftIndex > -1
     }
   },
   computed: {
     contractAsset () {
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.gaiaAsset.assetHash)
-      return contractAsset
+      return this.gaiaAsset.contractAsset
     }
   }
 }

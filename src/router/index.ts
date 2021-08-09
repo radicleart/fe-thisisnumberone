@@ -13,7 +13,6 @@ import ApplicationAdmin from '../views/admin/ApplicationAdmin.vue'
 import Login from '../views/Login.vue'
 import Information from '../views/Information.vue'
 // const Information = () => import('../views/Information.vue')
-import NftDisplay from '../views/NftDisplay.vue'
 import MyNfts from '../views/upload/MyNfts.vue'
 import NftGallery from '../views/NftGallery.vue'
 import ExhibitHere from '../views/ExhibitHere.vue'
@@ -116,7 +115,7 @@ const routes: Array<RouteConfig> = [
     components: { default: Charity, header: AboutNavbar, footer: MainFooter }
   },
   {
-    path: '/assets/:assetHash',
+    path: '/assets/:assetHash/:edition',
     name: 'asset-by-hash',
     components: { default: AssetDetails, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'Asset informations' }
@@ -175,16 +174,6 @@ const routes: Array<RouteConfig> = [
     meta: {
       requiresAuth: true,
       requiresAdmin: false
-    }
-  },
-  {
-    path: '/nft-display/:assetHash',
-    name: 'nft-display',
-    components: { default: NftDisplay, header: AboutNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: false,
-      title: 'NFT display'
     }
   },
   {

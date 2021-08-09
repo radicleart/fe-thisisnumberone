@@ -16,10 +16,10 @@
       <div>
         <h3><span class="mr-5 text-black">Buy Now</span> {{contractAsset.saleData.buyNowOrStartingPrice}} STX</h3>
       </div>
-      <rates-listing :message="''" :amount="contractAsset.saleData.buyNowOrStartingPrice"/>
+      <RatesListing :message="''" :amount="contractAsset.saleData.buyNowOrStartingPrice"/>
     </b-col>
   </b-row>
-  <action-row @clickButton="$emit('buyNow')" :buttonLabel="'BUY NOW'"/>
+  <ActionRow @clickButton="$emit('buyNow')" :buttonLabel="'BUY NOW'"/>
 </div>
 </template>
 

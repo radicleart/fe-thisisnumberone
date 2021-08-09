@@ -75,10 +75,6 @@ export default {
       const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('failed-offer')
       return dialog
     },
-    gaiaAsset () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      return configuration.gaiaAsset
-    },
     offerState () {
       return (this.offerAmount >= this.minimumOffer)
     }
