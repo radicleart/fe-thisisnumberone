@@ -2,8 +2,8 @@
 <div>
   <div v-if="mode === 'update'">
     <b-form-checkbox @change="togglePrivacy" v-model="publicAvailable" name="check-button" switch class="text-secondary">
-      <span v-if="!publicAvailable"><b>Private</b> <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'Not displayed in Risidio Xchange Marketplace'" class="ml-2" variant="outline-success"><b-icon icon="question-circle"/></b-link></span>
-      <span v-else><b>Public</b> <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'Displayed in Risidio Xchange Marketplace'" class="ml-2" variant="outline-success"><b-icon icon="question-circle"/></b-link></span>
+      <span v-if="!publicAvailable"><b>Private</b> <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'Not displayed in ThisIsNumberOne Marketplace'" class="ml-2" variant="outline-success"><b-icon icon="question-circle"/></b-link></span>
+      <span v-else><b>Public</b> <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="'Displayed in ThisIsNumberOne Marketplace'" class="ml-2" variant="outline-success"><b-icon icon="question-circle"/></b-link></span>
     </b-form-checkbox>
   </div>
   <div v-else>

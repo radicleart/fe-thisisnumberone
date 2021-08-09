@@ -122,7 +122,7 @@ const gaiaAsset = {
   saleData: {}
 }
 const appDetails = {
-  name: 'Risidio #1 in NFTs',
+  name: 'ThisIsNumberOne - NFTs on Bitcoin',
   icon: origin + '/img/logo/logo.png'
 }
 
