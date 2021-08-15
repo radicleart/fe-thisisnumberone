@@ -280,9 +280,6 @@ label {
   color: #2255A4;
   text-decoration: underline;
 }
-.vue-notification-template {
-  background: none;
-}
 .tabs {
   border-radius: 0 !important;
 }
@@ -297,6 +294,9 @@ label {
 }
 .badge {
   border-radius: 0 !important;
+}
+.vue-notification-template {
+  background: none;
 }
 .r-notifs {
   padding: 5px !important;
