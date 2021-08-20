@@ -5,6 +5,9 @@
   <b-button class="btn-action mr-3" variant="warning" @click="buildSearchIndex">Build Search Index</b-button>
 </div>
   <b-tabs card left content-class="mt-3">
+    <b-tab title="Transfers" active>
+      <LocalhostTransfers />
+    </b-tab>
     <b-tab title="Token Cache" active>
       <TokenList />
     </b-tab>
@@ -16,6 +19,7 @@
 </template>
 
 <script>
+import LocalhostTransfers from './LocalhostTransfers'
 import TokenList from './TokenList'
 import TokenFilterList from './TokenFilterList'
 
@@ -23,6 +27,7 @@ export default {
   name: 'Registry',
   components: {
     TokenList,
+    LocalhostTransfers,
     TokenFilterList
   },
   data () {

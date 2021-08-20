@@ -33,16 +33,21 @@ export default {
       this.beneficiaries = this.item.beneficiaries
     } else {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      this.beneficiaries = [
-        {
-          username: profile.username,
-          role: 'Seller',
-          owner: true,
-          email: profile.username,
-          royalty: 100,
-          chainAddress: profile.stxAddress
-        }
-      ]
+      const lben = process.env.VUE_APP_BENEFICIARIES
+      let tots = 0
+      lben.forEach((b) => {
+        tots += b.royalty
+      })
+      lben.push({
+        username: profile.username,
+        role: 'Seller',
+        owner: true,
+        email: profile.username,
+        royalty: 100 - tots,
+        chainAddress: profile.stxAddress
+      })
+      this.beneficiaries = lben
+      this.item.beneficiaries = this.beneficiaries
       this.updateItem()
     }
     this.setPage()
@@ -64,7 +69,7 @@ export default {
         owner: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS, // profile.stxAddress,
         assetHash: this.item.assetHash,
         metaDataUrl: this.item.metaDataUrl,
-        beneficiaries: this.item.beneficiaries,
+        beneficiaries: this.beneficiaries,
         editions: this.item.editions,
         editionCost: utils.toOnChainAmount(this.item.editionCost),
         sendAsSky: false,
