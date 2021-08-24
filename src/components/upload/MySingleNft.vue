@@ -69,8 +69,13 @@ export default {
     assetUrl () {
       if (!this.item.contractAsset) {
         return '/item-preview/' + this.item.assetHash + '/' + 0
+      } else {
+        if (this.token) {
+          return '/item-preview/' + this.item.assetHash + '/' + this.token.tokenInfo.edition
+        } else {
+          return '/item-preview/' + this.item.assetHash + '/' + this.item.contractAsset.tokenInfo.edition
+        }
       }
-      return '/item-preview/' + this.item.assetHash + '/' + this.token.tokenInfo.edition
     }
   }
 }

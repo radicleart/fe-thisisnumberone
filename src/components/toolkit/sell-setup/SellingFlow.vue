@@ -4,7 +4,7 @@
     <b-card-group class="" :key="componentKey" style="width: 450px;">
       <b-card header-tag="header" footer-tag="footer" v-if="minted">
         <SellingHeader :allowEdit="true"/>
-        <SellingOptions v-if="displayCard === 100" @updateSaleDataInfo="updateSaleDataInfo"/>
+        <SellingOptions :item="item" v-if="displayCard === 100" @updateSaleDataInfo="updateSaleDataInfo"/>
         <div class="text-center">
           <div class="text-info" v-html="sellingMessage"></div>
         </div>
@@ -154,10 +154,6 @@ export default {
     }
   },
   computed: {
-    saleData () {
-      const saleData = this.item.contractAsset.saleData
-      return saleData
-    },
     displayCard () {
       const displayCard = this.$store.getters[APP_CONSTANTS.KEY_DISPLAY_CARD]
       return displayCard

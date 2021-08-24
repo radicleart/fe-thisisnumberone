@@ -30,7 +30,6 @@ import BuyNowTradeInfo from './forms/BuyNowTradeInfo'
 import AuctionTradeInfo from './forms/AuctionTradeInfo'
 import OfferTradeInfo from './forms/OfferTradeInfo'
 import NotForSale from './forms/NotForSale'
-import { APP_CONSTANTS } from '@/app-constants'
 import moment from 'moment'
 
 export default {
@@ -41,14 +40,14 @@ export default {
     OfferTradeInfo,
     NotForSale
   },
+  props: ['item'],
   data () {
     return {
       showSaleData: false
     }
   },
   mounted () {
-    const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-    const saleData = configuration.gaiaAsset.saleData
+    const saleData = this.item.contractAsset.saleData
     if (!saleData.biddingEndTime) {
       saleData.biddingEndTime = String(moment().unix())
     }
@@ -56,15 +55,12 @@ export default {
   methods: {
     changeSellingOption: function (saleType) {
       this.showSaleData = true
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      configuration.gaiaAsset.saleData.saleType = saleType
-      this.$store.commit('rpayStore/addConfiguration', configuration)
+      this.item.contractAsset.saleData.saleType = saleType
     }
   },
   computed: {
     saleData () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      return configuration.gaiaAsset.saleData
+      return this.item.contractAsset.saleData
     }
   }
 }

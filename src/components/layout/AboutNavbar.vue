@@ -27,7 +27,7 @@
               <span class="mr-3">Welcome</span>
               <span class="mr-3 stx-username">{{profile.username}}</span>
             </div>
-            <div class="text-small mt-0">
+            <div class="text-small mt-0" v-if="profile.username !== profile.stxAddress">
               <span class="text-warning">{{profile.stxAddress}}</span>
             </div>
             <div v-if="profile.accountInfo" class="text-small">

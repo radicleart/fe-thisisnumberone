@@ -14,6 +14,9 @@
     <b-tab title="Token Filters">
       <TokenFilterList />
     </b-tab>
+    <b-tab title="Address Lookup">
+      <AddressLookup />
+    </b-tab>
   </b-tabs>
 </div>
 </template>
@@ -22,13 +25,15 @@
 import LocalhostTransfers from './LocalhostTransfers'
 import TokenList from './TokenList'
 import TokenFilterList from './TokenFilterList'
+import AddressLookup from './AddressLookup'
 
 export default {
   name: 'Registry',
   components: {
     TokenList,
     LocalhostTransfers,
-    TokenFilterList
+    TokenFilterList,
+    AddressLookup
   },
   data () {
     return {
@@ -36,8 +41,8 @@ export default {
   },
   mounted () {
     const config = {
-      contractAddress: this.STACKS_CONTRACT_ADDRESS,
-      contractName: this.STACKS_CONTRACT_NAME,
+      contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
+      contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
       functionName: 'get-balance',
       functionArgs: []
     }
