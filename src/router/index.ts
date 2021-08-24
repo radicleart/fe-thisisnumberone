@@ -253,7 +253,7 @@ router.beforeEach((to, from, next) => {
             query: { redirect: to.fullPath }
           })
         }
-      }, 2000)
+      }, 3000)
     }
   } else {
     return next() // make sure to always call next()!

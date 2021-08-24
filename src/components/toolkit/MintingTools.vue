@@ -6,7 +6,7 @@
         <b-alert show variant="warning">
           <div class="d-flex justify-content-between">
             <div class="w-100 text-small">Currently Minting - <a class="text-dark" :href="transactionUrl()" target="_blank">track progress...</a></div>
-            <div><a class="text-danger" href="#" @click.prevent="markFailed">mark as failed?</a></div>
+            <div><a class="text-danger" href="#" @click.prevent="markFailed">check transaction?</a></div>
           </div>
         </b-alert>
       </div>
@@ -78,7 +78,7 @@
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="lg" id="selling-modal">
-    <SellingFlow :item="item" />
+    <SellingFlow :contractAsset="item.contractAsset"  v-if="item.contractAsset"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <!--
@@ -138,14 +138,13 @@ export default {
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: this.item })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
-        const txResult = $self.$store.getters[APP_CONSTANTS.KEY_TRANSACTION_DIALOG_MESSAGE]({ dKey: data.opcode, txId: data.txId })
         if (data.opcode === 'save-selling-data') {
           $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
         } else if (data.opcode === 'stx-transaction-finished' || data.opcode === 'eth-mint-success') {
           $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
-          $self.mintResult = txResult
+          $self.mintResult = data
           // $self.$bvModal.show('result-modal')
         } else if (data.opcode === 'stx-update-mint-data') {
           if (data.gaiaAsset) $self.$store.dispatch('rpayMyItemStore/saveItem', data.gaiaAsset)
@@ -154,8 +153,10 @@ export default {
         } else if (data.opcode === 'stx-transaction-sent' || data.opcode === 'stx-transaction-update') {
           $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
-          $self.item.mintInfo = data.mintInfo
-          $self.$store.dispatch('rpayMyItemStore/saveItem', $self.item)
+          if (data.functionName.startsWith('mint-')) {
+            $self.item.mintInfo = data
+            $self.$store.dispatch('rpayMyItemStore/saveItem', $self.item)
+          }
           $self.$notify({ type: 'warning', title: 'Transaction News', text: 'Transaction ' + data.functionName + ' has status ' + data.txStatus })
         } else if (data.opcode === 'cancel-minting') {
           $self.$bvModal.hide('selling-modal')
@@ -166,8 +167,17 @@ export default {
   },
   methods: {
     markFailed: function () {
-      this.item.mintInfo = null
-      this.$store.dispatch('rpayMyItemStore/saveItem', this.item)
+      const cacheUpdate = {
+        type: 'token',
+        functionName: 'general',
+        nftIndex: (this.item.contractAsset) ? Number(this.item.contractAsset.nftIndex) : null,
+        assetHash: this.item.assetHash,
+        contractId: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME
+      }
+      this.$store.dispatch('rpayStacksContractStore/updateCache', cacheUpdate, { root: true }).then((result) => {
+        this.item.mintInfo = result
+        this.$store.dispatch('rpayMyItemStore/saveItem', this.item)
+      })
     },
     openSaleDataDialog: function () {
       this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'selling-flow', asset: this.item })
@@ -192,7 +202,8 @@ export default {
       return moment(madeData).format('DD-MM hh:mm')
     },
     transactionUrl: function () {
-      return 'https://explorer.stacks.co/txid/' + this.item.mintInfo.txId + '?chain=' + NETWORK
+      const stacksApiUrl = process.env.VUE_APP_STACKS_API
+      return stacksApiUrl + '/txid/' + this.item.mintInfo.txId + '?chain=' + NETWORK
     },
     upable: function () {
       return this.uploadState > 1 && this.uploadState < 5

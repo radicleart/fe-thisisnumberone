@@ -4,7 +4,7 @@
     <b-card-group class="" :key="componentKey" style="width: 450px;">
       <b-card header-tag="header" footer-tag="footer" v-if="minted">
         <SellingHeader :allowEdit="true"/>
-        <SellingOptions :contractAsset="contractAsset" v-if="displayCard === 100"/>
+        <SellingOptions :item="item" v-if="displayCard === 100" @updateSaleDataInfo="updateSaleDataInfo"/>
         <div class="text-center">
           <div class="text-info" v-html="sellingMessage"></div>
         </div>
@@ -48,7 +48,7 @@ export default {
     SellingOptions,
     SellingHeader
   },
-  props: ['contractAsset'],
+  props: ['item'],
   data () {
     return {
       componentKey: 0,
@@ -58,6 +58,10 @@ export default {
     }
   },
   mounted () {
+    this.errorMessage = null
+    const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
+    this.$store.commit('rpayStore/addConfiguration', configuration)
+    this.$store.commit('rpayCategoryStore/setModalMessage', '')
     this.$store.dispatch('rpayStacksStore/fetchMacSkyWalletInfo').then(() => {
       this.$store.commit('rpayStore/setDisplayCard', 100)
       this.loading = false
@@ -73,7 +77,7 @@ export default {
       window.eventBus.$emit('rpayEvent', configuration)
     },
     minted () {
-      return this.contractAsset
+      return this.item.contractAsset
     },
     setTradeInfo () {
       this.errorMessage = null
@@ -81,10 +85,10 @@ export default {
       const data = {
         contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
         contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
-        owner: this.contractAsset.owner,
-        assetHash: this.contractAsset.tokenInfo.assetHash,
-        nftIndex: this.contractAsset.nftIndex,
-        saleData: this.contractAsset.saleData
+        owner: this.item.contractAsset.owner,
+        assetHash: this.item.assetHash,
+        nftIndex: this.item.contractAsset.nftIndex,
+        saleData: this.item.contractAsset.saleData
       }
       this.$store.dispatch('rpayPurchaseStore/setTradeInfo', data).then((result) => {
         this.result = result
@@ -97,7 +101,7 @@ export default {
     },
     isValid: function () {
       this.errorMessage = null
-      const saleData = this.contractAsset.saleData
+      const saleData = this.item.contractAsset.saleData
       if (saleData.saleType < 0 || saleData.saleType > 3) {
         this.$notify({ type: 'danger', title: 'Sell Error', text: 'Sale type outside of allowed range' })
         return false
@@ -133,6 +137,20 @@ export default {
       if (!displayCard) {
         this.$store.commit('rpayStore/setDisplayCard', 100)
       }
+    },
+    updateSaleDataInfo (data) {
+      const saleDataTemp = this.item.contractAsset.saleData
+      if (data.moneyField) {
+        saleDataTemp[data.field] = data.value
+      } else {
+        saleDataTemp[data.field] = parseInt(data.value)
+      }
+      /**
+      if (this.isValid()) {
+        configuration.gaiaAsset.saleData = saleDataTemp
+        this.$store.commit('rpayStore/addConfiguration', configuration)
+      }
+      **/
     }
   },
   computed: {

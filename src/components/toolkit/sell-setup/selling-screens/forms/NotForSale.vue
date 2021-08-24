@@ -9,24 +9,20 @@
 </template>
 
 <script>
-import { APP_CONSTANTS } from '@/app-constants'
-import utils from '@/services/utils'
-
 export default {
   name: 'NotForSale',
   components: {
   },
+  props: ['contractAsset'],
   data () {
     return {
     }
   },
   mounted () {
-    const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-    this.buyNowOrStartingPrice = utils.toDecimals(configuration.gaiaAsset.saleData.buyNowOrStartingPrice)
-    this.$emit('updateSaleDataInfo', { moneyField: true, field: 'buyNowOrStartingPrice', value: 0 })
-    this.$emit('updateSaleDataInfo', { moneyField: true, field: 'reservePrice', value: 0 })
-    this.$emit('updateSaleDataInfo', { moneyField: true, field: 'incrementPrice', value: 0 })
-    this.$emit('updateSaleDataInfo', { field: 'saleType', value: 0 })
+    this.contractAsset.saleData.buyNowOrStartingPrice = 0
+    this.contractAsset.saleData.reservePrice = 0
+    this.contractAsset.saleData.incrementPrice = 0
+    this.contractAsset.saleData.saleType = 0
   },
   methods: {
   },

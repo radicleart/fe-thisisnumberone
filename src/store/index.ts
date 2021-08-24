@@ -223,7 +223,7 @@ export default new Vuex.Store({
       return new Promise(resolve => {
         dispatch('rpayAuthStore/fetchMyAccount').then(profile => {
           if (profile.loggedIn) {
-            const data = { stxAddress: 'ST1ESYCGJB5Z5NBHS39XPC70PGC14WAQK5XXNQYDW', mine: true }
+            const data = { stxAddress: 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG', mine: true }
             if (process.env.VUE_APP_NETWORK !== 'local') {
               data.stxAddress = profile.stxAddress
             }

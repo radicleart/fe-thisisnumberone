@@ -47,6 +47,11 @@ export default {
     ItemActionMenu,
     MintInfo
   },
+  watch: {
+    item () {
+      if (this.item && this.item.mintInfo) this.checkMinting(this.item)
+    }
+  },
   data: function () {
     return {
       showHash: false,
@@ -58,10 +63,32 @@ export default {
     this.loading = false
     this.assetHash = this.$route.params.assetHash
     this.edition = Number(this.$route.params.edition)
-    this.$store.dispatch('rpayStacksContractStore/fetchAssetByHashAndEdition', { assetHash: this.assetHash, edition: this.edition })
-    this.$store.dispatch('assetGeneralStore/cacheUpdate', { assetHash: this.assetHash })
+    if (this.edition > 0) {
+      this.$store.dispatch('rpayStacksContractStore/fetchAssetByHashAndEdition', { assetHash: this.assetHash, edition: this.edition })
+      this.$store.dispatch('assetGeneralStore/cacheUpdate', { assetHash: this.assetHash })
+    }
   },
   methods: {
+    checkMinting (item) {
+      if (item.mintInfo) {
+        if (!item.mintInfo.txId) {
+          item.mintInfo = null
+          this.$store.dispatch('rpayMyItemStore/saveItem', item)
+        } else {
+          if (item.mintInfo.txStatus === 'pending') {
+            this.$store.dispatch('rpayTransactionStore/readTransactionInfo', item.mintInfo.txId, { root: true }).then((txData) => {
+              if (txData.txStatus !== 'pending') {
+                item.mintInfo = txData
+                this.$store.dispatch('rpayMyItemStore/saveItem', item)
+              }
+            })
+          } else if (item.mintInfo.txStatus === 'sent') {
+            item.mintInfo = null
+            this.$store.dispatch('rpayMyItemStore/saveItem', item)
+          }
+        }
+      }
+    },
     getMediaItem () {
       const attributes = this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](this.item)
       return attributes
@@ -110,7 +137,10 @@ export default {
       return profile
     },
     iAmOwner () {
-      return this.item.contractAsset.owner === this.profile.stxAddress
+      if (process.env.VUE_APP_NETWORK === 'local') {
+        return this.item.contractAsset && this.item.contractAsset.owner === 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
+      }
+      return this.item.contractAsset && this.item.contractAsset.owner === this.profile.stxAddress
     },
     minted () {
       // const profile = this.$store.getters['rpayAuthStore/getMyProfile']
