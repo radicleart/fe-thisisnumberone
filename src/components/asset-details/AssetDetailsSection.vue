@@ -84,7 +84,7 @@
       <b-col cols="12" class="w-50">
         <h1>{{confirmOfferDialog[0].text}}</h1>
         <h4 class="text-center mb-5">{{confirmOfferDialog[1].text}}</h4>
-        <h4 class="text-center mb-5"><a :href="transactionUrl(mintResultTxId)" target="_blank">Transaction sent to Stacks Blockchain</a></h4>
+        <h4 class="text-center mb-5"><a :href="transactionUrl" target="_blank">Transaction sent to Stacks Blockchain</a></h4>
         <p class="text-center mx-md-5 px-md-5 mb-5">{{confirmOfferDialog[2].text}}</p>
         <div class="mt-5"><a href="#" @click.prevent="back()"><b-icon icon="chevron-left"/> {{confirmOfferDialog[3].text}}</a></div>
       </b-col>
@@ -111,8 +111,6 @@ import moment from 'moment'
 import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
 import utils from '@/services/utils'
 import MintInfo from '@/components/toolkit/mint-setup/MintInfo'
-
-const NETWORK = process.env.VUE_APP_NETWORK
 
 export default {
   name: 'AssetDetailsSection',
@@ -157,18 +155,15 @@ export default {
       window.eventBus.$on('rpayEvent', function (data) {
         const txResult = $self.$store.getters[APP_CONSTANTS.KEY_TRANSACTION_DIALOG_MESSAGE]({ dKey: data.opcode, txId: data.txId })
         $self.$store.commit('setModalMessage', txResult)
-        if (data.opcode.indexOf('stx-transaction-') > -1) {
-          // $self.showRpay = 0
-          // $self.$bvModal.hide('result-modal')
-          // $self.$bvModal.hide('asset-offer-modal')
-          // $self.$bvModal.hide('rpay-modal')
-          // $self.mintResult = txResult
-          // $self.$root.$emit('bv::show::modal', 'success-modal')
-        } else {
-          // $self.$bvModal.hide('minting-modal')
-          // $self.showRpay = false
-          // $self.mintTitle = 'Not Minted'
-          // $self.$bvModal.show('result-modal')
+        if (data.opcode.indexOf('stx-transaction-update') > -1) {
+          $self.$bvModal.hide('asset-offer-modal')
+          $self.$bvModal.hide('result-modal')
+          if (data.txStatus === 'success') {
+            $self.$notify({ type: 'success', title: 'Buy Now', text: 'Congratulations! This NFT is now yours - redirecting to your NFT Library. ' })
+            // this.$router.push('/my-nfts')
+          } else if (data.txStatus === 'pending') {
+            // $self.$notify({ type: 'warning', title: 'Buy Now', text: 'Buy Now In Progress. ' })
+          }
         }
       })
     }
@@ -238,9 +233,6 @@ export default {
     },
     getSaleType: function () {
       return this.gaiaAsset.contractAsset.saleData.saleType
-    },
-    transactionUrl: function (txId) {
-      return 'https://explorer.stacks.co/txid/' + txId + '?chain=' + NETWORK
     },
     openPurchaceDialog: function () {
       this.forceOfferFlow = false
@@ -314,6 +306,11 @@ export default {
     }
   },
   computed: {
+    transactionUrl: function () {
+      if (!this.gaiaAsset.mintInfo || !this.gaiaAsset.mintInfo.txId) return '#'
+      const stacksApiUrl = process.env.VUE_APP_STACKS_EXPLORER
+      return stacksApiUrl + '/txid/' + this.gaiaAsset.mintInfo.txId + '?chain=' + process.env.VUE_APP_NETWORK
+    },
     editionsAvailable: function () {
       return this.gaiaAsset.contractAsset.editionCounter < this.gaiaAsset.contractAsset.tokenInfo.maxEditions
     },

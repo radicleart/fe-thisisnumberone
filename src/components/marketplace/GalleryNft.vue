@@ -79,10 +79,9 @@ export default {
     },
     assetUrl () {
       if (this.item.contractAsset) {
-        return '/nfts/' + this.item.contractAsset.nftIndex
-      } else {
-        return '/assets/' + this.item.contractAsset.tokenInfo.assetHash + '/1'
+        // return '/nfts/' + this.item.contractAsset.nftIndex
       }
+      return '/assets/' + this.item.contractAsset.tokenInfo.assetHash + '/1'
     }
   }
 }

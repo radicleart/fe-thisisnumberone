@@ -42,13 +42,7 @@ import PurchaseOfferEmail from './PurchaseOfferEmail'
 import PurchaseOfferSuccess from './PurchaseOfferSuccess'
 import PurchaseOfferFailure from './PurchaseOfferFailure'
 import moment from 'moment'
-import {
-  makeContractSTXPostCondition,
-  makeStandardSTXPostCondition,
-  FungibleConditionCode
-} from '@stacks/transactions'
 import utils from '@/services/utils'
-import BigNum from 'bn.js'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
@@ -215,17 +209,10 @@ export default {
           this.webWalletNeeded = true
         })
       }
-      const standardSTXPostCondition = makeStandardSTXPostCondition(
-        profile.stxAddress,
-        FungibleConditionCode.LessEqual,
-        new BigNum(utils.toOnChainAmount(contractAsset.saleData.buyNowOrStartingPrice))
-      )
-
       if (NETWORK === 'local') {
         recipient = (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address
       }
       const buyNowData = {
-        postConditions: [standardSTXPostCondition],
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,
         sendAsSky: false,
@@ -264,14 +251,7 @@ export default {
         functionName = 'opening-bid'
         bidAmount = contractAsset.saleData.buyNowOrStartingPrice
       }
-      const standardSTXPostCondition = makeContractSTXPostCondition(
-        STX_CONTRACT_ADDRESS,
-        STX_CONTRACT_NAME,
-        FungibleConditionCode.Equal,
-        new BigNum(utils.toOnChainAmount(bidAmount))
-      )
       const bidData = {
-        postConditions: [standardSTXPostCondition],
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,
         functionName: functionName,
@@ -279,7 +259,7 @@ export default {
         nftIndex: contractAsset.nftIndex,
         assetHash: contractAsset.tokenInfo.assetHash,
         appTimestamp: moment({}).valueOf(),
-        bidAmount: new BigNum(utils.toOnChainAmount(bidAmount))
+        bidAmount: bidAmount
       }
       this.$store.dispatch('rpayPurchaseStore/placeBid', bidData).then((result) => {
         this.contentKey = 'successful-bid'

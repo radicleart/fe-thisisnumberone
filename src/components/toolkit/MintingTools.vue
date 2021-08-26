@@ -2,25 +2,16 @@
 <div id="minting-tools" class="mt-3" v-if="item">
   <div class="">
     <div v-if="!item.contractAsset" class="w-100 text-small">
-      <div v-if="minting()">
-        <b-alert show variant="warning">
-          <div class="d-flex justify-content-between">
-            <div class="w-100 text-small">Currently Minting - <a class="text-dark" :href="transactionUrl()" target="_blank">track progress...</a></div>
-            <div><a class="text-danger" href="#" @click.prevent="markFailed">check transaction?</a></div>
+      <div v-if="!txPending">
+        <div v-if="isValid">
+          <div>
+            <b-button variant="outline-warning" @click="startMinting()">Mint File</b-button>
           </div>
-        </b-alert>
-      </div>
-      <div v-else-if="isValid">
-        <div>
-          <b-button variant="outline-warning" @click="startMinting()">Mint File</b-button>
         </div>
+        <b-alert v-else show variant="danger">Information required - <b-link :to="'/edit-item/' + item.assetHash">edit this item</b-link></b-alert>
       </div>
-      <b-alert v-else show variant="danger">Information required - <b-link :to="'/edit-item/' + item.assetHash">edit this item</b-link></b-alert>
     </div>
     <div v-else class="mt-5">
-      <div v-if="this.item.mintInfo">
-        <a :href="transactionUrl" target="_blank">Show in Explorer</a>
-      </div>
       <b-tabs justified content-class="bg-black p-5 border mt-3">
         <b-tab title="General" active>
           <div class="row" v-if="item.contractAsset && application">
@@ -104,8 +95,6 @@ import BidHistory from '@/components/toolkit/bids/BidHistory'
 
 // const RisidioPay = () => import('risidio-pay')
 
-const NETWORK = process.env.VUE_APP_NETWORK
-
 export default {
   name: 'MintingTools',
   components: {
@@ -153,11 +142,16 @@ export default {
         } else if (data.opcode === 'stx-transaction-sent' || data.opcode === 'stx-transaction-update') {
           $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
-          if (data.functionName.startsWith('mint-')) {
-            $self.item.mintInfo = data
-            $self.$store.dispatch('rpayMyItemStore/saveItem', $self.item)
+          if (data.txId) {
+            const item = $self.item
+            item.mintInfo = data
+            $self.$store.dispatch('rpayMyItemStore/saveItem', item).then(() => {
+              $self.$emit('update')
+            }).catch(() => {
+              $self.$emit('update')
+            })
           }
-          $self.$notify({ type: 'warning', title: 'Transaction News', text: 'Transaction ' + data.functionName + ' has status ' + data.txStatus })
+          // $self.$notify({ type: 'warning', title: 'Transaction News', text: 'Transaction ' + data.functionName + ' has status ' + data.txStatus })
         } else if (data.opcode === 'cancel-minting') {
           $self.$bvModal.hide('selling-modal')
           $self.$bvModal.hide('minting-modal')
@@ -166,26 +160,10 @@ export default {
     }
   },
   methods: {
-    markFailed: function () {
-      const cacheUpdate = {
-        type: 'token',
-        functionName: 'general',
-        nftIndex: (this.item.contractAsset) ? Number(this.item.contractAsset.nftIndex) : null,
-        assetHash: this.item.assetHash,
-        contractId: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME
-      }
-      this.$store.dispatch('rpayStacksContractStore/updateCache', cacheUpdate, { root: true }).then((result) => {
-        this.item.mintInfo = result
-        this.$store.dispatch('rpayMyItemStore/saveItem', this.item)
-      })
-    },
     openSaleDataDialog: function () {
       this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'selling-flow', asset: this.item })
       this.showRpay = true
       this.$bvModal.show('selling-modal')
-    },
-    minting: function () {
-      return !this.item.contractAsset && this.item.mintInfo
     },
     startMinting: function () {
       this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: this.item })
@@ -201,15 +179,14 @@ export default {
     offerMade: function (madeData) {
       return moment(madeData).format('DD-MM hh:mm')
     },
-    transactionUrl: function () {
-      const stacksApiUrl = process.env.VUE_APP_STACKS_API
-      return stacksApiUrl + '/txid/' + this.item.mintInfo.txId + '?chain=' + NETWORK
-    },
     upable: function () {
       return this.uploadState > 1 && this.uploadState < 5
     }
   },
   computed: {
+    txPending: function () {
+      return this.item.mintInfo && this.item.mintInfo.txId
+    },
     transaction () {
       const transaction = this.$store.getters[APP_CONSTANTS.KEY_TRANSACTION](this.item.mintInfo.txId)
       return transaction
