@@ -9,6 +9,7 @@ const assetGeneralStore = {
   namespaced: true,
   state: {
     emailData: [],
+    filters: [],
     offers: [],
     transactions: [],
     cacheState: 0
@@ -16,6 +17,9 @@ const assetGeneralStore = {
   getters: {
     getTransactions: state => {
       return state.transactions
+    },
+    getFilters: state => {
+      return state.filters
     },
     getOffers: state => {
       return state.offers
@@ -53,6 +57,9 @@ const assetGeneralStore = {
   mutations: {
     setTransactions (state, transactions) {
       state.transactions = transactions
+    },
+    setFilters (state, filters) {
+      state.filters = filters
     },
     setCacheState (state, data) {
       state.cacheState = data
@@ -128,17 +135,6 @@ const assetGeneralStore = {
           resolve(result.data)
         }).catch((error) => {
           resolve(new Error('Unable to build search index: ' + error))
-        })
-      })
-    },
-    fetchTransactions ({ commit }) {
-      return new Promise(function (resolve, reject) {
-        // const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
-        axios.get(MESH_API_PATH + '/v2/fetch/transactions').then((response) => {
-          commit('setTransactions', response.data)
-          resolve(response.data)
-        }).catch((error) => {
-          reject(new Error('Unable to fetch offers: ' + error))
         })
       })
     }

@@ -33,11 +33,11 @@
 </template>
 
 <script>
-import MintInfo from '@/components/toolkit/mint-setup/MintInfo'
-import MintingTools from '@/components/toolkit/MintingTools'
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
 import ItemActionMenu from '@/components/items/ItemActionMenu'
+import MintInfo from '@/components/toolkit/mint-setup/MintInfo'
+import MintingTools from '@/components/toolkit/MintingTools'
 
 export default {
   name: 'ItemPreview',
@@ -65,7 +65,6 @@ export default {
     this.edition = Number(this.$route.params.edition)
     if (this.edition > 0) {
       this.$store.dispatch('rpayStacksContractStore/fetchAssetByHashAndEdition', { assetHash: this.assetHash, edition: this.edition })
-      this.$store.dispatch('assetGeneralStore/cacheUpdate', { assetHash: this.assetHash })
     }
   },
   methods: {
@@ -76,7 +75,7 @@ export default {
           this.$store.dispatch('rpayMyItemStore/saveItem', item)
         } else {
           if (item.mintInfo.txStatus === 'pending') {
-            this.$store.dispatch('rpayTransactionStore/readTransactionInfo', item.mintInfo.txId, { root: true }).then((txData) => {
+            this.$store.dispatch('rpayTransactionStore/fetchTransactionFromChainByTxId', item.mintInfo.txId, { root: true }).then((txData) => {
               if (txData.txStatus !== 'pending') {
                 item.mintInfo = txData
                 this.$store.dispatch('rpayMyItemStore/saveItem', item)
@@ -159,5 +158,4 @@ export default {
   border: none !important;
   background-color: transparent !important;
 }
-
 </style>
