@@ -1,5 +1,5 @@
 <template>
-<div v-if="item && item.attributes" class="mt-1">
+<div v-if="item && item.contractAsset && item.attributes" class="mt-1">
   <b-link :to="assetUrl">
     <MediaItemGeneral :classes="'item-image text-center'" class="p-0 m-0" v-on="$listeners" :options="videoOptions" :mediaItem="item.attributes.coverImage"/>
   </b-link>
@@ -79,9 +79,9 @@ export default {
     },
     assetUrl () {
       if (this.item.contractAsset) {
-        // return '/nfts/' + this.item.contractAsset.nftIndex
+        return '/nfts/' + this.item.contractAsset.nftIndex
       }
-      return '/assets/' + this.item.contractAsset.tokenInfo.assetHash + '/1'
+      return '/assets/' + this.item.assetHash + '/1'
     }
   }
 }

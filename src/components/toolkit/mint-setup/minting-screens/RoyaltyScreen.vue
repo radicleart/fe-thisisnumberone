@@ -4,7 +4,8 @@
     <!-- <header-screen :allowEdit="false" :item="item"/> -->
     <ItemDisplay class="my-5" :item="item"/>
     <div class="d-flex justify-content-center"><p class="w-50 bg-warning py-3 px-5 mb-5"><a class="text-white" href="#" @click="showBeneficiaries = true">Set Your Royalties</a></p></div>
-    <beneficiaries class="mb-5 text-left" v-if="showBeneficiaries" :beneficiaries="beneficiaries" v-on="$listeners" :item="item"/>
+    <EditEditions :item="item"/>
+    <Beneficiaries class="mb-5 text-left" v-if="showBeneficiaries" :beneficiaries="beneficiaries" v-on="$listeners" :item="item"/>
     <div class="my-4 text-danger" v-html="errorMessage"></div>
     <template v-slot:footer>
       <div class="d-flex justify-content-between">
@@ -20,11 +21,13 @@
 import { APP_CONSTANTS } from '@/app-constants'
 import Beneficiaries from './Beneficiaries'
 import ItemDisplay from './ItemDisplay'
+import EditEditions from './EditEditions'
 
 export default {
   name: 'RoyaltyScreen',
   components: {
     Beneficiaries,
+    EditEditions,
     ItemDisplay
   },
   props: ['item', 'beneficiaries', 'errorMessage'],

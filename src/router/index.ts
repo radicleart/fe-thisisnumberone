@@ -68,6 +68,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/nft-gallery',
+    alias: '/nft-market',
     name: 'nft-gallery',
     components: { default: NftGallery, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'This is number one' }

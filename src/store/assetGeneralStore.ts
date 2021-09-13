@@ -120,7 +120,7 @@ const assetGeneralStore = {
     },
     buildCache ({ commit }) {
       return new Promise(function (resolve) {
-        axios.get(MESH_API_PATH + '/v2/build-cache').then((result) => {
+        axios.get(MESH_API_PATH + '/v2/build-cache/' + STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((result) => {
           commit('setCacheState', result.data)
           resolve(result.data)
         }).catch((error) => {

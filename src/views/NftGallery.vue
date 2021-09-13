@@ -1,9 +1,9 @@
 <template>
-<div class="container" v-if="resultSet && resultSet.length > 0">
+<div class="container" v-if="loaded">
   <div class="my-5">
     <h1 class="text-white">#1 NFT Gallery</h1>
     <div class="row mb-4">
-      <div v-for="(item, index) in resultSet" :key="index" class="mt-5 col-md-4 col-sm-4 col-6">
+      <div v-for="(item, index) in gaiaAssets" :key="index" class="mt-5 col-md-4 col-sm-4 col-6">
         <GalleryNft class="mb-2" :item="item"/>
       </div>
     </div>
@@ -19,6 +19,7 @@
 
 <script>
 import GalleryNft from '@/components/marketplace/GalleryNft'
+import { APP_CONSTANTS } from '@/app-constants'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
@@ -39,13 +40,21 @@ export default {
   },
   methods: {
     findAssets () {
-      const pid = STX_CONTRACT_NAME.split('-')[0]
-      this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + pid).then((results) => {
-        this.resultSet = results
+      // const pid = STX_CONTRACT_NAME.split('-')[0]
+      this.$store.dispatch('rpayStacksContractStore/fetchContractDataFirstEditions').then(() => {
+        // this.resultSet = results
+        this.loaded = true
+      })
+      this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {
+        this.searchSet = results
       })
     }
   },
   computed: {
+    gaiaAssets () {
+      const assets = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
+      return assets
+    }
   }
 }
 </script>

@@ -135,8 +135,6 @@ export default {
           $self.$bvModal.hide('minting-modal')
           $self.mintResult = data
           // $self.$bvModal.show('result-modal')
-        } else if (data.opcode === 'stx-update-mint-data') {
-          if (data.gaiaAsset) $self.$store.dispatch('rpayMyItemStore/saveItem', data.gaiaAsset)
         } else if (data.opcode === 'stx-save-and-close-mint-data') {
           // $self.$bvModal.hide('minting-modal')
         } else if (data.opcode === 'stx-transaction-sent' || data.opcode === 'stx-transaction-update') {
@@ -144,7 +142,12 @@ export default {
           $self.$bvModal.hide('minting-modal')
           if (data.txId) {
             const item = $self.item
-            item.mintInfo = data
+            if (data && data.functionName === 'mint-token') {
+              item.mintInfo = {
+                txId: data.txId,
+                txStatus: data.txStatus
+              }
+            }
             $self.$store.dispatch('rpayMyItemStore/saveItem', item).then(() => {
               $self.$emit('update')
             }).catch(() => {
