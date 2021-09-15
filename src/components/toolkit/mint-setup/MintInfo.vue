@@ -61,7 +61,7 @@ export default {
       return profile
     },
     iAmOwner () {
-      return this.item.contractAsset.owner === this.profile.stxAddress
+      return this.item.contractAsset && this.item.contractAsset.owner === this.profile.stxAddress
     }
   }
 }
