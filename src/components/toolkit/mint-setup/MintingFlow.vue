@@ -29,6 +29,8 @@ export default {
     }
   },
   mounted () {
+    const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
+    this.item.beneficiaries = configuration.minter.beneficiaries
     if (this.item.beneficiaries && this.item.beneficiaries.length > 0) {
       this.beneficiaries = this.item.beneficiaries
     } else {

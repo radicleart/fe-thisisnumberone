@@ -3,7 +3,7 @@
   <b-card class="text-center" header-tag="header" footer-tag="footer">
     <!-- <header-screen :allowEdit="false" :item="item"/> -->
     <ItemDisplay class="my-5" :item="item"/>
-    <div class="d-flex justify-content-center"><p class="w-50 bg-warning py-3 px-5 mb-5"><a class="text-white" href="#" @click="showBeneficiaries = true">Set Your Royalties</a></p></div>
+    <!-- <div class="d-flex justify-content-center"><p class="w-50 bg-warning py-3 px-5 mb-5"><a class="text-white" href="#" @click="showBeneficiaries = true">Set Your Royalties</a></p></div> -->
     <EditEditions :item="item"/>
     <Beneficiaries class="mb-5 text-left" v-if="showBeneficiaries" :beneficiaries="beneficiaries" v-on="$listeners" :item="item"/>
     <div class="my-4 text-danger" v-html="errorMessage"></div>
@@ -34,7 +34,7 @@ export default {
   data () {
     return {
       mintedMessage: null,
-      showBeneficiaries: false
+      showBeneficiaries: true
     }
   },
   methods: {

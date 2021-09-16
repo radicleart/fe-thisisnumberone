@@ -11,7 +11,7 @@
         <b-row align-v="stretch" :style="'height: ' + videoHeight - 100 + 'px'">
           <b-col cols="12" class="">
             <div class="d-flex justify-content-between mb-5">
-              <div><router-link class="text-white" to="/home"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
+              <div><router-link class="text-white" to="/nft-gallery"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
               <div class="d-flex justify-content-between">
                 <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
                 <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white">
@@ -27,12 +27,13 @@
               <h1 class="text-white">{{gaiaAsset.name}}</h1>
               <h2>{{gaiaAsset.artist}}</h2>
               <MintInfo :item="gaiaAsset" />
-              <div class="w-100 text-white" v-html="preserveWhiteSpace(gaiaAsset.description)">
+              <div v-if="gaiaAsset.description" class="w-100 text-white" v-html="preserveWhiteSpace(gaiaAsset.description)">
               </div>
               <div class="w-25">
                 <ShareLinks class="mt-4" :socialLinks="getSocialLinks()" :gaiaAsset="gaiaAsset" />
               </div>
-              <b-row class="my-4">
+              <PendingTransactionInfo v-if="txPending.length > 0" :contractAsset="gaiaAsset.contractAsset" :assetHash="gaiaAsset.assetHash"/>
+              <b-row class="my-4" v-else>
                 <b-col md="6" sm="12" class="mb-3">
                   <div class="more-link m-0" v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
                 </b-col>
@@ -111,10 +112,12 @@ import moment from 'moment'
 import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
 import utils from '@/services/utils'
 import MintInfo from '@/components/toolkit/mint-setup/MintInfo'
+import PendingTransactionInfo from '@/components/toolkit/PendingTransactionInfo'
 
 export default {
   name: 'AssetDetailsSection',
   components: {
+    PendingTransactionInfo,
     AssetUpdatesModal,
     EditionTrigger,
     PurchaseFlow,
@@ -311,8 +314,17 @@ export default {
       const stacksApiUrl = process.env.VUE_APP_STACKS_EXPLORER
       return stacksApiUrl + '/txid/' + this.gaiaAsset.mintInfo.txId + '?chain=' + process.env.VUE_APP_NETWORK
     },
+    txPending () {
+      let transactions = []
+      if (this.gaiaAsset.contractAsset) {
+        transactions = this.$store.getters[APP_CONSTANTS.KEY_TX_PENDING_BY_TX_ID](this.gaiaAsset.contractAsset.nftIndex)
+      } else {
+        transactions = this.$store.getters[APP_CONSTANTS.KEY_TX_PENDING_BY_ASSET_HASH](this.gaiaAsset.assetHash)
+      }
+      return transactions
+    },
     editionsAvailable: function () {
-      return this.gaiaAsset.contractAsset.editionCounter < this.gaiaAsset.contractAsset.tokenInfo.maxEditions
+      return this.gaiaAsset.contractAsset.tokenInfo.edition === 1 && this.gaiaAsset.contractAsset.editionCounter < this.gaiaAsset.contractAsset.tokenInfo.maxEditions
     },
     webWalletLink () {
       if (this.$browserDetect.isFirefox) {

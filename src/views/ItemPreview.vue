@@ -21,9 +21,10 @@
           </div>
           <h6 class="text-small">By : {{item.artist}}</h6>
         </div>
-        <p class="pt-4 text-small" v-html="preserveWhiteSpace(item.description)"></p>
-        <MintInfo :item="item" />
-        <div>
+        <p v-if="item.description" class="pt-4 text-small" v-html="preserveWhiteSpace(item.description)"></p>
+        <MintInfo class="my-5" :item="item" />
+        <PendingTransactionInfo v-if="txPending.length > 0" :contractAsset="item.contractAsset" :assetHash="item.assetHash"/>
+        <div v-else>
           <MintingTools class="w-100" :item="item" v-if="iAmOwner || edition === 0" />
         </div>
       </b-col>
@@ -38,10 +39,12 @@ import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
 import ItemActionMenu from '@/components/items/ItemActionMenu'
 import MintInfo from '@/components/toolkit/mint-setup/MintInfo'
 import MintingTools from '@/components/toolkit/MintingTools'
+import PendingTransactionInfo from '@/components/toolkit/PendingTransactionInfo'
 
 export default {
   name: 'ItemPreview',
   components: {
+    PendingTransactionInfo,
     MintingTools,
     MediaItemGeneral,
     ItemActionMenu,
@@ -130,6 +133,15 @@ export default {
         item = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH_EDITION]({ assetHash: this.assetHash, edition: this.edition })
       }
       return item
+    },
+    txPending () {
+      let transactions = []
+      if (this.item.contractAsset) {
+        transactions = this.$store.getters[APP_CONSTANTS.KEY_TX_PENDING_BY_TX_ID](this.item.contractAsset.nftIndex)
+      } else {
+        transactions = this.$store.getters[APP_CONSTANTS.KEY_TX_PENDING_BY_ASSET_HASH](this.item.assetHash)
+      }
+      return transactions
     },
     profile () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']

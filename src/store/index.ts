@@ -35,18 +35,32 @@ const marketConfig = {
 }
 const beneficiariesDefault = [
   {
-    username: 'donation.id',
-    role: 'Charitable Donation',
-    email: 'donation@thisisnumberone.com',
-    royalty: 10,
-    chainAddress: 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
+    username: 'jim',
+    role: 'Jim',
+    email: 'jim@thisisnumberone.com',
+    royalty: 25,
+    chainAddress: 'SP162D87CY84QVVCMJKNKGHC7GGXFGA0TAR9D0XJW'
   },
   {
-    username: 'environment.id',
-    role: 'Environment/Sustainabilty',
-    email: 'environment@thisisnumberone.com',
-    royalty: 5,
-    chainAddress: 'STMYA5EANW6C0HNS1S57VX52M0B795HHFDBW2XBE'
+    username: 'dash.id',
+    role: 'dash',
+    email: 'dash@thisisnumberone.com',
+    royalty: 25,
+    chainAddress: 'SP1CS4FVXC59S65C3X1J3XRNZGWTG212JT7CG73AG'
+  },
+  {
+    username: 'marc.id',
+    role: 'marc',
+    email: 'marc@thisisnumberone.com',
+    royalty: 25,
+    chainAddress: 'SPZRAE52H2NC2MDBEV8W99RFVPK8Q9BW8H88XV9N'
+  },
+  {
+    username: 'mijoco.id',
+    role: 'mijoco',
+    email: 'mijoco@thisisnumberone.com',
+    royalty: 25,
+    chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
   }
 ]
 const payment = {

@@ -53,7 +53,8 @@ export default {
       const asset = this.$store.getters[APP_CONSTANTS.KEY_ASSET](assetHash)
 
       const preferredNetwork = this.$store.getters[APP_CONSTANTS.KEY_PREFERRED_NETWORK]
-      let message = 'This NFT (#' + asset.contractAsset.nftIndex + ') has been minted on the Stacks Blockchain!'
+      const nftIndex = (asset.contractAsset) ? asset.contractAsset.nftIndex : -1
+      let message = 'This NFT (#' + nftIndex + ') has been minted on the Stacks Blockchain!'
       if (preferredNetwork.network === 'ethereum') {
         message = 'This NFT (#' + asset.tokenId + ') has been minted on the Ethereum Blockchain'
       }

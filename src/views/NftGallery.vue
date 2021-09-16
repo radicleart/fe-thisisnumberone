@@ -53,7 +53,7 @@ export default {
   computed: {
     gaiaAssets () {
       const assets = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS]
-      return assets
+      return (assets) ? assets.reverse() : []
     }
   }
 }

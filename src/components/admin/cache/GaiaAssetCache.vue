@@ -1,5 +1,5 @@
 <template>
-<div class="p-2">
+<div class="p-2" v-if="gaiaAsset && gaiaAsset.contractAsset">
   <div class="row ml-4 mt-3 border-bottom mb-3 pb-2" v-for="(gaiaAsset, index) in getGaiaAssets" :key="index">
     <div class="col-2 my-2">
       <div><img width="70px" :src="gaiaAsset.image"/></div>

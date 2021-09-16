@@ -88,7 +88,7 @@ export default {
       const data = {
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,
-        seriesOriginal: this.item.contractAsset.nftIndex,
+        seriesOriginal: (this.item.contractAsset) ? this.item.contractAsset.nftIndex : -1,
         maxEditions: maxEditions,
         editionCost: editionCost
       }

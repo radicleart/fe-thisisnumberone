@@ -75,6 +75,16 @@ export const APP_CONSTANTS = {
   KEY_MACS_WALLET: 'rpayStacksStore/getMacsWallet',
   KEY_SKYS_WALLET: 'rpayStacksStore/getSkysWallet',
 
+  KEY_TX_PENDING: 'rpayTransactionStore/getPending',
+  KEY_TX_PENDING_BY_TX_ID: 'rpayTransactionStore/getPendingByNftIndex',
+  KEY_TX_PENDING_BY_ASSET_HASH: 'rpayTransactionStore/getPendingByAssetHash',
+  KEY_TRANSACTION_BY_TX_ID: 'rpayTransactionStore/getTransaction',
+  KEY_TRANSACTIONS_BY_NFT_INDEX: 'rpayTransactionStore/getTransactionsByNftIndex',
+  KEY_TRANSACTIONS_BY_ASSET_HASH: 'rpayTransactionStore/getTransactionsByAssetHash',
+  KEY_TRANSACTIONS_BY_TX_STATUS: 'rpayTransactionStore/getTransactionsByTxStatus',
+  KEY_TRANSACTIONS_BY_FUNCTION_NAME: 'rpayTransactionStore/getTransactionsByFunctionName',
+  KEY_TRANSACTIONS_BY_TX_STATUS_AND_NFT_INDEX: 'rpayTransactionStore/getTransactionsByTxStatusAndNftIndex',
+
   KEY_GAIA_ASSET_BY_HASH_EDITION: 'rpayStacksContractStore/getAssetByHashAndEdition',
   KEY_TARGET_FILE_FOR_DISPLAY: 'rpayStacksContractStore/getTargetFileForDisplay',
   KEY_GAIA_ASSET_BY_HASH: 'rpayStacksContractStore/getGaiaAssetByHash',

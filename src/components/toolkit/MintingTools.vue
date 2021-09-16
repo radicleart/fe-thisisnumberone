@@ -2,7 +2,10 @@
 <div id="minting-tools" class="mt-3" v-if="item">
   <div class="">
     <div v-if="!item.contractAsset" class="w-100 text-small">
-      <div v-if="!txPending">
+      <div v-if="txPending && txPending.length > 0">
+        Minting in progess - please refresh this page when the transaction completes.
+      </div>
+      <div v-else>
         <div v-if="isValid">
           <div>
             <b-button variant="outline-warning" @click="startMinting()">Mint File</b-button>
@@ -12,8 +15,25 @@
       </div>
     </div>
     <div v-else class="mt-5">
-      <b-tabs justified content-class="bg-black p-5 border mt-3">
-        <b-tab title="General" active>
+      <b-tabs justified content-class="bg-black p-5 mt-3">
+        <b-tab :title="'Sell'" active>
+          <div class="mb-5">Set buy now price or switch of sales</div>
+          <div>
+            <b-button class="btn-action" variant="outline-warning" @click="openSaleDataDialog()">Update Sale Info</b-button>
+          </div>
+        </b-tab>
+        <!--
+        <b-tab title="Sell" >
+          <b-tabs justified content-class="mt-3">
+            <b-tab :title="'Offers'" v-if="profile.superAdmin">
+              <OfferHistory :item="item"/>
+            </b-tab>
+            <b-tab :title="'Bids'" v-if="profile.superAdmin">
+              <BidHistory :item="item"/>
+            </b-tab>
+          </b-tabs>
+        </b-tab>
+        <b-tab title="General" >
           <div class="row" v-if="item.contractAsset && application">
             <div class="col-12">
               <ManageEditions :item="item"/>
@@ -30,27 +50,12 @@
         <b-tab title="Royalties">
           <ListBeneficiaries :item="item"/>
         </b-tab>
+        -->
         <b-tab title="Transfer">
           <TransferNft :item="item"/>
         </b-tab>
         <b-tab title="Next" v-if="profile.superAdmin && contractNameNext">
           <b-button @click="startMinting()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
-        </b-tab>
-        <b-tab title="Sell">
-          <b-tabs justified content-class="mt-3">
-            <b-tab :title="'Info'">
-              <div>
-                <div class="my-5">{{saleDataText}}</div>
-                <b-button class="btn-action" variant="outline-warning" @click="openSaleDataDialog()">Update Sale Info</b-button>
-              </div>
-            </b-tab>
-            <b-tab :title="'Offers'" v-if="profile.superAdmin">
-              <OfferHistory :item="item"/>
-            </b-tab>
-            <b-tab :title="'Bids'" v-if="profile.superAdmin">
-              <BidHistory :item="item"/>
-            </b-tab>
-          </b-tabs>
         </b-tab>
       </b-tabs>
     </div>
@@ -69,15 +74,9 @@
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="lg" id="selling-modal">
-    <SellingFlow :contractAsset="item.contractAsset"  v-if="item.contractAsset"/>
+    <SellingFlow @cancel="cancel" :contractAsset="item.contractAsset"  v-if="item.contractAsset"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
-  <!--
-  <b-modal size="md" id="selling-modal">
-    <risidio-pay v-if="showRpay" :configuration="configuration"/>
-    <template #modal-footer class="text-center"><div class="w-100"></div></template>
-  </b-modal>
-  -->
 </div>
 </template>
 
@@ -87,26 +86,20 @@ import SellingFlow from './sell-setup/SellingFlow'
 import moment from 'moment'
 import { APP_CONSTANTS } from '@/app-constants'
 import AcceptOffer from '@/components/toolkit/AcceptOffer'
-import ManageEditions from '@/components/toolkit/editions/ManageEditions'
+// import ManageEditions from '@/components/toolkit/editions/ManageEditions'
 import TransferNft from '@/components/toolkit/TransferNft'
-import ListBeneficiaries from '@/components/toolkit/ListBeneficiaries'
-import OfferHistory from '@/components/toolkit/offers/OfferHistory'
-import BidHistory from '@/components/toolkit/bids/BidHistory'
-
+// import ListBeneficiaries from '@/components/toolkit/ListBeneficiaries'
+// import OfferHistory from '@/components/toolkit/offers/OfferHistory'
+// import BidHistory from '@/components/toolkit/bids/BidHistory'
 // const RisidioPay = () => import('risidio-pay')
-
 export default {
   name: 'MintingTools',
   components: {
     MintingFlow,
     SellingFlow,
-    OfferHistory,
-    BidHistory,
     // RisidioPay,
     AcceptOffer,
-    TransferNft,
-    ListBeneficiaries,
-    ManageEditions
+    TransferNft
   },
   props: ['item'],
   data: function () {
@@ -135,6 +128,8 @@ export default {
           $self.$bvModal.hide('minting-modal')
           $self.mintResult = data
           // $self.$bvModal.show('result-modal')
+        } else if (data.opcode === 'stx-update-mint-data') {
+          if (data.gaiaAsset) $self.$store.dispatch('rpayMyItemStore/saveItem', data.gaiaAsset)
         } else if (data.opcode === 'stx-save-and-close-mint-data') {
           // $self.$bvModal.hide('minting-modal')
         } else if (data.opcode === 'stx-transaction-sent' || data.opcode === 'stx-transaction-update') {
@@ -163,6 +158,10 @@ export default {
     }
   },
   methods: {
+    cancel: function () {
+      this.$bvModal.hide('selling-modal')
+      this.$bvModal.hide('minting-modal')
+    },
     openSaleDataDialog: function () {
       this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'selling-flow', asset: this.item })
       this.showRpay = true
@@ -187,8 +186,14 @@ export default {
     }
   },
   computed: {
-    txPending: function () {
-      return this.item.mintInfo && this.item.mintInfo.txId
+    txPending () {
+      let transactions = []
+      if (this.item.contractAsset) {
+        transactions = this.$store.getters[APP_CONSTANTS.KEY_TX_PENDING_BY_TX_ID](this.item.contractAsset.nftIndex)
+      } else {
+        transactions = this.$store.getters[APP_CONSTANTS.KEY_TX_PENDING_BY_ASSET_HASH](this.item.assetHash)
+      }
+      return transactions
     },
     transaction () {
       const transaction = this.$store.getters[APP_CONSTANTS.KEY_TRANSACTION](this.item.mintInfo.txId)

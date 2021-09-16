@@ -83,7 +83,7 @@ export default {
         contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
         owner: this.contractAsset.owner,
         assetHash: this.contractAsset.tokenInfo.assetHash,
-        nftIndex: this.contractAsset.nftIndex,
+        nftIndex: (this.contractAsset) ? this.contractAsset.nftIndex : -1,
         saleData: this.contractAsset.saleData
       }
       this.$store.dispatch('rpayPurchaseStore/setTradeInfo', data).then((result) => {
