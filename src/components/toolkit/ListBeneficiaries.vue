@@ -34,6 +34,7 @@ export default {
       return (address.valueHex)
     },
     getShare: function (index) {
+      if (!this.item.contractAsset) return 0
       const contractAsset = this.item.contractAsset
       const share = contractAsset.beneficiaries.shares[index]
       if (!share) return

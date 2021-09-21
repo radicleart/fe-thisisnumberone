@@ -8,12 +8,14 @@
     <div class="mx-5 mb-3">
       <b-button class="w-100" @click="changeSellingOption(1)" :variant="(contractAsset.saleData.saleType === 1) ? 'warning' : 'light'"><span>Buy Now</span></b-button>
     </div>
+    <!--
     <div class="mx-5 mb-3">
       <b-button class="w-100" @click="changeSellingOption(2)" :variant="(contractAsset.saleData.saleType === 2) ? 'warning' : 'light'"><span>Bidding</span></b-button>
     </div>
     <div class="mx-5 mb-3">
       <b-button class="w-100" @click="changeSellingOption(3)" :variant="(contractAsset.saleData.saleType === 3) ? 'warning' : 'light'"><span>Offers</span></b-button>
     </div>
+    -->
   </div>
   <div class="mt-5 mx-5" v-if="showSaleData">
     <p class="text-right"><a href="#" @click.prevent="showSaleData = !showSaleData"><b-icon icon="chevron-left"/>back</a></p>

@@ -1,7 +1,7 @@
 <template>
 <div class="text-small pb-0 mb-0">
   <span class="ml-2 border-bottom" ><b-link :to="itemPreviewUrl">open</b-link></span>
-  <span v-if="this.item.contractAsset">
+  <span v-if="this.item.contractAsset && application && application.tokenContract">
     <span class="ml-2 border-bottom"><a :href="item.contractAsset.tokenInfo.metaDataUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Meta Data URL: ' + item.contractAsset.tokenInfo.metaDataUrl" target="_blank">meta data</a></span>
     <span class="ml-2 border-bottom"><a class="text-warning" :href="application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" v-b-tooltip.hover="{ variant: 'light' }" :title="'Base Token URL: ' + application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" target="_blank">nft link</a></span>
     <span class="ml-2 border-bottom" v-if="item.mintInfo"><a :href="transactionUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Base Token URL: ' + application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" target="_blank">mint tx</a></span>

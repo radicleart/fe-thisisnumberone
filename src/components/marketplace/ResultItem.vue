@@ -33,7 +33,7 @@ export default {
       if (ele) {
         width = ele.clientWidth
       }
-      this.height = width // this.$store.getters[APP_CONSTANTS.KEY_GALLERY_IMAGE_WIDTH](width)
+      this.height = width
     }, this)
   },
   methods: {

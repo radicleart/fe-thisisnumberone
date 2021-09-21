@@ -31,12 +31,7 @@
         <b-col cols="12">
           <h4 class="text-warning">Royalties</h4>
           <p class="text-small">First payment is split as follows - thereafter 90% goes to the seller and these addresses get 1/10 th of the original percentage</p>
-          <div cols="12" v-for="(share, index) in item.contractAsset.beneficiaries.shares" :key="index">
-            <div class="d-flex justify-content-between" v-if="share.value > 0">
-              <div>{{item.contractAsset.beneficiaries.addresses[index].valueHex}}</div>
-              <div>{{share.value}}</div>
-            </div>
-          </div>
+          <ListBeneficiaries :item="item" />
         </b-col>
       </b-row>
     </b-alert>
@@ -46,10 +41,12 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
+import ListBeneficiaries from '@/components/toolkit/ListBeneficiaries'
 
 export default {
   name: 'MintInfo',
   components: {
+    ListBeneficiaries
   },
   props: ['item'],
   data () {

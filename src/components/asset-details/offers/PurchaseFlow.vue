@@ -75,7 +75,6 @@ export default {
   },
   mounted () {
     this.errorMessage = null
-    this.$store.commit('rpayCategoryStore/setModalMessage', '')
     this.$store.dispatch('rpayStacksStore/fetchMacSkyWalletInfo').then(() => {
       this.$store.commit('rpayStore/setDisplayCard', 100)
       this.setOfferData()

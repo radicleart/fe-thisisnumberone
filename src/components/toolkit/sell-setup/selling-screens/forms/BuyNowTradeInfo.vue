@@ -7,7 +7,7 @@
     <div role="group">
       <label for="input-live"><span class="">Buy Now Price (STX)</span></label>
       <b-input-group>
-        <b-form-input @keyup="toDecimals()" type="number" @change="updateBuyNowOrStartingPrice" v-model="buyNowOrStartingPrice" class="input" placeholder="STX"></b-form-input>
+        <b-form-input type="number" @change="updateBuyNowOrStartingPrice" v-model="buyNowOrStartingPrice" class="input" placeholder="STX"></b-form-input>
       </b-input-group>
     </div>
   </div>
@@ -42,7 +42,7 @@ export default {
       this.buyNowOrStartingPrice = utils.toDecimals(this.buyNowOrStartingPrice)
     },
     updateBuyNowOrStartingPrice: function () {
-      this.contractAsset.saleData.buyNowOrStartingPrice = parseInt(this.buyNowOrStartingPrice)
+      this.contractAsset.saleData.buyNowOrStartingPrice = Number(this.buyNowOrStartingPrice)
     }
   },
   computed: {

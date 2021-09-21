@@ -17,7 +17,7 @@
     <div v-else class="mt-5">
       <b-tabs justified content-class="bg-black p-5 mt-3">
         <b-tab :title="'Sell'" active>
-          <div class="mb-5">Set buy now price or switch of sales</div>
+          <div class="mb-5">Set buy now price or switch off sales</div>
           <div>
             <b-button class="btn-action" variant="outline-warning" @click="openSaleDataDialog()">Update Sale Info</b-button>
           </div>

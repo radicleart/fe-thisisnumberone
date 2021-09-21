@@ -33,6 +33,7 @@ const marketConfig = {
   searchMenu: false,
   sideMenu: false
 }
+/**
 const beneficiariesDefault = [
   {
     username: 'jim',
@@ -61,6 +62,51 @@ const beneficiariesDefault = [
     email: 'mijoco@thisisnumberone.com',
     royalty: 25,
     chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
+  }
+]
+**/
+const beneficiariesDefault = [
+  {
+    username: 'Charity',
+    role: 'Charity',
+    email: 'charity@thisisnumberone.com',
+    royalty: 10,
+    chainAddress: 'SP1S8Y9M7699TSB1C14KNJ26D3K2ABWBD2FZYAVPD'
+  },
+  {
+    username: 'fbs.id',
+    role: 'Fatboy Slim',
+    email: 'fbs@thisisnumberone.com',
+    royalty: 35,
+    chainAddress: 'SP13EKRTPB1GVMESNTNQ20V9M5E891FWAS5QC2VNS'
+  },
+  {
+    username: 'marc.id',
+    role: 'marc',
+    email: 'marc@thisisnumberone.com',
+    royalty: 31,
+    chainAddress: 'SPZRAE52H2NC2MDBEV8W99RFVPK8Q9BW8H88XV9N'
+  },
+  {
+    username: 'mijoco.id',
+    role: 'mijoco',
+    email: 'mijoco@thisisnumberone.com',
+    royalty: 8,
+    chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
+  },
+  {
+    username: 'jim.id',
+    role: 'jim',
+    email: 'jim@thisisnumberone.com',
+    royalty: 8,
+    chainAddress: 'SP162D87CY84QVVCMJKNKGHC7GGXFGA0TAR9D0XJW'
+  },
+  {
+    username: 'dash.id',
+    role: 'dash',
+    email: 'dash@thisisnumberone.com',
+    royalty: 8,
+    chainAddress: 'SP1CS4FVXC59S65C3X1J3XRNZGWTG212JT7CG73AG'
   }
 ]
 const payment = {
