@@ -257,7 +257,7 @@ export default {
         sendAsSky: true,
         nftIndex: contractAsset.nftIndex,
         assetHash: contractAsset.tokenInfo.assetHash,
-        appTimestamp: moment({}).valueOf(),
+        appTimestamp: new Date().getTime(),
         bidAmount: bidAmount
       }
       this.$store.dispatch('rpayPurchaseStore/placeBid', bidData).then((result) => {
