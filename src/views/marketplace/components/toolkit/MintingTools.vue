@@ -85,12 +85,12 @@ import MintingFlow from './mint-setup/MintingFlow'
 import SellingFlow from './sell-setup/SellingFlow'
 import moment from 'moment'
 import { APP_CONSTANTS } from '@/app-constants'
-import AcceptOffer from '@/components/toolkit/AcceptOffer'
-// import ManageEditions from '@/components/toolkit/editions/ManageEditions'
-import TransferNft from '@/components/toolkit/TransferNft'
-// import ListBeneficiaries from '@/components/toolkit/ListBeneficiaries'
-// import OfferHistory from '@/components/toolkit/offers/OfferHistory'
-// import BidHistory from '@/components/toolkit/bids/BidHistory'
+import AcceptOffer from '@/views/marketplace/components/toolkit/AcceptOffer'
+// import ManageEditions from '@/views/marketplace/components/toolkit/editions/ManageEditions'
+import TransferNft from '@/views/marketplace/components/toolkit/TransferNft'
+// import ListBeneficiaries from '@/views/marketplace/components/toolkit/ListBeneficiaries'
+// import OfferHistory from '@/views/marketplace/components/toolkit/offers/OfferHistory'
+// import BidHistory from '@/views/marketplace/components/toolkit/bids/BidHistory'
 // const RisidioPay = () => import('risidio-pay')
 export default {
   name: 'MintingTools',

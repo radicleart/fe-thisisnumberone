@@ -42,9 +42,9 @@
           <b-nav-item v-if="canUpload()"><b-link to="/upload-item">Create NFT</b-link></b-nav-item>
           <b-nav-item v-if="profile.loggedIn"><b-link to="/profile">My Profile</b-link></b-nav-item>
           <b-nav-item class="mt-5 pt-5 border-top" v-if="profile.loggedIn"><b-link to="/my-nfts">My NFTs</b-link></b-nav-item>
-          <b-nav-item v-if="profile.superAdmin"><b-link to="/offers">Offers</b-link></b-nav-item>
+          <b-nav-item v-if="profile.superAdmin"><b-link to="/mgmnt/offers">Offers</b-link></b-nav-item>
           <b-nav-item v-if="profile.superAdmin"><b-link to="/admin/app-admin">Admin</b-link></b-nav-item>
-          <b-nav-item v-if="profile.superAdmin"><b-link to="/admin/exhibit-requests">Requests</b-link></b-nav-item>
+          <b-nav-item v-if="profile.superAdmin"><b-link to="/mgmnt/exhibit-requests">Requests</b-link></b-nav-item>
           <b-nav-item v-if="!profile.loggedIn && webWalletNeeded">
             <h1><a :href="webWalletLink" target="_blank">Get a Stacks Web Wallet <b-icon class="ml-3 mb-3" icon="arrow-up-right-square-fill"/></a></h1>
           </b-nav-item>

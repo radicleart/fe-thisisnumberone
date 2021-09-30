@@ -35,7 +35,7 @@
 <script>
 import ActionRow from '@/components/utils/ActionRow'
 import { APP_CONSTANTS } from '@/app-constants'
-import RatesListing from '@/components/toolkit/RatesListing'
+import RatesListing from '@/views/marketplace/components/toolkit/RatesListing'
 
 export default {
   name: 'PurchasePlaceBid',

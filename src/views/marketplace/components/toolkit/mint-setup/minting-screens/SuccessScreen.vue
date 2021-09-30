@@ -23,12 +23,10 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import SquareButton from '@/components/utils/SquareButton'
 
 export default {
   name: 'PendingScreen',
   components: {
-    SquareButton
   },
   data () {
     return {

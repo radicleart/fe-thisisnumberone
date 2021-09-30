@@ -18,7 +18,7 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import ThreeSteps from '@/components/utils/ThreeSteps'
+import ThreeSteps from './common/ThreeSteps'
 
 export default {
   name: 'PurchaseOfferSuccess',

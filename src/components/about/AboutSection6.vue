@@ -18,7 +18,6 @@ export default {
   name: 'AboutSection6',
   props: ['content'],
   components: {
-    // SquareButton
   },
   data () {
     return {

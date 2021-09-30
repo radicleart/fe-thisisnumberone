@@ -2,7 +2,7 @@
   <div :style="dimensions" class="text-right" v-if="result">
     <b-link @click="openAssetDetails">
       <!-- <MediaItem class="p-0 m-0" @videoClicked="openAssetDetails" v-on="$listeners" :videoOptions="videoOptions" :attributes="result.attributes" :targetItem="targetItem()"/> -->
-      <MediaItemGeneral class="p-0 m-0" @videoClicked="openAssetDetails" :options="videoOptions" :mediaItem="targetItem()" v-on="$listeners"/>
+      <MediaItemGeneral :classes="'hash1-image'" @videoClicked="openAssetDetails" :options="videoOptions" :mediaItem="getMediaItem().artworkFile" v-on="$listeners"/>
     </b-link>
   </div>
 </template>
@@ -38,15 +38,9 @@ export default {
     }, this)
   },
   methods: {
-    targetItem: function () {
-      if (!this.result.assetHash) {
-        return 'coverImage'
-      }
-      if (!this.result.attributes) {
-        this.result.attributes = {}
-        console.log(this.result)
-      }
-      return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.result)
+    getMediaItem () {
+      const attributes = this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](this.result)
+      return attributes
     },
     openAssetDetails () {
       if (this.result.assetHash !== this.$route.params.assetHash) {

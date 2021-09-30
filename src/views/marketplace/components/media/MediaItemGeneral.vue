@@ -87,6 +87,13 @@ export default {
     }
   },
   methods: {
+    dimensions: function () {
+      if (this.dims) {
+        // return 'width: ' + this.dims.width + 'px; height: ' + this.dims.height + 'px;'
+        return 'width: 100%; max-height: 300px; min-height: 50px;'
+      }
+      return 'width: 100%; height: auto'
+    },
     setAltImg: function (event) {
       if (event) event.target.src = this.waitingImage
     },

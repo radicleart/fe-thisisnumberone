@@ -15,11 +15,11 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import OfferHistory2 from '@/components/toolkit/offers/OfferHistory2'
+import OfferHistory2 from '@/views/marketplace/components/toolkit/offers/OfferHistory2'
 import moment from 'moment'
 
 export default {
-  name: 'Admin',
+  name: 'ManageOffers',
   components: {
     OfferHistory2
   },

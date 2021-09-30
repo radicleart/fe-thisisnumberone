@@ -5,7 +5,7 @@
       <b-col lg="7" sm="10" class="mb-5">
         <div id="video-column" :style="dimensions">
           <!-- <MediaItem :videoOptions="videoOptions" :attributes="gaiaAsset.attributes" :targetItem="targetItem()"/> -->
-          <MediaItemGeneral v-on="$listeners" :options="videoOptions" :mediaItem="getMediaItem().artworkFile"/>
+          <MediaItemGeneral :classes="'hash1-image'" v-on="$listeners" :options="videoOptions" :mediaItem="getMediaItem().artworkFile"/>
         </div>
       </b-col>
       <b-col lg="5" sm="10">
@@ -105,15 +105,15 @@
 import Vue from 'vue'
 import utils from '@/services/utils'
 import moment from 'moment'
-import AssetUpdatesModal from '@/components/toolkit/purchasing/AssetUpdatesModal'
-import PurchaseFlow from '@/components/toolkit/purchasing/PurchaseFlow'
+import AssetUpdatesModal from '@/views/marketplace/components/toolkit/purchasing/AssetUpdatesModal'
+import PurchaseFlow from '@/views/marketplace/components/toolkit/purchasing/PurchaseFlow'
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaItemGeneral from '@/views/marketplace/components/media/MediaItemGeneral'
 import SquareButton from '@/components/utils/SquareButton'
 import ShareLinks from '@/components/utils/ShareLinks'
-import EditionTrigger from '@/components/toolkit/editions/EditionTrigger'
-import MintInfo from '@/components/toolkit/mint-setup/MintInfo'
-import PendingTransactionInfo from '@/components/toolkit/PendingTransactionInfo'
+import EditionTrigger from '@/views/marketplace/components/toolkit/editions/EditionTrigger'
+import MintInfo from '@/views/marketplace/components/toolkit/mint-setup/MintInfo'
+import PendingTransactionInfo from '@/views/marketplace/components/toolkit/nft-history/PendingTransactionInfo'
 
 export default {
   name: 'AssetDetailsSectionV1',
@@ -178,7 +178,7 @@ export default {
   },
   methods: {
     getMediaItem () {
-      const attributes = this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](this.item)
+      const attributes = this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](this.gaiaAsset)
       return attributes
     },
     mintedEvent (data) {

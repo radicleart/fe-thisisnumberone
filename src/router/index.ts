@@ -27,7 +27,6 @@ const NumberOne = () => import('../views/NumberOne.vue')
 
 // private pages
 const Admin = () => import('../views/Admin.vue')
-const OfferAdmin = () => import('../views/OfferAdmin.vue')
 
 // Public Marketplace Routes
 const ItemPreview = () => import('@/views/marketplace/ItemPreview.vue')
@@ -43,6 +42,7 @@ const ManagePrivileges = () => import(/* webpackChunkName: "ManagePrivileges" */
 const ManageRequests = () => import(/* webpackChunkName: "ManageRequests" */ '@/views/mgmnt/ManageRequests.vue')
 const ManageCollections = () => import(/* webpackChunkName: "ManageCollections" */ '@/views/mgmnt/ManageCollections.vue')
 const ManageCollection = () => import(/* webpackChunkName: "ManageCollection" */ '@/views/mgmnt/ManageCollection.vue')
+const ManageOffers = () => import(/* webpackChunkName: "ManageOffers" */ '@/views/mgmnt/ManageOffers.vue')
 
 Vue.use(VueRouter)
 
@@ -152,24 +152,6 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: '/offers',
-    name: 'offers',
-    components: { default: OfferAdmin, header: AboutNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: true
-    }
-  },
-  {
-    path: '/admin',
-    name: 'admin',
-    components: { default: Admin, header: AboutNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: true
-    }
-  },
-  {
     path: '/edit-item/:assetHash',
     name: 'edit-item',
     components: { default: UpdateItem, header: AboutNavbar, footer: MainFooter },
@@ -230,6 +212,24 @@ const routes: Array<RouteConfig> = [
     path: '/mgmnt/registry',
     name: 'registry',
     components: { default: ManageCache, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/mgmnt/offers',
+    name: 'offers',
+    components: { default: ManageOffers, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    components: { default: Admin, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
