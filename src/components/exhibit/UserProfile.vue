@@ -56,7 +56,7 @@ import ProfileDisplay from '@/components/exhibit/ProfileDisplay'
 import ProfileUpdate from '@/components/exhibit/ProfileUpdate'
 import { APP_CONSTANTS } from '@/app-constants'
 import PrismicItems from '@/components/prismic/PrismicItems'
-import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
+import MediaItemGeneral from '@/views/marketplace/components/media/MediaItemGeneral'
 
 export default {
   name: 'UserProfile',

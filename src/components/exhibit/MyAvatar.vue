@@ -6,7 +6,7 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import MediaUpload from '@/components/upload/MediaUpload'
+import MediaUpload from '@/views/marketplace/components/update/MediaUpload'
 
 export default {
   name: 'MyAvatar',
