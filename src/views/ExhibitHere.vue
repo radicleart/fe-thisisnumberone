@@ -4,7 +4,7 @@
     <ExhibitRequestPending :content="content" v-if="exhibitRequest.status === 1"/>
     <ExhibitRequestAllSet   :content="content" v-else-if="exhibitRequest.status === 2"/>
     <ExhibitRequestSuspended :content="content" v-else-if="exhibitRequest.status === 3"/>
-    <UserProfile :exhibitRequest="exhibitRequest" :content="content" v-else-if="profile.loggedIn" :redirect="'exhibit-here'"/>
+    <UserProfile @updateExhibitRequest="updateExhibitRequest" :showExhibitRequest="true" :exhibitRequest="exhibitRequest" :content="content" v-else-if="profile.loggedIn"/>
     <PrismicItems v-else :prismicItems="content.general" class="child-information"/>
   </b-container>
 </section>
@@ -49,6 +49,9 @@ export default {
     openModal: function () {
       this.showRpay = 2
       this.$bvModal.show('exhibit-here-modal', { assetHash: this.assetHash })
+    },
+    updateExhibitRequest: function (exhibitRequest) {
+      this.exhibitRequest = exhibitRequest
     }
   },
   computed: {

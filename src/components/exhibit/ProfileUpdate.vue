@@ -2,6 +2,10 @@
 <div class="text-dark">
   <div class="text-right text-small"><b-link @click="$emit('cancel')" class="pt-1 px-3 text-danger"><b-icon icon="chevron-left"/> Back</b-link></div>
   <div class="text-white"><h3>About You</h3></div>
+  <div class="text-danger">
+    <MediaItemGeneral v-if="userProfile.avatar" :classes="'avatar-image'" :options="options" @deleteMediaItem="deleteMediaItem" :mediaItem="userProfile.avatar"/>
+    <MyAvatar v-else @updateProfile="updateProfile" :avatar="userProfile.avatar"/>
+  </div>
   <b-card class="mt-1" role="group">
     <label for="name">First / Last Name<span class="text-danger">*</span></label>
     <b-form-input
@@ -101,17 +105,21 @@
     </b-form-checkbox>
   </b-card>
 
-  <div class="my-4 text-left"><b-button class="" variant="danger" @click="$emit('updateProfile', { opcode: 'update' })">{{buttonLabel()}}</b-button></div>
+  <div class="my-4 text-left"><b-button class="" variant="danger" @click="$emit('updateProfile', { opcode: 'update' })">Save</b-button></div>
 </div>
 </template>
 
 <script>
 import PrismicItems from '@/components/prismic/PrismicItems'
+import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
+import MyAvatar from '@/components/exhibit/MyAvatar'
 
 export default {
   name: 'ProfileUpdate',
   components: {
-    PrismicItems
+    PrismicItems,
+    MediaItemGeneral,
+    MyAvatar
   },
   props: ['content', 'userProfile', 'redirect'],
   data: function () {
@@ -124,18 +132,60 @@ export default {
   watch: {
   },
   methods: {
+    deleteMediaItem: function () {
+      this.userProfile.avatar = null
+      this.$store.commit('setModalMessage', 'Saving your data to your gaia hub.')
+      this.$root.$emit('bv::show::modal', 'waiting-modal')
+      this.$store.dispatch('rpayMyItemStore/saveUserProfile', this.userProfile).then((rootFile) => {
+        this.userProfile = rootFile.userProfile
+        this.$root.$emit('bv::hide::modal', 'waiting-modal')
+        this.$notify({ type: 'warning', title: 'Profile', text: 'Removed avatar image!' })
+        this.stage = 0
+      }).catch(() => {
+        this.$store.commit('setModalMessage', 'Error occurred updating profile.')
+      })
+    },
+    updateProfile: function (data) {
+      if (data.mediaItem) {
+        this.userProfile.avatar = data.mediaItem
+        this.userProfile.avatar.dataUrl = null // the image should be stored in gaia by this point
+      } else if (data.deleteMedia) {
+        this.userProfile.avatar = null
+      }
+      this.$store.commit('setModalMessage', 'Saving your data to your gaia hub.')
+      this.$root.$emit('bv::show::modal', 'waiting-modal')
+      this.$store.dispatch('rpayMyItemStore/saveUserProfile', this.userProfile).then((rootFile) => {
+        this.userProfile = rootFile.userProfile
+        this.$root.$emit('bv::hide::modal', 'waiting-modal')
+        this.$notify({ type: 'warning', title: 'Profile', text: 'Profile has been saved!' })
+        this.stage = 0
+      }).catch(() => {
+        this.$store.commit('setModalMessage', 'Error occurred saving profile.')
+      })
+    },
     isValid: function (email) {
       const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return re.test(email)
-    },
-    buttonLabel: function () {
-      if (this.redirect === 'exhibit-here') {
-        return 'Apply Now'
-      }
-      return 'Save'
     }
   },
   computed: {
+    options () {
+      return {
+        deleteAllowed: true,
+        emitOnHover: false,
+        playOnHover: false,
+        assetHash: 'userAvatar',
+        bigPlayer: false,
+        autoplay: false,
+        muted: true,
+        controls: true,
+        showMeta: true,
+        aspectRatio: '1:1',
+        poster: (this.avatar) ? this.avatar.fileUrl : null,
+        sources: [],
+        fluid: false
+      }
+    },
     nameState () {
       if (!this.formSubmitted && !this.userProfile.name) return null
       return (this.userProfile.name && this.userProfile.name.length > 2)

@@ -91,7 +91,8 @@ export default {
       if (event) event.target.src = this.waitingImage
     },
     deleteAllowed: function () {
-      return true
+      if (this.options.deleteAllowed == null) return true
+      return this.options.deleteAllowed
     },
     getNFTSizeMeg () {
       if (!this.mediaItem) return 0

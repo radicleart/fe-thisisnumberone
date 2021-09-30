@@ -1,7 +1,7 @@
 <template>
 <section class="bg-black text-white py-5" style="min-height: 100vh;">
   <b-container fluid v-if="loaded && content">
-    <UserProfile :exhibitRequest="exhibitRequest" :content="content" v-if="profile.loggedIn"/>
+    <UserProfile :exhibitRequest="exhibitRequest" :showExhibitRequest="false" :content="content" v-if="profile.loggedIn"/>
     <PrismicItems v-else :prismicItems="content.general" class="child-information"/>
   </b-container>
 </section>
