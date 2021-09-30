@@ -6,20 +6,18 @@ import { APP_CONSTANTS } from '@/app-constants'
 // templates
 import AboutNavbar from '@/components/layout/AboutNavbar.vue'
 import MainFooter from '@/components/layout/MainFooter.vue'
+import AdminNav from '@/views/mgmnt/AdminNav.vue'
 
 // public pages
 import HomeFooter from '@/components/layout/HomeFooter.vue'
-import ApplicationAdmin from '../views/admin/ApplicationAdmin.vue'
+import OldApplicationAdmin from '../views/admin/OldApplicationAdmin.vue'
 import Login from '../views/Login.vue'
 import Information from '../views/Information.vue'
 // const Information = () => import('../views/Information.vue')
-import MyNfts from '../views/upload/MyNfts.vue'
-import NftGallery from '../views/NftGallery.vue'
 import ExhibitHere from '../views/ExhibitHere.vue'
 import ManageProfile from '../views/ManageProfile.vue'
 
 const Charity = () => import('../views/Charity.vue')
-const AssetDetails = () => import('../views/AssetDetails.vue')
 const About = () => import('../views/About.vue')
 const NumberOne = () => import('../views/NumberOne.vue')
 // const Charity = () => import('../views/Charity.vue')
@@ -30,9 +28,21 @@ const NumberOne = () => import('../views/NumberOne.vue')
 // private pages
 const Admin = () => import('../views/Admin.vue')
 const OfferAdmin = () => import('../views/OfferAdmin.vue')
-const ItemPreview = () => import('../views/ItemPreview.vue')
-const UploadItem = () => import('../views/upload/UploadItem.vue')
-const UpdateItem = () => import('../views/upload/UpdateItem.vue')
+
+// Public Marketplace Routes
+const ItemPreview = () => import('@/views/marketplace/ItemPreview.vue')
+const AssetDetails = () => import('@/views/marketplace/AssetDetails.vue')
+const MyNftLibrary = () => import('@/views/marketplace/MyNftLibrary.vue')
+const NftGallery = () => import('@/views/marketplace/NftGallery.vue')
+const UploadItem = () => import('@/views/marketplace/UploadItem.vue')
+const UpdateItem = () => import('@/views/marketplace/UpdateItem.vue')
+// Application Admin Routes
+// const ApplicationAdmin = () => import(/* webpackChunkName: "ApplicationAdmin" */ '@/views/mgmnt/ApplicationAdmin.vue')
+const ManageCache = () => import(/* webpackChunkName: "ManageCache" */ '@/views/mgmnt/ManageCache.vue')
+const ManagePrivileges = () => import(/* webpackChunkName: "ManagePrivileges" */ '@/views/mgmnt/ManagePrivileges.vue')
+const ManageRequests = () => import(/* webpackChunkName: "ManageRequests" */ '@/views/mgmnt/ManageRequests.vue')
+const ManageCollections = () => import(/* webpackChunkName: "ManageCollections" */ '@/views/mgmnt/ManageCollections.vue')
+const ManageCollection = () => import(/* webpackChunkName: "ManageCollection" */ '@/views/mgmnt/ManageCollection.vue')
 
 Vue.use(VueRouter)
 
@@ -180,7 +190,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/my-nfts',
     name: 'my-nfts',
-    components: { default: MyNfts, header: AboutNavbar, footer: MainFooter },
+    components: { default: MyNftLibrary, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: false
@@ -189,7 +199,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/admin/add-privileges',
     name: 'add-privileges',
-    components: { default: ApplicationAdmin, header: AboutNavbar, footer: MainFooter },
+    components: { default: OldApplicationAdmin, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -198,7 +208,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/admin/exhibit-requests',
     name: 'exhibit-requests',
-    components: { default: ApplicationAdmin, header: AboutNavbar, footer: MainFooter },
+    components: { default: OldApplicationAdmin, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -207,7 +217,73 @@ const routes: Array<RouteConfig> = [
   {
     path: '/admin/app-admin',
     name: 'app-admin',
-    components: { default: ApplicationAdmin, header: AboutNavbar, footer: MainFooter },
+    components: { default: OldApplicationAdmin, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  /**
+   * admin section...
+   */
+  {
+    path: '/mgmnt/registry',
+    name: 'registry',
+    components: { default: ManageCache, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/mgmnt/manage-privileges',
+    name: 'manage-privileges',
+    components: { default: ManagePrivileges, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/mgmnt/exhibit-requests',
+    name: 'exhibit-requests',
+    components: { default: ManageRequests, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/mgmnt/manage-collections',
+    name: 'manage-collections',
+    components: { default: ManageCollections, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/mgmnt/manage-collection',
+    name: 'manage-collection',
+    components: { default: ManageCollection, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/mgmnt/manage-collections/:currentRunKey',
+    name: 'manage-collection',
+    components: { default: ManageCollection, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/mgmnt/app-admin',
+    name: 'app-admin',
+    components: { default: ManageCache, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true

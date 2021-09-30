@@ -30,7 +30,7 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import ResultGrid from '@/components/marketplace/ResultGrid'
+import ResultGrid from '@/views/marketplace/components/gallery/ResultGrid'
 import Vue from 'vue'
 import PrismicItems from '@/components/prismic/PrismicItems'
 
