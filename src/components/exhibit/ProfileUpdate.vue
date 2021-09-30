@@ -111,7 +111,7 @@
 
 <script>
 import PrismicItems from '@/components/prismic/PrismicItems'
-import MediaItemGeneral from '@/components/upload/MediaItemGeneral'
+import MediaItemGeneral from '@/views/marketplace/components/media/MediaItemGeneral'
 import MyAvatar from '@/components/exhibit/MyAvatar'
 
 export default {
