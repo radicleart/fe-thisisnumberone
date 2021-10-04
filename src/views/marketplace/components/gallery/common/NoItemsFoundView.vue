@@ -7,7 +7,7 @@
           <loop-header/>
           <b-card-text>
             <div class="mt-5 d-flex justify-content-center align-items-center" style="height: 20vh; top:50px;">
-              <h4>Loopbomb Library</h4>
+              <h4>NFT Library</h4>
             </div>
             <div class="mt-5 d-flex justify-content-center align-items-center">
               No items!

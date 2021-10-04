@@ -7,7 +7,7 @@
       </div>
       <div v-if="limitReached">
         <span class="text-danger" router-tag="span" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Each run has unique elements that increase in scarcity with the expansion of each new version!'">
-          Sorry, all Loopbomb STX V1 are minted for this run. Visit the <b-link class="text-info" to="/nft-marketplace">Marketplace</b-link>
+          Sorry, all minted for this run. Visit the <b-link class="text-info" to="/nft-marketplace">Marketplace</b-link>
         </span>
       </div>
       <div v-else>
@@ -30,7 +30,7 @@
 <div v-else>
   <div class="py-5 px-5 bg-white text-danger d-flex justify-content-center">
     <div>
-      Expecting Loopbomb contract <span class="text-bold">{{contractName}}</span> to be deployed and connected?
+      Expecting contract <span class="text-bold">{{contractName}}</span> to be deployed and connected?
     </div>
   </div>
 </div>

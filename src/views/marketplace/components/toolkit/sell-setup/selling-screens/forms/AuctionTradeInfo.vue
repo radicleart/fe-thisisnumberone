@@ -84,7 +84,6 @@ export default {
       this.contractAsset.saleData.incrementPrice = Number(this.incrementPrice)
     },
     updateBiddingEndTime: function () {
-      const localTime = this.biddingEndTime
       // this.$emit('updateSaleDataInfo', { field: 'biddingEndTime', value: localTime })
       this.contractAsset.saleData.biddingEndTime = this.biddingEndTime
     }

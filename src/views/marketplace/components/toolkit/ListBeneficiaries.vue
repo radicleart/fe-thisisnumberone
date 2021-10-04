@@ -17,12 +17,12 @@
       <b-col cols="2">{{item.contractAsset.beneficiaries.secondaries[0].value}}</b-col>
     </b-row>
     <b-row class="mb-2">
-      <b-col cols="8"><span v-b-tooltip.hover="{ variant: 'danger' }" :title="item.contractAsset.beneficiaries.addresses[2].valueHex">Loopbomb</span></b-col>
+      <b-col cols="8"><span v-b-tooltip.hover="{ variant: 'danger' }" :title="item.contractAsset.beneficiaries.addresses[2].valueHex">Number One Project</span></b-col>
       <b-col cols="2">{{item.contractAsset.beneficiaries.shares[2].value}}</b-col>
       <b-col cols="2">{{item.contractAsset.beneficiaries.secondaries[2].value}}</b-col>
     </b-row>
     <b-row class="mb-2">
-      <b-col cols="8"><span v-b-tooltip.hover="{ variant: 'danger' }" :title="item.contractAsset.beneficiaries.addresses[3].valueHex">Platform</span></b-col>
+      <b-col cols="8"><span v-b-tooltip.hover="{ variant: 'danger' }" :title="item.contractAsset.beneficiaries.addresses[3].valueHex">Marketplace Project</span></b-col>
       <b-col cols="2">{{item.contractAsset.beneficiaries.shares[3].value}}</b-col>
       <b-col cols="2">{{item.contractAsset.beneficiaries.secondaries[3].value}}</b-col>
     </b-row>

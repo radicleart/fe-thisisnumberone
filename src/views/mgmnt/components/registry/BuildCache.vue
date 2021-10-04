@@ -13,17 +13,21 @@
   <p>Note: there are two caches - contract data cache and Meta Data cache.
     The latter is usually stored via users Gaia hubs. Urls to the meta data
     are stored in the contract.</p>
-  <div class="row my-5" v-for="(application, index) in registry.applications" :key="index">
-    <div class="col-2">Contract</div><div class="col-10 text-bold pb-3">{{application.contractId}}</div>
-    <div class="col-2"></div>
-    <div class="col-10">
-      <div class="text-left mb-4">
-        <a href="#" class="mr-2 bg-warning px-3 text-info" @click.prevent="buildCache(application.contractId)">Build Cache</a>
-        <a href="#" class="mr-2 bg-warning px-3 text-info" @click.prevent="buildSearchIndex(application.contractId)">Build Meta Data</a>
-        <a href="#" class="mr-2 bg-warning px-3 text-info" @click.prevent="clearCache(application.contractId)">Clear Cache</a>
-        <a href="#" class="mr-2 bg-warning px-3 text-info" @click.prevent="clearSearchIndex(application.contractId)">Clear Meta Data</a>
+  <div v-if="registry && registry.applications">
+    <div class="row my-5" v-for="(application, index) in registry.applications" :key="index">
+      <div class="col-2">Contract</div><div class="col-10 text-bold pb-3">{{application.contractId}}</div>
+      <div class="col-2"></div>
+      <div class="col-10">
+        <div class="text-left mb-4">
+          <a href="#" class="mr-2 bg-warning px-3 text-info" @click.prevent="buildCache(application.contractId)">Build Cache</a>
+          <a href="#" class="mr-2 bg-warning px-3 text-info" @click.prevent="buildSearchIndex(application.contractId)">Build Meta Data</a>
+          <a href="#" class="mr-2 bg-warning px-3 text-info" @click.prevent="clearCache(application.contractId)">Clear Cache</a>
+          <a href="#" class="mr-2 bg-warning px-3 text-info" @click.prevent="clearSearchIndex(application.contractId)">Clear Meta Data</a>
+        </div>
       </div>
     </div>
+  </div>
+  <div v-else>
   </div>
 
 </div>

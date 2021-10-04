@@ -43,10 +43,16 @@ export default {
 
 ;; contract variables
 (define-data-var administrator principal 'params.contractOwner)
-(define-data-var mint-price uint uparams.mintPrice)
+(define-data-var mint-price uint u1000000)
 (define-data-var base-token-uri (string-ascii 256) params.callBack)
 (define-data-var mint-counter uint u0)
 (define-data-var platform-fee uint u5)
+(define-data-var nftadmin principal 'params.contractOwner)
+(define-data-var transfer-status uint u1) // default mode owner and approved address can transfer
+                                          // u2 - only the contract can transfer
+                                          // u3 - combination of above
+
+
 ;; constants
 (define-constant token-name "params.tokenName")
 (define-constant token-symbol "params.tokenSymbol")
@@ -144,14 +150,44 @@ export default {
 
 ;; Transfers tokens to a 'SPecified principal.
 (define-public (transfer (nftIndex uint) (owner principal) (recipient principal))
-  (if (and (is-owner-or-approval nftIndex owner) (is-owner-or-approval nftIndex tx-sender))
-    (match (nft-transfer? loopbomb nftIndex owner recipient)
-        success (ok true)
-        error (nft-transfer-err error))
+    (if (is-eq (var-get transfer-status) u2)
+        (if (is-eq (var-get nftadmin) tx-sender)
+            (transfer-internal nftIndex owner recipient)
+            not-allowed
+        )
+        (if (is-eq (var-get transfer-status) u1)
+            (if (and (is-owner-or-approval nftIndex owner) (is-owner-or-approval nftIndex tx-sender))
+                (transfer-internal nftIndex owner recipient)
+                nft-not-owned-err
+            )
+            (if (is-eq (var-get transfer-status) u3)
+                (if (or (is-eq (var-get nftadmin) tx-sender) (and (is-owner-or-approval nftIndex owner) (is-owner-or-approval nftIndex tx-sender)))
+                    (transfer-internal nftIndex owner recipient)
+                    nft-not-owned-err
+                )
+                nft-not-owned-err
+            )
+        )
+    )
+)
+
+(define-private (transfer-internal (nftIndex uint) (owner principal) (recipient principal))
+     (match (nft-transfer? loopbomb nftIndex owner recipient)
+         success (ok true)
+         error (nft-transfer-err error))
+)
+
+(define-public (set-transfers (tstatus uint) (nft-admin principal))
+    (begin
+        (asserts! (is-eq (var-get administrator) tx-sender) not-allowed)
+        (var-set nftadmin nft-admin)
+        (var-set transfer-status tstatus)
+        (ok true)
+    )
     nft-not-owned-err)
 )
 
-;; Transfers tokens to a 'SPecified principal.
+;; Burns tokens
 (define-public (burn (nftIndex uint) (owner principal))
   (if (and (is-owner-or-approval nftIndex owner) (is-owner-or-approval nftIndex tx-sender))
     (match (nft-burn? loopbomb nftIndex owner)

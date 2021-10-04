@@ -25,7 +25,6 @@
 
 <script>
 import RatesListing from '@/views/marketplace/components/toolkit/RatesListing'
-import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'PurchaseBuyNow',

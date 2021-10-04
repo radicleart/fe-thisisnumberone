@@ -15,6 +15,7 @@
   <b-nav-item to="/mgmnt/manage-privileges">Privileges</b-nav-item>
   <b-nav-item to="/mgmnt/exhibit-requests">Requests</b-nav-item>
   <b-nav-item to="/mgmnt/manage-collections">Collections</b-nav-item>
+  <b-nav-item to="/mgmnt/manage-offers">Offers</b-nav-item>
 </b-nav>
 </template>
 

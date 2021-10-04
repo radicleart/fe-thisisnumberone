@@ -24,7 +24,6 @@ import PurchaseOfferLogin from './PurchaseOfferLogin'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
-const NETWORK = process.env.VUE_APP_NETWORK
 
 export default {
   name: 'PurchaseFlow',

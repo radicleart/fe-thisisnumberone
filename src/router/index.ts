@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import store from '@/store'
-import { APP_CONSTANTS } from '@/app-constants'
 
 // templates
 import AboutNavbar from '@/components/layout/AboutNavbar.vue'
@@ -58,26 +57,26 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'splash',
     components: { default: NumberOne, header: AboutNavbar, footer: MainFooter },
-    meta: { title: 'This is number one' }
+    meta: { title: 'This is Number One on Stacks NFT Marketplace secured by Bitcoin' }
   },
   {
     path: '/home',
     name: 'home',
     components: { default: NumberOne, header: AboutNavbar, footer: MainFooter },
-    meta: { title: 'This is number one' }
+    meta: { title: 'This is Number One on Stacks NFT Marketplace secured by Bitcoin' }
   },
   {
     path: '/number-one',
     name: 'number-one',
     components: { default: NumberOne, header: AboutNavbar, footer: MainFooter },
-    meta: { title: 'This is number one' }
+    meta: { title: 'This is Number One on Stacks NFT Marketplace secured by Bitcoin' }
   },
   {
     path: '/nft-gallery',
     alias: '/nft-market',
     name: 'nft-gallery',
     components: { default: NftGallery, header: AboutNavbar, footer: MainFooter },
-    meta: { title: 'This is number one' }
+    meta: { title: 'Marketplace for NFTs by the Number One Team Secured by Bitcoin' }
   },
   {
     path: '/exhibit-here',
@@ -205,18 +204,18 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: '/mgmnt/offers',
-    name: 'offers',
-    components: { default: ManageOffers, header: AboutNavbar, footer: MainFooter },
+    path: '/mgmnt/manage-privileges',
+    name: 'manage-privileges',
+    components: { default: ManagePrivileges, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
     }
   },
   {
-    path: '/mgmnt/manage-privileges',
-    name: 'manage-privileges',
-    components: { default: ManagePrivileges, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    path: '/mgmnt/manage-offers',
+    name: 'manage-offers',
+    components: { default: ManageOffers, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true

@@ -1,10 +1,10 @@
 <template>
-<b-container id="adminSection" class="p-5 text-black bg-white ">
+<b-container id="adminSection" class="p-5 text-black bg-dark ">
   <div class="d-flex justify-content-end text-small">
     <div v-if="currentHighestOffer"><b-link class="text-success"><a :href="'mailto:' + currentHighestOffer.email">{{currentHighestOffer.amount}} STX</a></b-link></div>
     <div class="ml-4"><b-link @click.prevent="refresh">refresh</b-link></div>
   </div>
-  <b-container id="adminSection" class="p-5 text-black bg-white ">
+  <b-container id="adminSection" class="p-5 text-black bg-dark ">
     <b-row>
       <b-col v-for="(result, index1) in getGaiaAssets" :key="index1"><b-link @click.prevent="artist = result.artist">{{result.artist}}</b-link></b-col>
     </b-row>
