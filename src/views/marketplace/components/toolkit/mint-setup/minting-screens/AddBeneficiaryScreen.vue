@@ -98,8 +98,8 @@
     </b-card-text>
     <b-card-text class="mx-4">
       <div class="d-flex justify-content-between">
-        <b-button @click="cancel()" class="w-50 mr-4" variant="outline-light">go back</b-button>
-        <b-button @click="addBeneficiary()" class="w-50 ml-4" variant="outline-dark">save</b-button>
+        <b-button @click="cancel()" class="w-50 mr-2" variant="danger">CANCEL</b-button>
+        <b-button @click="addBeneficiary()" class="w-50 ml-2" variant="dark">SAVE</b-button>
       </div>
     </b-card-text>
   </b-card>
@@ -139,7 +139,7 @@ export default {
       this.beneficiary.royalty = Math.round(this.beneficiary.royalty * 100) / 100
     },
     cancel: function () {
-      this.$store.commit('rpayStore/setDisplayCard', 100)
+      this.$store.commit(APP_CONSTANTS.SET_DISPLAY_CARD, 100)
     },
     isValid: function (param) {
       if (param === 'chainAddress') {
@@ -165,7 +165,7 @@ export default {
       return this.isValid('royalty')
     },
     preferredNetwork () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
+      const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
       return configuration.minter.preferredNetwork
     }
   }

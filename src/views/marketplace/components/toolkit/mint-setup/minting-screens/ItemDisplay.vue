@@ -1,26 +1,29 @@
 <template>
-<b-card-text class="mx-4 text-center">
-  <b-row>
-    <b-col class="col-12">
-      <h1 class="h1-modal">Mint Your NFT</h1>
-      <h2 class="h2-modal">Set royalties, editions and mint</h2>
-    </b-col>
-    <b-col class="col-6" offset="3">
-      <img width="100%" :src="item.image"/>
-      <div class="py-4 bg-light text-small">
-        <div class=""><h2 class="h2-modal">{{item.name}}</h2></div>
-        <div>by <span class="text-success">{{item.artist}}</span></div>
+<b-card-text class="mt-2">
+  <div class="row">
+    <div class="col-3"><img style="border-radius: 18px;" width="100%" :src="imageUrl"/></div>
+    <div class="col-8">
+      <h4 class="text-bold">{{item.name}}</h4>
+      <div class="row mt-3">
+        <div class="col-12">
+          <div v-if="profile.username !== profile.stxAddress">{{profile.username}}</div>
+          <div>{{profile.stxAddress.substring(0, 6)}}...{{profile.stxAddress.substring(profile.stxAddress.length - 6)}}</div>
+          <div class="mt-5"><LoopRun :parent="'minting'"/></div>
+        </div>
       </div>
-    </b-col>
-  </b-row>
+    </div>
+  </div>
 </b-card-text>
 </template>
 
 <script>
+import LoopRun from '@/views/marketplace/components/gallery/LoopRun'
+import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'ItemDisplay',
   components: {
+    LoopRun
   },
   props: ['item'],
   data () {
@@ -30,6 +33,12 @@ export default {
   methods: {
   },
   computed: {
+    profile () {
+      return this.$store.getters['rpayAuthStore/getMyProfile']
+    },
+    imageUrl () {
+      return this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.item)
+    }
   }
 }
 </script>

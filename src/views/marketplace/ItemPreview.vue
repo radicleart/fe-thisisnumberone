@@ -54,7 +54,10 @@ export default {
   data: function () {
     return {
       showHash: false,
+      componentKey: 0,
+      nftIndex: null,
       assetHash: null,
+      pending: null,
       message: 'No item available...'
     }
   },
@@ -119,7 +122,7 @@ export default {
       this.componentKey++
     },
     getMediaItem () {
-      const attributes = this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](this.item)
+      const attributes = this.$store.getters[APP_CONSTANTS.KEY_MEDIA_ATTRIBUTES](this.item)
       return attributes
     },
     deleteMediaItem: function (mediaId) {

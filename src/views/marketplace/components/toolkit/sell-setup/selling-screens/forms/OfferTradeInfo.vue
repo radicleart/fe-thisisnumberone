@@ -27,7 +27,8 @@
 </template>
 
 <script>
-import moment from 'moment'
+import { APP_CONSTANTS } from '@/app-constants'
+import { DateTime } from 'luxon'
 import { Datetime } from 'vue-datetime'
 
 export default {
@@ -40,7 +41,6 @@ export default {
       this.updateBiddingEndTime()
     }
   },
-  props: ['contractAsset'],
   data () {
     return {
       loading: true,
@@ -52,40 +52,45 @@ export default {
     }
   },
   mounted () {
-    if (this.contractAsset.saleData && this.contractAsset.saleData.biddingEndTime) {
-      let loaclEndM = moment(this.contractAsset.saleData.biddingEndTime)
-      if (loaclEndM.isBefore(moment({}))) {
-        loaclEndM = moment({}).add(2, 'days')
+    const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
+    this.reservePrice = configuration.gaiaAsset.saleData.reservePrice
+    if (configuration.gaiaAsset.saleData && configuration.gaiaAsset.saleData.biddingEndTime) {
+      let loaclEndM = DateTime.fromMillis(configuration.gaiaAsset.saleData.biddingEndTime)
+      if (loaclEndM.isBefore(DateTime.now())) {
+        loaclEndM = DateTime.now().plus({ days: 2 })
       }
       const loaclEnd = loaclEndM.format()
       this.biddingEndTime = loaclEnd
     } else {
-      const dd = moment({}).add(2, 'days')
+      const dd = DateTime.now().plus({ days: 2 })
       dd.hour(10)
       dd.minute(0)
       this.biddingEndTime = dd.format()
     }
-    this.contractAsset.saleData.saleType = 3
-    this.contractAsset.saleData.biddingEndTime = this.biddingEndTime
+    this.$emit('updateSaleDataInfo', { field: 'saleType', value: 3 })
     this.loading = false
   },
   methods: {
     toDecimals: function () {
       if (this.reservePrice !== 0) this.reservePrice = Math.round(this.reservePrice * 100) / 100
-      this.contractAsset.saleData.reservePrice = this.reservePrice
     },
     saleDataDesc: function () {
-      return (!this.contractAsset.offerCounter) ? 'Make Offer' : this.contractAsset.offerCounter + ' Offers Made'
+      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
+      return (!configuration.gaiaAsset.offerCounter) ? 'Make Offer' : configuration.gaiaAsset.offerCounter + ' Offers Made'
     },
     updateBiddingEndTime: function () {
-      const localTime = moment(this.biddingEndTime).valueOf()
-      this.contractAsset.saleData.biddingEndTime = localTime
+      const localTime = DateTime.fromMillis(this.biddingEndTime)
+      this.$emit('updateSaleDataInfo', { field: 'biddingEndTime', value: localTime })
     },
     updateReservePrice: function () {
-      this.contractAsset.saleData.reservePrice = parseInt(this.reservePrice)
+      this.$emit('updateSaleDataInfo', { moneyField: true, field: 'reservePrice', value: this.reservePrice })
     }
   },
   computed: {
+    gaiaAsset () {
+      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
+      return configuration.gaiaAsset
+    }
   }
 }
 </script>

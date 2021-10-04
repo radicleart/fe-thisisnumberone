@@ -15,8 +15,8 @@
       <div @contextmenu="handler($event)" class="d-flex justify-content-center p-2">
           <img
             ref="itemImage"
-            :width="looperDimsWidth"
-            :height="newHeight"
+            :width="looperDimsHeight"
+            :height="looperDimsHeight"
             :src="imageUrl" @error="imageError()"/>
       </div>
       </router-link>
@@ -64,16 +64,12 @@ export default {
   data () {
     return {
       imageUrl: null,
-      resave: false,
       newHeight: null
     }
   },
   mounted () {
-    this.imageUrl = this.asset.attributes.artworkFile.fileUrl
+    this.imageUrl = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
     const $self = this
-    if (this.resave && this.asset.assetHash) {
-      this.$store.dispatch('rpayMyItemStore/saveItem', this.asset)
-    }
     const $ele = this.$refs.itemImage
     this.$nextTick(() => {
       if (!$ele) {

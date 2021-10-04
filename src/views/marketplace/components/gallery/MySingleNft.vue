@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     getMediaItem () {
-      const attributes = this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](this.item)
+      const attributes = this.$store.getters[APP_CONSTANTS.KEY_MEDIA_ATTRIBUTES](this.item)
       return attributes
     }
   },

@@ -1,13 +1,10 @@
 <template>
 <div class="row">
   <div class="col-12 mb-5">
-    <div class="mb-5">
-      <h3>Sale Type: Buy Now</h3>
-    </div>
     <div role="group">
-      <label for="input-live"><span class="">Buy Now Price (STX)</span></label>
+      <label for="input-live"><span class="text-white">Buy Now Price (STX)</span></label>
       <b-input-group>
-        <b-form-input type="number" @change="updateBuyNowOrStartingPrice" v-model="buyNowOrStartingPrice" class="input" placeholder="STX"></b-form-input>
+        <b-form-input type="number" v-model="buyNowOrStartingPrice" class="input" placeholder="STX"></b-form-input>
       </b-input-group>
     </div>
   </div>
@@ -24,6 +21,9 @@ export default {
   },
   props: ['contractAsset'],
   watch: {
+    'buyNowOrStartingPrice' () {
+      this.$emit('updateAmount', this.buyNowOrStartingPrice)
+    }
   },
   data () {
     return {
@@ -42,7 +42,7 @@ export default {
       this.buyNowOrStartingPrice = utils.toDecimals(this.buyNowOrStartingPrice)
     },
     updateBuyNowOrStartingPrice: function () {
-      this.contractAsset.saleData.buyNowOrStartingPrice = Number(this.buyNowOrStartingPrice)
+      // this.contractAsset.saleData.buyNowOrStartingPrice = parseInt(this.buyNowOrStartingPrice)
     }
   },
   computed: {

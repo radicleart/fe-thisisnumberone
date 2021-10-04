@@ -12,7 +12,7 @@
         <b-button variant="light" v-html="contentModel.buttonName" @click="chooseFiles()"></b-button>
       </div>
     </div>
-    <div>
+    <div v-if="hideLinkPaste">
       <div class="mt-5 pt-5 text-small">for files > 20M paste a link! <br/>Need hosting? E.g. see <a href="https://docs.stacks.co/build-apps/references/gaia" target="_blank">Gaia</a>, <a href="https://ipfs.io/" target="_blanK">IPFS</a> or <a href="https://cloudinary.com/" target="_blanK">Cloudinary</a></div>
       <div class="mt-3 text-left mb-3" style="font-size: 1.2rem; width: 100%;">
         <b-form-input

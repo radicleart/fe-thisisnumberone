@@ -26,7 +26,7 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import moment from 'moment'
+import { DateTime } from 'luxon'
 
 export default {
   name: 'BidHistory',
@@ -71,7 +71,7 @@ export default {
       return bid
     },
     appTimestamp: function (madeData) {
-      return moment(madeData * 1000).format('DD-MM hh:mm')
+      return DateTime.fromMillis(madeData * 1000).toLocaleString({ weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
     }
   },
   computed: {

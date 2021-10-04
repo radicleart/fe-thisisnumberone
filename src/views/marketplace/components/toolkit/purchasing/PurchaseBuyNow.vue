@@ -1,43 +1,48 @@
 <template>
-<div v-if="buyNowDialog">
-  <b-row>
+<b-container>
+  <b-row class="p-5 row mt-2">
     <b-col cols="12">
-      <h1>{{buyNowDialog[0].text}}</h1>
-      <h4 class="mb-5">{{buyNowDialog[1].text}} <b>{{fbet}}</b></h4>
+      <h1><span class="mr-5 text-black">Buy Now</span> {{contractAsset.saleData.buyNowOrStartingPrice}} STX</h1>
     </b-col>
-  </b-row>
-  <b-row class="row mt-2">
-    <b-col md="4" sm="12">
-      <p v-if="buyNowDialog[2]">{{buyNowDialog[2].text}}</p>
-      <p v-if="buyNowDialog[3]">{{buyNowDialog[3].text}}
-      </p>
-    </b-col>
-    <b-col md="8" sm="12" style="border-right: 1pt solid #000;">
-      <div>
-        <h3><span class="mr-5 text-black">Buy Now</span> {{contractAsset.saleData.buyNowOrStartingPrice}} STX</h3>
-      </div>
+    <b-col cols="12" class="text-xsmall">
       <RatesListing :message="''" :amount="contractAsset.saleData.buyNowOrStartingPrice"/>
     </b-col>
+    <b-row class="text-small mt-5">
+      <b-col cols="3" class="text-right">
+        Transfer from:
+      </b-col>
+      <b-col cols="9">
+        <span class="stx-address">{{contractAsset.owner}}</span>
+      </b-col>
+      <b-col cols="3" class="text-right">
+        to
+      </b-col>
+      <b-col cols="9">
+        <span class="stx-address">{{profile.stxAddress}}</span>
+      </b-col>
+    </b-row>
+    <b-col class="mt-5" cols="12" v-if="iAmOwner">
+      You own this NFT!
+    </b-col>
+    <b-col class="mt-5" cols="12" v-else>
+      <b-button variant="success" @click="$emit('buyNow')">BUY NOW</b-button>
+    </b-col>
   </b-row>
-  <ActionRow @clickButton="$emit('buyNow')" :buttonLabel="'BUY NOW'"/>
-</div>
+</b-container>
 </template>
 
 <script>
 import RatesListing from '@/views/marketplace/components/toolkit/RatesListing'
-import ActionRow from '@/components/utils/ActionRow'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'PurchaseBuyNow',
   components: {
-    ActionRow,
     RatesListing
   },
   props: ['contractAsset'],
   data () {
     return {
-      icon: require('@/assets/img/check-square.svg'),
       loading: true,
       formSubmitted: false,
       errorMessage: null,
@@ -53,12 +58,15 @@ export default {
     }
   },
   computed: {
-    buyNowDialog () {
-      const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('buy-now')
-      return dialog
+    profile () {
+      const profile = this.$store.getters['rpayAuthStore/getMyProfile']
+      return profile
     },
     fbet () {
       return this.$store.getters[APP_CONSTANTS.KEY_FORMATTED_BIDDING_END_TIME](this.contractAsset)
+    },
+    iAmOwner () {
+      return this.contractAsset && this.contractAsset.owner === this.profile.stxAddress
     }
   }
 }

@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+import { DateTime } from 'luxon'
 import { APP_CONSTANTS } from '@/app-constants'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
@@ -58,7 +58,7 @@ export default {
       return (amount)
     },
     offerMade: function (madeData) {
-      return moment(madeData).format('DD-MM-YY hh:mm')
+      return DateTime.fromMillis(madeData).toLocaleString({ weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
     }
   },
   computed: {

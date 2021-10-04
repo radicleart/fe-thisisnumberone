@@ -38,6 +38,10 @@ export default {
     }
   },
   methods: {
+    getMediaItem () {
+      const attributes = this.$store.getters[APP_CONSTANTS.KEY_MEDIA_ATTRIBUTES](this.item)
+      return attributes
+    },
     updateMedia: function (data) {
       if (data.startLoad) {
         this.$store.commit('setModalMessage', data.startLoad)

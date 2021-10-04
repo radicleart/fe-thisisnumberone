@@ -3,15 +3,12 @@
   <div class="mx-auto">
     <b-card-group class="" :key="componentKey" style="width: 450px;">
       <b-card header-tag="header" footer-tag="footer" v-if="minted">
-        <SellingHeader :allowEdit="true"/>
-        <SellingOptions :contractAsset="contractAsset" v-if="displayCard === 100"/>
-        <div class="text-center">
-          <div class="text-info" v-html="sellingMessage"></div>
-        </div>
+        <!-- <SellingHeader :allowEdit="true"/> -->
+        <SellingOptions :contractAsset="contractAsset" v-if="displayCard === 100" @updateAmount="updateAmount"/>
         <template v-slot:footer>
           <div class="d-flex justify-content-between">
-            <b-button @click="back()" class="w-50 mr-4" variant="outline-light">Cancel</b-button>
-            <b-button @click="setTradeInfo()" class="w-50 ml-4" variant="outline-dark">Save</b-button>
+            <b-button @click="$emit('cancel')" class="w-50 mr-1" variant="light">Cancel</b-button>
+            <b-button @click="setTradeInfo()" class="w-50 ml-1" variant="outline-warning">Save</b-button>
           </div>
         </template>
       </b-card>
@@ -40,13 +37,11 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import SellingOptions from './selling-screens/SellingOptions'
-import SellingHeader from './selling-screens/SellingHeader'
 
 export default {
   name: 'SellingFlow',
   components: {
-    SellingOptions,
-    SellingHeader
+    SellingOptions
   },
   props: ['contractAsset'],
   data () {
@@ -67,61 +62,58 @@ export default {
     })
   },
   methods: {
-    back: function () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      configuration.opcode = 'save-selling-data'
-      window.eventBus.$emit('rpayEvent', configuration)
-    },
     minted () {
       return this.contractAsset
+    },
+    updateAmount (amount) {
+      this.contractAsset.saleData.buyNowOrStartingPrice = Number(amount)
     },
     setTradeInfo () {
       this.errorMessage = null
       if (!this.isValid()) return
       const data = {
+        sendAsSky: true,
         contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
         contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
         owner: this.contractAsset.owner,
         assetHash: this.contractAsset.tokenInfo.assetHash,
-        nftIndex: (this.contractAsset) ? this.contractAsset.nftIndex : -1,
+        nftIndex: this.contractAsset.nftIndex,
         saleData: this.contractAsset.saleData
       }
       this.$store.dispatch('rpayPurchaseStore/setTradeInfo', data).then((result) => {
         this.result = result
-        this.$notify({ type: 'success', title: 'Reserve Price', text: 'Transaction sent! Check the explorer for progress - people will be able to buy this item once it completes!' })
       }).catch((error) => {
         console.log(error)
         this.sellingMessage = null
-        this.$notify({ type: 'danger', title: 'Sell Error', text: 'There was an error setting sale info' })
       })
     },
     isValid: function () {
       this.errorMessage = null
       const saleData = this.contractAsset.saleData
       if (saleData.saleType < 0 || saleData.saleType > 3) {
-        this.$notify({ type: 'danger', title: 'Sell Error', text: 'Sale type outside of allowed range' })
+        this.$notify({ type: 'error', title: 'Sell Error', text: 'Sale type outside of allowed range' })
         return false
       }
       if (saleData.saleType === 2) {
         if (!saleData.biddingEndTime) {
-          this.$notify({ type: 'danger', title: 'Sell Error', text: 'Please select end time for for bidding' })
+          this.$notify({ type: 'error', title: 'Sell Error', text: 'Please select end time for for bidding' })
           return false
         }
         if (!saleData.incrementPrice || saleData.incrementPrice < 0) {
-          this.$notify({ type: 'danger', title: 'Sell Error', text: 'Please enter the increment for bidding' })
+          this.$notify({ type: 'error', title: 'Sell Error', text: 'Please enter the increment for bidding' })
           return false
         }
         if (!saleData.buyNowOrStartingPrice || saleData.buyNowOrStartingPrice < 0) {
-          this.$notify({ type: 'danger', title: 'Sell Error', text: 'Please enter the buy now / starting price for bidding' })
+          this.$notify({ type: 'error', title: 'Sell Error', text: 'Please enter the buy now / starting price for bidding' })
           return false
         }
         if (!saleData.reservePrice || saleData.reservePrice < 0) {
-          this.$notify({ type: 'error', title: 'Reserve Price', text: 'Please enter the reserve.' })
+          this.$notify({ type: 'error', title: 'Sell Error', text: 'Please enter the reserve.' })
           return false
         }
       } else if (saleData.saleType === 1) {
         if (!saleData.buyNowOrStartingPrice || saleData.buyNowOrStartingPrice < 0) {
-          this.$notify({ type: 'error', title: 'Reserve Price', text: 'Please enter the buy now / starting price for bidding.' })
+          this.$notify({ type: 'error', title: 'Sell Error', text: 'Please enter the buy now / starting price for bidding.' })
           return false
         }
       }

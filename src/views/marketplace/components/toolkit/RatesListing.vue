@@ -1,10 +1,9 @@
 <template>
 <span class="text-small">
     <span v-for="(rate, index) in rates" :key="index" class="">
-      <span style="min-width: 100px;" class="text-right mr-4">
+      <span class="text-right mr-2">
         {{rate.value}} <span style="font-weight: 600">{{rate.text}}</span>
       </span>
-      <div class="w-100" v-if="index === 2 || index === 5"></div>
     </span>
 </span>
 </template>

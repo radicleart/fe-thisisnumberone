@@ -6,13 +6,13 @@
         <span v-b-tooltip.hover="{ variant: 'warning' }" :title="'Your daily spin quota gives everyone equal opportunity to mine a lovely loop!'"><span class="">{{credits}}</span> more spins today</span>
       </div>
       <div v-if="limitReached">
-        <span class="text-danger" router-tag="span" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Each LoopRun is its own limited set and features the artwork of different contemporary artists!'">
+        <span class="text-danger" router-tag="span" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Each run has unique elements that increase in scarcity with the expansion of each new version!'">
           Sorry, all Loopbomb STX V1 are minted for this run. Visit the <b-link class="text-info" to="/nft-marketplace">Marketplace</b-link>
         </span>
       </div>
       <div v-else>
         <span>
-          <span class="text-warning mr-2" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Each LoopRun is its own limited set and features the artwork of different contemporary artists!'">{{loopRun.currentRun}}</span>
+          <span class="text-warning mr-2" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Each run has unique elements that increase in scarcity with the expansion of each new version!'">{{loopRun.currentRun}}</span>
           <span class="text-xsmall" v-b-tooltip.hover="{ variant: 'warning' }" :title="nftsLeft + ' Loopbombs remain to be claimed in this run!'">{{nftsRemaining}} Minted (@{{application.tokenContract.mintPrice}} STX Each)</span>
         </span>
       </div>
@@ -67,7 +67,7 @@ export default {
     nftsRemaining () {
       return this.mintCounter + '/' + this.loopRun.versionLimit
     },
-    credits() {
+    credits () {
       const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
       if (loopRun) {
         const remaining = loopRun.spinsPerDay - loopRun.spinsToday
@@ -79,20 +79,20 @@ export default {
       if (!this.application) return -1
       return Math.min(this.loopRun.versionLimit, this.application.tokenContract.mintCounter)
     },
-    profile() {
+    profile () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       return profile
     },
-    loopRun() {
+    loopRun () {
       const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
       return loopRun
     },
-    application() {
+    application () {
       const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME)
       return application
     }
-  },
-};
+  }
+}
 </script>
 <style scoped>
 .nav-bar {

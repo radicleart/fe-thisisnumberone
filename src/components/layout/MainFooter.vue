@@ -98,6 +98,9 @@
         <div class="footer-bottom--left">
           {{ content.left_bottom_corner[0].text }}
         </div>
+        <div class="footer-bottom--left">
+          For the <b-icon icon="heart-fill" class="text-danger"/> of crypto!
+        </div>
       </div>
         <!--
       <div class="d-none d-sm-flex justify-content-between footer-bottom">

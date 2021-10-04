@@ -6,11 +6,24 @@
   </div>
   <div :key="componentKey" v-else>
     <router-view name="header" style="z-index: 10;"/>
-    <router-view style="min-height: 99vh;" />
+    <main v-if="adminSection()">
+      <b-container fluid>
+        <b-row align-h="center">
+          <b-col md="2" sm="12" class="pt-4 pl-3 text-small px-0 bg-black" style="min-height: 60vh">
+            <router-view name="adminNav" />
+          </b-col>
+          <b-col md="10" sm="12" class="bg-black p-4 text-small">
+            <router-view/>
+          </b-col>
+        </b-row>
+      </b-container>
+    </main>
+    <router-view v-else style="min-height: 99vh;" />
     <router-view name="footer"/>
     <notifications :duration="10000" classes="r-notifs" position="bottom left" width="50%"/>
     <WaitingModal/>
     <SuccessModal/>
+    <MessageTicker :tickerId="tickerId + '-inner'"/>
   </div>
 </div>
 </template>
@@ -18,15 +31,17 @@
 import Splash from '@/views/Splash'
 import SuccessModal from '@/components/utils/SuccessModal'
 import WaitingModal from '@/components/utils/WaitingModal'
-import RisidioPay from 'risidio-pay'
+// import RisidioPay from 'risidio-pay'
 import { APP_CONSTANTS } from '@/app-constants'
+import MessageTicker from '@/views/marketplace/components/gallery/common/MessageTicker'
 
-// const RisidioPay = () => import('risidio-pay')
+const RisidioPay = () => import('risidio-pay')
 
 export default {
   name: 'App',
   components: {
     Splash,
+    MessageTicker,
     SuccessModal,
     WaitingModal,
     RisidioPay
@@ -35,7 +50,8 @@ export default {
     return {
       loading: true,
       configured: false,
-      componentKey: 0
+      componentKey: 0,
+      tickerId: 'anti-app'
     }
   },
   mounted () {
@@ -44,6 +60,9 @@ export default {
     this.readPrismicContent()
   },
   methods: {
+    adminSection () {
+      return this.$route.path.startsWith('/mgmnt')
+    },
     setupEventListener () {
       this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'config-flow', asset: this.gaiaAsset })
       const $self = this
@@ -52,6 +71,7 @@ export default {
         window.eventBus.$on('rpayEvent', function (data) {
           if (data.opcode === 'configured') {
             $self.$store.dispatch('initApplication').then(() => {
+              document.getElementById($self.tickerId).style.display = 'none'
               $self.$store.dispatch('rpayPurchaseStore/fetchOffers')
               $self.configured = true
             })

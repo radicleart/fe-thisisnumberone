@@ -1,16 +1,14 @@
 <template>
-<b-card-group deck v-if="item">
-  <b-card class="text-center" header-tag="header" footer-tag="footer">
+<b-card-group>
+  <b-card class="text-dark text-xsmall" bg-variant="bg-dark" header-tag="header" footer-tag="footer">
     <!-- <header-screen :allowEdit="false" :item="item"/> -->
-    <ItemDisplay class="my-5" :item="item"/>
-    <!-- <div class="d-flex justify-content-center"><p class="w-50 bg-warning py-3 px-5 mb-5"><a class="text-white" href="#" @click="showBeneficiaries = true">Set Your Royalties</a></p></div> -->
-    <EditEditions :item="item"/>
-    <Beneficiaries class="mb-5 text-left" v-if="showBeneficiaries" :beneficiaries="beneficiaries" v-on="$listeners" :item="item"/>
-    <div class="my-4 text-danger" v-html="errorMessage"></div>
+    <div class="text-danger" v-html="errorMessage"></div>
+    <EditEditions v-if="allowEditEditions" :item="item"/>
+    <Beneficiaries :beneficiaries="beneficiaries" v-on="$listeners" :item="item"/>
     <template v-slot:footer>
       <div class="d-flex justify-content-between">
-        <b-button @click="saveData()" class="w-50 mr-4" variant="outline-light">save mint later</b-button>
-        <b-button @click="sendMintEvent()" v-if="allowMint()"  class="w-50 ml-4" variant="outline-dark">mint now</b-button>
+        <b-button @click="saveData()" class="rounded w-50 mr-2" variant="outline-light">Cancel</b-button>
+        <b-button @click="sendMintEvent()" v-if="allowMint()"  class="w-50 ml-2" variant="warning">Mint Now</b-button>
       </div>
     </template>
   </b-card>
@@ -20,26 +18,24 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import Beneficiaries from './Beneficiaries'
-import ItemDisplay from './ItemDisplay'
 import EditEditions from './EditEditions'
 
 export default {
   name: 'RoyaltyScreen',
   components: {
-    Beneficiaries,
     EditEditions,
-    ItemDisplay
+    Beneficiaries
   },
   props: ['item', 'beneficiaries', 'errorMessage'],
   data () {
     return {
-      mintedMessage: null,
-      showBeneficiaries: true
+      allowEditEditions: true, // process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
+      mintedMessage: null
     }
   },
   methods: {
     rangeEvent (displayCard) {
-      this.$store.commit('rpayStore/setDisplayCard', displayCard)
+      this.$store.commit(APP_CONSTANTS.SET_DISPLAY_CARD, displayCard)
     },
     getRangeValue () {
       const displayCard = this.$store.getters[APP_CONSTANTS.KEY_DISPLAY_CARD]
@@ -56,9 +52,7 @@ export default {
       return sum === 100.00
     },
     saveData: function () {
-      const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
-      configuration.opcode = 'cancel-minting'
-      window.eventBus.$emit('rpayEvent', configuration)
+      window.eventBus.$emit('rpayEvent', { opcode: 'cancel-minting' })
     },
     sendMintEvent: function () {
       this.$emit('mintToken')
@@ -70,7 +64,7 @@ export default {
       return displayCard
     },
     enableRoyalties () {
-      // const configuration = this.$store.getters[APP_CONSTANTS.KEY_CONFIGURATION]
+      // const configuration = this.$store.getters[APP_CONSTANTS.KEY_RPAY_CONFIGURATION]
       return true
     }
   }

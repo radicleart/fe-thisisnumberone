@@ -15,7 +15,7 @@
       <div class="">
         <div>
           <div class="bg-dark p-3 d-flex justify-content-between">
-            <b-button variant="outline-primary" @click="backData()">Back</b-button>
+            <SquareButton @clickButton="backData()" :theme="'light'" :label1="'BACK'" :icon="'eye'"/>
          </div>
         </div>
       </div>
@@ -26,10 +26,12 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
+import SquareButton from '@/components/utils/SquareButton'
 
 export default {
   name: 'PendingScreen',
   components: {
+    SquareButton
   },
   data () {
     return {
@@ -40,7 +42,7 @@ export default {
   },
   methods: {
     backData: function () {
-      this.$store.commit('rpayStore/setDisplayCard', 100)
+      this.$store.commit(APP_CONSTANTS.SET_DISPLAY_CARD, 100)
     }
   },
   computed: {

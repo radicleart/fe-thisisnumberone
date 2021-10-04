@@ -4,8 +4,8 @@
     <div class="row">
       <div class="col-12">
         <div class="d-flex justify-content-between">
-          <b-badge class="mb-3 p-3" variant="warning" v-if="editionsMintable">Editions are <span >available</span></b-badge>
-          <b-badge class="mb-3 p-3" variant="danger" v-else>Editions are <span class="">unavailable</span></b-badge>
+          <b-badge class="mb-3 p-3" variant="light" v-if="editionsMintable">Editions are <span >available</span></b-badge>
+          <b-badge class="mb-3 p-3" variant="light" v-else>All editions have been minted</b-badge>
           <div class="text-right" v-if="editionsMintable && profile.superAdmin">
             <a class="mr-3 text-danger" @click="disableEditions()">switch editions off</a>
           </div>
@@ -34,7 +34,7 @@
         </b-input-group>
       </div>
       <div class="col-12 text-right mb-5">
-        <b-button variant="outline-primary" @click="updateEditions()">Update</b-button>
+        <b-button variant="outline-warning" @click="updateEditions()">Update</b-button>
       </div>
       <div class="row mb-4" v-if="transferring">
         <div class="col-12 text-danger" v-html="transferring"></div>
@@ -86,9 +86,10 @@ export default {
         editionCost = 0
       }
       const data = {
+        sendAsSky: true,
         contractAddress: STX_CONTRACT_ADDRESS,
         contractName: STX_CONTRACT_NAME,
-        seriesOriginal: (this.item.contractAsset) ? this.item.contractAsset.nftIndex : -1,
+        seriesOriginal: this.item.contractAsset.nftIndex,
         maxEditions: maxEditions,
         editionCost: editionCost
       }

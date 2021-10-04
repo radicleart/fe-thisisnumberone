@@ -2,10 +2,7 @@
 <div id="minting-tools" class="mt-3" v-if="item">
   <div class="">
     <div v-if="!item.contractAsset" class="w-100 text-small">
-      <div v-if="txPending && txPending.length > 0">
-        Minting in progess - please refresh this page when the transaction completes.
-      </div>
-      <div v-else>
+      <div v-if="!txPending || txPending.length === 0">
         <div v-if="isValid">
           <div>
             <b-button variant="outline-warning" @click="startMinting()">Mint File</b-button>
@@ -15,16 +12,20 @@
       </div>
     </div>
     <div v-else class="mt-5">
-      <b-tabs justified content-class="bg-black p-5 mt-3">
-        <b-tab :title="'Sell'" active>
-          <div class="mb-5">Set buy now price or switch off sales</div>
+      <b-tabs justified content-class="bg-black text-white p-4 border mt-3">
+        <b-tab active title="Sell">
           <div>
+            <div class="mb-3">{{saleDataText}}</div>
             <b-button class="btn-action" variant="outline-warning" @click="openSaleDataDialog()">Update Sale Info</b-button>
           </div>
-        </b-tab>
-        <!--
-        <b-tab title="Sell" >
+          <!--
           <b-tabs justified content-class="mt-3">
+            <b-tab :title="'Info'">
+              <div>
+                <div class="my-5">{{saleDataText}}</div>
+                <b-button class="btn-action" variant="outline-warning" @click="openSaleDataDialog()">Update Sale Info</b-button>
+              </div>
+            </b-tab>
             <b-tab :title="'Offers'" v-if="profile.superAdmin">
               <OfferHistory :item="item"/>
             </b-tab>
@@ -32,25 +33,26 @@
               <BidHistory :item="item"/>
             </b-tab>
           </b-tabs>
+          -->
         </b-tab>
-        <b-tab title="General" >
-          <div class="row" v-if="item.contractAsset && application">
+        <b-tab title="Meta Data" v-if="allowEditEditions">
+          <div class="row">
             <div class="col-12">
-              <ManageEditions :item="item"/>
+              <!-- <ManageEditions :item="item"/> -->
             </div>
             <div class="col-12 mb-4">
-              <div class="text-white">
-                <a :href="item.contractAsset.tokenInfo.metaDataUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Meta Data URL: ' + item.contractAsset.tokenInfo.metaDataUrl" target="_blank">Meta Data URL <b-icon class="ml-3" icon="arrow-up-right-circle"/></a>
-                <br/>
-                <a :href="application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" v-b-tooltip.hover="{ variant: 'light' }" :title="'Base Token URL: ' + application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" target="_blank">Base Token URL <b-icon class="ml-3" icon="arrow-up-right-circle"/></a>
+              <div>
+                <a class="text-white" :href="item.contractAsset.tokenInfo.metaDataUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Meta Data URL: ' + item.contractAsset.tokenInfo.metaDataUrl" target="_blank"><b-icon class="mr-1" icon="arrow-up-right-circle"/>Meta Data URL</a>
+              </div>
+              <div>
+                <a class="text-white" :href="application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" v-b-tooltip.hover="{ variant: 'light' }" :title="'Base Token URL: ' + application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" target="_blank"><b-icon class="mr-1" icon="arrow-up-right-circle"/>Base Token URL</a>
               </div>
             </div>
           </div>
         </b-tab>
         <b-tab title="Royalties">
-          <ListBeneficiaries :item="item"/>
+          <ListBeneficiaries class="mt-3" :item="item"/>
         </b-tab>
-        -->
         <b-tab title="Transfer">
           <TransferNft :item="item"/>
         </b-tab>
@@ -70,7 +72,7 @@
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="md" id="minting-modal">
-    <MintingFlow :item="item" />
+    <MintingFlow :assetHash="item.assetHash" v-on="$listeners"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="lg" id="selling-modal">
@@ -83,27 +85,33 @@
 <script>
 import MintingFlow from './mint-setup/MintingFlow'
 import SellingFlow from './sell-setup/SellingFlow'
-import moment from 'moment'
 import { APP_CONSTANTS } from '@/app-constants'
 import AcceptOffer from '@/views/marketplace/components/toolkit/AcceptOffer'
 // import ManageEditions from '@/views/marketplace/components/toolkit/editions/ManageEditions'
 import TransferNft from '@/views/marketplace/components/toolkit/TransferNft'
-// import ListBeneficiaries from '@/views/marketplace/components/toolkit/ListBeneficiaries'
+import ListBeneficiaries from '@/views/marketplace/components/toolkit/ListBeneficiaries'
 // import OfferHistory from '@/views/marketplace/components/toolkit/offers/OfferHistory'
 // import BidHistory from '@/views/marketplace/components/toolkit/bids/BidHistory'
+
 // const RisidioPay = () => import('risidio-pay')
+
 export default {
   name: 'MintingTools',
   components: {
     MintingFlow,
     SellingFlow,
+    // OfferHistory,
+    // BidHistory,
     // RisidioPay,
     AcceptOffer,
-    TransferNft
+    TransferNft,
+    ListBeneficiaries
+    // ManageEditions
   },
   props: ['item'],
   data: function () {
     return {
+      allowEditEditions: process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
       contractNameNext: process.env.VUE_APP_STACKS_CONTRACT_NAME_NEXT,
       showRpay: false,
       showTransfers: false,
@@ -119,22 +127,11 @@ export default {
     // if (item.uploader !== profile.username) throw new Error('Unexpected NFT ownership error')
     this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: this.item })
     if (window.eventBus && window.eventBus.$on) {
-      window.eventBus.$on('rpayEvent', function (data) {
-        if (data.opcode === 'save-selling-data') {
-          $self.$bvModal.hide('selling-modal')
-          $self.$bvModal.hide('minting-modal')
-        } else if (data.opcode === 'stx-transaction-finished' || data.opcode === 'eth-mint-success') {
-          $self.$bvModal.hide('selling-modal')
-          $self.$bvModal.hide('minting-modal')
-          $self.mintResult = data
-          // $self.$bvModal.show('result-modal')
-        } else if (data.opcode === 'stx-update-mint-data') {
-          if (data.gaiaAsset) $self.$store.dispatch('rpayMyItemStore/saveItem', data.gaiaAsset)
-        } else if (data.opcode === 'stx-save-and-close-mint-data') {
-          // $self.$bvModal.hide('minting-modal')
-        } else if (data.opcode === 'stx-transaction-sent' || data.opcode === 'stx-transaction-update') {
-          $self.$bvModal.hide('selling-modal')
-          $self.$bvModal.hide('minting-modal')
+      window.eventBus.$on('rpayEvent', function () {
+        $self.$bvModal.hide('selling-modal')
+        $self.$bvModal.hide('minting-modal')
+        /**
+        if (data.opcode === 'stx-transaction-sent' || data.opcode === 'stx-transaction-update') {
           if (data.txId) {
             const item = $self.item
             if (data && data.functionName === 'mint-token') {
@@ -142,18 +139,17 @@ export default {
                 txId: data.txId,
                 txStatus: data.txStatus
               }
+              $self.$store.dispatch('rpayMyItemStore/saveItem', item).then(() => {
+                $self.$emit('update')
+              }).catch(() => {
+                $self.$emit('update')
+              })
+            } else {
+              $self.$emit('update')
             }
-            $self.$store.dispatch('rpayMyItemStore/saveItem', item).then(() => {
-              $self.$emit('update')
-            }).catch(() => {
-              $self.$emit('update')
-            })
           }
-          // $self.$notify({ type: 'warning', title: 'Transaction News', text: 'Transaction ' + data.functionName + ' has status ' + data.txStatus })
-        } else if (data.opcode === 'cancel-minting') {
-          $self.$bvModal.hide('selling-modal')
-          $self.$bvModal.hide('minting-modal')
         }
+        **/
       })
     }
   },
@@ -179,7 +175,7 @@ export default {
       return (amount)
     },
     offerMade: function (madeData) {
-      return moment(madeData).format('DD-MM hh:mm')
+      return new Date(madeData) // DateTime.fromMillis(madeData).toLocaleString({ weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
     },
     upable: function () {
       return this.uploadState > 1 && this.uploadState < 5
@@ -187,7 +183,7 @@ export default {
   },
   computed: {
     txPending () {
-      let transactions = []
+      let transactions
       if (this.item.contractAsset) {
         transactions = this.$store.getters[APP_CONSTANTS.KEY_TX_PENDING_BY_TX_ID](this.item.contractAsset.nftIndex)
       } else {

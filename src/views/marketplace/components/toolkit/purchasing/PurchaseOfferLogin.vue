@@ -1,16 +1,12 @@
 <template>
-<div v-if="makeOfferDialog">
+<div>
   <b-row>
     <b-col cols="12">
-      <h1>{{makeOfferDialog[0].text}}</h1>
+      <h1>Login to Continue</h1>
     </b-col>
   </b-row>
   <b-row class="row mt-2">
     <b-col align-v="stretch" md="12" sm="12">
-      <p v-if="makeOfferDialog[1]">{{makeOfferDialog[1].text}}</p>
-      <p v-if="makeOfferDialog[2]">{{makeOfferDialog[2].text}}</p>
-      <p v-if="makeOfferDialog[3]">{{makeOfferDialog[3].text}}</p>
-      <p v-if="makeOfferDialog[4]">{{makeOfferDialog[4].text}}</p>
       <div class="mt-5"><b-link href="#" @click.prevent="$emit('backStep')"><b-icon icon="chevron-left"/> Back</b-link></div>
     </b-col>
   </b-row>
@@ -19,7 +15,7 @@
 </template>
 
 <script>
-import ActionRow from '@/components/utils/ActionRow'
+import ActionRow from './ActionRow'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
@@ -30,7 +26,6 @@ export default {
   props: ['offerData'],
   data () {
     return {
-      icon: require('@/assets/img/check-square.svg'),
       loading: true,
       formSubmitted: false,
       minimumOffer: 0,
@@ -78,6 +73,7 @@ export default {
         this.$emit('registerByConnect')
       } else {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
+          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { stxAddress: profile.stxAddress }, { root: true })
           this.$emit('registerByConnect')
         }).catch((err) => {
           console.log(err)
@@ -113,10 +109,6 @@ export default {
     profile () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile
-    },
-    makeOfferDialog () {
-      const dialog = this.$store.getters[APP_CONSTANTS.KEY_DIALOG_CONTENT]('login-to-offer')
-      return dialog
     },
     offerState () {
       return (this.offerAmount >= this.minimumOffer)

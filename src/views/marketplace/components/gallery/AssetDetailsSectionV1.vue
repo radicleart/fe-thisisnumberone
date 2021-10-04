@@ -178,7 +178,7 @@ export default {
   },
   methods: {
     getMediaItem () {
-      const attributes = this.$store.getters[APP_CONSTANTS.KEY_WAITING_IMAGE](this.gaiaAsset)
+      const attributes = this.$store.getters[APP_CONSTANTS.KEY_MEDIA_ATTRIBUTES](this.gaiaAsset)
       return attributes
     },
     mintedEvent (data) {

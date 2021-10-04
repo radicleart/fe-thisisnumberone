@@ -67,46 +67,34 @@ const beneficiariesDefault = [
 **/
 const beneficiariesDefault = [
   {
-    username: 'Charity',
-    role: 'Charity',
-    email: 'charity@thisisnumberone.com',
-    royalty: 10,
-    chainAddress: 'SP1S8Y9M7699TSB1C14KNJ26D3K2ABWBD2FZYAVPD'
+    username: 'owner.id',
+    role: 'Secondary Buyer/Owner',
+    royalty: 0,
+    secondaryRoyalty: 80, // note the owner is worked out runtime in secondaries
+    chainAddress: null
   },
   {
-    username: 'fbs.id',
-    role: 'Fatboy Slim',
-    email: 'fbs@thisisnumberone.com',
-    royalty: 35,
-    chainAddress: 'SP13EKRTPB1GVMESNTNQ20V9M5E891FWAS5QC2VNS'
+    username: 'maker.id',
+    role: 'Maker/Minter',
+    royalty: 80,
+    secondaryRoyalty: 5,
+    chainAddress: null
   },
   {
-    username: 'marc.id',
-    role: 'marc',
-    email: 'marc@thisisnumberone.com',
-    royalty: 31,
-    chainAddress: 'SPZRAE52H2NC2MDBEV8W99RFVPK8Q9BW8H88XV9N'
-  },
-  {
-    username: 'mijoco.id',
-    role: 'mijoco',
-    email: 'mijoco@thisisnumberone.com',
-    royalty: 8,
-    chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
-  },
-  {
-    username: 'jim.id',
-    role: 'jim',
-    email: 'jim@thisisnumberone.com',
-    royalty: 8,
-    chainAddress: 'SP162D87CY84QVVCMJKNKGHC7GGXFGA0TAR9D0XJW'
-  },
-  {
-    username: 'dash.id',
-    role: 'dash',
-    email: 'dash@thisisnumberone.com',
-    royalty: 8,
+    username: 'numberone.id',
+    role: 'Number One',
+    email: 'info@thisisnumberone.com',
+    royalty: 15,
+    secondaryRoyalty: 10,
     chainAddress: 'SP1CS4FVXC59S65C3X1J3XRNZGWTG212JT7CG73AG'
+  },
+  {
+    username: 'Platform.id',
+    role: 'Platform',
+    email: 'info@brightblock.org',
+    royalty: 5,
+    secondaryRoyalty: 5,
+    chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
   }
 ]
 const payment = {
@@ -224,6 +212,7 @@ export default new Vuex.Store({
   },
   state: {
     configuration: setup({}),
+    displayCard: 100,
     webWalletNeeded: false,
     windims: { innerWidth: window.innerWidth, innerHeight: window.innerHeight },
     modalMessage: 'Your request is being processed',
@@ -233,6 +222,9 @@ export default new Vuex.Store({
     separator: '/'
   },
   getters: {
+    getDisplayCard: (state) => {
+      return state.displayCard
+    },
     getWebWalletLinkChrome: state => {
       return state.chromeLink
     },
@@ -263,6 +255,17 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setDisplayCard (state, val) {
+      if (val !== 100 && val !== 102 && val !== 104 && val !== 106) {
+        val = 100
+      }
+      if (val === 100) {
+        if (!state.configuration.payment.allowMultiples) {
+          val = 102
+        }
+      }
+      state.displayCard = val
+    },
     setRpayFlow (state, data) {
       state.configuration = setup(data)
     },
@@ -282,6 +285,7 @@ export default new Vuex.Store({
     initApplication ({ dispatch }) {
       return new Promise(resolve => {
         dispatch('rpayAuthStore/fetchMyAccount').then(profile => {
+          dispatch('rpayCategoryStore/fetchLoopRunsForContract')
           if (profile.loggedIn) {
             const data = { stxAddress: 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG', mine: true }
             if (process.env.VUE_APP_NETWORK !== 'local') {

@@ -1,31 +1,35 @@
 <template>
-<div>
+<div v-if="events">
   <h6 class="text-white">NFT History</h6>
-  <b-row  v-if="events">
+  <b-row>
     <b-col md="12" sm="12">
       <b-table striped hover :items="values()" :fields="fields()" class="bg-light text-dark">
         <template #cell(status)="data">
-          <span v-b-tooltip.hover="{ variant: 'warning' }"  :title="getTitle(data)">
+          <span v-show="data.value === 'expired'" v-b-tooltip.hover="{ variant: 'warning' }"  :title="getTitle(data)">
+            <span @click="checkTx(data)"><b-icon :animation="getAnimation(data)" :class="getClass(data)" font-scale="1.5" :icon="getIcon(data)"/></span>
+          </span>
+          <span v-show="data.value !== 'expired'" v-b-tooltip.hover="{ variant: 'warning' }"  :title="getTitle(data)">
             <a class="mr-2" :href="transactionUrl(data)" target="_blank"><b-icon :animation="getAnimation(data)" :class="getClass(data)" font-scale="1.5" :icon="getIcon(data)"/></a>
           </span>
         </template>
         <template #cell(from)="data">
-          <div :ref="'from_' + data.index" style="white-space: nowrap;">
+          <div :ref="'from_' + data.index">
             <span class="pointer mr-1" @click.prevent="copy('from', data)">{{data.value}}</span>
             <span class="pointer" v-show="data.value.length > 0" @click.prevent="copy('from', data)"><b-icon icon="file-earmark"/></span>
           </div>
         </template>
+        <template #cell(event)="data">
+          <div :ref="'from_' + data.index">
+            <span class="pointer mr-1" @click="checkTx(data)">{{data.value}}</span>
+          </div>
+        </template>
         <template #cell(to)="data">
-          <div :ref="'to_' + data.index" style="white-space: nowrap;">
+          <div :ref="'to_' + data.index">
             <span class="pointer mr-1" @click.prevent="copy('to', data)">{{data.value}}</span>
             <span class="pointer" v-show="data.value.length > 0" @click.prevent="copy('to', data)"><b-icon icon="file-earmark"/></span>
           </div>
         </template>
       </b-table>
-    </b-col>
-  </b-row>
-  <b-row v-else>
-    <b-col md="5" sm="12">
     </b-col>
   </b-row>
   <input class="fake-input" style="visibility: hidden;" id="copy-address" readonly/>
@@ -76,7 +80,8 @@ export default {
   data: function () {
     return {
       events: null,
-      timer: null
+      timer: null,
+      previouslyPending: false
     }
   },
   beforeDestroy () {
@@ -118,6 +123,12 @@ export default {
         if (events && events.length > 0) {
           this.events = events.reverse()
           this.$emit('setPending', events[0])
+          if (events[0].txStatus && events[0].txStatus === 'pending') {
+            this.previouslyPending = true
+          }
+          if (this.previouslyPending && events[0].txStatus && events[0].txStatus !== 'pending') {
+            this.update()
+          }
           this.events.forEach((event) => {
             if (!event.txStatus || event.txStatus === 'pending') {
               this.$store.dispatch('rpayTransactionStore/fetchTransactionFromChainByTxId', event.txId).then((result) => {
@@ -190,12 +201,20 @@ export default {
         flasher.classList.remove('flasher')
       }, 1000)
     },
+    checkTx: function (data) {
+      const txId = this.events[data.index].txId
+      this.$store.dispatch('rpayTransactionStore/fetchTransactionFromChainByTxId', txId).then((result) => {
+        this.$notify({ type: 'warning', title: 'Check Status', text: 'Transaction status is ' + result.txStatus })
+      })
+    },
     showThrobber: function (data) {
       if (!data.value || data.value === 'pending') return true
       return false
     },
     transactionUrl: function (data) {
-      if (this.events[data.index].txStatus === 'expired') return '#'
+      if (this.events[data.index].txStatus === 'expired') {
+        return ''
+      }
       let txId = this.events[data.index].txId
       if (!txId.startsWith('0x')) txId = '0x' + txId
       const stacksApiUrl = process.env.VUE_APP_STACKS_EXPLORER

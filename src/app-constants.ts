@@ -10,8 +10,20 @@ export const APP_CONSTANTS = {
   KEY_WEB_WALLET_LINK_FIREFOX: 'getWebWalletLinkFirefox',
   KEY_MODAL_MESSAGE: 'getModalMessage',
   KEY_STACKS_MATE_URL: 'getStacksMateUrl',
+  KEY_DISPLAY_CARD: 'getDisplayCard',
+  SET_DISPLAY_CARD: 'setDisplayCard',
 
   KEY_CATEGORIES: 'rpayCategoryStore/getCategories',
+  GET_LOOP_RUN: 'rpayCategoryStore/getLoopRun',
+  GET_LOOP_RUNS: 'rpayCategoryStore/getLoopRuns',
+  KEY_MEDIA_ATTRIBUTES: 'rpayCategoryStore/getMediaAttributes',
+  KEY_ASSET_IMAGE_URL: 'rpayCategoryStore/getAssetImageUrl',
+
+  KEY_MY_PROJECT: 'rpayProjectStore/getProject',
+  KEY_MY_PROJECTS: 'rpayProjectStore/getProjects',
+  KEY_CONTRACT: 'rpayProjectStore/getContract',
+  KEY_FAVOURITES: 'rpayProjectStore/getFavourites',
+  DISP_SAVE_PROJECT: 'rpayProjectStore/saveProject',
 
   KEY_ALL_OFFERS_ON_ASSET: 'assetGeneralStore/getAllOffersForAsset',
   KEY_HIGHEST_OFFER_ON_ASSET: 'assetGeneralStore/getHighestOfferForAsset',
@@ -40,7 +52,6 @@ export const APP_CONSTANTS = {
   KEY_DB_OFFERS: 'rpayPurchaseStore/getDbOffers',
 
   KEY_TRANSACTION_DIALOG_MESSAGE: 'contentStore/getTransactionDialogMessage',
-  KEY_WAITING_IMAGE: 'contentStore/getWaitingImage',
   KEY_EMAIL_TEXT: 'contentStore/getEmail',
   KEY_TOOL_TIP: 'contentStore/getTooltip',
   KEY_DIALOG_CONTENT: 'contentStore/getDialog',
@@ -62,7 +73,6 @@ export const APP_CONSTANTS = {
   KEY_AUTH_HEADERS: 'rpayAuthStore/getAuthHeaders',
 
   KEY_TICKER_RATES: 'rpayStore/getTickerRates',
-  KEY_DISPLAY_CARD: 'rpayStore/getDisplayCard',
   KEY_MINTING_MESSAGE: 'rpayStore/getMintingMessage',
   SET_MINTING_MESSAGE: 'rpayStore/setMintingMessage',
   KEY_PREFERRED_NETWORK: 'rpayStore/getPreferredNetwork',

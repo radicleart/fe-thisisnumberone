@@ -18,10 +18,10 @@
 </template>
 
 <script>
-import ActionRow from '@/components/utils/ActionRow'
+import ActionRow from './ActionRow'
 
 export default {
-  name: 'AssetUpdatesModal',
+  name: 'UpdatesModal',
   components: {
     ActionRow
   },
@@ -52,8 +52,4 @@ export default {
 }
 </script>
 <style lang="scss">
-.form-control {
-  padding: 20px !important;
-  font-size: 1.5rem !important;
-}
 </style>

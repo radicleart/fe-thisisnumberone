@@ -46,10 +46,6 @@ export default {
       formSubmitted: false
     }
   },
-  mounted () {
-    this.item.editions = 1
-    this.item.editionCost = 1
-  },
   methods: {
     updateItem: function () {
       if (!this.item.editions || this.item.editions < 1) {
@@ -58,10 +54,6 @@ export default {
       if (!this.item.editionCost || this.item.editionCost < 0) {
         this.item.editionCost = 0
       }
-      // for Jim - minting lots of editions..
-      this.item.editions = 1
-      this.item.editionCost = 1
-
       this.item.editions = Number(this.item.editions)
       this.item.editionCost = Number(this.item.editionCost)
       this.$store.dispatch('rpayMyItemStore/quickSaveItem', this.item)

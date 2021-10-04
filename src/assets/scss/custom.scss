@@ -18,8 +18,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   width: 100%;
-  background-color: #fff;
-  color: #000;
+  background-color: #000;
+  color: #fff;
 }
 
 body h1 {
@@ -68,6 +68,13 @@ body a:hover {
   color: $warning;
 }
 
+input {
+  font-weight: 700;
+}
+select {
+  font-weight: 700;
+}
+
 .no-scroll {
   overflow: hidden;
 }
@@ -81,6 +88,10 @@ body a:hover {
   font-size: 1.7rem;
   padding: 7px 30px;
   border-radius: 0px;
+  white-space: nowrap;
+}
+.btn-normal {
+  min-width: 150px !important;
 }
 .btn-light {
   box-shadow: 0px 6px 9px #00000029;
@@ -166,6 +177,9 @@ label {
 }
 .bg-black {
   background-color: #000;
+}
+.text-xsmall {
+  font-size: 1.0rem;
 }
 .text-preview {
   font-size: 1.2rem;

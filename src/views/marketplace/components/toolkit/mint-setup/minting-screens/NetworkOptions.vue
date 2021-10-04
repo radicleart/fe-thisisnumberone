@@ -3,7 +3,7 @@
   <div class="text-center text-bold">Select a network</div>
   <div class="mt-3 mx-5">
     <span v-for="(option, index) in networks" :key="index">
-      <b-button @click="changeNetwork(option.network)" variant="warning" :class="(preferredNetwork === option.network) ? 'no-option-on mb-4' : 'no-option-off mb-4'"><span>{{option.network}}</span></b-button>
+      <b-button @click="changeNetwork(option.network)" :variant="'warning'" :class="(preferredNetwork === option.network) ? 'no-option-on mb-4' : 'no-option-off mb-4'"><span>{{option.network}}</span></b-button>
     </span>
   </div>
   <div class="text-small text-left">

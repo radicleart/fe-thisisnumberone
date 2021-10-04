@@ -7,7 +7,7 @@
 export default {
   name: 'MessageTicker',
   props: ['tickerId'],
-  data() {
+  data () {
     return {
       ticker: null,
       otherMessages: [
@@ -23,7 +23,7 @@ export default {
         { sayer: '', saying: 'Double, double toil and trouble' },
         { sayer: '', saying: 'Ultra-rare' },
         { sayer: '', saying: 'You\'ve got Maelstrom!' },
-        { sayer: '', saying: 'Get lucky with Art!' },
+        { sayer: '', saying: 'Get lucky with Art!' }
       ],
       messages: [
         { sayer: 'Plato', saying: 'Thinking: the talking of the soul with itself.' },
@@ -62,9 +62,9 @@ export default {
   },
   methods: {
     getRandomMessage () {
-      const index = Math.floor(Math.random() * this.messages.length)
-      let message = '<span style="padding: 10px 30px; font-size: 1.0rem; font-style: italic;">\"' + this.messages[index].saying + '\"</span>'
-      message += '<span style="margin: 10px 80px; font-size: 0.8rem;"><br/>' + this.messages[index].sayer + '</span>'
+      // const index = Math.floor(Math.random() * this.messages.length)
+      // let message = '<span style="padding: 10px 30px; font-size: 1.0rem; font-style: italic;">\"' + this.messages[index].saying + '\"</span>'
+      // message += '<span style="margin: 10px 80px; font-size: 0.8rem;"><br/>' + this.messages[index].sayer + '</span>'
       return 'message'
     }
   },

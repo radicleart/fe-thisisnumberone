@@ -10,7 +10,6 @@ import AdminNav from '@/views/mgmnt/AdminNav.vue'
 
 // public pages
 import HomeFooter from '@/components/layout/HomeFooter.vue'
-import OldApplicationAdmin from '../views/admin/OldApplicationAdmin.vue'
 import Login from '../views/Login.vue'
 import Information from '../views/Information.vue'
 // const Information = () => import('../views/Information.vue')
@@ -25,9 +24,6 @@ const NumberOne = () => import('../views/NumberOne.vue')
 // const About = () => import('../views/About.vue')
 // const NumberOne = () => import('../views/NumberOne.vue')
 
-// private pages
-const Admin = () => import('../views/Admin.vue')
-
 // Public Marketplace Routes
 const ItemPreview = () => import('@/views/marketplace/ItemPreview.vue')
 const AssetDetails = () => import('@/views/marketplace/AssetDetails.vue')
@@ -35,9 +31,9 @@ const MyNftLibrary = () => import('@/views/marketplace/MyNftLibrary.vue')
 const NftGallery = () => import('@/views/marketplace/NftGallery.vue')
 const UploadItem = () => import('@/views/marketplace/UploadItem.vue')
 const UpdateItem = () => import('@/views/marketplace/UpdateItem.vue')
+
 // Application Admin Routes
-// const ApplicationAdmin = () => import(/* webpackChunkName: "ApplicationAdmin" */ '@/views/mgmnt/ApplicationAdmin.vue')
-const ManageCache = () => import(/* webpackChunkName: "ManageCache" */ '@/views/mgmnt/ManageCache.vue')
+const ManageRegistry = () => import(/* webpackChunkName: "ManageRegistry" */ '@/views/mgmnt/ManageRegistry.vue')
 const ManagePrivileges = () => import(/* webpackChunkName: "ManagePrivileges" */ '@/views/mgmnt/ManagePrivileges.vue')
 const ManageRequests = () => import(/* webpackChunkName: "ManageRequests" */ '@/views/mgmnt/ManageRequests.vue')
 const ManageCollections = () => import(/* webpackChunkName: "ManageCollections" */ '@/views/mgmnt/ManageCollections.vue')
@@ -178,40 +174,31 @@ const routes: Array<RouteConfig> = [
       requiresAdmin: false
     }
   },
-  {
-    path: '/admin/add-privileges',
-    name: 'add-privileges',
-    components: { default: OldApplicationAdmin, header: AboutNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: true
-    }
-  },
-  {
-    path: '/admin/exhibit-requests',
-    name: 'exhibit-requests',
-    components: { default: OldApplicationAdmin, header: AboutNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: true
-    }
-  },
-  {
-    path: '/admin/app-admin',
-    name: 'app-admin',
-    components: { default: OldApplicationAdmin, header: AboutNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: true
-    }
-  },
   /**
    * admin section...
    */
   {
+    path: '/mgmnt',
+    name: 'registry',
+    components: { default: ManageRegistry, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
     path: '/mgmnt/registry',
     name: 'registry',
-    components: { default: ManageCache, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageRegistry, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/mgmnt/registry/:section',
+    name: 'registry-section',
+    components: { default: ManageRegistry, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -221,15 +208,6 @@ const routes: Array<RouteConfig> = [
     path: '/mgmnt/offers',
     name: 'offers',
     components: { default: ManageOffers, header: AboutNavbar, footer: MainFooter },
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: true
-    }
-  },
-  {
-    path: '/admin',
-    name: 'admin',
-    components: { default: Admin, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -283,7 +261,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/mgmnt/app-admin',
     name: 'app-admin',
-    components: { default: ManageCache, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageRegistry, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -316,55 +294,24 @@ router.beforeEach((to, from, next) => {
         return next({ path: '/home', query: { redirect: to.fullPath } })
       }
     } else {
-      setTimeout(function () {
+      let counter = 0
+      const myint = setInterval(function () {
+        counter++
         myProfile = store.getters['rpayAuthStore/getMyProfile']
         if (myProfile && myProfile.loggedIn) {
           if (isPermitted(to, myProfile)) {
             return next()
-          } else {
-            return next({ path: '/home', query: { redirect: to.fullPath } })
           }
-        } else {
-          return next({
-            path: '/login',
-            query: { redirect: to.fullPath }
-          })
         }
-      }, 3000)
+        if (counter >= 5) {
+          clearInterval(myint)
+          return next({ path: '/home', query: { redirect: to.fullPath } })
+        }
+      }, 2000)
     }
   } else {
     return next() // make sure to always call next()!
   }
-})
-
-router.beforeEach((to, from, next) => {
-  if (to.name !== 'asset-by-hash') return next()
-  const assetHash = to.params.assetHash
-  try {
-    const gaiaAsset = store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](assetHash)
-    to.meta.metaTags = [
-      {
-        property: 'og:description',
-        content: gaiaAsset.description
-      },
-      {
-        property: 'og:name',
-        content: gaiaAsset.name
-      },
-      {
-        property: 'og:image',
-        content: gaiaAsset.image
-      }
-    ]
-  } catch (err) {
-    to.meta.metaTags = [
-      {
-        property: 'og:description',
-        content: 'NFT Asset Details'
-      }
-    ]
-  }
-  next()
 })
 
 router.beforeEach((to, from, next) => {

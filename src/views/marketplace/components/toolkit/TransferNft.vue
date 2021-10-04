@@ -13,12 +13,12 @@
     <div class="row mb-4" v-else>
       <div class="col-12 mb-3">
         <b-input-group append="ADDR">
-          <b-form-input id="toAddress" :state="showTransferButton" v-model="toAddress" placeholder="The recipients Stacks Wallet address"></b-form-input>
+          <b-form-input class="stx-address" id="toAddress" :state="showTransferButton" v-model="toAddress" placeholder="The recipients Stacks Wallet address"></b-form-input>
         </b-input-group>
         <p class="my-3 text-danger" v-html="errorMessage">Enter the recipients {{network}} stacks address</p>
       </div>
       <div class="col-12 text-right" v-if="showTransferButton">
-        <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttTransfers" class="text-white mr-3" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
+        <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'danger' }" :title="'Transfer this NFT to another address - can\'t be undone!'" class="text-white mr-3" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
         <b-button variant="outline-warning" style="width: 170px;" @click="transferNft()">Transfer NFT</b-button>
       </div>
     </div>
@@ -83,4 +83,7 @@ export default {
 </script>
 
 <style>
+#toAddress {
+  font-size: 1.0rem !important;
+}
 </style>

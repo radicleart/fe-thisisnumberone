@@ -9,22 +9,11 @@
     <div class="col-10">{{offerMade(offer.appTimestamp)}}</div>
     <div class="col-2"></div>
   </div>
-  <!--
-  <div class="row text-small mb-4" v-for="(dbOffer, index) in dbOffers" :key="index">
-    <div class="col-2">Offerer</div>
-    <div class="col-10">{{dbOffer.offerer}}</div>
-    <div class="col-2">Amount</div>
-    <div class="col-10">{{dbOffer.amount}} STX</div>
-    <div class="col-2">Made</div>
-    <div class="col-10">{{offerMade(dbOffer.appTimestamp)}}</div>
-    <div class="col-2"></div>
-  </div>
-  -->
 </div>
 </template>
 
 <script>
-import moment from 'moment'
+import { DateTime } from 'luxon'
 
 export default {
   name: 'OfferHistory',
@@ -43,7 +32,7 @@ export default {
   },
   methods: {
     offerMade: function (madeData) {
-      return moment(madeData).format('DD-MM hh:mm')
+      return DateTime.now().toLocaleString({ weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
     }
   },
   computed: {

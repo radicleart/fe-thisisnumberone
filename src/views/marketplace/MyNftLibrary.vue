@@ -7,11 +7,11 @@
         uploaded and minted and still own or NFTs you bought from other
         users or that were transferred to you. They also include editions
         of NFT files you minted.</p>
-      <b-row>
-        <b-col class="text-center" v-for="(myNft, index1) in myNfts" :key="index1" lg="3" md="4" sm="6" xs="12">
-          <MySingleNft class="mb-2" :item="myNft" :token="myTokens[index1]"/>
-        </b-col>
-      </b-row>
+      <div class="row mb-4">
+        <div v-for="(item, index) in myNfts" :key="index" class="mt-5 col-md-4 col-sm-6 col-xs-12">
+          <MySingleItem :asset="item"/>
+        </div>
+      </div>
     </b-tab>
     <b-tab v-if="canUpload()" :title="'Uploads (' + gaiaAssets.length + ')'">
       <p class="mt-4">Files you uploaded to your Gaia storage bucket.</p>
@@ -34,13 +34,15 @@
 </template>
 
 <script>
+import MySingleItem from '@/views/marketplace/components/gallery/MySingleItem'
 import MySingleNft from '@/views/marketplace/components/gallery/MySingleNft'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'MyNftLibrary',
   components: {
-    MySingleNft
+    MySingleNft,
+    MySingleItem
   },
   data () {
     return {
