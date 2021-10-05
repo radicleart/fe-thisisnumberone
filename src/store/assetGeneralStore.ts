@@ -118,6 +118,16 @@ const assetGeneralStore = {
         })
       })
     },
+    buildCacheAll ({ commit }) {
+      return new Promise(function (resolve) {
+        axios.get(MESH_API_PATH + '/v2/build-cache').then((result) => {
+          commit('setCacheState', result.data)
+          resolve(result.data)
+        }).catch((error) => {
+          resolve(new Error('Unable to build cache: ' + error))
+        })
+      })
+    },
     buildCache ({ commit }, contractId) {
       return new Promise(function (resolve) {
         axios.get(MESH_API_PATH + '/v2/build-cache/' + contractId).then((result) => {

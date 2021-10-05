@@ -1,6 +1,5 @@
 <template>
 <b-card-text class="mt-2 mx-2" style="min-height: 15rem;">
-  <p class="text-right"><a href="#" @click.prevent="showSaleData = !showSaleData"><b-icon icon="chevron-left"/>back</a></p>
   <div class="mx-2" v-if="!showSaleData">
     <div class="">
       <div class="mt-4">

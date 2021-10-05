@@ -62,7 +62,7 @@ export default {
     return {
       feeAmount: 3000,
       project: {
-        projectId: REGISTRY_CONTRACT_ADDRESS + '.' + REGISTRY_CONTRACT_NAME
+        contractId: REGISTRY_CONTRACT_ADDRESS + '.' + REGISTRY_CONTRACT_NAME
       },
       txData: null,
       nonce: 0,

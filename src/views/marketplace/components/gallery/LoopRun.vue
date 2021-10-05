@@ -19,12 +19,19 @@
     </div>
   </div>
   <div class="mt-5" v-else-if="parent === 'minting'">
-    <div>
-      Collection: <a class="text-info" :href="origin + '/nft-marketplace/' + loopRun.currentRunKey" target="_blank">{{loopRun.currentRun}}</a>
-    </div>
-    <div>
-       Minting Fee: {{application.tokenContract.mintPrice}} STX
-    </div>
+      <div v-if="limitReached">
+        <span class="text-danger" router-tag="span" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Each run has unique elements that increase in scarcity with the expansion of each new version!'">
+          Sorry, all minted for this run. Visit the <b-link class="text-info" to="/nft-marketplace">Marketplace</b-link>
+        </span>
+      </div>
+      <div v-else>
+        <div>
+          Collection: <a class="text-info" :href="origin + '/nft-marketplace/' + loopRun.currentRunKey" target="_blank">{{loopRun.currentRun}}</a>
+        </div>
+        <div>
+          Minting Fee: {{application.tokenContract.mintPrice}} STX
+        </div>
+      </div>
   </div>
 </div>
 <div v-else>
@@ -53,6 +60,9 @@ export default {
     if (this.loopRun) {
       const runKey = this.loopRun.currentRunKey
       this.$store.dispatch('rpayCategoryStore/fetchMintCountForCollection', runKey)
+      if (this.limitReached) {
+        this.$emit('loopRun', { opcode: 'limit-reached' })
+      }
     }
   },
   methods: {

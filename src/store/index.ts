@@ -70,13 +70,13 @@ const beneficiariesDefault = [
     username: 'owner.id',
     role: 'Secondary Buyer/Owner',
     royalty: 0,
-    secondaryRoyalty: 80, // note the owner is worked out runtime in secondaries
+    secondaryRoyalty: 85, // note the owner is worked out runtime in secondaries
     chainAddress: null
   },
   {
     username: 'maker.id',
     role: 'Maker/Minter',
-    royalty: 80,
+    royalty: 85,
     secondaryRoyalty: 5,
     chainAddress: null
   },
@@ -84,16 +84,16 @@ const beneficiariesDefault = [
     username: 'numberone.id',
     role: 'Number One',
     email: 'info@thisisnumberone.com',
-    royalty: 15,
-    secondaryRoyalty: 10,
+    royalty: 12.5,
+    secondaryRoyalty: 7.5,
     chainAddress: 'SP1CS4FVXC59S65C3X1J3XRNZGWTG212JT7CG73AG'
   },
   {
     username: 'Platform.id',
     role: 'Platform',
     email: 'info@brightblock.org',
-    royalty: 5,
-    secondaryRoyalty: 5,
+    royalty: 2.5,
+    secondaryRoyalty: 2.5,
     chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
   }
 ]
@@ -291,6 +291,7 @@ export default new Vuex.Store({
             if (process.env.VUE_APP_NETWORK !== 'local') {
               data.stxAddress = profile.stxAddress
             }
+            dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { stxAddress: profile.stxAddress }, { root: true })
             dispatch('rpayStacksContractStore/fetchAssetsByOwner', data).then(() => {
               dispatch('rpayMyItemStore/initSchema').then(rootFile => {
                 dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
@@ -298,6 +299,7 @@ export default new Vuex.Store({
               })
             })
           } else {
+            dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { root: true })
             resolve(null)
           }
         })

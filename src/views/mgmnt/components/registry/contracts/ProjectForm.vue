@@ -56,22 +56,6 @@
             <b-form-select size="lg" id="status-name" v-model="project.status" :options="statusEnum"></b-form-select>
           </div>
         </div>
-        <!--
-        <div class="col-md-6 col-xs-6">
-          <div class="py-3 my-2">
-            <b-form-checkbox
-              size="lg"
-              id="checkbox-1"
-              v-model="deploy"
-              name="checkbox-1"
-              value="nonow"
-              unchecked-value="later"
-            >
-              Deploy the contract
-            </b-form-checkbox>
-          </div>
-        </div>
-        -->
       </div>
       <div class="row">
         <div class="col-12">
@@ -93,7 +77,7 @@ export default {
   props: ['contractId'],
   data () {
     return {
-      statusEnum: ['deployment', 'connected'],
+      statusEnum: ['new', 'deployment', 'connected'],
       project: {
         platformAddress: process.env.VUE_APP_REGISTRY_CONTRACT_ADDRESS,
         status: 'deployment',

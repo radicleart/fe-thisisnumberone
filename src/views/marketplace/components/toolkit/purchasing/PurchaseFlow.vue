@@ -62,6 +62,7 @@ export default {
       const recipient = profile.stxAddress // (contractAsset.owner === mac.keyInfo.address) ? sky.keyInfo.address : mac.keyInfo.address
       if (!profile.loggedIn) {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
+          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { stxAddress: profile.stxAddress }, { root: true })
           this.$emit('registerByConnect')
         }).catch((err) => {
           console.log(err)

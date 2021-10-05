@@ -41,20 +41,19 @@
       content-class="mt-3"
       justified bg-variant="warning" v-model="tabIndex" small card left>
       <b-tab title="Projects" active lazy>
-        <div class="row">
-          <div class="col-12" v-if="showRegistryDeploy">
-            <DeployContractFromFile />
-          </div>
+        <div v-if="showRegistryDeploy">
+          <DeployContractFromFile />
         </div>
-        <div>
+        <div v-else>
           <TableOfContracts @update="update"/>
           <TableOfProjects @update="update"/>
         </div>
       </b-tab>
       <b-tab title="New Project" lazy>
-        <div class="">
-          <ProjectForm :contractId="contractId" @update="update"/>
-        </div>
+        <ProjectForm :contractId="contractId" @update="update"/>
+      </b-tab>
+      <b-tab title="Deploy Contract" lazy v-if="showDeployTab">
+        <DeployProjectContract :project="targetProject" @update="update"/>
       </b-tab>
     </b-tabs>
   </div>
@@ -64,6 +63,7 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import DeployContractFromFile from './contracts/DeployContractFromFile.vue'
+import DeployProjectContract from './contracts/DeployProjectContract.vue'
 import ProjectForm from './contracts/ProjectForm.vue'
 import TableOfContracts from './contracts/TableOfContracts.vue'
 import TableOfProjects from './contracts/TableOfProjects.vue'
@@ -74,14 +74,17 @@ export default {
     DeployContractFromFile,
     ProjectForm,
     TableOfProjects,
+    DeployProjectContract,
     TableOfContracts
   },
   data () {
     return {
       tabIndex: 0,
+      targetProject: null,
       contractId: null,
       registry: null,
-      showRegistryDeploy: false
+      showRegistryDeploy: false,
+      showDeployTab: false
     }
   },
   mounted () {
@@ -96,6 +99,10 @@ export default {
       } else if (data.opcode === 'project-update') {
         this.tabIndex = 1
         this.contractId = data.contractId
+      } else if (data.opcode === 'open-deploy') {
+        this.showDeployTab = true
+        this.tabIndex = 2
+        this.targetProject = data.project
       }
     }
   },

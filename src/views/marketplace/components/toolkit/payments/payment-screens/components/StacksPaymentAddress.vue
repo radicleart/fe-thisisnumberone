@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     doLogin () {
-      this.$store.dispatch('rpayStacksStore/startLogin').then((result) => {
+      this.$store.dispatch('rpayStacksStore/startLogin').then(() => {
         this.errorMessage = 'Error found'
         this.loading = false
       })

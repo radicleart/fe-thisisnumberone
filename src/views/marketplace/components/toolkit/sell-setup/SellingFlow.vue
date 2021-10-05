@@ -2,7 +2,7 @@
 <div class="mx-5 d-flex justify-content-center" v-if="!loading">
   <div class="mx-auto">
     <b-card-group class="" :key="componentKey" style="width: 450px;">
-      <b-card header-tag="header" footer-tag="footer" v-if="minted">
+      <b-card bg-variant="dark" header-tag="header" footer-tag="footer" v-if="minted">
         <!-- <SellingHeader :allowEdit="true"/> -->
         <SellingOptions :contractAsset="contractAsset" v-if="displayCard === 100" @updateAmount="updateAmount"/>
         <template v-slot:footer>

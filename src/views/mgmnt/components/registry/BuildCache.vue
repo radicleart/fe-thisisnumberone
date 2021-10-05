@@ -13,6 +13,7 @@
   <p>Note: there are two caches - contract data cache and Meta Data cache.
     The latter is usually stored via users Gaia hubs. Urls to the meta data
     are stored in the contract.</p>
+  <a href="#" class="mr-2 bg-warning px-3 text-info" @click.prevent="buildCacheAll">Build Cache</a>
   <div v-if="registry && registry.applications">
     <div class="row my-5" v-for="(application, index) in registry.applications" :key="index">
       <div class="col-2">Contract</div><div class="col-10 text-bold pb-3">{{application.contractId}}</div>
@@ -48,6 +49,13 @@ export default {
   methods: {
     buildSearchIndex: function (contractId) {
       this.$store.dispatch('assetGeneralStore/buildSearchIndex', contractId).then((result) => {
+        this.$notify({ type: 'success', title: 'Indexing', text: result })
+      }).catch((err) => {
+        this.$notify({ type: 'error', title: 'Indexing', text: err })
+      })
+    },
+    buildCacheAll: function () {
+      this.$store.dispatch('assetGeneralStore/buildCacheAll').then((result) => {
         this.$notify({ type: 'success', title: 'Indexing', text: result })
       }).catch((err) => {
         this.$notify({ type: 'error', title: 'Indexing', text: err })

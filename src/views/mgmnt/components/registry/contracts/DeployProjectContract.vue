@@ -1,13 +1,14 @@
 <template>
 <div>
   <h2>Deploy Project Contract</h2>
-  <p>Please check the contract thoroughly - !</p>
-  <div class="row">
-    <div class="col-12">
-      <div class="my-3">
-        <b-button class="mr-3" variant="info" @click.prevent="saveProject()">Deploy Contract</b-button>
-        <b-button class="mr-3" variant="info" @click.prevent="saveProject()">Edit Template</b-button>
-      </div>
+  <p>Please check the contract - your project specific information is highlighted!</p>
+  <p>If happy deploy - if not update the project template!</p>
+  <div class="row mb-5">
+    <div class="col-6">
+      <b-button class="ml-1" variant="warning" @click.prevent="deployContract()">Deploy Contract</b-button>
+    </div>
+    <div class="col-6">
+      <b-button class="mr-1" variant="outline-warning" @click.prevent="openProject()">Update Project</b-button>
     </div>
   </div>
   <div>
@@ -26,12 +27,13 @@ import utils from '@/services/utils'
 const NETWORK = process.env.VUE_APP_NETWORK
 
 export default {
-  name: 'ProjectUpload',
+  name: 'DeployProjectContract',
   components: {
   },
   props: ['project'],
   data () {
     return {
+      source: null,
       contractSource: `
 ;; Interface definitions
 ;; test/mocknet
@@ -42,16 +44,13 @@ export default {
 ;; (impl-trait SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait.nft-trait)
 
 ;; contract variables
-(define-data-var administrator principal 'params.contractOwner)
+(define-data-var administrator principal 'params.administrator)
 (define-data-var mint-price uint u1000000)
 (define-data-var base-token-uri (string-ascii 256) params.callBack)
 (define-data-var mint-counter uint u0)
 (define-data-var platform-fee uint u5)
-(define-data-var nftadmin principal 'params.contractOwner)
-(define-data-var transfer-status uint u1) // default mode owner and approved address can transfer
-                                          // u2 - only the contract can transfer
-                                          // u3 - combination of above
-
+(define-data-var nftadmin principal 'params.administrator)
+(define-data-var transfer-status uint u1)
 
 ;; constants
 (define-constant token-name "params.tokenName")
@@ -184,7 +183,6 @@ export default {
         (var-set transfer-status tstatus)
         (ok true)
     )
-    nft-not-owned-err)
 )
 
 ;; Burns tokens
@@ -875,64 +873,42 @@ export default {
     }
   },
   mounted () {
-    this.params.contractOwner = this.profile.stxAddress
-    if (this.contractId) {
-      this.$store.dispatch('rpayProjectStore/fetchProjectByContractId', this.contractId).then((project) => {
-        this.project = project
-        this.params.tokenName = this.contractId.split('.')[1]
-        this.params.contractOwner = this.contractId.split('.')[0]
-        if (project.symbol) this.params.tokenSymbol = project.symbol
-        if (project.mintPrice) this.params.mintPrice = project.mintPrice
-        if (project.callBack) this.params.callBack = project.callBack
-        if (project.platformAddress) this.params.platformAddress = project.platformAddress
-        this.loaded = true
-      })
-    } else {
-      this.loaded = true
-    }
+    this.loaded = true
+    this.source = this.contractSource.replaceAll('params.administrator', this.project.owner)
+    const cleanTokenName = this.getCleanTokenName()
+    this.source = this.source.replaceAll('loopbomb', cleanTokenName)
+    this.source = this.source.replaceAll('params.tokenName', cleanTokenName)
+    this.source = this.source.replaceAll('params.tokenSymbol', this.project.symbol)
+    this.source = this.source.replaceAll('params.mintPrice', this.project.mintPrice)
+    this.source = this.source.replaceAll('params.platformAddress', this.project.platformAddress)
+    this.source = this.source.replaceAll('params.callBack', '"' + this.project.callBack + '"') // utils.stringToHex(this.project.callBack))
   },
   methods: {
-    useProject: function () {
-      const contractName = this.project.projectId.split('.')[1]
-      if (contractName.indexOf('-') > -1) {
-        this.params.tokenName = contractName.split('-')[0]
-      } else {
-        this.params.tokenName = contractName.tokenName
-      }
-    },
-    usePlatformAddress: function () {
-      const mac = this.$store.getters[APP_CONSTANTS.KEY_MACS_WALLET]
-      this.params.platformAddress = (mac && mac.keyInfo && mac.keyInfo.address) ? mac.keyInfo.address : ''
-    },
-    useMyAddress: function () {
-      this.params.contractOwner = this.$store.getters[APP_CONSTANTS.KEY_PROFILE].stxAddress
-    },
-    useMacsAddress: function () {
-      const mac = this.$store.getters[APP_CONSTANTS.KEY_MACS_WALLET]
-      this.params.contractOwner = (mac && mac.keyInfo && mac.keyInfo.address) ? mac.keyInfo.address : ''
+    openProject: function () {
+      this.$emit('update', { opcode: 'project-update', contractId: this.project.contractId })
     },
     validate: function () {
       let result = true
-      const mp = Number(this.params.mintPrice)
-      if (!this.params.mintPrice || isNaN(mp) || mp < 10000 || mp > 100000000) {
+      const mp = Number(this.project.mintPrice)
+      if (!this.project.mintPrice || isNaN(mp) || mp < 10000 || mp > 100000000) {
         this.$notify({ type: 'error', title: 'Project Details', text: 'Please enter the mint price of your tokens (in micro stacks) between 0.001 and 100 stx' })
         result = false
       }
-      if (!this.params.callBack || !this.params.callBack.startsWith('https://')) {
+      if (!this.project.callBack || !this.project.callBack.startsWith('https://')) {
         this.$notify({ type: 'error', title: 'Project Details', text: 'Please enter a secure (https) callback url for your tokens - we append the asset hash to retrieve meta data.' })
         result = false
       }
-      if (!this.params.tokenName || this.params.tokenName.indexOf('token') > -1) {
+      if (!this.project.title || this.project.title.indexOf('token') > -1) {
         this.$notify({ type: 'error', title: 'Token Name', text: 'Please enter a descriptive name.' })
         result = false
       }
-      if (!this.params.tokenSymbol || this.params.tokenSymbol.indexOf('token') > -1) {
+      if (!this.project.symbol || this.project.symbol.indexOf('token') > -1) {
         this.$notify({ type: 'error', title: 'Token Symbol', text: 'Please enter a symbol for your token - convention is 3 or 4 uppercase letters or digits.' })
         result = false
       }
       let tokenUrl
       try {
-        tokenUrl = new URL(this.params.callBack)
+        tokenUrl = new URL(this.project.callBack)
         this.tokenUrl = tokenUrl
       } catch (e) {
         tokenUrl = ''
@@ -941,70 +917,25 @@ export default {
       return result
     },
     getCleanTokenName: function () {
-      let cleanTokenName = this.params.tokenName
-      if (!this.params.tokenName || this.params.tokenName === 'tokenName') {
-        this.$notify({ type: 'error', title: 'Token Name', text: 'Please enter a descriptive name.' })
-        return
-      } else if (this.params.tokenName.indexOf('-') > -1) {
-        cleanTokenName = this.params.tokenName.split('-')[0]
-      }
+      let cleanTokenName = this.project.contractId.split('.')[1]
+      cleanTokenName = cleanTokenName.split('-')[0]
       return cleanTokenName
-    },
-    createOrUpdateProject: function () {
-      let prj = this.project
-      if (this.contractId) {
-        prj = this.project
-      } else {
-        prj = {
-          status: 'deployment',
-          title: this.getCleanTokenName(),
-          description: this.getCleanTokenName(),
-          owner: this.params.contractOwner,
-          contractId: this.params.contractOwner + '.' + this.params.tokenName
-        }
-      }
-      prj.mintPrice = this.params.mintPrice
-      this.$store.dispatch('rpayProjectStore/saveProject', { project: prj, imageData: null }).then((project) => {
-        this.project = project
-        this.$notify({ type: 'success', title: 'Projects', text: 'Project has been saved.' })
-        this.$emit('update', { opcode: 'project-saved' })
-      })
     },
     deployContract: function () {
       if (!this.validate()) {
         return
       }
-      if (this.deploy === 'later') {
-        this.createOrUpdateProject()
-        return
+      const deployData = {
+        codeBody: this.source,
+        network: NETWORK,
+        contractId: this.project.contractId
       }
-      const projectPlus = {}
-      projectPlus.projectId = this.params.contractOwner + '.' + this.params.tokenName
-      let source = this.contractSource.replaceAll('params.contractOwner', this.params.contractOwner)
-      const cleanTokenName = this.getCleanTokenName()
-      source = source.replaceAll('loopbomb', cleanTokenName)
-      source = source.replaceAll('params.tokenName', cleanTokenName)
-      source = source.replaceAll('params.tokenSymbol', this.params.tokenSymbol)
-      source = source.replaceAll('params.mintPrice', this.params.mintPrice)
-      source = source.replaceAll('params.platformAddress', this.params.platformAddress)
-      source = source.replaceAll('params.callBack', '"' + this.params.callBack + '"') // utils.stringToHex(this.params.callBack))
-      projectPlus.codeBody = source
       this.$store.commit('setModalMessage', 'Processing request..')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
       this.showWaitingModal = true
-      projectPlus.network = NETWORK
-      this.$store.dispatch('rpayStacksStore/deployProjectContract', projectPlus).then((project) => {
-        this.deployedProject = project
-        projectPlus.codeBody = null
-        projectPlus.symbol = this.params.tokenSymbol
-        projectPlus.mintPrice = this.params.mintPrice
-        projectPlus.callBack = this.params.callBack
-        projectPlus.contractId = projectPlus.projectId
-        projectPlus.owner = this.params.contractOwner
-        projectPlus.status = 'deployment'
-        projectPlus.title = cleanTokenName
-        projectPlus.description = cleanTokenName
-        this.$store.dispatch('rpayProjectStore/saveProject', { project: projectPlus, imageData: null }).then((project) => {
+      this.$store.dispatch('rpayStacksStore/deployProjectContract', deployData).then(() => {
+        this.project.status = 'deployment'
+        this.$store.dispatch('rpayProjectStore/saveProject', { project: this.project, imageData: null }).then((project) => {
           this.project = project
           this.$notify({ type: 'success', title: 'Projects', text: 'Project has been saved.' })
         })
@@ -1027,17 +958,20 @@ export default {
       return this.$store.getters[APP_CONSTANTS.KEY_PROFILE].stxAddress
     },
     contractSourceDisplay () {
-      let rep1 = '<span class="text-danger bg-white">' + this.params.contractOwner + '</span>'
-      let contractSourceDisplay = this.contractSource.replaceAll('params.contractOwner', rep1)
-      rep1 = '<span class="text-danger bg-white">' + this.params.tokenName + '</span>'
+      const cleanTokenName = this.getCleanTokenName()
+      let rep1 = '<span class="text-danger bg-white">' + this.project.owner + '</span>'
+      let contractSourceDisplay = this.contractSource.replaceAll('params.administrator', rep1)
+      rep1 = '<span class="text-danger bg-white">' + cleanTokenName + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.tokenName', rep1)
-      rep1 = '<span class="text-danger bg-white">' + this.params.tokenSymbol + '</span>'
+      rep1 = '<span class="text-danger bg-white">' + cleanTokenName + '</span>'
+      contractSourceDisplay = contractSourceDisplay.replaceAll('loopbomb', rep1)
+      rep1 = '<span class="text-danger bg-white">' + this.project.symbol + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.tokenSymbol', rep1)
-      rep1 = '<span class="text-danger bg-white">' + this.params.mintPrice + '</span>'
+      rep1 = '<span class="text-danger bg-white">' + this.project.mintPrice + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.mintPrice', rep1)
-      rep1 = '<span class="text-danger bg-white">' + this.params.platformAddress + '</span>'
+      rep1 = '<span class="text-danger bg-white">' + this.project.platformAddress + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.platformAddress', rep1)
-      rep1 = '<span class="text-danger bg-white">' + utils.stringToHex(this.params.callBack) + '</span>'
+      rep1 = '<span class="text-danger bg-white">' + utils.stringToHex(this.project.callBack) + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.callBack', rep1)
       return contractSourceDisplay
     }

@@ -7,8 +7,11 @@
     </p>
     <b-table striped hover :items="pvalues()" :fields="pfields()" class="mt-3 bg-light text-dark">
       <template #cell(Actions)="data">
-        <span v-b-tooltip.hover="{ variant: 'warning' }" title="Update record">
+        <span v-b-tooltip.hover="{ variant: 'warning' }" title="Update project">
           <a @click.prevent="updateProject(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="pencil-square"/></a>
+        </span>
+        <span v-b-tooltip.hover="{ variant: 'warning' }" title="Deploy project contract">
+          <a @click.prevent="openDeploy(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="star"/></a>
         </span>
         <span v-b-tooltip.hover="{ variant: 'warning' }" title="Connect to Blockchain">
           <a @click.prevent="connectProject(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="plus-square"/></a>
@@ -49,7 +52,7 @@ export default {
     this.$store.dispatch('rpayStacksContractStore/fetchFullRegistry').then((registry) => {
       this.registry = registry
     })
-    this.$store.dispatch('rpayProjectStore/fetchProjectsByStatus', 'deployment').then((projects) => {
+    this.$store.dispatch('rpayProjectStore/fetchProjectsByStatus', 'any').then((projects) => {
       this.projects = projects
     })
   },
@@ -72,6 +75,9 @@ export default {
     updateProject: function (data) {
       const contractId = this.projects[data.index].contractId
       this.$emit('update', { opcode: 'project-update', contractId: contractId })
+    },
+    openDeploy: function (data) {
+      this.$emit('update', { opcode: 'open-deploy', project: this.projects[data.index] })
     },
     deleteProject: function (data) {
       const contractId = this.projects[data.index].contractId

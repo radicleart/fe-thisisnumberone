@@ -15,8 +15,8 @@
       <div @contextmenu="handler($event)" class="d-flex justify-content-center p-2">
           <img
             ref="itemImage"
-            :width="looperDimsHeight"
-            :height="looperDimsHeight"
+            :width="'100%'"
+            :height="newHeight"
             :src="imageUrl" @error="imageError()"/>
       </div>
       </router-link>
@@ -75,7 +75,7 @@ export default {
       if (!$ele) {
         return
       }
-      $self.newHeight = $ele.clientWidth * 1024 / 716
+      $self.newHeight = $ele.clientWidth * 1 // 1024 / 716
       $ele.style.height = (Math.floor($self.newHeight)).toString() + 'px'
     })
   },

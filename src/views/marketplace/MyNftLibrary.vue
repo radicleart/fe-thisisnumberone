@@ -46,8 +46,7 @@ export default {
   },
   data () {
     return {
-      loaded: false,
-      myNfts: []
+      loaded: false
     }
   },
   mounted () {
@@ -61,6 +60,20 @@ export default {
     this.loaded = true
   },
   methods: {
+    startLogin () {
+      const profile = this.$store.getters['rpayAuthStore/getMyProfile']
+      if (!profile.loggedIn) {
+        this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
+          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { stxAddress: profile.stxAddress }, { root: true })
+          this.$emit('registerByConnect')
+        }).catch((err) => {
+          console.log(err)
+          this.$store.commit('setModalMessage', 'Install the Stacks Web Wallet to get going on the decentralised web.')
+          this.$root.$emit('bv::show::modal', 'waiting-modal')
+          this.webWalletNeeded = true
+        })
+      }
+    },
     canUpload () {
       const hasUploadPriv = this.$store.getters[APP_CONSTANTS.KEY_HAS_PRIVILEGE]('can-upload')
       return hasUploadPriv
@@ -82,9 +95,12 @@ export default {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile
     },
-    myTokens () {
-      const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
-      return myContractAssets
+    myNfts () {
+      const myGaiaAssets = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS_BY_OWNER]({ stxAddress: this.profile.stxAddress })
+      if (process.env.VUE_APP_NETWORK === 'local') {
+        myGaiaAssets.concat(this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS_BY_OWNER]({ stxAddress: 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' }))
+      }
+      return myGaiaAssets
     }
   }
 }
