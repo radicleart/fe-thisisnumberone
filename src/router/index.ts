@@ -4,6 +4,7 @@ import store from '@/store'
 
 // templates
 import AboutNavbar from '@/components/layout/AboutNavbar.vue'
+import MainNavbar from '@/components/layout/MainNavbar.vue'
 import MainFooter from '@/components/layout/MainFooter.vue'
 import AdminNav from '@/views/mgmnt/AdminNav.vue'
 
@@ -28,6 +29,7 @@ const ItemPreview = () => import('@/views/marketplace/ItemPreview.vue')
 const AssetDetails = () => import('@/views/marketplace/AssetDetails.vue')
 const MyNftLibrary = () => import('@/views/marketplace/MyNftLibrary.vue')
 const NftGallery = () => import('@/views/marketplace/NftGallery.vue')
+const NftMarketplace = () => import('@/views/marketplace/NftMarketplace.vue')
 const UploadItem = () => import('@/views/marketplace/UploadItem.vue')
 const UpdateItem = () => import('@/views/marketplace/UpdateItem.vue')
 
@@ -73,9 +75,15 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/nft-gallery',
-    alias: '/nft-market',
     name: 'nft-gallery',
     components: { default: NftGallery, header: AboutNavbar, footer: MainFooter },
+    meta: { title: 'Marketplace for NFTs by the Number One Team Secured by Bitcoin' }
+  },
+  {
+    path: '/nft-marketplace',
+    alias: '/nft-market',
+    name: 'nft-marketplace',
+    components: { default: NftMarketplace, header: MainNavbar, footer: MainFooter },
     meta: { title: 'Marketplace for NFTs by the Number One Team Secured by Bitcoin' }
   },
   {

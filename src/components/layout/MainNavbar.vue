@@ -1,57 +1,55 @@
 <template>
-    <b-navbar toggleable="true" class="p-4" :fixed="getFixed()" type="dark" :variant="bgVariant()">
-      <b-navbar-brand href="#"><b-link to="/"><img height="30px" :src="logo" /></b-link></b-navbar-brand>
+<b-navbar toggleable="lg" class="p-4" :fixed="getFixed()" type="dark" :variant="bgVariant()">
+  <b-navbar-brand href="#"><b-link to="/"><img height="30px" :src="logo" /></b-link></b-navbar-brand>
 
-      <b-navbar-toggle target="nav-collapse" class="text-white">
-        <template #default="{ expanded }">
-          <img width="60px" height="30px" class="text-white" v-if="expanded" :src="cross">
-          <img width="60px" height="30px" class="text-white" v-else :src="grid">
-        </template>
-      </b-navbar-toggle>
+  <b-navbar-toggle target="nav-collapse" class="text-white">
+    <template #default="{ expanded }">
+      <img width="60px" height="30px" class="text-white" v-if="expanded" :src="cross">
+      <img width="60px" height="30px" class="text-white" v-else :src="grid">
+    </template>
+  </b-navbar-toggle>
 
-      <b-collapse id="nav-collapse" is-nav align="center">
-
-        <!-- Right aligned nav items -->
-        <b-navbar-nav class="wtf-menu mx-auto" v-if="showAbout()">
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -60, element: '#thisisone', duration: 1000 }" href="#thisisone">This Is #1</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -60, element: '#chemicalx', duration: 1000 }" href="#chemicalx">Chemical X</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -80, element: '#charity-grid', duration: 1000 }" href="#charity">Charity</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: -60, element: '#about-section5', duration: 1000 }" href="#about-section5">Environment</a></b-nav-item>
-          <b-nav-item href="#"><a class="text-nowrap text-white mx-md-5 mx-sm-3" v-scroll-to="{ offset: 50, element: '#collaborate', duration: 1000 }" href="#collaborate">Collaborate</a></b-nav-item>
-          <b-nav-item class="mt-5" href="#"><b-link to="/">Home</b-link></b-nav-item>
-        </b-navbar-nav>
-        <b-navbar-nav class="wtf-menu mx-auto" v-else>
-          <b-nav-item class="text-white top-content" to="/about"><img height="30px" :src="wtf" alt="about link"/></b-nav-item>
-          <div v-if="profile.loggedIn" class="mt-5 my-4 text-white text-center">
-            <div>
-              <span class="mr-3">Welcome</span>
-              <span class="mr-3 stx-username">{{profile.username}}</span>
-            </div>
-            <div class="text-small mt-0" v-if="profile.username !== profile.stxAddress">
-              <span class="text-warning">{{profile.stxAddress}}</span>
-            </div>
-            <div v-if="profile.accountInfo" class="text-small">
-              <span class="mr-5"><a style="font-size: 1.2rem;" :href="getStacksMateUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Top up your Stacks at Stacks Mate'" class="text-white text-small ml-3" target="_blank">Balance:</a> <span class="text-warning">{{profile.accountInfo.balance}}</span> STX</span>
-            </div>
+  <b-sidebar id="my-sidebar" backdrop sidebar-class="border-left border-secondary" bg-variant="black" text-variant="white" aria-label="Sidebar" right>
+    <template #default="{ hide }">
+      <div class="text-center">
+        <div><b-link class="text-white top-content" to="/about"><img height="30px" :src="wtf" alt="about link"/></b-link></div>
+        <div v-if="profile.loggedIn" class="border-bottom py-5 mt-5 my-4 text-white text-center">
+          <div>
+            <span class="mr-3 stx-username">{{profile.username}}</span>
           </div>
-          <b-nav-item class="text-white" to="/nft-gallery">Gallery</b-nav-item>
-          <b-nav-item class="text-white" to="/nft-marketplace"><span class="text-danger">New</span> Marketplace</b-nav-item>
-          <b-nav-item v-if="!canUpload()">
-            <b-link v-if="profile.loggedIn" to="/exhibit-here">Apply to Exhibit</b-link>
-            <b-link v-else to="/login?redirect=%2Fexhibit-here">Exhibit Here?</b-link>
-          </b-nav-item>
-          <b-nav-item class="text-white" v-if="canUpload()" to="/upload-item">Create NFT</b-nav-item>
-          <b-nav-item class="text-white" v-if="profile.loggedIn" to="/profile">My Profile</b-nav-item>
-          <b-nav-item class="text-white mt-5 pt-5 border-top" v-if="profile.loggedIn" to="/my-nfts">My NFTs</b-nav-item>
-          <b-nav-item class="text-white" v-if="profile.superAdmin"><b-link to="/mgmnt/registry">Admin</b-link></b-nav-item>
-          <b-nav-item class="text-white" v-if="!profile.loggedIn && webWalletNeeded">
-            <h1><a :href="webWalletLink" target="_blank">Get a Stacks Web Wallet <b-icon class="ml-3 mb-3" icon="arrow-up-right-square-fill"/></a></h1>
-          </b-nav-item>
-          <b-nav-item v-if="profile.loggedIn"><b-link @click.prevent="logout()">Logout</b-link></b-nav-item>
-          <b-nav-item v-else-if="!webWalletNeeded"><b-link @click.prevent="startLogin()">Login</b-link></b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
+          <div class="text-small mt-0" v-if="profile.username !== profile.stxAddress">
+            <span class="text-warning">{{profile.stxAddress}}</span>
+          </div>
+          <div v-if="profile.accountInfo" class="text-small">
+            <span class="mr-5"><a style="font-size: 1.2rem;" :href="getStacksMateUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Top up your Stacks at Stacks Mate'" class="text-white text-small ml-3" target="_blank">Balance:</a> <span class="text-warning">{{profile.accountInfo.balance}}</span> STX</span>
+          </div>
+        </div>
+        <div class="mb-5"><b-link to="/nft-gallery">Gallery</b-link></div>
+        <div class="mb-5" v-if="!canUpload()">
+          <b-link v-if="profile.loggedIn" to="/exhibit-here">Apply to Exhibit</b-link>
+          <b-link v-else to="/login?redirect=%2Fexhibit-here">Exhibit Here?</b-link>
+        </div>
+        <div class="mb-5" v-if="canUpload()"><b-link to="/upload-item">Create NFT</b-link></div>
+        <div class="mb-5" v-if="profile.loggedIn"><b-link to="/profile">My Profile</b-link></div>
+        <div class="mt-5 pt-5 border-top" v-if="profile.loggedIn"><b-link to="/my-nfts">My NFTs</b-link></div>
+        <div class="mb-5" v-if="profile.superAdmin"><b-link to="/mgmnt/registry">Admin</b-link></div>
+        <div class="mb-5" v-if="!profile.loggedIn && webWalletNeeded">
+          <h1><a :href="webWalletLink" target="_blank">Get a Stacks Web Wallet <b-icon class="ml-3 mb-3" icon="arrow-up-right-square-fill"/></a></h1>
+        </div>
+        <div class="mb-5" @click="hide" v-if="profile.loggedIn"><b-link @click.prevent="logout()">Logout</b-link></div>
+        <div class="mb-5" v-else-if="!webWalletNeeded"><b-link @click.prevent="startLogin()">Login</b-link></div>
+      </div>
+    </template>
+  </b-sidebar>
+
+  <b-navbar-nav class="ml-auto">
+    <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0"><router-link class="text-big" to="/my-nfts">My NFTs</router-link></b-nav-item>
+    <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0"><router-link class="text-big" to="/nft-marketplace">Marketplace</router-link></b-nav-item>
+    <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0"><router-link class="text-big" to="/upload-item">Upload</router-link></b-nav-item>
+    <b-nav-item v-if="profile.loggedIn" class="mr-4"><a v-b-toggle.my-sidebar class="nav-text" ><b-icon icon="person" font-scale="2" class="mr-5 mb-3 mr-0"/></a></b-nav-item>
+    <b-nav-item v-else class="mt-3 text-big text-white" @click.prevent="startLogin()" href="#">Login</b-nav-item>
+  </b-navbar-nav>
+</b-navbar>
 </template>
 
 <script>
@@ -163,9 +161,6 @@ export default {
 
 <style lang="scss">
 /* NAVBAR GENERAL STYLE */
-.nav-link {
-  color: #fff !important;
-}
 .wtf-menu {
   position: relative;
   bottom: 0;

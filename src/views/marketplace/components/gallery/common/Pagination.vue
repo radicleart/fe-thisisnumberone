@@ -29,12 +29,12 @@ export default {
   components: {
   },
   watch: {
-    'page': function () {
+    page: function () {
       this.currentPage = this.page
     }
   },
   props: ['numberOfItems'],
-  data() {
+  data () {
     return {
       page: 0,
       pageSize: 18,
@@ -43,7 +43,7 @@ export default {
     }
   },
   methods: {
-    gotoPage() {
+    gotoPage () {
       this.$emit('changePage', this.currentPage)
     }
   },

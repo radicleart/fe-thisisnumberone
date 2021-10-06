@@ -38,7 +38,7 @@ export default {
   components: {
     MySingleItem, LoadingView, Pagination
   },
-  data() {
+  data () {
     return {
       resultSet: [],
       loading: true,
@@ -47,18 +47,18 @@ export default {
       componentKey: 0
     }
   },
-  mounted() {
+  mounted () {
     this.collection = this.$route.params.collection
-    let $self = this
-    var resizeTimer
+    const $self = this
+    let resizeTimer
     const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
     this.numberOfItems = loopRun.tokenCount
     this.fetchPage(0)
     this.loading = false
 
-    window.addEventListener('resize', function(e) {
+    window.addEventListener('resize', function () {
       clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(function() {
+      resizeTimer = setTimeout(function () {
         $self.$store.commit('loopStore/setWinDims')
         $self.componentKey += 1
       }, 400)
@@ -72,11 +72,11 @@ export default {
     }
   },
   methods: {
-    gotoPage(page) {
+    gotoPage (page) {
       // this.page = page - 1
       this.fetchPage(page - 1)
     },
-    fetchPage(page) {
+    fetchPage (page) {
       const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
       const data = {
         contractId: STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
@@ -100,7 +100,7 @@ export default {
     }
   },
   computed: {
-    loopRun() {
+    loopRun () {
       const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
       return loopRun
     },

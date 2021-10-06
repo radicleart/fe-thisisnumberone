@@ -97,6 +97,7 @@ export default {
           if (data.media.type.indexOf('image') > -1) {
             myAsset.attributes.coverImage = data.media
           }
+          myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
           $self.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then(() => {
             $self.$store.commit('setModalMessage', 'Saved NFT file.')
             this.$root.$emit('bv::hide::modal', 'waiting-modal')
@@ -138,6 +139,7 @@ export default {
       this.showWaitingModal = true
       this.$store.commit('setModalMessage', 'Uploading files - can take a while.. <a target="_blank" href="https://radiclesociety.medium.com/radicle-peer-to-peer-marketplaces-whats-the-deal-767960da195b">read why</a>')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
+      this.item.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
       this.$store.dispatch('rpayMyItemStore/saveItem', { item: this.item, artworkFile: this.item.attributes.artworkFile[0], coverImage: this.item.attributes.coverImage[0] }).then(() => {
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
         this.$root.$emit('bv::show::modal', 'success-modal')
@@ -149,6 +151,10 @@ export default {
     }
   },
   computed: {
+    loopRun () {
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
+      return loopRun
+    },
     myAsset: function () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       return item

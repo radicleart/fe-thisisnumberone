@@ -107,18 +107,9 @@
     </b-form-invalid-feedback>
   </div>
 
-  <div class="mb-3" role="group">
-    <label for="contractId-name">Contract</label>
-    <b-form-input
-      id="contractId-name"
-      v-model="loopRun.contractId"
-      aria-describedby="contractId-help contractId-feedback"
-      placeholder="Contract Name"
-      required
-    ></b-form-input>
-    <b-form-invalid-feedback id="contractId-feedback">
-      contract id is required
-    </b-form-invalid-feedback>
+  <div class="w-100 mb-3" role="group">
+    <label for="status-name"><span class="text-danger">*</span> Contract</label>
+    <b-form-select id="status-name" v-model="loopRun.contractId" :options="contractIds"></b-form-select>
   </div>
 
   <div class="my-4 text-right">
@@ -145,6 +136,7 @@ export default {
     return {
       editMode: null,
       currentRunKey: null,
+      contractIds: [],
       formSubmitted: false,
       statusEnum: ['active', 'inactive', 'disabled'],
       loaded: false,
@@ -162,6 +154,9 @@ export default {
   },
   mounted () {
     this.currentRunKey = this.$route.params.currentRunKey
+    this.$store.dispatch('rpayStacksContractStore/fetchFullRegistry').then((registry) => {
+      this.contractIds = registry.applications.map((o) => o.contractId)
+    })
     if (this.currentRunKey) {
       this.editMode = true
       this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.currentRunKey).then((loopRun) => {

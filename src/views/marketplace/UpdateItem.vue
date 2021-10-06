@@ -144,6 +144,7 @@ export default {
         this.$store.dispatch('rpayMyItemStore/saveAttributesObject', { assetHash: this.assetHash, attributes: data.media }).then((attributes) => {
           const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
           myAsset.attributes[attributes.id] = attributes
+          myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
           $self.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((item) => {
             $self.item = item
             $self.$store.commit('setModalMessage', '')
@@ -184,6 +185,7 @@ export default {
       this.showWaitingModal = true
       this.$store.commit('setModalMessage', 'Uploading... once its saved you\'ll be able to mint this artwork - registering your ownership on the blockchain. Once registered you\'ll be able to prove you own it and be able to benefit from sales and from secondary sales.')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
+      this.item.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
       this.$store.dispatch('rpayMyItemStore/saveItem', this.item).then(() => {
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
         this.$root.$emit('bv::hide::modal', 'success-modal')
@@ -196,6 +198,10 @@ export default {
     }
   },
   computed: {
+    loopRun () {
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
+      return loopRun
+    },
     itemPreviewUrl () {
       let edition = 0
       if (this.item.contractAsset) {

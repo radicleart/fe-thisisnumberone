@@ -36,13 +36,13 @@
           <div><a v-b-tooltip.bottom title="Download loopbomb" class="text-info text-light ml-3" href="#" @click.prevent="download"><b-icon class="text-info arrow-repeat" font-scale="1" icon="arrow-down-circle"></b-icon></a></div>
         </div>
         <div v-else>
-          <router-link v-if="contractAsset" class="text-info" :to="'/item-preview/' + asset.assetHash + '/1'">manage item</router-link>
-          <router-link v-else class="text-info" :to="'/item-preview/' + asset.assetHash + '/1'">mint now</router-link>
+          <b-link v-if="contractAsset" class="text-xsmall text-info" :to="'/item-preview/' + asset.assetHash + '/1'">manage item</b-link>
+          <b-link v-else class="text-xsmall text-info" :to="'/item-preview/' + asset.assetHash + '/1'">mint now</b-link>
         </div>
         <div v-if="iAmOwner">
         </div>
-        <div v-if="!marketplace && !nftPage">
-          <router-link v-if="contractAsset" class="text-info" :to="'/nfts/' + contractAsset.nftIndex">show in marketplace</router-link>
+        <div class="text-info" v-if="!marketplace && !nftPage">
+          <b-link v-if="contractAsset" class="text-xsmall text-info" :to="'/nfts/' + contractAsset.nftIndex">show in marketplace</b-link>
         </div>
       </div>
     </b-card-text>
