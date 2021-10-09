@@ -191,7 +191,7 @@ const utils = {
   },
   fetchBase64FromImageUrl: function (url, document) {
     return new Promise((resolve) => {
-      const img = new File()
+      const img = new Image()
       img.setAttribute('crossOrigin', 'anonymous')
       img.onload = function () {
         const canvas = document.createElement('canvas')

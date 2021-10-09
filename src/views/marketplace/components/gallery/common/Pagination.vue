@@ -37,7 +37,7 @@ export default {
   data () {
     return {
       page: 0,
-      pageSize: 18,
+      pageSize: 9,
       doPaging: true,
       currentPage: 1
     }

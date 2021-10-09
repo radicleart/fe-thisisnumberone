@@ -31,7 +31,7 @@ export default {
     PurchaseOfferLogin,
     PurchaseBuyNow
   },
-  props: ['gaiaAsset', 'forceOfferFlow'],
+  props: ['gaiaAsset', 'forceOfferFlow', 'loopRun'],
   data () {
     return {
       errorMessage: null,
@@ -70,33 +70,10 @@ export default {
           this.webWalletNeeded = true
         })
       }
-
-      /**
-      const postCondAddress = profile.stxAddress
-      const postConds = []
-      const amount = new BigNum(utils.toOnChainAmount(contractAsset.saleData.buyNowOrStartingPrice))
-      postConds.push(makeStandardSTXPostCondition(
-        postCondAddress,
-        FungibleConditionCode.LessEqual, // less or equal - if the buyer is one of the royalties payment is skipped.
-        amount // uintCV(utils.toOnChainAmount(data.mintingFee))
-      ))
-      const nonFungibleAssetInfo = createAssetInfo(
-        STX_CONTRACT_ADDRESS,
-        STX_CONTRACT_NAME,
-        'my-nft'
-      )
-      postConds.push(makeStandardNonFungiblePostCondition(
-        contractAsset.owner,
-        NonFungibleConditionCode.DoesNotOwn,
-        nonFungibleAssetInfo,
-        uintCV(contractAsset.nftIndex)
-      ))
-      **/
-
       const buyNowData = {
         // postConditions: postConds,
-        contractAddress: STX_CONTRACT_ADDRESS,
-        contractName: STX_CONTRACT_NAME,
+        contractAddress: (this.loopRun) ? this.loopRun.contractId.split('.')[0] : STX_CONTRACT_ADDRESS,
+        contractName: (this.loopRun) ? this.loopRun.contractId.split('.')[1] : STX_CONTRACT_NAME,
         sendAsSky: false,
         nftIndex: contractAsset.nftIndex,
         buyNowOrStartingPrice: contractAsset.saleData.buyNowOrStartingPrice,

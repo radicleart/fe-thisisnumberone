@@ -19,6 +19,7 @@
       <div class="col-2">administrator</div><div class="col-10">{{application.tokenContract.administrator}}</div>
       <div class="col-2">Platform Fee</div><div class="col-10">{{application.tokenContract.platformFee}}</div>
       <div class="col-2">Mint Fee</div><div class="col-10">{{application.tokenContract.mintPrice}}</div>
+      <div class="col-2">Mint Counter</div><div class="col-10">{{application.tokenContract.mintCounter}}</div>
     </div>
     <GaiaAssetCache v-if="showTokens"/>
   </div>

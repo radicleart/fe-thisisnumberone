@@ -57,7 +57,7 @@ export default {
   computed: {
     resultSet () {
       const padder = {
-        imageUrl: this.padderSrc,
+        image: this.padderSrc,
         attributes: {
           coverImage: {
             fileUrl: this.padderSrc,

@@ -30,6 +30,8 @@ const AssetDetails = () => import('@/views/marketplace/AssetDetails.vue')
 const MyNftLibrary = () => import('@/views/marketplace/MyNftLibrary.vue')
 const NftGallery = () => import('@/views/marketplace/NftGallery.vue')
 const NftMarketplace = () => import('@/views/marketplace/NftMarketplace.vue')
+const NftCollection = () => import('@/views/marketplace/NftCollection.vue')
+const PunkMinter = () => import('@/views/marketplace/PunkMinter.vue')
 const UploadItem = () => import('@/views/marketplace/UploadItem.vue')
 const UpdateItem = () => import('@/views/marketplace/UpdateItem.vue')
 
@@ -84,6 +86,18 @@ const routes: Array<RouteConfig> = [
     alias: '/nft-market',
     name: 'nft-marketplace',
     components: { default: NftMarketplace, header: MainNavbar, footer: MainFooter },
+    meta: { title: 'Marketplace for NFTs by the Number One Team Secured by Bitcoin' }
+  },
+  {
+    path: '/punk-minter/:maker/:collection',
+    name: 'punk-minter',
+    components: { default: PunkMinter, header: MainNavbar, footer: MainFooter },
+    meta: { title: 'Marketplace for NFTs by the Number One Team Secured by Bitcoin' }
+  },
+  {
+    path: '/nft-marketplace/:maker/:collection',
+    name: 'nft-collection',
+    components: { default: NftCollection, header: MainNavbar, footer: MainFooter },
     meta: { title: 'Marketplace for NFTs by the Number One Team Secured by Bitcoin' }
   },
   {
@@ -187,7 +201,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/mgmnt',
     name: 'registry',
-    components: { default: ManageRegistry, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageRegistry, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -196,7 +210,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/mgmnt/registry',
     name: 'registry',
-    components: { default: ManageRegistry, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageRegistry, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -205,7 +219,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/mgmnt/registry/:section',
     name: 'registry-section',
-    components: { default: ManageRegistry, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageRegistry, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -214,7 +228,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/mgmnt/manage-privileges',
     name: 'manage-privileges',
-    components: { default: ManagePrivileges, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManagePrivileges, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -223,7 +237,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/mgmnt/manage-offers',
     name: 'manage-offers',
-    components: { default: ManageOffers, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageOffers, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -232,7 +246,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/mgmnt/exhibit-requests',
     name: 'exhibit-requests',
-    components: { default: ManageRequests, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageRequests, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -241,7 +255,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/mgmnt/manage-collections',
     name: 'manage-collections',
-    components: { default: ManageCollections, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageCollections, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -250,7 +264,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/mgmnt/manage-collection',
     name: 'manage-collection',
-    components: { default: ManageCollection, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageCollection, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -259,7 +273,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/mgmnt/manage-collections/:currentRunKey',
     name: 'manage-collection',
-    components: { default: ManageCollection, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageCollection, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true
@@ -268,7 +282,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/mgmnt/app-admin',
     name: 'app-admin',
-    components: { default: ManageRegistry, adminNav: AdminNav, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageRegistry, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true

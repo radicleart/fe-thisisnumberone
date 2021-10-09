@@ -1,122 +1,179 @@
 <template>
+
 <b-container class="text-white" v-if="loaded">
-  <h1 class="text-white">Manage NFT Collection</h1>
-  <div class="d-flex justify-content-end">
+  <div class="text-right">
+    <span class="mr-3 text-info" @click.prevent="allocations = !allocations">allocations</span>
     <b-link class="text-info mt-3" to="/mgmnt/manage-collections"><b-icon icon="chevron-left"/> Back</b-link>
   </div>
-  <b-form class="needs-validation form-transparent" novalidate @submit="checkForm" id="contact-form">
-  <div class="mb-3" role="group">
-    <label for="currentRun-name"><span class="text-danger">*</span> Collection Name (max 30 chars)</label>
-    <b-form-input
-      maxlength="30"
-      @keyup="setRunKey()"
-      id="currentRun-name"
-      v-model="loopRun.currentRun"
-      :state="currentRunState"
-      aria-describedby="currentRun-help currentRun-feedback"
-      placeholder="Collection Name"
-      trim
-      required
-    ></b-form-input>
-    <b-form-invalid-feedback id="currentRun-feedback">
-      Collection Name
-    </b-form-invalid-feedback>
+  <div v-if="allocations">
+    <ManageAllocation :loopRun="loopRun"/>
   </div>
+  <div v-else>
+    <h1 class="text-white">Manage NFT Collection</h1>
+    <b-form class="needs-validation form-transparent" novalidate @submit="checkForm" id="contact-form">
+    <div class="mb-3" role="group">
+      <label for="currentRun-name"><span class="text-danger">*</span> Collection Name (max 30 chars)</label>
+      <b-form-input
+        maxlength="30"
+        @keyup="setRunKey()"
+        id="currentRun-name"
+        v-model="loopRun.currentRun"
+        :state="currentRunState"
+        aria-describedby="currentRun-help currentRun-feedback"
+        placeholder="Collection Name"
+        trim
+        required
+      ></b-form-input>
+      <b-form-invalid-feedback id="currentRun-feedback">
+        Collection Name
+      </b-form-invalid-feedback>
+    </div>
 
-  <div class="mb-3" role="group">
-    <label for="currentRunKey-name"><span class="text-danger">*</span> Collection URL Key</label>
-    <b-form-input
-      id="currentRunKey-name"
-      v-model="loopRun.currentRunKey"
-      readonly
-      aria-describedby="currentRunKey-help currentRunKey-feedback"
-      placeholder="Collection Key"
-      required
-    ></b-form-input>
-    <b-form-invalid-feedback id="currentRunKey-feedback">
-      collection key is required
-    </b-form-invalid-feedback>
+    <div class="mb-3" role="group">
+      <label for="currentRunKey-name"><span class="text-danger">*</span> Collection URL Key</label>
+      <b-form-input
+        id="currentRunKey-name"
+        v-model="loopRun.currentRunKey"
+        readonly
+        aria-describedby="currentRunKey-help currentRunKey-feedback"
+        placeholder="Collection Key"
+        required
+      ></b-form-input>
+      <b-form-invalid-feedback id="currentRunKey-feedback">
+        collection key is required
+      </b-form-invalid-feedback>
+    </div>
+
+    <div class="mb-3" role="group">
+      <label for="makerName-name"><span class="text-danger">*</span> Maker Name (max 30 chars)</label>
+      <b-form-input
+        maxlength="30"
+        @keyup="setMakerName()"
+        id="makerName-name"
+        v-model="loopRun.makerName"
+        :state="makerNameState"
+        aria-describedby="makerName-help makerName-feedback"
+        placeholder="Maker Name"
+        trim
+        required
+      ></b-form-input>
+      <b-form-invalid-feedback id="makerName-feedback">
+        maker name is required
+      </b-form-invalid-feedback>
+    </div>
+
+    <div class="mb-3" role="group">
+      <label for="makerUrlKey-name"><span class="text-danger">*</span> Maker URL Key</label>
+      <b-form-input
+        maxlength="30"
+        id="makerUrlKey-name"
+        readonly
+        v-model="loopRun.makerUrlKey"
+        aria-describedby="makerUrlKey-help makerUrlKey-feedback"
+        placeholder="Maker URL Key"
+        required
+      ></b-form-input>
+      <b-form-invalid-feedback id="makerUrlKey-feedback">
+        maker url key is required
+      </b-form-invalid-feedback>
+    </div>
+
+    <div class="w-100 mb-3" role="group">
+      <label for="status-name"><span class="text-danger">*</span> Collection State</label>
+      <b-form-select id="status-name" v-model="loopRun.status" :options="statusEnum"></b-form-select>
+      <b-form-text class="text-warning" id="status-help">Collection status is active/inactive depending on whether the limit has been reached. They can also be disabled.</b-form-text>
+    </div>
+
+    <div class="w-50 mb-3" role="group">
+      <label for="versionLimit"><span class="text-danger">*</span> Number of NFTs Allowed for this Collection</label>
+      <b-form-input
+        id="versionLimit"
+        v-model="loopRun.versionLimit"
+        :state="versionLimitState"
+        aria-describedby="versionLimit-feedback"
+        placeholder="NFTs Allowed for this Collection"
+        required
+      ></b-form-input>
+      <b-form-invalid-feedback id="versionLimit-feedback">
+        wrong limit for collection
+      </b-form-invalid-feedback>
+    </div>
+
+    <div class="mb-3">
+      <label for="description">Short Bio for Collection</label>
+      <b-textarea
+        ref="description"
+        :value="loopRun.description"
+        rows="5"
+        placeholder="Short Bio for Collection"
+      ></b-textarea>
+    </div>
+
+    <div class="w-50 mb-3" role="group">
+      <label for="image">Image or Logo for this Collection</label>
+      <b-form-input
+        id="image"
+        v-model="loopRun.image"
+        aria-describedby="image-feedback"
+        placeholder="Image for this Collection"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="w-50 mb-3" role="group">
+      <label for="spinsPerDay"><span class="text-danger">*</span> Spins Allowed Per Day (only for generative collections)</label>
+      <b-form-input
+        id="spinsPerDay"
+        v-model="loopRun.spinsPerDay"
+        aria-describedby="spinsPerDay-help spinsPerDay-feedback"
+        placeholder="Spins Allowed Per Day"
+        required
+      ></b-form-input>
+      <b-form-invalid-feedback id="spinsPerDay-feedback">
+        Valid spinsPerDay
+      </b-form-invalid-feedback>
+    </div>
+
+    <div class="w-100 mb-3" role="group">
+      <label for="status-name"><span class="text-danger">*</span> Contract</label>
+      <b-form-select id="status-name" v-model="loopRun.contractId" :options="contractIds"></b-form-select>
+    </div>
+
+    <b-form-checkbox
+      size="lg"
+      id="batchMode"
+      v-model="loopRun.batchMode"
+      name="batchMode"
+      value="true"
+      unchecked-value="false"
+      >
+      <div class="text-white pointer"><b>Batch Mode</b></div>
+      </b-form-checkbox>
+
+    <div class="w-100 mb-3" role="group">
+      <label for="status-name">Batch Size</label>
+      <b-form-select id="status-name" v-model="loopRun.batchSize" :options="batchSizeEnum"></b-form-select>
+      <b-form-text class="text-warning" id="status-help">Batch Size - the number of collectibles to mint in one contract call</b-form-text>
+    </div>
+    <div class="w-50 mb-3" role="group">
+      <label for="batchPointer">Batch Pointer</label>
+      <b-form-input
+        id="batchPointer"
+        v-model="loopRun.batchPointer"
+        aria-describedby="batchPointer-help batchPointer-feedback"
+        placeholder="Batch Pointer"
+        required
+      ></b-form-input>
+      <b-form-invalid-feedback id="batchPointer-feedback">
+        Valid batchPointer
+      </b-form-invalid-feedback>
+    </div>
+
+    <div class="my-4 text-right">
+      <b-button variant="outline-warning" @click.prevent="checkForm()">Save</b-button>
+    </div>
+  </b-form>
   </div>
-
-  <div class="mb-3" role="group">
-    <label for="makerName-name"><span class="text-danger">*</span> Maker Name (max 30 chars)</label>
-    <b-form-input
-      maxlength="30"
-      @keyup="setMakerName()"
-      id="makerName-name"
-      v-model="loopRun.makerName"
-      :state="makerNameState"
-      aria-describedby="makerName-help makerName-feedback"
-      placeholder="Maker Name"
-      trim
-      required
-    ></b-form-input>
-    <b-form-invalid-feedback id="makerName-feedback">
-      maker name is required
-    </b-form-invalid-feedback>
-  </div>
-
-  <div class="mb-3" role="group">
-    <label for="makerUrlKey-name"><span class="text-danger">*</span> Maker URL Key</label>
-    <b-form-input
-      maxlength="30"
-      id="makerUrlKey-name"
-      readonly
-      v-model="loopRun.makerUrlKey"
-      aria-describedby="makerUrlKey-help makerUrlKey-feedback"
-      placeholder="Maker URL Key"
-      required
-    ></b-form-input>
-    <b-form-invalid-feedback id="makerUrlKey-feedback">
-      maker url key is required
-    </b-form-invalid-feedback>
-  </div>
-
-  <div class="w-100 mb-3" role="group">
-    <label for="status-name"><span class="text-danger">*</span> Collection State</label>
-    <b-form-select id="status-name" v-model="loopRun.status" :options="statusEnum"></b-form-select>
-    <b-form-text class="text-warning" id="status-help">Collection status is active/inactive depending on whether the limit has been reached. They can also be disabled.</b-form-text>
-  </div>
-
-  <div class="w-50 mb-3" role="group">
-    <label for="versionLimit"><span class="text-danger">*</span> Number of NFTs Allowed for this Collection</label>
-    <b-form-input
-      id="versionLimit"
-      v-model="loopRun.versionLimit"
-      :state="versionLimitState"
-      aria-describedby="versionLimit-feedback"
-      placeholder="NFTs Allowed for this Collection"
-      required
-    ></b-form-input>
-    <b-form-invalid-feedback id="versionLimit-feedback">
-      wrong limit for collection
-    </b-form-invalid-feedback>
-  </div>
-
-  <div class="w-50 mb-3" role="group">
-    <label for="spinsPerDay"><span class="text-danger">*</span> Spins Allowed Per Day (only for generative collections)</label>
-    <b-form-input
-      id="spinsPerDay"
-      v-model="loopRun.spinsPerDay"
-      aria-describedby="spinsPerDay-help spinsPerDay-feedback"
-      placeholder="Spins Allowed Per Day"
-      required
-    ></b-form-input>
-    <b-form-invalid-feedback id="spinsPerDay-feedback">
-      Valid spinsPerDay
-    </b-form-invalid-feedback>
-  </div>
-
-  <div class="w-100 mb-3" role="group">
-    <label for="status-name"><span class="text-danger">*</span> Contract</label>
-    <b-form-select id="status-name" v-model="loopRun.contractId" :options="contractIds"></b-form-select>
-  </div>
-
-  <div class="my-4 text-right">
-    <b-button variant="outline-warning" @click.prevent="checkForm()">Save</b-button>
-  </div>
-</b-form>
-
 </b-container>
 <b-container v-else>
   <LoopbombSpinner />
@@ -126,25 +183,33 @@
 <script>
 import LoopbombSpinner from '@/components/utils/LoopbombSpinner'
 import { APP_CONSTANTS } from '@/app-constants'
+import ManageAllocation from './components/collections/ManageAllocation'
 
 export default {
   name: 'ManageCollection',
   components: {
-    LoopbombSpinner
+    LoopbombSpinner,
+    ManageAllocation
   },
   data () {
     return {
+      allocations: false,
       editMode: null,
       currentRunKey: null,
       contractIds: [],
       formSubmitted: false,
       statusEnum: ['active', 'inactive', 'disabled'],
+      batchSizeEnum: [1, 5, 10, 15, 20],
       loaded: false,
       loopRun: {
         status: 'active',
         contractId: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME,
         makerName: null,
+        batchPointer: 0,
         makerUrlKey: null,
+        description: null,
+        batchMode: true,
+        batchSize: 1,
         spinsPerDay: 0,
         currentRunKey: null,
         currentRun: null,

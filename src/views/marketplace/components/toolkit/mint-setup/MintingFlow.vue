@@ -7,7 +7,7 @@
           <ItemDisplay :item="item"/>
         </template>
         <div class="mt-0">
-          <RoyaltyScreen :errorMessage="errorMessage" :item="item" @mintToken="mintToken" @editBeneficiary="editBeneficiary" @removeBeneficiary="removeBeneficiary" @updateBeneficiary="updateBeneficiary" @addNewBeneficiary="addNewBeneficiary" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
+          <RoyaltyScreen :errorMessage="errorMessage" :item="item" @mintToken="mintTwentyTokens" @editBeneficiary="editBeneficiary" @removeBeneficiary="removeBeneficiary" @updateBeneficiary="updateBeneficiary" @addNewBeneficiary="addNewBeneficiary" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
           <AddBeneficiaryScreen :errorMessage="errorMessage" :eBen="eBen" @addBeneficiary="addBeneficiary" :beneficiaries="beneficiaries" :item="item" v-if="displayCard === 102"/>
         </div>
       </b-card>
@@ -30,7 +30,7 @@ export default {
     ItemDisplay,
     AddBeneficiaryScreen
   },
-  props: ['assetHash'],
+  props: ['items', 'loopRun', 'mintAllocations'],
   data () {
     return {
       loading: true,
@@ -41,7 +41,7 @@ export default {
   },
   mounted () {
     this.$store.commit(APP_CONSTANTS.SET_DISPLAY_CARD, 100)
-    const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+    const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.items[0].assetHash)
     const configuration = this.$store.getters['rpayStore/getConfiguration']
     const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
     configuration.minter.beneficiaries[1].chainAddress = profile.stxAddress
@@ -58,30 +58,98 @@ export default {
       // this.errorMessage = 'Minting non fungible token - takes a minute or so..'
       // the post condition applies to the address the funds are going to not from!!!
       // when minting the funds go to the contract admin.
-      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.item.assetHash)
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.items[0].assetHash)
       if (contractAsset) {
         return
       }
+
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-      let contractName = process.env.VUE_APP_STACKS_CONTRACT_NAME
-      if (process.env.VUE_APP_STACKS_CONTRACT_NAME_NEXT) {
-        contractName = process.env.VUE_APP_STACKS_CONTRACT_NAME_NEXT
+      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](this.loopRun.contractId)
+      let mintPrice = application.tokenContract.mintPrice
+      if (this.items[0].attributes.mintPrice) {
+        mintPrice = Math.max(application.tokenContract.mintPrice, this.items[0].attributes.mintPrice)
       }
-      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME)
       const data = {
-        mintingFee: application.tokenContract.mintPrice,
-        owner: profile.stxAddress, // process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
-        assetHash: this.item.assetHash,
-        metaDataUrl: this.item.metaDataUrl,
-        beneficiaries: this.item.beneficiaries || [],
-        editions: (this.item.editions) ? this.item.editions : 1,
-        editionCost: (this.item.editionCost) ? this.item.editionCost : 0,
+        buyNowPrice: this.items[0].attributes.buyNowPrice,
+        mintPrice: mintPrice,
+        owner: profile.stxAddress,
+        assetHash: this.items[0].assetHash,
+        metaDataUrl: this.items[0].metaDataUrl,
+        beneficiaries: this.items[0].beneficiaries || [],
+        editions: (this.items[0].editions) ? this.items[0].editions : 1,
+        editionCost: (this.items[0].editionCost) ? this.items[0].editionCost : 0,
         sendAsSky: true, // only applicable in local
-        contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
-        contractName: contractName,
+        contractAddress: this.loopRun.contractId.split('.')[0],
+        contractName: this.loopRun.contractId.split('.')[1],
         functionName: 'mint-token'
       }
       this.$store.dispatch('rpayPurchaseStore/mintTokenV2', data).then((result) => {
+        const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](result.assetHash)
+        if (result.txId) {
+          item.mintInfo = {
+            txId: result.txId,
+            txStatus: result.txStatus,
+            timestamp: result.timestamp
+          }
+          this.$store.dispatch('rpayMyItemStore/quickSaveItem', item).then((item) => {
+            this.$emit('update', item)
+          })
+        }
+      }).catch((err) => {
+        this.errorMessage = 'Minting error: ' + err
+      })
+    },
+    mintTwentyTokens: function () {
+      const contractAsset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.items[0].assetHash)
+      if (contractAsset) {
+        return
+      }
+      if (!this.mintAllocations && this.loopRun.batchSize === 1) {
+        this.mintToken()
+        return
+      }
+      const endPointer = this.loopRun.batchPointer + this.loopRun.batchSize
+      this.loopRun.batchPointer = endPointer
+      const bean = { loopRun: this.loopRun, mintAllocations: this.mintAllocations }
+      this.$store.dispatch('rpayCategoryStore/updateLoopRunAndAllocations', bean).then(() => {
+        this.$notify({ type: 'success', title: 'Meta Data', text: 'Meta data created and uploaded!' })
+        this.callWallet()
+      }).catch(() => {
+        this.$notify({ type: 'warning', title: 'Mint Race', text: 'Someone beat you to this one - try again?' })
+      })
+    },
+    callWallet () {
+      if (this.loopRun.batchSize === 1) {
+        this.mintToken()
+        return
+      }
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](this.loopRun.contractId)
+      let mintPrice = application.tokenContract.mintPrice
+      if (this.items[0].attributes.mintPrice) {
+        mintPrice = Math.max(application.tokenContract.mintPrice, this.items[0].attributes.mintPrice)
+      }
+      const twenties = []
+      this.items.forEach((o) => {
+        twenties.push({
+          assetHash: o.assetHash,
+          metaDataUrl: o.metaDataUrl
+        })
+      })
+      const data = {
+        buyNowPrice: this.items[0].attributes.buyNowPrice,
+        mintPrice: mintPrice,
+        twenties: twenties,
+        owner: profile.stxAddress,
+        beneficiaries: this.items[0].beneficiaries || [],
+        editions: (this.items[0].editions) ? this.items[0].editions : 1,
+        editionCost: (this.items[0].editionCost) ? this.items[0].editionCost : 0,
+        sendAsSky: true, // only applicable in local
+        contractAddress: this.loopRun.contractId.split('.')[0],
+        contractName: this.loopRun.contractId.split('.')[1],
+        functionName: 'mint-token-twenty'
+      }
+      this.$store.dispatch('rpayPurchaseStore/mintTwentyTokens', data).then((result) => {
         const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](result.assetHash)
         if (result.txId) {
           item.mintInfo = {
@@ -163,7 +231,7 @@ export default {
       }
     },
     updateItem () {
-      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.items[0].assetHash)
       item.beneficiaries = this.beneficiaries
       this.$store.dispatch('rpayMyItemStore/saveItem', item).then((item) => {
         this.beneficiaries = item.beneficiaries
@@ -179,11 +247,11 @@ export default {
   },
   computed: {
     item () {
-      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.items[0].assetHash)
       return item
     },
     isMinted () {
-      const asset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.assetHash)
+      const asset = this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_CONTRACT_BY_HASH](this.items[0].assetHash)
       return asset
     },
     displayCard () {

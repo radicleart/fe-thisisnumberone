@@ -1,6 +1,5 @@
 <template>
-<splash v-if="loading"/>
-<div id="app" v-else :style="'z-index: -40; min-height: 90vh; background-size: contain; background-image: url(' + getPixelBackground + ')'">
+<div id="app" v-if="!loading" :style="'z-index: -40; min-height: 90vh; background-size: contain; background-image: url(' + getPixelBackground + ')'">
   <div v-if="!configured">
     <RisidioPay :configuration="configuration"/>
   </div>
@@ -28,7 +27,6 @@
 </div>
 </template>
 <script>
-import Splash from '@/views/Splash'
 import SuccessModal from '@/components/utils/SuccessModal'
 import WaitingModal from '@/components/utils/WaitingModal'
 // import RisidioPay from 'risidio-pay'
@@ -40,7 +38,6 @@ const RisidioPay = () => import('risidio-pay')
 export default {
   name: 'App',
   components: {
-    Splash,
     MessageTicker,
     SuccessModal,
     WaitingModal,

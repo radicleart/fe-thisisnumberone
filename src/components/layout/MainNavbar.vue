@@ -43,11 +43,12 @@
   </b-sidebar>
 
   <b-navbar-nav class="ml-auto">
-    <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0"><router-link class="text-big" to="/my-nfts">My NFTs</router-link></b-nav-item>
-    <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0"><router-link class="text-big" to="/nft-marketplace">Marketplace</router-link></b-nav-item>
-    <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0"><router-link class="text-big" to="/upload-item">Upload</router-link></b-nav-item>
-    <b-nav-item v-if="profile.loggedIn" class="mr-4"><a v-b-toggle.my-sidebar class="nav-text" ><b-icon icon="person" font-scale="2" class="mr-5 mb-3 mr-0"/></a></b-nav-item>
-    <b-nav-item v-else class="mt-3 text-big text-white" @click.prevent="startLogin()" href="#">Login</b-nav-item>
+    <b-nav-item v-if="profile.loggedIn && profile.superAdmin" class="mt-3 mr-4 mt-0 text-big" to="/mgmnt/registry">Admin</b-nav-item>
+    <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0 text-big" to="/my-nfts">My NFTs</b-nav-item>
+    <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0 text-big" to="/nft-marketplace">Marketplace</b-nav-item>
+    <b-nav-item v-if="profile.loggedIn && canUpload()" class="mt-3 mr-4 mt-0 text-big" to="/upload-item">Upload</b-nav-item>
+    <b-nav-item v-if="profile.loggedIn" class="mr-4 text-big"><a v-b-toggle.my-sidebar class="nav-text" ><b-icon icon="person" font-scale="2" class="mr-5 mb-3 mr-0"/></a></b-nav-item>
+    <b-nav-item v-else class="mt-3 text-big text-white text-big" @click.prevent="startLogin()" href="#">Login</b-nav-item>
   </b-navbar-nav>
 </b-navbar>
 </template>

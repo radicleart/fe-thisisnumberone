@@ -26,7 +26,7 @@
       </div>
       <div v-else>
         <div>
-          Collection: <a class="text-info" :href="origin + '/nft-marketplace/' + loopRun.currentRunKey" target="_blank">{{loopRun.currentRun}}</a>
+          Collection: <a class="text-info" :href="origin + '/nft-marketplace/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey" target="_blank">{{loopRun.currentRun}}</a>
         </div>
         <div>
           Minting Fee: {{application.tokenContract.mintPrice}} STX
@@ -37,7 +37,7 @@
 <div v-else>
   <div class="py-5 px-5 bg-white text-danger d-flex justify-content-center">
     <div>
-      Expecting contract <span class="text-bold">{{contractName}}</span> to be deployed and connected?
+      Expecting contract <span class="text-bold">{{loopRun.contractId}}</span> to be deployed and connected?
     </div>
   </div>
 </div>
@@ -52,8 +52,7 @@ export default {
   props: ['parent'],
   data () {
     return {
-      origin: location.origin,
-      contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME
+      origin: location.origin
     }
   },
   mounted () {
@@ -98,7 +97,7 @@ export default {
       return loopRun
     },
     application () {
-      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME)
+      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](this.loopRun.contractId)
       return application
     }
   }

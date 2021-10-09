@@ -17,7 +17,7 @@
             ref="itemImage"
             :width="'100%'"
             :height="newHeight"
-            :src="imageUrl" @error="imageError()"/>
+            :src="image" @error="imageError()"/>
       </div>
       </router-link>
     </b-card-text>
@@ -63,12 +63,12 @@ export default {
   props: ['asset'],
   data () {
     return {
-      imageUrl: null,
+      image: null,
       newHeight: null
     }
   },
   mounted () {
-    this.imageUrl = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
+    this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
     const $self = this
     const $ele = this.$refs.itemImage
     this.$nextTick(() => {
@@ -84,7 +84,7 @@ export default {
       e.preventDefault()
     },
     imageError () {
-      this.imageUrl = this.asset.attributes.artworkFile.fileUrl
+      this.image = this.asset.attributes.artworkFile.fileUrl
     },
     created () {
       if (this.asset && this.asset.mintInfo && this.asset.mintInfo.timestamp) {

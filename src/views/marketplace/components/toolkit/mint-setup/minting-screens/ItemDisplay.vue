@@ -1,7 +1,7 @@
 <template>
 <b-card-text class="mt-2">
   <div class="row">
-    <div class="col-3"><img style="border-radius: 18px;" width="100%" :src="imageUrl"/></div>
+    <div class="col-3"><img style="border-radius: 18px;" width="100%" :src="image"/></div>
     <div class="col-8">
       <h4 class="text-bold">{{item.name}}</h4>
       <div class="row mt-3">
@@ -36,7 +36,7 @@ export default {
     profile () {
       return this.$store.getters['rpayAuthStore/getMyProfile']
     },
-    imageUrl () {
+    image () {
       return this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.item)
     }
   }

@@ -57,7 +57,7 @@ export default {
           'App Index': application.appIndex,
           'Token URI': '<a href="' + application.tokenContract.baseTokenUri + '" target="_blank">Token URI</a>',
           Administrator: $self.truncat(application.tokenContract.administrator),
-          // Counter: application.tokenContract.mintCounter,
+          Counter: application.tokenContract.mintCounter,
           // Price: application.tokenContract.mintPrice,
           Status: application.status,
           Actions: null

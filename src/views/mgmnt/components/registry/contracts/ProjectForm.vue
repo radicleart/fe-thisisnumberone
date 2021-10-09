@@ -10,7 +10,7 @@
           </div>
           <div class="mb-4 text2">
             <div class=""><span v-b-tooltip.hover="{ variant: 'warning' }" title="url of project logo - e.g. hosted in prismic or cloudinary">Logo Image URL</span></div>
-            <b-input v-model="project.imageUrl" placeholder="url of project logo - e.g. hosted in prismic or cloudinary"></b-input>
+            <b-input v-model="project.image" placeholder="url of project logo - e.g. hosted in prismic or cloudinary"></b-input>
           </div>
           <div class="mb-4 text2">
             <div class=""><span v-b-tooltip.hover="{ variant: 'warning' }" title="description of project">description of project</span></div>
@@ -60,6 +60,7 @@
       <div class="row">
         <div class="col-12">
           <div class="my-3">
+            <b-button class="mr-3" variant="light" @click.prevent="this.$emit('update', { opcode: 'project-saved' })">Cancel</b-button>
             <b-button class="mr-3" variant="info" @click.prevent="saveProject()">Save</b-button>
           </div>
         </div>
@@ -81,7 +82,7 @@ export default {
       project: {
         platformAddress: process.env.VUE_APP_REGISTRY_CONTRACT_ADDRESS,
         status: 'deployment',
-        imageUrl: 'https://images.prismic.io/radsoc/f60d92d0-f733-46e2-9cb7-c59e33a15fc1_download.jpeg?auto=compress,format',
+        image: 'https://images.prismic.io/dbid/cc7d59a2-65f4-45a2-b6e5-df136e2fd952_OS_thumb.png?auto=compress,format',
         owner: null,
         description: 'The best NFT project ever..',
         updated: new Date().getTime(),
@@ -90,7 +91,7 @@ export default {
         mintPrice: '100000',
         contractAddress: null,
         contractName: null,
-        callBack: 'https://thisisnumberone/nfts/'
+        callBack: 'https://thisisnumberone.com/nfts/'
       }
     }
   },
@@ -138,6 +139,10 @@ export default {
       }
       if (!this.project.callBack || !this.project.callBack.startsWith('https://')) {
         this.$notify({ type: 'error', title: 'Project Details', text: 'Please enter a secure (https) callback url for your tokens - we append the asset hash to retrieve meta data.' })
+        result = false
+      }
+      if (!this.project.title || this.project.title.indexOf('myproject') > -1) {
+        this.$notify({ type: 'error', title: 'Project Name', text: 'Please enter a descriptive name.' })
         result = false
       }
       if (!this.project.title || this.project.title.indexOf('token') > -1) {

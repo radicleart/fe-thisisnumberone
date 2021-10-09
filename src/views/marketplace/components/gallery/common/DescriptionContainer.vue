@@ -13,44 +13,42 @@
 
 // noinspection JSUnusedGlobalSymbols
 export default {
-  name: "DescriptionContainer",
+  name: 'DescriptionContainer',
   components: {
   },
-  props: ["text", "limit", "morable"],
-  data() {
+  props: ['text', 'limit', 'morable'],
+  data () {
     return {
-      truncated: true,
-    };
-  },
-  mounted() {
+      truncated: true
+    }
   },
   computed: {
-    displayable() {
-      let splittedLength = 0;
+    displayable () {
+      let splittedLength = 0
       if (this.text) {
-        splittedLength = this.text.split(" ").length;
+        splittedLength = this.text.split(' ').length
       }
       if (splittedLength > this.limit && this.truncated) {
-        let words = this.text.split(" ");
-        let limit = words.length - 1;
-        let trunc = Math.min(limit, this.limit);
-        let truncStr = words.slice(0,trunc);
-        return truncStr.join(" ");
+        const words = this.text.split(' ')
+        const limit = words.length - 1
+        const trunc = Math.min(limit, this.limit)
+        const truncStr = words.slice(0, trunc)
+        return truncStr.join(' ')
       } else {
-        return this.text;
+        return this.text
       }
     },
-    overflow() {
-      let splittedLength = 0;
+    overflow () {
+      let splittedLength = 0
       if (this.text) {
-        splittedLength = this.text.split(" ").length;
+        splittedLength = this.text.split(' ').length
       }
-      return splittedLength > this.limit;
+      return splittedLength > this.limit
     }
   },
   methods: {
   }
-};
+}
 </script>
 <style>
 

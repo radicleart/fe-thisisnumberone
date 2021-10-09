@@ -15,11 +15,11 @@ const contentStore = {
       howItWorks: null
     },
     defaultArtist: 'chemicalx',
-    waitingImage: 'https://images.prismic.io/radsoc/f60d92d0-f733-46e2-9cb7-c59e33a15fc1_download.jpeg?auto=compress,format'
+    waitingImage: 'https://images.prismic.io/dbid/c19ad445-eab4-4de9-9b5a-c10eb158dc5e_black_no1.png?auto=compress,format'
   },
   getters: {
-    getWaitingCSS: state => imageUrl => {
-      if (!imageUrl) imageUrl = state.waitingImage
+    getWaitingCSS: state => image => {
+      if (!image) image = state.waitingImage
       return {
         'min-height': '300px',
         'background-repeat': 'no-repeat',
@@ -28,7 +28,7 @@ const contentStore = {
         '-moz-background-size': 'contain',
         '-o-background-size': 'contain',
         'background-size': 'contain',
-        'background-image': `url(${imageUrl})`,
+        'background-image': `url(${image})`,
         opacity: 1,
         'text-align': 'center',
         border: '1pt solid #ccc'

@@ -4,11 +4,13 @@
   <div class="text-right">
     <b-link class="text-info" to="/mgmnt/manage-collection">new collection</b-link>
   </div>
-  <b-table striped hover :items="values()" :fields="fields()" class="bg-light text-dark">
-    <template #cell(contractAddress)="data">
-      <b-link class="text-info" size="sm" variant="warning" v-on:click="updateRequest(data)" v-html="data.value"></b-link>
-    </template>
-  </b-table>
+  <div>
+    <b-table striped hover :items="values()" :fields="fields()" class="bg-light text-dark">
+      <template #cell(contractAddress)="data">
+        <b-link class="text-info" size="sm" variant="warning" v-on:click="updateRequest(data)" v-html="data.value"></b-link>
+      </template>
+    </b-table>
+  </div>
 </b-container>
 <b-container v-else>
   <LoopbombSpinner />
@@ -32,7 +34,7 @@ export default {
     }
   },
   mounted () {
-    this.$store.dispatch('rpayCategoryStore/fetchLoopRunsForContract')
+    this.$store.dispatch('rpayCategoryStore/fetchLoopRuns')
   },
   methods: {
     updateRequest (data) {

@@ -23,7 +23,7 @@
         <MintInfo :item="item" />
         <PendingTransactionInfo v-if="pending && pending.txStatus === 'pending'" :pending="pending"/>
         <div v-else>
-          <MintingTools class="w-100" :item="item" @update="update"/>
+          <MintingTools class="w-100" :items="[item]" @update="update"/>
         </div>
         <NftHistory class="mt-5" @update="update" @setPending="setPending" :nftIndex="(item.contractAsset) ? item.contractAsset.nftIndex : -1" :assetHash="item.assetHash"/>
       </b-col>

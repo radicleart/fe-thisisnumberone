@@ -30,7 +30,7 @@
       </div>
       <div class="col-12 mb-4">
         <b-input-group append="_#_" prepend="Max Ed.">
-          <b-form-input type="number" id="maxEditions" v-model="maxEditions" placeholder="The maximum number of editions to allow"></b-form-input>
+          <b-form-input type="number" id="maxEditions" v-model="maxEditions" placeholder="Max editions"></b-form-input>
         </b-input-group>
       </div>
       <div class="col-12 text-right mb-5">

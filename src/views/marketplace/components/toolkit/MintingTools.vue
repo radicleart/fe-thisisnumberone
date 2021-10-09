@@ -1,14 +1,14 @@
 <template>
-<div id="minting-tools" class="mt-3" v-if="item">
+<div id="minting-tools" class="mt-3" v-if="items">
   <div class="">
-    <div v-if="!item.contractAsset" class="w-100 text-small">
+    <div v-if="!items[0].contractAsset" class="w-100 text-small">
       <div v-if="!txPending || txPending.length === 0">
         <div v-if="isValid">
           <div>
-            <b-button variant="outline-warning" @click="startMinting()">Mint File</b-button>
+            <b-button class="mx-2" variant="warning" @click="startMinting()">Mint Next <span v-if="loopRun.batchSize > 1">{{loopRun.batchSize}}</span></b-button>
           </div>
         </div>
-        <b-alert v-else show variant="danger">Information required - <b-link :to="'/edit-item/' + item.assetHash">edit this item</b-link></b-alert>
+        <b-alert v-else show variant="danger">Information required - <b-link :to="'/edit-item/' + items[0].assetHash">edit this item</b-link></b-alert>
       </div>
     </div>
     <div v-else class="mt-5">
@@ -18,43 +18,27 @@
             <div class="mb-3">{{saleDataText}}</div>
             <b-button class="btn-action" variant="outline-warning" @click="openSaleDataDialog()">Update Sale Info</b-button>
           </div>
-          <!--
-          <b-tabs justified content-class="mt-3">
-            <b-tab :title="'Info'">
-              <div>
-                <div class="my-5">{{saleDataText}}</div>
-                <b-button class="btn-action" variant="outline-warning" @click="openSaleDataDialog()">Update Sale Info</b-button>
-              </div>
-            </b-tab>
-            <b-tab :title="'Offers'" v-if="profile.superAdmin">
-              <OfferHistory :item="item"/>
-            </b-tab>
-            <b-tab :title="'Bids'" v-if="profile.superAdmin">
-              <BidHistory :item="item"/>
-            </b-tab>
-          </b-tabs>
-          -->
         </b-tab>
         <b-tab title="Meta Data" v-if="allowEditEditions">
           <div class="row">
             <div class="col-12">
-              <!-- <ManageEditions :item="item"/> -->
+              <!-- <ManageEditions :item="items[0]"/> -->
             </div>
             <div class="col-12 mb-4">
               <div>
-                <a class="text-white" :href="item.contractAsset.tokenInfo.metaDataUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Meta Data URL: ' + item.contractAsset.tokenInfo.metaDataUrl" target="_blank"><b-icon class="mr-1" icon="arrow-up-right-circle"/>Meta Data URL</a>
+                <a class="text-white" :href="items[0].contractAsset.tokenInfo.metaDataUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Meta Data URL: ' + items[0].contractAsset.tokenInfo.metaDataUrl" target="_blank"><b-icon class="mr-1" icon="arrow-up-right-circle"/>Meta Data URL</a>
               </div>
               <div>
-                <a class="text-white" :href="application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" v-b-tooltip.hover="{ variant: 'light' }" :title="'Base Token URL: ' + application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" target="_blank"><b-icon class="mr-1" icon="arrow-up-right-circle"/>Base Token URL</a>
+                <a class="text-white" :href="application.tokenContract.baseTokenUri + items[0].contractAsset.nftIndex" v-b-tooltip.hover="{ variant: 'light' }" :title="'Base Token URL: ' + application.tokenContract.baseTokenUri + items[0].contractAsset.nftIndex" target="_blank"><b-icon class="mr-1" icon="arrow-up-right-circle"/>Base Token URL</a>
               </div>
             </div>
           </div>
         </b-tab>
         <b-tab title="Royalties">
-          <ListBeneficiaries class="mt-3" :item="item"/>
+          <ListBeneficiaries class="mt-3" :item="items[0]"/>
         </b-tab>
         <b-tab title="Transfer">
-          <TransferNft :item="item"/>
+          <TransferNft :item="items[0]"/>
         </b-tab>
         <b-tab title="Next" v-if="profile.superAdmin && contractNameNext">
           <b-button @click="startMinting()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
@@ -64,7 +48,7 @@
   </div>
 
   <b-modal size="md" id="accept-offer-modal">
-    <AcceptOffer :item="item" :offerData="offerData"/>
+    <AcceptOffer :item="items[0]" :offerData="offerData"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal id="result-modal">
@@ -72,11 +56,11 @@
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="md" id="minting-modal">
-    <MintingFlow :assetHash="item.assetHash" v-on="$listeners"/>
+    <MintingFlow :loopRun="loopRun" :items="items" :mintAllocations="mintAllocations" v-on="$listeners"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="lg" id="selling-modal">
-    <SellingFlow @cancel="cancel" :contractAsset="item.contractAsset"  v-if="item.contractAsset"/>
+    <SellingFlow :loopRun="loopRun" @cancel="cancel" :contractAsset="items[0].contractAsset"  v-if="items[0].contractAsset"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
 </div>
@@ -108,14 +92,13 @@ export default {
     ListBeneficiaries
     // ManageEditions
   },
-  props: ['item'],
+  props: ['items', 'loopRun', 'mintAllocations'],
   data: function () {
     return {
       allowEditEditions: process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
       contractNameNext: process.env.VUE_APP_STACKS_CONTRACT_NAME_NEXT,
       showRpay: false,
       showTransfers: false,
-      showBeneficiaries: false,
       offerData: null,
       mintResult: null,
       mintTitle: ''
@@ -123,33 +106,11 @@ export default {
   },
   mounted () {
     const $self = this
-    // const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.item.assetHash)
-    // if (item.uploader !== profile.username) throw new Error('Unexpected NFT ownership error')
-    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: this.item })
+    this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: this.items })
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function () {
         $self.$bvModal.hide('selling-modal')
         $self.$bvModal.hide('minting-modal')
-        /**
-        if (data.opcode === 'stx-transaction-sent' || data.opcode === 'stx-transaction-update') {
-          if (data.txId) {
-            const item = $self.item
-            if (data && data.functionName === 'mint-token') {
-              item.mintInfo = {
-                txId: data.txId,
-                txStatus: data.txStatus
-              }
-              $self.$store.dispatch('rpayMyItemStore/saveItem', item).then(() => {
-                $self.$emit('update')
-              }).catch(() => {
-                $self.$emit('update')
-              })
-            } else {
-              $self.$emit('update')
-            }
-          }
-        }
-        **/
       })
     }
   },
@@ -159,12 +120,12 @@ export default {
       this.$bvModal.hide('minting-modal')
     },
     openSaleDataDialog: function () {
-      this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'selling-flow', asset: this.item })
+      this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'selling-flow' })
       this.showRpay = true
       this.$bvModal.show('selling-modal')
     },
     startMinting: function () {
-      this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow', asset: this.item })
+      this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow' })
       this.$store.commit('rpayStore/setDisplayCard', 100)
       this.$bvModal.show('minting-modal')
     },
@@ -184,15 +145,15 @@ export default {
   computed: {
     txPending () {
       let transactions
-      if (this.item.contractAsset) {
-        transactions = this.$store.getters[APP_CONSTANTS.KEY_TX_PENDING_BY_TX_ID](this.item.contractAsset.nftIndex)
+      if (this.items[0].contractAsset) {
+        transactions = this.$store.getters[APP_CONSTANTS.KEY_TX_PENDING_BY_TX_ID](this.items[0].contractAsset.nftIndex)
       } else {
-        transactions = this.$store.getters[APP_CONSTANTS.KEY_TX_PENDING_BY_ASSET_HASH](this.item.assetHash)
+        transactions = this.$store.getters[APP_CONSTANTS.KEY_TX_PENDING_BY_ASSET_HASH](this.items[0].assetHash)
       }
       return transactions
     },
     transaction () {
-      const transaction = this.$store.getters[APP_CONSTANTS.KEY_TRANSACTION](this.item.mintInfo.txId)
+      const transaction = this.$store.getters[APP_CONSTANTS.KEY_TRANSACTION](this.items[0].mintInfo.txId)
       return transaction
     },
     profile () {
@@ -208,11 +169,15 @@ export default {
       return configuration
     },
     saleDataText () {
-      return this.$store.getters[APP_CONSTANTS.KEY_SALES_INFO_TEXT](this.item.contractAsset)
+      return this.$store.getters[APP_CONSTANTS.KEY_SALES_INFO_TEXT](this.items[0].contractAsset)
     },
     isValid: function () {
-      const invalidItems = this.$store.getters[APP_CONSTANTS.KEY_ITEM_VALIDITY](this.item)
-      return invalidItems.length === 0
+      if (this.items[0].cryptoPunk) {
+        return this.items[0].name && this.items[0].image
+      } else {
+        const invalidItems = this.$store.getters[APP_CONSTANTS.KEY_ITEM_VALIDITY](this.items[0])
+        return invalidItems.length === 0
+      }
     }
   }
 }

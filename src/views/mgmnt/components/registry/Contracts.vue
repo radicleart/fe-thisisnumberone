@@ -13,7 +13,7 @@
 </div>
 <div v-else>
   <h1>Projects and Contract Data</h1>
-  <p class="mt-4">Once the registry contract (located in github repo '<span class="text-info">clarity-market:/contracts/appmap.clar</span>')
+  <p class="mt-4">Once the registry contract, located in github repo '<span class="text-info">clarity-market:/contracts/appmap.clar</span>',
   is deployed, NFT contracts can be deployed and then connected to the registry.</p>
   <p>This screen allows project meta data to be defined and the corresponding contracts
     to be deployed.

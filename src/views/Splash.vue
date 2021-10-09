@@ -29,7 +29,13 @@ export default {
       logo: require('@/assets/img/navbar-footer/logo.svg')
     }
   },
+  mounted () {
+    this.findAssets()
+  },
   methods: {
+    findAssets () {
+      this.$store.dispatch('rpayStacksContractStore/fetchContractDataFirstEditions')
+    }
   },
   computed: {
     getBreakLine () {

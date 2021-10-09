@@ -43,7 +43,7 @@ export default {
   components: {
     SellingOptions
   },
-  props: ['contractAsset'],
+  props: ['contractAsset', 'loopRun'],
   data () {
     return {
       componentKey: 0,
@@ -73,8 +73,8 @@ export default {
       if (!this.isValid()) return
       const data = {
         sendAsSky: true,
-        contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
-        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
+        contractAddress: this.loopRun.contractId.split('.')[0],
+        contractName: this.loopRun.contractId.split('.')[1],
         owner: this.contractAsset.owner,
         assetHash: this.contractAsset.tokenInfo.assetHash,
         nftIndex: this.contractAsset.nftIndex,
