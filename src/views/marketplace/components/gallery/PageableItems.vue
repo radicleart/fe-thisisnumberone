@@ -38,6 +38,7 @@ export default {
   components: {
     MySingleItem, LoadingView, Pagination
   },
+  props: ['loopRun'],
   data () {
     return {
       resultSet: [],
@@ -51,8 +52,7 @@ export default {
     this.collection = this.$route.params.collection
     const $self = this
     let resizeTimer
-    const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
-    this.numberOfItems = loopRun.tokenCount
+    this.numberOfItems = this.loopRun.tokenCount
     this.fetchPage(0)
     this.loading = false
 
@@ -77,33 +77,22 @@ export default {
       this.fetchPage(page - 1)
     },
     fetchPage (page) {
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
       const data = {
-        contractId: STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
-        runKey: loopRun.currentRunKey,
+        contractId: (this.loopRun) ? this.loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
+        runKey: this.loopRun.currentRunKey,
         page: page,
         pageSize: 18
       }
-      if (!loopRun.currentRunKey) return
+      if (!this.loopRun.currentRunKey) return
       this.resultSet = null
       this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((results) => {
         this.resultSet = results // this.resultSet.concat(results)
         this.componentKey++
         this.loading = false
       })
-      /**
-      this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {
-        this.resultSet = results
-        this.loading = false
-      })
-      **/
     }
   },
   computed: {
-    loopRun () {
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
-      return loopRun
-    },
     profile () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile

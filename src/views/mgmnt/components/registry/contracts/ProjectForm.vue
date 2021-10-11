@@ -78,7 +78,7 @@ export default {
   props: ['contractId'],
   data () {
     return {
-      statusEnum: ['new', 'deployment', 'connected'],
+      statusEnum: ['new', 'deployment', 'connected', 'active', 'inactive', 'disabled'],
       project: {
         platformAddress: process.env.VUE_APP_REGISTRY_CONTRACT_ADDRESS,
         status: 'deployment',

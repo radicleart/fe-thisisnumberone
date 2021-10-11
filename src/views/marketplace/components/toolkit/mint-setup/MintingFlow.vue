@@ -6,7 +6,7 @@
         <template #header>
           <ItemDisplay :item="item"/>
         </template>
-        <div class="mt-0">
+        <div class="bg-dark mt-0">
           <RoyaltyScreen :errorMessage="errorMessage" :item="item" @mintToken="mintTwentyTokens" @editBeneficiary="editBeneficiary" @removeBeneficiary="removeBeneficiary" @updateBeneficiary="updateBeneficiary" @addNewBeneficiary="addNewBeneficiary" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
           <AddBeneficiaryScreen :errorMessage="errorMessage" :eBen="eBen" @addBeneficiary="addBeneficiary" :beneficiaries="beneficiaries" :item="item" v-if="displayCard === 102"/>
         </div>
@@ -104,7 +104,7 @@ export default {
       if (contractAsset) {
         return
       }
-      if (!this.mintAllocations && this.loopRun.batchSize === 1) {
+      if (!this.loopRun.batchMode || !this.mintAllocations || this.loopRun.batchSize === 1) {
         this.mintToken()
         return
       }

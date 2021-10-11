@@ -285,7 +285,8 @@ export default new Vuex.Store({
     initApplication ({ dispatch }) {
       return new Promise(resolve => {
         dispatch('rpayAuthStore/fetchMyAccount').then(profile => {
-          dispatch('rpayCategoryStore/fetchLoopRuns')
+          const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
+          dispatch('rpayCategoryStore/fetchLoopRun', defaultLoopRun)
           dispatch('rpayStacksContractStore/fetchFullRegistry')
           if (profile.loggedIn) {
             const data = { stxAddress: 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG', mine: true }

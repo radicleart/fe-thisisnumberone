@@ -150,7 +150,7 @@ const assetGeneralStore = {
     },
     buildSearchIndex ({ commit }, contractId) {
       return new Promise(function (resolve) {
-        axios.get(MESH_API_PATH + '/v2/gaia/indexFiles/', contractId).then((result) => {
+        axios.get(MESH_API_PATH + '/v2/gaia/indexFiles/' + contractId).then((result) => {
           commit('setCacheState', result.data)
           resolve(result.data)
         }).catch((error) => {

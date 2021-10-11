@@ -1,7 +1,7 @@
 <template>
-<b-container class="text-white mt-5" v-if="loaded">
+<b-container id="my-nft-tabs" class="text-white mt-5" v-if="loaded">
   <h1>My Library</h1>
-  <b-tabs justified content-class="text-white mb-5">
+  <b-tabs justified content-class="mb-5">
     <b-tab :title="'NFTs (' + hasNfts + ')'" active>
       <p class="mt-4">NFTs you currently own - these may be files you
         uploaded and minted and still own or NFTs you bought from other
@@ -107,6 +107,12 @@ export default {
 </script>
 
 <style scoped>
+#my-nft-tabs >>> .nav-link.active {
+  color: #000 !important;
+}
+#my-nft-tabs >>> .nav-link {
+  color: #fff !important;
+}
 #linkModal {
   z-index: 100;
   position: sticky;

@@ -393,3 +393,9 @@ label {
 .prismic-image {
   max-width: 550px;
 }
+#my-nft-tabs >>> .nav-link.active {
+  color: #000 !important;
+}
+#my-nft-tabs >>> .nav-link {
+  color: #fff !important;
+}

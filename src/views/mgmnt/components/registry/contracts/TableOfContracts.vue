@@ -17,7 +17,8 @@
       </template>
       <template #cell(Actions)="data">
         <span v-b-tooltip.hover="{ variant: 'warning' }" title="Update the meta data for this project">
-          <a @click.prevent="updateContractMeta(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="pencil-square"/></a>
+          <a @click.prevent="updateContractMeta(data)" class="text-info mr-2" href="#"><b-icon icon="pencil-square"/></a>
+          <a @click.prevent="openContractManager(data)" class="text-info mr-2" href="#"><b-icon icon="pencil-circle"/></a>
         </span>
       </template>
     </b-table>
@@ -64,6 +65,10 @@ export default {
         }
       })
       return mapped
+    },
+    openContractManager: function (data) {
+      const contractId = this.registry.applications[data.index].contractId
+      this.$emit('update', { opcode: 'open-contract-manager', contractId: contractId })
     },
     updateContractMeta: function (data) {
       const contractId = this.registry.applications[data.index].contractId

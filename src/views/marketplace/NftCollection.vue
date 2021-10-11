@@ -15,8 +15,8 @@
             <div class="text-small">by: <span class="text-warning">{{loopRun.makerName}}</span></div>
           </b-col>
         </b-row>
-        <b-row class="mb-4">
-          <PageableItems/>
+        <b-row class="mb-4" v-if="loopRun">
+          <PageableItems :loopRun="loopRun"/>
         </b-row>
       </div>
     </b-container>

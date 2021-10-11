@@ -11,7 +11,7 @@
         <b-alert v-else show variant="danger">Information required - <b-link :to="'/edit-item/' + items[0].assetHash">edit this item</b-link></b-alert>
       </div>
     </div>
-    <div v-else class="mt-5">
+    <div id="my-nft-tabs" v-else class="mt-5">
       <b-tabs justified content-class="bg-black text-white p-4 border mt-3">
         <b-tab active title="Sell">
           <div>
@@ -60,7 +60,7 @@
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="lg" id="selling-modal">
-    <SellingFlow :loopRun="loopRun" @cancel="cancel" :contractAsset="items[0].contractAsset"  v-if="items[0].contractAsset"/>
+    <SellingFlow @cancel="cancel" :contractAsset="items[0].contractAsset"  v-if="items[0].contractAsset"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
 </div>
@@ -184,6 +184,12 @@ export default {
 </script>
 
 <style>
+#my-nft-tabs >>> .nav-link.active {
+  color: #000 !important;
+}
+#my-nft-tabs >>> .nav-link {
+  color: #fff !important;
+}
 #selling-modal .modal-content {
   border: none !important;
   background-color: transparent !important;

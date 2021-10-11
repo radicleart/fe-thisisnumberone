@@ -45,7 +45,7 @@ export default {
 
 ;; contract variables
 (define-data-var administrator principal 'params.administrator)
-(define-data-var mint-price uint u1000000)
+(define-data-var mint-price uint uparams.mintPrice)
 (define-data-var base-token-uri (string-ascii 256) params.callBack)
 (define-data-var mint-counter uint u0)
 (define-data-var platform-fee uint u5)

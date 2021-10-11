@@ -23,7 +23,7 @@
         <MintInfo :item="item" />
         <PendingTransactionInfo v-if="pending && pending.txStatus === 'pending'" :pending="pending"/>
         <div v-else>
-          <MintingTools class="w-100" :items="[item]" @update="update"/>
+          <MintingTools class="w-100" :items="[item]" :loopRun="loopRun" @update="update"/>
         </div>
         <NftHistory class="mt-5" @update="update" @setPending="setPending" :nftIndex="(item.contractAsset) ? item.contractAsset.nftIndex : -1" :assetHash="item.assetHash"/>
       </b-col>
@@ -138,6 +138,10 @@ export default {
     }
   },
   computed: {
+    loopRun () {
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
+      return loopRun
+    },
     transactionUrl: function () {
       if (!this.item.mintInfo || !this.item.mintInfo.txId) return '#'
       const stacksApiUrl = process.env.VUE_APP_STACKS_EXPLORER

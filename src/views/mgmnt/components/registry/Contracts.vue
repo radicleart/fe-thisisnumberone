@@ -84,7 +84,8 @@ export default {
       contractId: null,
       registry: null,
       showRegistryDeploy: false,
-      showDeployTab: false
+      showDeployTab: false,
+      showContractManager: false
     }
   },
   mounted () {
@@ -94,7 +95,8 @@ export default {
   },
   methods: {
     update (data) {
-      if (data.opcode === 'project-saved') {
+      if (data.opcode === 'cancel' || data.opcode === 'project-saved') {
+        this.showContractManager = false
         this.tabIndex = 0
       } else if (data.opcode === 'project-update') {
         this.tabIndex = 1
@@ -103,6 +105,9 @@ export default {
         this.showDeployTab = true
         this.tabIndex = 2
         this.targetProject = data.project
+      } else if (data.opcode === 'open-contract-manager') {
+        this.contractId = data.contractId
+        this.showContractManager = true
       }
     }
   },

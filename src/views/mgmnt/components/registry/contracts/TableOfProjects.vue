@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import { APP_CONSTANTS } from '@/app-constants'
 import {
   intCV,
   bufferCV,
@@ -114,22 +113,6 @@ export default {
       }).catch(() => {
         this.$notify({ type: 'error', title: 'Contract Not Found', text: 'Unable to connect project as there is no contract on blobkchain.' })
       })
-    },
-    updateApp: function (pdata) {
-      const appCounter = this.registry.applications[pdata.index].appCounter
-      const status = this.registry.applications[pdata.index].status
-      const contractId = this.registry.applications[pdata.index].contractId
-      const project = this.projects.find((o) => o.contractId === contractId)
-      const owner = this.$store.getters[APP_CONSTANTS.KEY_PROFILE].stxAddress
-      const functionArgs = [intCV(appCounter), standardPrincipalCV(owner), bufferCV(Buffer.from(contractId)), intCV(0), intCV(status)]
-      const data = {
-        contractAddress: REGISTRY_CONTRACT_ADDRESS,
-        contractName: REGISTRY_CONTRACT_NAME,
-        functionName: 'update-app',
-        functionArgs: functionArgs,
-        eventCode: 'connect-application'
-      }
-      this.connectApplication(data, project) // $emit('updateEventCode', data)
     },
     connectApplication (data, project) {
       const method = (NETWORK === 'local') ? 'rpayStacksStore/callContractRisidio' : 'rpayStacksStore/callContractBlockstack'

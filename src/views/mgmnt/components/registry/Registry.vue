@@ -1,5 +1,5 @@
 <template>
-<div>
+<div id="my-nft-tabs">
   <b-tabs card left content-class="">
     <b-tab title="Token Cache" active>
       <TokenList />
