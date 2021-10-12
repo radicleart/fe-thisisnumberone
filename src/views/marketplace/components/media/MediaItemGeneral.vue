@@ -34,11 +34,11 @@
       <div>{{mediaItem.name}}</div>
     </div>
     -->
-    <div class="p-0 d-flex justify-content-between text-bold" v-if="mediaItem">
-      <div>{{mediaItem.type || 'image'}}  ({{getCoverImageSizeMeg()}})</div>
+    </div>
+    <div class="p-0 d-flex justify-content-end text-bold" v-if="mediaItem">
+      <!-- <div>{{mediaItem.type || 'image'}}  ({{getCoverImageSizeMeg()}})</div> -->
       <div v-if="deleteAllowed()"><a v-b-tooltip.hover="{ variant: 'light' }" :title="'Replace this image?'" href="#" @click.prevent="$emit('deleteMediaItem', mediaItem.id)" class="text-small">change</a></div>
     </div>
-  </div>
 </div>
 </template>
 
@@ -98,7 +98,7 @@ export default {
       if (event) event.target.src = this.waitingImage
     },
     deleteAllowed: function () {
-      if (this.options.deleteAllowed == null) return true
+      if (this.options.deleteAllowed == null) return false
       return this.options.deleteAllowed
     },
     getNFTSizeMeg () {
