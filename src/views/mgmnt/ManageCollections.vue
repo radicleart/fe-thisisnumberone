@@ -9,6 +9,9 @@
       <template #cell(contractAddress)="data">
         <b-link class="text-info" size="sm" variant="warning" v-on:click="updateRequest(data)" v-html="data.value"></b-link>
       </template>
+      <template #cell(contractName)="data">
+        <b-link class="text-info" size="sm" variant="warning" v-on:click="updateRoyalties(data)" v-html="data.value"></b-link>
+      </template>
     </b-table>
   </div>
 </b-container>
@@ -37,6 +40,12 @@ export default {
     this.$store.dispatch('rpayCategoryStore/fetchLoopRuns')
   },
   methods: {
+    updateRoyalties (data) {
+      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.currentRunKey)
+      if (index > -1) {
+        this.$router.push('/mgmnt/manage-royalties/' + this.loopRuns[index].currentRunKey)
+      }
+    },
     updateRequest (data) {
       const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.currentRunKey)
       if (index > -1) {

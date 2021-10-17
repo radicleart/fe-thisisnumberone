@@ -67,6 +67,7 @@ const beneficiariesDefault = [
 **/
 const beneficiariesDefault = [
   {
+    type: 'sale',
     username: 'owner.id',
     role: 'Secondary Buyer/Owner',
     royalty: 0,
@@ -74,6 +75,7 @@ const beneficiariesDefault = [
     chainAddress: null
   },
   {
+    type: 'sale',
     username: 'maker.id',
     role: 'Maker/Minter',
     royalty: 85,
@@ -81,6 +83,7 @@ const beneficiariesDefault = [
     chainAddress: null
   },
   {
+    type: 'sale',
     username: 'numberone.id',
     role: 'Number One',
     email: 'info@thisisnumberone.com',
@@ -89,11 +92,28 @@ const beneficiariesDefault = [
     chainAddress: 'SP1CS4FVXC59S65C3X1J3XRNZGWTG212JT7CG73AG'
   },
   {
+    type: 'sale',
     username: 'Platform.id',
     role: 'Platform',
     email: 'info@brightblock.org',
     royalty: 2.5,
     secondaryRoyalty: 2.5,
+    chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
+  }
+]
+const beneficiariesMint = [
+  {
+    type: 'mint',
+    username: 'Artist',
+    role: 'Artist',
+    royalty: 90,
+    chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
+  },
+  {
+    type: 'mint',
+    username: 'Platform',
+    role: 'Platform',
+    royalty: 10,
     chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
   }
 ]
@@ -151,7 +171,8 @@ const minter = {
     }
   ],
   enableRoyalties: true,
-  beneficiaries: beneficiariesDefault
+  beneficiaries: beneficiariesDefault,
+  beneficiariesMint: beneficiariesMint
 }
 
 const lookAndFeel = {
@@ -285,15 +306,13 @@ export default new Vuex.Store({
     initApplication ({ dispatch }) {
       return new Promise(resolve => {
         dispatch('rpayAuthStore/fetchMyAccount').then(profile => {
-          const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
-          dispatch('rpayCategoryStore/fetchLoopRun', defaultLoopRun)
           dispatch('rpayStacksContractStore/fetchFullRegistry')
           if (profile.loggedIn) {
             const data = { stxAddress: 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG', mine: true }
             if (process.env.VUE_APP_NETWORK !== 'local') {
               data.stxAddress = profile.stxAddress
             }
-            dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { stxAddress: profile.stxAddress }, { root: true })
+            dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
             dispatch('rpayStacksContractStore/fetchAssetsByOwner', data).then(() => {
               dispatch('rpayMyItemStore/initSchema').then(rootFile => {
                 dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
@@ -301,7 +320,7 @@ export default new Vuex.Store({
               })
             })
           } else {
-            dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { root: true })
+            dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN }, { root: true })
             resolve(null)
           }
         })

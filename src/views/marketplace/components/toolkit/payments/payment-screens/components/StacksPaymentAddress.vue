@@ -67,7 +67,7 @@ export default {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       if (!profile.loggedIn) {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
-          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { stxAddress: profile.stxAddress }, { root: true })
+          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
           this.transfer()
         }).catch((err) => {
           console.log(err)

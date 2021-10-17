@@ -52,8 +52,9 @@
       <b-tab title="New Project" lazy>
         <ProjectForm :contractId="contractId" @update="update"/>
       </b-tab>
-      <b-tab title="Deploy Contract" lazy v-if="showDeployTab">
-        <DeployProjectContract :project="targetProject" @update="update"/>
+      <b-tab title="Deploy Contract" lazy>
+        <DeployProjectContract v-if="contractId && contractId.indexOf('one-v2') === -1" :project="targetProject" @update="update"/>
+        <DeployNumberOneV2 v-else :project="targetProject" @update="update"/>
       </b-tab>
     </b-tabs>
   </div>
@@ -64,6 +65,7 @@
 import { APP_CONSTANTS } from '@/app-constants'
 import DeployContractFromFile from './contracts/DeployContractFromFile.vue'
 import DeployProjectContract from './contracts/DeployProjectContract.vue'
+import DeployNumberOneV2 from './contracts/DeployNumberOneV2.vue'
 import ProjectForm from './contracts/ProjectForm.vue'
 import TableOfContracts from './contracts/TableOfContracts.vue'
 import TableOfProjects from './contracts/TableOfProjects.vue'
@@ -72,6 +74,7 @@ export default {
   name: 'TokenList',
   components: {
     DeployContractFromFile,
+    DeployNumberOneV2,
     ProjectForm,
     TableOfProjects,
     DeployProjectContract,
@@ -94,6 +97,13 @@ export default {
     })
   },
   methods: {
+    deployV2 () {
+      this.contractId = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.thisisnumberone-v2'
+      this.$store.dispatch('rpayProjectStore/fetchProjectByContractId', this.contractId).then((project) => {
+        this.project = Object.assign(this.project, project)
+        this.loaded = true
+      })
+    },
     update (data) {
       if (data.opcode === 'cancel' || data.opcode === 'project-saved') {
         this.showContractManager = false

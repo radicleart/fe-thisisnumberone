@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { APP_CONSTANTS } from '@/app-constants'
 
+const STACKSMATE_API_PATH = process.env.VUE_APP_RISIDIO_API
 const MESH_API_PATH = process.env.VUE_APP_RISIDIO_API + '/mesh'
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
@@ -12,7 +13,8 @@ const assetGeneralStore = {
     filters: [],
     offers: [],
     transactions: [],
-    cacheState: 0
+    cacheState: 0,
+    sig: null
   },
   getters: {
     getTransactions: state => {
@@ -58,6 +60,9 @@ const assetGeneralStore = {
     setTransactions (state, transactions) {
       state.transactions = transactions
     },
+    setSig (state, sig) {
+      state.sig = sig
+    },
     setFilters (state, filters) {
       state.filters = filters
     },
@@ -66,6 +71,14 @@ const assetGeneralStore = {
     }
   },
   actions: {
+    stacksmateSignme ({ commit }, assetHash) {
+      return new Promise(function (resolve) {
+        axios.get(STACKSMATE_API_PATH + '/stacksmate/signme/' + assetHash).then((response) => {
+          commit('setSig', response.data)
+          resolve(response.data)
+        })
+      })
+    },
     cacheUpdate ({ dispatch }, data) {
       return new Promise(function () {
         const cacheUpdate = {

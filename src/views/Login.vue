@@ -59,9 +59,9 @@ export default {
         this.$emit('connect-login', this.profile)
       } else {
         this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
-          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { stxAddress: profile.stxAddress }, { root: true })
+          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
         }).catch(() => {
-          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { root: true })
+          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN }, { root: true })
           this.$store.commit(APP_CONSTANTS.SET_WEB_WALLET_NEEDED)
         })
       }

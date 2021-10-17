@@ -60,7 +60,7 @@
       <div class="row">
         <div class="col-12">
           <div class="my-3">
-            <b-button class="mr-3" variant="light" @click.prevent="this.$emit('update', { opcode: 'project-saved' })">Cancel</b-button>
+            <b-button class="mr-3" variant="light" @click.prevent="cancel()">Cancel</b-button>
             <b-button class="mr-3" variant="info" @click.prevent="saveProject()">Save</b-button>
           </div>
         </div>
@@ -179,6 +179,9 @@ export default {
         this.$notify({ type: 'success', title: 'Projects', text: 'Project has been saved.' })
         this.$emit('update', { opcode: 'project-saved' })
       })
+    },
+    cancel: function () {
+      this.$emit('update', { opcode: 'cancel' })
     }
   },
   computed: {

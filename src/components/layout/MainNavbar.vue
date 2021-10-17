@@ -1,5 +1,5 @@
 <template>
-<b-navbar toggleable="lg" class="p-4" :fixed="getFixed()" type="dark" :variant="bgVariant()">
+<b-navbar toggleable="sm" class="p-4" :fixed="getFixed()" type="dark" :variant="bgVariant()">
   <b-navbar-brand href="#"><b-link to="/"><img height="30px" :src="logo" /></b-link></b-navbar-brand>
 
   <b-navbar-toggle target="nav-collapse" class="text-white">
@@ -42,14 +42,16 @@
     </template>
   </b-sidebar>
 
-  <b-navbar-nav class="ml-auto">
-    <b-nav-item v-if="profile.loggedIn && profile.superAdmin" class="mt-3 mr-4 mt-0 text-big" to="/mgmnt/registry">Admin</b-nav-item>
-    <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0 text-big" to="/my-nfts">My NFTs</b-nav-item>
-    <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0 text-big" to="/nft-marketplace">Marketplace</b-nav-item>
-    <b-nav-item v-if="profile.loggedIn && canUpload()" class="mt-3 mr-4 mt-0 text-big" to="/upload-item">Upload</b-nav-item>
-    <b-nav-item v-if="profile.loggedIn" class="mr-4 text-big"><a v-b-toggle.my-sidebar class="nav-text" ><b-icon icon="person" font-scale="2" class="mr-5 mb-3 mr-0"/></a></b-nav-item>
-    <b-nav-item v-else class="mt-3 text-big text-white text-big" @click.prevent="startLogin()" href="#">Login</b-nav-item>
-  </b-navbar-nav>
+  <b-collapse id="nav-collapse" is-nav align="center">
+    <b-navbar-nav class="ml-auto">
+      <b-nav-item v-if="profile.loggedIn && profile.superAdmin" class="mt-3 mr-4 mt-0 d-none d-lg-block d-xl-none" to="/mgmnt/registry">Admin</b-nav-item>
+      <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0" to="/my-nfts">My NFTs</b-nav-item>
+      <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0" to="/nft-marketplace">Marketplace</b-nav-item>
+      <b-nav-item v-if="profile.loggedIn && canUpload()" class="mt-3 mr-4 mt-0" to="/upload-item">Upload</b-nav-item>
+      <b-nav-item v-if="profile.loggedIn" class="mr-4"><a v-b-toggle.my-sidebar class="nav-text" ><b-icon icon="person" font-scale="2" class="mr-5 mb-3 mr-0"/></a></b-nav-item>
+      <b-nav-item v-else class="mt-3 text-big text-white" @click.prevent="startLogin()" href="#">Login</b-nav-item>
+    </b-navbar-nav>
+  </b-collapse>
 </b-navbar>
 </template>
 
@@ -119,9 +121,9 @@ export default {
         this.$emit('connect-login', myProfile)
       } else {
         this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
-          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { stxAddress: profile.stxAddress }, { root: true })
+          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
         }).catch(() => {
-          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { root: true })
+          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN }, { root: true })
           this.$store.commit(APP_CONSTANTS.SET_WEB_WALLET_NEEDED)
           if (!this.profile.loggedIn) {
             this.$router.push('/login?referer=navbar')

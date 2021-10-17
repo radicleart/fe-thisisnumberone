@@ -74,7 +74,9 @@ input {
 select {
   font-weight: 700;
 }
-
+.navbar-dark .navbar-nav .nav-link {
+  color: #fff !important;
+}
 .no-scroll {
   overflow: hidden;
 }

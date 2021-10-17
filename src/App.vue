@@ -24,6 +24,7 @@
     <SuccessModal/>
     <MessageTicker :tickerId="tickerId + '-inner'"/>
   </div>
+  {{sig}}
 </div>
 </template>
 <script>
@@ -48,7 +49,8 @@ export default {
       loading: true,
       configured: false,
       componentKey: 0,
-      tickerId: 'anti-app'
+      tickerId: 'anti-app',
+      sig: null
     }
   },
   mounted () {

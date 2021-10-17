@@ -41,7 +41,6 @@ export default {
     return {
       loaded: false,
       minted: false,
-      loopRun: null,
       makerUrlKey: null,
       currentRunKey: null
     }
@@ -49,10 +48,7 @@ export default {
   mounted () {
     this.makerUrlKey = this.$route.params.maker
     this.currentRunKey = this.$route.params.collection
-    this.$store.dispatch('rpayCategoryStore/fetchLoopRuns').then((loopRuns) => {
-      this.loopRun = loopRuns.find((o) => o.makerUrlKey === this.makerUrlKey && o.currentRunKey === this.currentRunKey)
-      this.loaded = true
-    })
+    this.loaded = true
   },
   methods: {
     getCollectionImageUrl (item) {
@@ -60,6 +56,10 @@ export default {
     }
   },
   computed: {
+    loopRun () {
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.$route.params.collection)
+      return loopRun
+    }
   }
 }
 </script>

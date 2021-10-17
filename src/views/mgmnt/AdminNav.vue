@@ -7,6 +7,7 @@
     -->
     <li><b-nav-item to="/mgmnt/registry/contracts" :class="getClass('contracts')">Contracts</b-nav-item></li>
     <li><b-nav-item to="/mgmnt/registry/buildCache" :class="getClass('buildCache')">Build Cache</b-nav-item></li>
+    <li><b-nav-item to="/mgmnt/registry/contractForm" :class="getClass('contractForm')">Contract Update</b-nav-item></li>
     <li><b-nav-item to="/mgmnt/registry/exploreCache" :class="getClass('exploreCache')">Explore Cache</b-nav-item></li>
     <li><b-nav-item to="/mgmnt/registry/cacheFilters" :class="getClass('cacheFilters')">Cache Filters</b-nav-item></li>
     <li><b-nav-item to="/mgmnt/registry/faucet" :class="getClass('faucet')">Faucet</b-nav-item></li>

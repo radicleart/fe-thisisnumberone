@@ -199,8 +199,16 @@ export default {
   },
   computed: {
     loopRun () {
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.runKey)
       return loopRun
+    },
+    runKey () {
+      const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
+      let runKey = (this.item && this.item.currentRunKey) ? this.item.currentRunKey : defaultLoopRun
+      if (runKey.indexOf('/') > -1) {
+        runKey = runKey.split('/')[0]
+      }
+      return runKey
     },
     itemPreviewUrl () {
       let edition = 0

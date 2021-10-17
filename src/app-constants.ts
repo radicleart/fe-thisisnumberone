@@ -18,6 +18,7 @@ export const APP_CONSTANTS = {
   GET_LOOP_RUNS: 'rpayCategoryStore/getLoopRuns',
   KEY_MEDIA_ATTRIBUTES: 'rpayCategoryStore/getMediaAttributes',
   KEY_ASSET_IMAGE_URL: 'rpayCategoryStore/getAssetImageUrl',
+  GET_LOOP_RUN_BY_KEY: 'rpayCategoryStore/getLoopRunByRunKey',
 
   KEY_MY_PROJECT: 'rpayProjectStore/getProject',
   KEY_MY_PROJECTS: 'rpayProjectStore/getProjects',
@@ -100,6 +101,7 @@ export const APP_CONSTANTS = {
   KEY_GAIA_ASSET_BY_HASH: 'rpayStacksContractStore/getGaiaAssetByHash',
   KEY_GAIA_ASSETS: 'rpayStacksContractStore/getGaiaAssets',
   KEY_GAIA_ASSETS_BY_OWNER: 'rpayStacksContractStore/getGaiaAssetsByOwner',
+  KEY_GAIA_ASSETS_BY_OWNER_AND_COLLECTION: 'rpayStacksContractStore/getGaiaAssetsByOwnerAndCollection',
   KEY_REGISTRY: 'rpayStacksContractStore/getRegistry',
   KEY_TRADE_INFO_FROM_HASH: 'rpayStacksContractStore/getTradeInfoFromHash',
   KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID: 'rpayStacksContractStore/getApplicationFromRegistryByContractId',

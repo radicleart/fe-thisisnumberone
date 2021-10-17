@@ -1,6 +1,6 @@
 <template>
 <section class="" id="section-minting">
-  <b-container class="my-5 pt-5" v-if="!item">
+  <b-container class="my-5 pt-5" v-if="!item || !loopRun">
     <h1>{{message}}</h1>
   </b-container>
   <b-container :key="componentKey" class="my-3" v-else>
@@ -66,6 +66,7 @@ export default {
     this.state = this.$route.query.state
     this.assetHash = this.$route.params.assetHash
     this.edition = Number(this.$route.params.edition)
+    this.$store.dispatch('rpayCategoryStore/fetchLoopRuns')
     this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndAssetHash', this.assetHash)
     if (window.eventBus && window.eventBus.$on) {
       const $self = this
@@ -139,8 +140,16 @@ export default {
   },
   computed: {
     loopRun () {
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.runKey)
       return loopRun
+    },
+    runKey () {
+      const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
+      let runKey = (this.item && this.item.currentRunKey) ? this.item.currentRunKey : defaultLoopRun
+      if (runKey.indexOf('/') > -1) {
+        runKey = runKey.split('/')[0]
+      }
+      return runKey
     },
     transactionUrl: function () {
       if (!this.item.mintInfo || !this.item.mintInfo.txId) return '#'

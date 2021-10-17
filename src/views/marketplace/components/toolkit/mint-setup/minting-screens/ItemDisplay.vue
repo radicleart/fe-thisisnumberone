@@ -8,7 +8,7 @@
         <div class="col-12">
           <div v-if="profile.username !== profile.stxAddress">{{profile.username}}</div>
           <div>{{profile.stxAddress.substring(0, 6)}}...{{profile.stxAddress.substring(profile.stxAddress.length - 6)}}</div>
-          <div class="mt-5"><LoopRun :parent="'minting'"/></div>
+          <div class="mt-5"><LoopRun :parent="'minting'" :currentLoopRun="loopRun"/></div>
         </div>
       </div>
     </div>
@@ -25,7 +25,7 @@ export default {
   components: {
     LoopRun
   },
-  props: ['item'],
+  props: ['item', 'loopRun'],
   data () {
     return {
     }

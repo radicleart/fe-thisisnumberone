@@ -2,6 +2,11 @@
 <section class="" id="section-upload">
   <b-container class="mt-5 pt-5 text-white">
     <b-row>
+      <b-col md="6" offset-md="3" sm="12" align-self="start" class="">
+        <ChooseCollection :type="'traditional'" @updateCollection="updateCollection"/>
+      </b-col>
+    </b-row>
+    <b-row v-if="currentRunKey">
       <b-col md="6" offset-md="3" sm="12" align-self="start" class=" text-center">
         <MediaUpload :hideLinkPaste="true" :myUploadId="'artworkFile'" :dims="dims" :contentModel="contentModelArtwork" :limit="1" :sizeLimit="20" :mediaTypes="'video,image,threed,audio,pdf'" @updateMedia="updateMedia($event)"/>
       </b-col>
@@ -13,15 +18,18 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaUpload from '@/views/marketplace/components/update/MediaUpload'
+import ChooseCollection from '@/views/marketplace/components/toolkit/ChooseCollection'
 import utils from '@/services/utils'
 
 export default {
   name: 'UploadItem',
   components: {
-    MediaUpload
+    MediaUpload,
+    ChooseCollection
   },
   data () {
     return {
+      currentRunKey: null,
       formSubmitted: false,
       dims: { width: 360, height: 202 },
       componentKey: 0,
@@ -66,6 +74,9 @@ export default {
     this.loaded = true
   },
   methods: {
+    updateCollection (data) {
+      this.currentRunKey = data.currentRunKey
+    },
     hasFile (file) {
       if (file === 'artworkFile') return this.attributes.artworkFile && this.attributes.artworkFile.fileUrl
       else if (file === 'artworkClip') return this.attributes.artworkClip && this.attributes.artworkClip.fileUrl
@@ -152,8 +163,16 @@ export default {
   },
   computed: {
     loopRun () {
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.runKey)
       return loopRun
+    },
+    runKey () {
+      const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
+      let runKey = (this.item && this.item.currentRunKey) ? this.item.currentRunKey : defaultLoopRun
+      if (runKey.indexOf('/') > -1) {
+        runKey = runKey.split('/')[0]
+      }
+      return runKey
     },
     myAsset: function () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)

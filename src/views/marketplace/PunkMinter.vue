@@ -10,6 +10,7 @@
         <b-row>
           <b-col class="text-center">
             <h2 class="">{{loopRun.currentRun}}</h2>
+            <div class="mb-2 text-small">{{loopRun.description}}</div>
             <div class="mb-5 text-small">by: <span class="text-warning">{{loopRun.makerName}}</span></div>
           </b-col>
         </b-row>
@@ -42,11 +43,12 @@ export default {
   },
   data () {
     return {
-      imagePath: 'https://res.cloudinary.com/mijo-enterprises/image/upload/v1633523528/collections/artists/artist1/set1/',
+      imagePath: 'https://res.cloudinary.com/mijo-enterprises/image/upload/v1633523528/collections/artists/artist1/set2/',
       loaded: false,
       items: [],
       uiState: 'locking',
       mintAllocations: [],
+      gaiaAssets: [],
       loopRun: null,
       makerUrlKey: null,
       currentRunKey: null,
@@ -64,8 +66,8 @@ export default {
     this.makerUrlKey = this.$route.params.maker
     this.currentRunKey = this.$route.params.collection
     // const lockData = { stxAddress: this.profile.stxAddress, currentRunKey: this.currentRunKey }
-    this.$store.dispatch('rpayCategoryStore/fetchLoopRuns').then((loopRuns) => {
-      this.loopRun = loopRuns.find((o) => o.makerUrlKey === this.makerUrlKey && o.currentRunKey === this.currentRunKey)
+    this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.currentRunKey).then((loopRun) => {
+      this.loopRun = loopRun
       // utils.fetchBase64FromImageUrl(this.imagePath + '1.png', document).then((data) => {
       this.loaded = true
       const endPointer = this.loopRun.batchPointer + this.loopRun.batchSize
@@ -81,6 +83,8 @@ export default {
       this.$notify({ type: 'warning', title: 'Upload File', text: 'Allocation event - ' + data })
     },
     createMetaData (index) {
+      // create but don't store - wait till the last minute to register the batch!
+      // see component MintingFlow.vue
       const image = this.imagePath + index + '.png'
       const imgHash = utils.buildHash(image)
       const myAsset = {
@@ -96,19 +100,22 @@ export default {
         name: index
       }
       myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
+      this.gaiaAssets.push(myAsset)
+      this.mintAllocations.push({
+        stxAddress: this.profile.stxAddress,
+        currentRunKey: myAsset.currentRunKey,
+        punkIndex: index,
+        assetHash: imgHash,
+        status: 'reserved'
+      })
+      /**
       this.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((gaiaAsset) => {
         this.items.push(gaiaAsset)
-        this.mintAllocations.push({
-          stxAddress: this.profile.stxAddress,
-          currentRunKey: myAsset.currentRunKey,
-          punkIndex: index,
-          assetHash: imgHash,
-          status: 'reserved'
-        })
       }).catch(() => {
         this.$notify({ type: 'error', title: 'Upload File', text: 'Collision - please reload to check for next available item!' })
         this.errored = true
       })
+      **/
     },
     getCollectionImageUrl (item) {
       return this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](item)

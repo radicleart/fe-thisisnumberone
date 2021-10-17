@@ -54,7 +54,7 @@ export default {
     const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
     for (let i = 0; i < myContractAssets.length; i++) {
       const ga = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](myContractAssets[i].tokenInfo.assetHash)
-      ga.contractAsset = Object.assign({}, myContractAssets[i])
+      if (ga) ga.contractAsset = Object.assign({}, myContractAssets[i])
       this.myNfts.push(ga)
     }
     this.loaded = true
@@ -64,7 +64,7 @@ export default {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       if (!profile.loggedIn) {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
-          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { stxAddress: profile.stxAddress }, { root: true })
+          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
           this.$emit('registerByConnect')
         }).catch((err) => {
           console.log(err)
