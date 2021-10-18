@@ -312,6 +312,7 @@ export default new Vuex.Store({
             if (process.env.VUE_APP_NETWORK !== 'local') {
               data.stxAddress = profile.stxAddress
             }
+            dispatch('rpayCategoryStore/fetchLoopRuns')
             dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
             dispatch('rpayStacksContractStore/fetchAssetsByOwner', data).then(() => {
               dispatch('rpayMyItemStore/initSchema').then(rootFile => {

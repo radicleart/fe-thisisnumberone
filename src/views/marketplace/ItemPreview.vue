@@ -66,7 +66,6 @@ export default {
     this.state = this.$route.query.state
     this.assetHash = this.$route.params.assetHash
     this.edition = Number(this.$route.params.edition)
-    this.$store.dispatch('rpayCategoryStore/fetchLoopRuns')
     this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndAssetHash', this.assetHash)
     if (window.eventBus && window.eventBus.$on) {
       const $self = this

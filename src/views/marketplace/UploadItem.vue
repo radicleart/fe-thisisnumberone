@@ -6,7 +6,7 @@
         <ChooseCollection :type="'traditional'" @updateCollection="updateCollection"/>
       </b-col>
     </b-row>
-    <b-row v-if="currentRunKey">
+    <b-row v-if="loopRun">
       <b-col md="6" offset-md="3" sm="12" align-self="start" class=" text-center">
         <MediaUpload :hideLinkPaste="true" :myUploadId="'artworkFile'" :dims="dims" :contentModel="contentModelArtwork" :limit="1" :sizeLimit="20" :mediaTypes="'video,image,threed,audio,pdf'" @updateMedia="updateMedia($event)"/>
       </b-col>
@@ -29,7 +29,7 @@ export default {
   },
   data () {
     return {
-      currentRunKey: null,
+      loopRun: null,
       formSubmitted: false,
       dims: { width: 360, height: 202 },
       componentKey: 0,
@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     updateCollection (data) {
-      this.currentRunKey = data.currentRunKey
+      this.loopRun = data.loopRun
     },
     hasFile (file) {
       if (file === 'artworkFile') return this.attributes.artworkFile && this.attributes.artworkFile.fileUrl
@@ -162,6 +162,7 @@ export default {
     }
   },
   computed: {
+    /**
     loopRun () {
       const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.runKey)
       return loopRun
@@ -174,6 +175,7 @@ export default {
       }
       return runKey
     },
+    **/
     myAsset: function () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       return item

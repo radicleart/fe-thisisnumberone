@@ -43,7 +43,7 @@ export default {
   },
   data () {
     return {
-      imagePath: 'https://res.cloudinary.com/mijo-enterprises/image/upload/v1633523528/collections/artists/artist1/set2/',
+      imagePath: 'https://res.cloudinary.com/mijo-enterprises/image/upload/v1633523528/collections/artists/artist1/set1/',
       loaded: false,
       items: [],
       uiState: 'locking',

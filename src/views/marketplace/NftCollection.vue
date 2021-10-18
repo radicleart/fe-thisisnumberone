@@ -1,45 +1,54 @@
 <template>
-<div v-if="loaded">
-  <Banner/>
-  <div>
-    <b-container>
-      <h1 class="my-5 text-white">#1 NFT Collection</h1>
-      <div v-if="!loopRun">Sorry no collection found here</div>
-      <div>
+<div v-if="loopRun">
+  <b-container :key="componentKey" fluid id="my-nft-tabs" class="px-5 text-white mt-5">
+    <b-row>
+      <b-col md="4" sm="12">
+        <h1 class="border-bottom mb-5">{{loopRun.currentRun}}</h1>
+        <CollectionSidebar :allowUploads="false" @update="update"/>
+      </b-col>
+      <b-col md="8" sm="12">
+        <h1 class="mb-4 border-bottom">Collection</h1>
         <b-row>
           <b-col class="text-center">
-            <h2 class="">{{loopRun.currentRun}}</h2>
-            <div>
+            <div class="d-flex justify-content-start">
               <img :src="getCollectionImageUrl(loopRun)" width="150px" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Collection\n' + loopRun.currentRun"/>
+              <div class="ml-5 text-small">
+                <p>{{loopRun.currentRun}}</p>
+                <p>by: <span class="text-warning">{{loopRun.makerName}}</span></p>
+              </div>
             </div>
-            <div class="text-small">by: <span class="text-warning">{{loopRun.makerName}}</span></div>
           </b-col>
         </b-row>
         <b-row class="mb-4" v-if="loopRun">
           <PageableItems :loopRun="loopRun"/>
         </b-row>
-      </div>
-    </b-container>
-  </div>
+      </b-col>
+    </b-row>
+  </b-container>
 </div>
 </template>
 
 <script>
-import Banner from '@/views/marketplace/components/gallery/common/Banner'
 import { APP_CONSTANTS } from '@/app-constants'
 import PageableItems from '@/views/marketplace/components/gallery/PageableItems'
-
-// let imagePath = 'https://loopbomb.io/mijo-enterprises/image/upload/v1593596116/lb-v4/'
+import CollectionSidebar from '@/views/marketplace/components/gallery/CollectionSidebar'
 
 export default {
   name: 'NftCollection',
   components: {
-    Banner,
-    PageableItems
+    PageableItems,
+    CollectionSidebar
+  },
+  watch: {
+    '$route' () {
+      this.makerUrlKey = this.$route.params.maker
+      this.currentRunKey = this.$route.params.collection
+      this.componentKey++
+    }
   },
   data () {
     return {
-      loaded: false,
+      componentKey: 0,
       minted: false,
       makerUrlKey: null,
       currentRunKey: null
@@ -48,16 +57,25 @@ export default {
   mounted () {
     this.makerUrlKey = this.$route.params.maker
     this.currentRunKey = this.$route.params.collection
-    this.loaded = true
   },
   methods: {
+    refresh (data) {
+      if (data.opcode === 'show-collection') {
+        this.$router.push('/nft-marketplace/' + data.loopRun.makerUrlKey + '/' + data.loopRun.currentRunKey)
+      }
+    },
+    update (data) {
+      if (data.opcode === 'show-collection') {
+        this.$router.push('/nft-marketplace/' + data.loopRun.makerUrlKey + '/' + data.loopRun.currentRunKey)
+      }
+    },
     getCollectionImageUrl (item) {
       return this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](item)
     }
   },
   computed: {
     loopRun () {
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.$route.params.collection)
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.currentRunKey)
       return loopRun
     }
   }

@@ -16,12 +16,13 @@ export default {
   props: ['type'],
   data: function () {
     return {
-      currentRunKey: false
+      currentRunKey: null
     }
   },
   methods: {
     changeCollection () {
-      this.$emit('updateCollection', { currentRunKey: this.currentRunKey })
+      const loopRun = this.loopRuns.find((o) => o.currentRunKey === this.currentRunKey)
+      this.$emit('updateCollection', { loopRun: loopRun })
     }
   },
   computed: {
