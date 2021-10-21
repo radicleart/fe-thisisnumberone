@@ -1,22 +1,22 @@
 <template>
 <div>
   <div v-if="contentType === 'threed'" id="video-demo-container">
-    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name">
+    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg" :alt="mediaItem.name">
   </div>
   <div v-else-if="contentType === 'video'" id="video-demo-container">
-    <VideoJsPlayer :class="classes" v-on="$listeners"  @error="setAltImg()" :options="options"/>
+    <VideoJsPlayer :class="classes" v-on="$listeners"  @error="setAltImg" :options="options"/>
   </div>
   <div v-else-if="contentType === 'audio'" id="audio-demo-container">
-    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name" >
+    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg" :alt="mediaItem.name" >
     <audio v-on="$listeners" controls :src="mediaItem.fileUrl">
       Your browser does not support the <code>audio</code> element.
     </audio>
   </div>
   <div v-else-if="contentType === 'document'">
-    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name">
+    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg" :alt="mediaItem.name">
   </div>
   <div v-else-if="contentType === 'image'">
-    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg()" :alt="mediaItem.name">
+    <img :class="classes" v-on="$listeners" :src="mediaItem.fileUrl" @error="setAltImg" :alt="mediaItem.name">
   </div>
 
   <div v-if="options.showMeta" class="py-0" style="font-size: 1.2rem;">

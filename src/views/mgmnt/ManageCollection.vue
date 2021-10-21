@@ -1,16 +1,27 @@
 <template>
 
 <b-container class="text-white" v-if="loaded">
-  <div class="text-right">
-    <span class="mr-3 text-info" @click.prevent="allocations = !allocations">allocations</span>
-    <b-link class="text-info mt-3" to="/mgmnt/manage-collections"><b-icon icon="chevron-left"/> Back</b-link>
-  </div>
-  <div v-if="allocations">
-    <ManageAllocation :loopRun="loopRun"/>
-  </div>
-  <div v-else>
+  <div>
     <h1 class="text-white">Manage NFT Collection</h1>
     <b-form class="needs-validation form-transparent" novalidate @submit="checkForm" id="contact-form">
+
+    <div class="w-100 mb-3" role="group">
+      <label for="status-name"><span class="text-danger">*</span> Contract</label>
+      <b-form-select id="status-name" v-model="loopRun.contractId" :options="contractIds"></b-form-select>
+    </div>
+
+    <div class="w-100 mb-3" role="group">
+      <label for="status-name"><span class="text-danger">*</span> Collection State</label>
+      <b-form-select id="status-name" v-model="loopRun.status" :options="statusEnum"></b-form-select>
+      <b-form-text class="text-warning" id="status-help">Collection status is active/inactive depending on whether the limit has been reached. They can also be disabled.</b-form-text>
+    </div>
+
+    <div class="w-100 mb-3" role="group">
+      <label for="status-name"><span class="text-danger">*</span> Collection Type</label>
+      <b-form-select id="status-name" v-model="loopRun.type" :options="typeEnum"></b-form-select>
+      <b-form-text class="text-warning" id="status-help">Indicates how NFT minting is to work 'punks' implies we follow the crypto punk model and traditional is the super rare model.</b-form-text>
+    </div>
+
     <div class="mb-3" role="group">
       <label for="currentRun-name"><span class="text-danger">*</span> Collection Name (max 30 chars)</label>
       <b-form-input
@@ -78,12 +89,6 @@
       </b-form-invalid-feedback>
     </div>
 
-    <div class="w-100 mb-3" role="group">
-      <label for="status-name"><span class="text-danger">*</span> Collection State</label>
-      <b-form-select id="status-name" v-model="loopRun.status" :options="statusEnum"></b-form-select>
-      <b-form-text class="text-warning" id="status-help">Collection status is active/inactive depending on whether the limit has been reached. They can also be disabled.</b-form-text>
-    </div>
-
     <div class="w-50 mb-3" role="group">
       <label for="versionLimit"><span class="text-danger">*</span> Number of NFTs Allowed for this Collection</label>
       <b-form-input
@@ -103,19 +108,30 @@
       <label for="description">Short Bio for Collection</label>
       <b-textarea
         ref="description"
-        :value="loopRun.description"
+        v-model="loopRun.description"
         rows="5"
         placeholder="Short Bio for Collection"
       ></b-textarea>
     </div>
 
-    <div class="w-50 mb-3" role="group">
+    <div class="mb-3" role="group">
       <label for="image">Image or Logo for this Collection</label>
       <b-form-input
         id="image"
         v-model="loopRun.image"
         aria-describedby="image-feedback"
         placeholder="Image for this Collection"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="mb-3" role="group">
+      <label for="externalUrl">External URL for this Collection</label>
+      <b-form-input
+        id="externalUrl"
+        v-model="loopRun.externalUrl"
+        aria-describedby="externalUrl-feedback"
+        placeholder="External Url for this Collection"
         required
       ></b-form-input>
     </div>
@@ -132,11 +148,6 @@
       <b-form-invalid-feedback id="spinsPerDay-feedback">
         Valid spinsPerDay
       </b-form-invalid-feedback>
-    </div>
-
-    <div class="w-100 mb-3" role="group">
-      <label for="status-name"><span class="text-danger">*</span> Contract</label>
-      <b-form-select id="status-name" v-model="loopRun.contractId" :options="contractIds"></b-form-select>
     </div>
 
     <b-form-checkbox
@@ -183,13 +194,11 @@
 <script>
 import LoopbombSpinner from '@/components/utils/LoopbombSpinner'
 import { APP_CONSTANTS } from '@/app-constants'
-import ManageAllocation from './components/collections/ManageAllocation'
 
 export default {
   name: 'ManageCollection',
   components: {
-    LoopbombSpinner,
-    ManageAllocation
+    LoopbombSpinner
   },
   data () {
     return {
@@ -198,12 +207,13 @@ export default {
       currentRunKey: null,
       contractIds: [],
       formSubmitted: false,
-      statusEnum: ['active', 'inactive', 'disabled'],
+      statusEnum: [{ text: 'Active', value: 'active' }, { text: 'Inactive', value: 'inactive' }, { text: 'Disabled', value: 'disabled' }],
+      typeEnum: [{ text: 'Traditional', value: 'traditional' }, { text: 'Crypto Punks', value: 'punks' }],
       batchSizeEnum: [1, 5, 10, 15, 20],
       loaded: false,
       loopRun: {
         status: 'active',
-        contractId: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME,
+        contractId: null,
         makerName: null,
         batchPointer: 0,
         makerUrlKey: null,
@@ -224,7 +234,7 @@ export default {
     })
     if (this.currentRunKey) {
       this.editMode = true
-      this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.currentRunKey).then((loopRun) => {
+      this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: this.currentRunKey, stxAddress: this.profile.stxAddress }).then((loopRun) => {
         if (!loopRun) {
           this.$notify({ type: 'error', title: 'Collection', text: 'Unknown key: ' + this.currentRunKey })
           this.editMode = false
@@ -265,6 +275,18 @@ export default {
       }
     },
     save: function () {
+      if (!this.loopRun.type) {
+        this.$notify({ type: 'error', title: 'Collection', text: 'Please select type!' })
+        return
+      }
+      if (!this.loopRun.contractId) {
+        this.$notify({ type: 'error', title: 'Collection', text: 'Collection must belong to a contract!' })
+        return
+      }
+      if (!this.loopRun.currentRun || !this.loopRun.makerName) {
+        this.$notify({ type: 'error', title: 'Collection', text: 'Please specify name and maker!' })
+        return
+      }
       let methos = 'rpayCategoryStore/newLoopRun'
       if (this.editMode) {
         methos = 'rpayCategoryStore/updateLoopRun'

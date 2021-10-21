@@ -16,9 +16,11 @@ import Information from '../views/Information.vue'
 import ExhibitHere from '../views/ExhibitHere.vue'
 import ManageProfile from '../views/ManageProfile.vue'
 
+const Homepage = () => import('../views/Homepage.vue')
+const NumberOne = () => import('../views/NumberOne.vue')
+
 const Charity = () => import('../views/Charity.vue')
 const About = () => import('../views/About.vue')
-const NumberOne = () => import('../views/NumberOne.vue')
 // const Charity = () => import('../views/Charity.vue')
 // const AssetDetails = () => import('../views/AssetDetails.vue')
 // const About = () => import('../views/About.vue')
@@ -41,6 +43,8 @@ const ManagePrivileges = () => import(/* webpackChunkName: "ManagePrivileges" */
 const ManageRequests = () => import(/* webpackChunkName: "ManageRequests" */ '@/views/mgmnt/ManageRequests.vue')
 const ManageCollections = () => import(/* webpackChunkName: "ManageCollections" */ '@/views/mgmnt/ManageCollections.vue')
 const ManageCollection = () => import(/* webpackChunkName: "ManageCollection" */ '@/views/mgmnt/ManageCollection.vue')
+const ManageAllocation = () => import(/* webpackChunkName: "ManageAllocation" */ '@/views/mgmnt/ManageAllocation.vue')
+const ManageRoyalties = () => import(/* webpackChunkName: "ManageRoyalties" */ '@/views/mgmnt/ManageRoyalties.vue')
 const ManageOffers = () => import(/* webpackChunkName: "ManageOffers" */ '@/views/mgmnt/ManageOffers.vue')
 
 Vue.use(VueRouter)
@@ -66,7 +70,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/home',
     name: 'home',
-    components: { default: NumberOne, header: AboutNavbar, footer: MainFooter },
+    components: { default: Homepage, header: AboutNavbar, footer: MainFooter },
     meta: { title: 'This is Number One on Stacks NFT Marketplace secured by Bitcoin' }
   },
   {
@@ -253,6 +257,15 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
+    path: '/mgmnt/manage-royalties/:currentRunKey',
+    name: 'manage-royalties',
+    components: { default: ManageRoyalties, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
     path: '/mgmnt/manage-collections',
     name: 'manage-collections',
     components: { default: ManageCollections, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
@@ -262,9 +275,9 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: '/mgmnt/manage-collection',
-    name: 'manage-collection',
-    components: { default: ManageCollection, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
+    path: '/mgmnt/manage-allocation/:currentRunKey',
+    name: 'manage-allocation',
+    components: { default: ManageAllocation, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true

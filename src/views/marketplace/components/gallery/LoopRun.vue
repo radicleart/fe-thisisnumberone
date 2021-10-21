@@ -13,12 +13,12 @@
       <div v-else>
         <span>
           <span class="text-warning mr-2" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Each run has unique elements that increase in scarcity with the expansion of each new version!'">{{loopRun.currentRun}}</span>
-          <span class="text-xsmall" v-b-tooltip.hover="{ variant: 'warning' }" :title="nftsLeft + ' Loopbombs remain to be claimed in this run!'">{{nftsRemaining}} Minted (@{{application.tokenContract.mintPrice}} STX Each)</span>
+          <span class="text-xsmall" v-b-tooltip.hover="{ variant: 'warning' }" :title="nftsLeft + ' Loopbombs remain to be claimed in this run!'">{{nftsRemaining}} Minted (@{{mintPrice}} STX Each)</span>
         </span>
       </div>
     </div>
   </div>
-  <div class="mt-5" v-else-if="parent === 'minting'">
+  <div class="" v-else-if="parent === 'minting'">
       <div v-if="limitReached">
         <span class="text-danger" router-tag="span" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Each run has unique elements that increase in scarcity with the expansion of each new version!'">
           Sorry, all minted for this run. Visit the <b-link class="text-info" to="/nft-marketplace">Marketplace</b-link>
@@ -29,14 +29,14 @@
           Collection: <a class="text-info" :href="origin + '/nft-marketplace/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey" target="_blank">{{loopRun.currentRun}}</a>
         </div>
         <div>
-          Minting Fee: {{application.tokenContract.mintPrice}} STX
+          Minting Fee: {{mintPrice}} STX
         </div>
       </div>
   </div>
 </div>
 <div v-else>
   <div class="py-5 px-5 bg-white text-danger d-flex justify-content-center">
-    <div>
+    <div v-if="loopRun">
       Expecting contract <span class="text-bold">{{loopRun.contractId}}</span> to be deployed and connected?
     </div>
   </div>
@@ -49,7 +49,7 @@ export default {
   name: 'LoopRun',
   components: {
   },
-  props: ['parent'],
+  props: ['parent', 'currentLoopRun'],
   data () {
     return {
       origin: location.origin
@@ -57,8 +57,8 @@ export default {
   },
   mounted () {
     if (this.loopRun) {
-      const runKey = this.loopRun.currentRunKey
-      this.$store.dispatch('rpayCategoryStore/fetchMintCountForCollection', runKey)
+      // const runKey = this.loopRun.currentRunKey
+      // this.$store.dispatch('rpayCategoryStore/fetchMintCountForCollection', runKey)
       if (this.limitReached) {
         this.$emit('loopRun', { opcode: 'limit-reached' })
       }
@@ -67,6 +67,11 @@ export default {
   methods: {
   },
   computed: {
+    mintPrice () {
+      const defaultMintPrice = Number(process.env.VUE_APP_DEFAULT_MINT_PRICE)
+      const mintPrice = Math.max(this.application.tokenContract.mintPrice, defaultMintPrice)
+      return mintPrice
+    },
     limitReached () {
       return (this.loopRun.versionLimit - this.mintCounter) <= 0
     },
@@ -77,23 +82,24 @@ export default {
       return this.mintCounter + '/' + this.loopRun.versionLimit
     },
     credits () {
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
-      if (loopRun) {
-        const remaining = loopRun.spinsPerDay - loopRun.spinsToday
+      if (this.loopRun) {
+        const remaining = this.loopRun.spinsPerDay - this.loopRun.spinsToday
         return (remaining > 0) ? remaining : 0
       }
       return 0
     },
     mintCounter () {
       if (!this.application) return -1
-      return Math.min(this.loopRun.versionLimit, this.application.tokenContract.mintCounter)
+      return Math.min(this.loopRun.versionLimit, this.loopRun.tokenCount)
     },
     profile () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       return profile
     },
     loopRun () {
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
+      if (this.currentLoopRun) return this.currentLoopRun
+      const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](defaultLoopRun)
       return loopRun
     },
     application () {

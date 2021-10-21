@@ -9,8 +9,27 @@
       <template #cell(contractAddress)="data">
         <b-link class="text-info" size="sm" variant="warning" v-on:click="updateRequest(data)" v-html="data.value"></b-link>
       </template>
+      <template #cell(Actions)="data">
+        <span v-b-tooltip.hover="{ variant: 'warning' }" title="Manage royalties for this collection">
+          <a @click.prevent="updateRoyalties(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="credit-card"/></a>
+        </span>
+        <span v-b-tooltip.hover="{ variant: 'warning' }" title="Manage guest list">
+          <a @click.prevent="updateGuestList(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="star"/></a>
+        </span>
+        <span v-b-tooltip.hover="{ variant: 'warning' }" title="Manage allocation">
+          <a @click.prevent="openAllocations(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="circle"/></a>
+        </span>
+      </template>
     </b-table>
   </div>
+  <b-modal size="lg" id="guest-list-modal">
+    <GuestList @update="update" :loopRun="loopRun"/>
+    <template #modal-footer class="text-center"><div class="w-100"></div></template>
+  </b-modal>
+  <b-modal size="lg" id="guest-list-modal">
+    <Allocations @update="update" :loopRun="loopRun"/>
+    <template #modal-footer class="text-center"><div class="w-100"></div></template>
+  </b-modal>
 </b-container>
 <b-container v-else>
   <LoopbombSpinner />
@@ -19,24 +38,51 @@
 
 <script>
 import LoopbombSpinner from '@/components/utils/LoopbombSpinner'
+import GuestList from '@/views/mgmnt/components/collections/GuestList'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'ManageCollections',
   components: {
-    LoopbombSpinner
+    LoopbombSpinner,
+    GuestList
   },
   data () {
     return {
       loaded: false,
       contractId: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME,
-      currenRunKey: null
+      currenRunKey: null,
+      loopRun: null
     }
   },
   mounted () {
     this.$store.dispatch('rpayCategoryStore/fetchLoopRuns')
   },
   methods: {
+    update (data) {
+      if (data.opcode === 'cancel') {
+        this.$bvModal.hide('guest-list-modal')
+      }
+    },
+    openAllocations (data) {
+      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.currentRunKey)
+      if (index > -1) {
+        this.$router.push('/mgmnt/manage-allocation/' + this.loopRuns[index].currentRunKey)
+      }
+    },
+    updateRoyalties (data) {
+      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.currentRunKey)
+      if (index > -1) {
+        this.$router.push('/mgmnt/manage-royalties/' + this.loopRuns[index].currentRunKey)
+      }
+    },
+    updateGuestList (data) {
+      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.currentRunKey)
+      if (index > -1) {
+        this.loopRun = this.loopRuns[index]
+        this.$bvModal.show('guest-list-modal')
+      }
+    },
     updateRequest (data) {
       const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.currentRunKey)
       if (index > -1) {
@@ -44,7 +90,7 @@ export default {
       }
     },
     fields () {
-      return ['contractAddress', 'contractName', 'currentRunKey', 'currentRun', 'versionLimit', 'Mints Per Day', 'Status']
+      return ['contractAddress', 'contractName', 'currentRunKey', 'currentRun', 'versionLimit', 'Mints Per Day', 'Status', 'Actions']
     },
     values () {
       let mapped = []
@@ -59,7 +105,8 @@ export default {
           currentRunKey: loopRun.currentRunKey,
           currentRun: loopRun.currentRun,
           'Mints Per Day': loopRun.spinsPerDay,
-          versionLimit: loopRun.versionLimit
+          versionLimit: loopRun.versionLimit,
+          Actions: null
         }
       })
       return mapped
@@ -73,5 +120,14 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+#guest-list-modal .modal-content {
+  border: none !important;
+  background-color: transparent !important;
+}
+#guest-list-modal .modal-content {
+  border: none !important;
+  background-color: transparent !important;
+}
+
 </style>

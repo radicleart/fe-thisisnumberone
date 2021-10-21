@@ -1,33 +1,22 @@
 <template>
-<div class="container">
-  <div v-if="loading" class="d-flex justify-content-start my-3 mx-4">
-    <div>
-      <span class="myItemsIntroText">
-      Hi-res images & secret fingerprints are secured here, assuring that only the loops minted through your library are true originals. Download, print, post > use: @loopb0mb #loopbomb - would love to see your captures!
-      </span>
-    </div>
-  </div>
-  <div v-else>
+  <div>
     <Pagination @changePage="gotoPage" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
     <div id="my-table" class="row mx-auto" v-if="resultSet && resultSet.length > 0">
       <div class="text-white col-lg-4 col-md-6 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
-        <MySingleItem :parent="'list-view'" :asset="asset" :key="componentKey"/>
+        <MySingleItem v-if="!skipme(asset)" :parent="'list-view'" :asset="asset" :key="componentKey"/>
       </div>
     </div>
-    <div class="d-flex justify-content-center my-3 mx-4" v-else>
+    <div class="d-flex justify-content-start my-3 mx-4" v-else>
       <div class="mt-5">
-        <p>No loops - we look forward to seeing your creations...</p>
-        <div><LoadingView :message="'.'"/></div>
+        <p>Minting not yet begun for this collection...</p>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
 import MySingleItem from './MySingleItem'
 import Pagination from './common/Pagination'
-import LoadingView from '@/components/utils/LoadingView'
 import { APP_CONSTANTS } from '@/app-constants'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
@@ -36,7 +25,7 @@ const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 export default {
   name: 'PageableItems',
   components: {
-    MySingleItem, LoadingView, Pagination
+    MySingleItem, Pagination
   },
   props: ['loopRun'],
   data () {
@@ -72,9 +61,24 @@ export default {
     }
   },
   methods: {
+    skipme (asset) {
+      if (this.isTheV2Contract()) {
+        if (this.loopRun.currentRunKey === 'my_first_word') {
+          return asset.contractAsset.nftIndex > 4
+        } else if (this.loopRun.currentRunKey === 'number_one') {
+          return asset.name.toLowerCase().indexOf('hash') === -1
+        } else if (this.loopRun.currentRunKey === 'no_1_smiley') {
+          return asset.name.toLowerCase().indexOf('smiley') === -1
+        }
+      }
+      return false
+    },
     gotoPage (page) {
       // this.page = page - 1
       this.fetchPage(page - 1)
+    },
+    isTheV2Contract () {
+      return this.loopRun.contractId.indexOf('thisisnumberone-v2') > -1
     },
     fetchPage (page) {
       const data = {
@@ -85,11 +89,23 @@ export default {
       }
       if (!this.loopRun.currentRunKey) return
       this.resultSet = null
-      this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((results) => {
-        this.resultSet = results // this.resultSet.concat(results)
-        this.componentKey++
-        this.loading = false
-      })
+      if (this.isTheV2Contract()) {
+        data.asc = true
+        if (this.loopRun.currentRunKey === 'my_first_word') {
+          data.pageSize = 5
+        }
+        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractId', data).then((results) => {
+          this.resultSet = results // this.resultSet.concat(results)
+          this.componentKey++
+          this.loading = false
+        })
+      } else {
+        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((results) => {
+          this.resultSet = results // this.resultSet.concat(results)
+          this.componentKey++
+          this.loading = false
+        })
+      }
     }
   },
   computed: {

@@ -73,7 +73,7 @@ export default {
         this.$emit('registerByConnect')
       } else {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
-          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { stxAddress: profile.stxAddress }, { root: true })
+          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
           this.$emit('registerByConnect')
         }).catch((err) => {
           console.log(err)

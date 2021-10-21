@@ -3,30 +3,29 @@
   <div>
     <h4 class="text-bold">Royalties</h4>
     <b-row class="text-small border-bottom mt-2 pt-2">
-      <b-col cols="6">
+      <b-col cols="4">
         Role
       </b-col>
-      <b-col cols="3" class="text-right" v-if="!hidePrimaries">
-        Primary Sale
+      <b-col cols="3" class="text-right">
+        <span v-if="type === 'mint'">NFT Mint/Purchase</span>
       </b-col>
       <b-col cols="3" class="text-right">
+        <span v-if="type === 'sale'">Primary Sale</span>
+      </b-col>
+      <b-col cols="3" class="text-right" v-if="type === 'sale'">
         Secondary Sales
       </b-col>
     </b-row>
     <b-row class="text-small my-2 py-2">
-      <b-col cols="12" v-for="(bene, index) in beneficiaries" :key="index">
-        <Beneficiary v-on="$listeners" :hidePrimaries="hidePrimaries" :beneficiary="bene" :index="index"/>
-        <!--
-        <Beneficiary v-on="$listeners" :beneficiary="beneficiaries[1]" :index="1"/>
-        <Beneficiary v-on="$listeners" :beneficiary="beneficiaries[0]" :index="0"/>
-        <Beneficiary v-on="$listeners" :beneficiary="beneficiaries[2]" :index="2"/>
-        <Beneficiary v-on="$listeners" :beneficiary="beneficiaries[3]" :index="3"/>
-        -->
+      <b-col cols="12">
+        <div v-for="(beneficiary, index) in beneficiaries" :key="index">
+          <Royalty :type="type" v-on="$listeners" :beneficiary="beneficiary" :index="index"/>
+        </div>
       </b-col>
     </b-row>
     <b-row class="text-small border-top mt-2 pt-2">
-      <b-col cols="6">Sum</b-col>
-      <b-col cols="3"  class="text-right" v-if="!hidePrimaries">
+      <b-col cols="4">Sum</b-col>
+      <b-col cols="3"  class="text-right">
         <div>{{getRoyaltySum()}}%</div>
       </b-col>
       <b-col cols="3" class="text-right">
@@ -39,14 +38,14 @@
 </template>
 
 <script>
-import Beneficiary from './Beneficiary'
+import Royalty from './Royalty'
 
 export default {
-  name: 'Beneficiaries',
+  name: 'Royalties',
   components: {
-    Beneficiary
+    Royalty
   },
-  props: ['beneficiaries', 'hidePrimaries'],
+  props: ['beneficiaries', 'type'],
   data () {
     return {
       editions: 1,

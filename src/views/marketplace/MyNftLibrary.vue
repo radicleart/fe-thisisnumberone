@@ -1,39 +1,32 @@
 <template>
-<b-container id="my-nft-tabs" class="text-white mt-5" v-if="loaded">
-  <h1>My Library</h1>
-  <b-tabs justified content-class="mb-5">
-    <b-tab :title="'NFTs (' + hasNfts + ')'" active>
-      <p class="mt-4">NFTs you currently own - these may be files you
-        uploaded and minted and still own or NFTs you bought from other
-        users or that were transferred to you. They also include editions
-        of NFT files you minted.</p>
-      <div class="row mb-4">
-        <div v-for="(item, index) in myNfts" :key="index" class="mt-5 col-md-4 col-sm-6 col-xs-12">
-          <MySingleItem :asset="item"/>
-        </div>
-      </div>
-    </b-tab>
-    <b-tab v-if="canUpload()" :title="'Uploads (' + gaiaAssets.length + ')'">
-      <p class="mt-4">Files you uploaded to your Gaia storage bucket.</p>
-      <p>If you minted them (to create NFTs) you may also have
-        sold or transferred the NFT to another wallet. </p>
+<b-container fluid id="my-nft-tabs" class="px-5 text-white mt-5" v-if="loaded">
+  <b-row>
+    <b-col md="4" sm="12">
+      <h1 class="border-bottom mb-5">My NFTs</h1>
+      <CollectionSidebar :allowUploads="true" @update="update"/>
+    </b-col>
+    <b-col md="8" sm="12" v-if="showUploads">
+      <h1 class="mb-4 border-bottom">Uploads</h1>
       <b-row>
         <b-col v-for="(gaiaAsset, index) in gaiaAssets" :key="index" lg="3" md="6" sm="6" xs="12">
           <MySingleNft class="mb-2" :item="gaiaAsset"/>
         </b-col>
       </b-row>
-    </b-tab>
-  </b-tabs>
+    </b-col>
+    <b-col md="8" sm="12" v-else>
+      <h1 class="mb-4 border-bottom">NFTs</h1>
+      <div class="row mb-4">
+        <div v-for="(item, index) in myNfts" :key="index" class="mt-5 col-md-4 col-sm-6 col-xs-12">
+          <MySingleItem :asset="item"/>
+        </div>
+      </div>
+    </b-col>
+  </b-row>
 </b-container>
-<div class="container" style="min-height: 85vh;" v-else>
-  <b-container class="text-white mt-5">
-    <h1>No NFTs</h1>
-    <p>Upload a file and mint it to create your first NFT</p>
-  </b-container>
-</div>
 </template>
 
 <script>
+import CollectionSidebar from '@/views/marketplace/components/gallery/CollectionSidebar'
 import MySingleItem from '@/views/marketplace/components/gallery/MySingleItem'
 import MySingleNft from '@/views/marketplace/components/gallery/MySingleNft'
 import { APP_CONSTANTS } from '@/app-constants'
@@ -42,11 +35,13 @@ export default {
   name: 'MyNftLibrary',
   components: {
     MySingleNft,
-    MySingleItem
+    MySingleItem,
+    CollectionSidebar
   },
   data () {
     return {
-      loaded: false
+      loaded: false,
+      showUploads: false
     }
   },
   mounted () {
@@ -54,17 +49,25 @@ export default {
     const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
     for (let i = 0; i < myContractAssets.length; i++) {
       const ga = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](myContractAssets[i].tokenInfo.assetHash)
-      ga.contractAsset = Object.assign({}, myContractAssets[i])
+      if (ga) ga.contractAsset = Object.assign({}, myContractAssets[i])
       this.myNfts.push(ga)
     }
     this.loaded = true
   },
   methods: {
+    update (data) {
+      if (data.opcode === 'show-uploads') {
+        this.showUploads = true
+      } else if (data.opcode === 'show-collection') {
+        this.showUploads = false
+        this.loopRun = data.loopRun
+      }
+    },
     startLogin () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       if (!profile.loggedIn) {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
-          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { stxAddress: profile.stxAddress }, { root: true })
+          this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
           this.$emit('registerByConnect')
         }).catch((err) => {
           console.log(err)
@@ -73,10 +76,6 @@ export default {
           this.webWalletNeeded = true
         })
       }
-    },
-    canUpload () {
-      const hasUploadPriv = this.$store.getters[APP_CONSTANTS.KEY_HAS_PRIVILEGE]('can-upload')
-      return hasUploadPriv
     },
     closeModal () {
       document.getElementById('linkModal').style.display = 'none'

@@ -14,9 +14,8 @@
     <div v-if="!pending">Status: {{pending.txStatus}}</div>
   </b-alert>
   <div style="color: #529e72;">
-    Be patient, depending on blockchain traffic this could take a while.
-    You can leave this page open to check progress.
-    When the transactions confirmed it will update in your library.
+    Be patient, depending on blockchain traffic this could take a while. Leave this page open to check progress. When the transaction’s confirmed NFT will update in your library.
+(It’s advisable to increase your transaction fees to speed the process.)
   </div>
 </div>
 </template>

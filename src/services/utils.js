@@ -1,13 +1,86 @@
 import crypto from 'crypto'
 import dataUriToBuffer from 'data-uri-to-buffer'
 import {
-  hexToCV
+  hexToCV,
+  intToHexString, leftPadHexToLength
 } from '@stacks/transactions'
 import { c32address, c32addressDecode } from 'c32check'
+import { makeECPrivateKey, publicKeyToAddress, signECDSA, verifyECDSA, encryptECIES, decryptECIES } from '@stacks/encryption'
+import { SECP256K1Client } from 'jsontokens'
+import { ec as EllipticCurve } from 'elliptic'
+import { sha256 } from 'sha.js'
+// import { TextEncoder } from 'util'
+const ecurve = new EllipticCurve('secp256k1')
 
 const precision = 1000000
 
 const utils = {
+  sha256: function (message) {
+    let encoded
+    if (typeof message === 'string') {
+      encoded = new TextEncoder().encode(message)
+    } else if (typeof message === 'number') {
+      // const buf = Buffer.alloc(8)
+      // buf.writeUInt8(message, 0)
+      // encoded = new Uint8Array(buf)
+      const buf = Buffer.alloc(16)
+      buf.writeUIntLE(message, 0, 6)
+      encoded = Uint8Array.from(buf)
+    } else {
+      // encoded = new Uint8Array(message)
+      encoded = Uint8Array.from(message)
+    }
+    // eslint-disable-next-line new-cap
+    const hashFunction = new sha256()
+    return hashFunction.update(encoded).digest()
+    // return hashSha256(encoded)
+  },
+  signPayloadEC: function (message, privateKey) {
+    const hash = this.sha256(message)
+    const ecPrivate = ecurve.keyFromPrivate(privateKey)
+    const signature = ecPrivate.sign(hash)
+    const coordinateValueBytes = 32
+    const r = leftPadHexToLength(signature.r.toString('hex'), coordinateValueBytes * 2)
+    const s = leftPadHexToLength(signature.s.toString('hex'), coordinateValueBytes * 2)
+    if (signature.recoveryParam === undefined || signature.recoveryParam === null) {
+      throw new Error('"signature.recoveryParam" is not set')
+    }
+    const recoveryParam = intToHexString(signature.recoveryParam, 1)
+    console.log('signature.recoveryParam', signature.recoveryParam)
+    const recoverableSignatureString = r + s + recoveryParam
+    // const combined = r + s
+    // return Buffer.from(combined, 'hex')
+    // return (Buffer.from(recoverableSignatureString, 'hex'))
+    return recoverableSignatureString
+  },
+  makeKeys: function () {
+    const privateKey = makeECPrivateKey()
+    const publicKey = SECP256K1Client.derivePublicKey(privateKey)
+    const address = publicKeyToAddress(publicKey)
+    return {
+      privateKey: privateKey,
+      publicKey: publicKey,
+      address: address
+    }
+  },
+  encryptWithPubKey: function (publicKey, privateKey, message) {
+    return new Promise((resolve) => {
+      // Encrypt string with public key
+      encryptECIES(publicKey, Buffer.from(message), true).then((cipherObj) => {
+        // Decrypt the cipher with private key to get the message
+        decryptECIES(privateKey, cipherObj).then((deciphered) => {
+          resolve(deciphered)
+        })
+      })
+    })
+  },
+  signWithPrivKey: async function (privateKey, message) {
+    // Encrypt string with public key
+    const sigObj = await signECDSA(privateKey, message)
+    // Verify content using ECDSA
+    const result = await verifyECDSA(message, sigObj.publicKey, sigObj.signature)
+    return (result) ? sigObj : null
+  },
   buildHash: function (hashable) {
     return crypto.createHash('sha256').update(hashable).digest('hex')
   },
@@ -92,6 +165,21 @@ const utils = {
     } catch {
       return 0
     }
+  },
+  sortResults: function (resultSet) {
+    resultSet = resultSet.sort(function compare (a, b) {
+      const nameA = a.title.toUpperCase() // ignore upper and lowercase
+      const nameB = b.title.toUpperCase() // ignore upper and lowercase
+      if (nameA > nameB) {
+        return -1
+      }
+      if (nameA < nameB) {
+        return 1
+      }
+      // names must be equal
+      return 0
+    })
+    return resultSet
   },
   /**
   fromOnChainAmount: function (amountMicroStx) {

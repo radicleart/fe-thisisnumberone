@@ -1,22 +1,22 @@
 <template>
 <div>
   <b-row class="mb-2" v-if="beneficiary">
-    <b-col cols="6">
+    <b-col cols="4">
       <span style="cursor: pointer;" href="#" @click.prevent="showBeneficiary = !showBeneficiary">
-        <b-icon icon="chevron-down" v-if="showBeneficiary"/> <b-icon icon="chevron-right" v-else/> {{beneficiary.role}}
+        <b-icon icon="chevron-down" v-if="showBeneficiary"/> <b-icon icon="chevron-right" v-else/>{{chainAddress()}} - {{beneficiary.role}}
       </span>
-      <div v-if="allowEdit">
-        <a href="#" @click="editBeneficiary()"><b-icon icon="pencil"/></a>
-        <a class="ml-2 text-danger" href="#" @click="removeBeneficiary()"><b-icon icon="trash"/></a>
-      </div>
-    </b-col>
-    <b-col cols="3" class="text-right" v-if="!hidePrimaries">
-      <div class="">{{displayPrimary()}}%</div>
     </b-col>
     <b-col cols="3" class="text-right">
+      <div class="">{{displayPrimary()}}%</div>
+    </b-col>
+    <b-col cols="3" class="text-right" v-if="type === 'sale'">
       <div class="">{{displaySecondary()}}%</div>
     </b-col>
-    <b-col cols="11" class="bg-light py-2 mt-1 my-2 ml-3" v-if="showBeneficiary">
+    <b-col cols="2" v-if="allowEdit">
+      <a href="#" @click="editBeneficiary()"><b-icon icon="pencil"/></a>
+      <a class="ml-2 text-danger" href="#" @click="delBeneficiary()"><b-icon icon="trash"/></a>
+    </b-col>
+    <b-col v-if="showBeneficiary" cols="11" class="bg-light py-2 mt-1 my-2 ml-3">
       <b-row v-if="index === 0">
         <b-col md="3" sm="12">Address</b-col>
         <b-col md="9" sm="12" class="">Seller Address</b-col>
@@ -42,14 +42,14 @@
 
 <script>
 export default {
-  name: 'Beneficiary',
+  name: 'Royalty',
   components: {
   },
-  props: ['beneficiary', 'index', 'contractAsset', 'hidePrimaries'],
+  props: ['beneficiary', 'index', 'contractAsset', 'type'],
   data () {
     return {
       showBeneficiary: false,
-      allowEdit: false
+      allowEdit: true
     }
   },
   methods: {
@@ -57,7 +57,7 @@ export default {
       if (this.contractAsset) {
         return this.contractAsset.beneficiaries.addresses[this.index].substring(0, 5) + '...' + this.contractAsset.beneficiaries.addresses[this.index].substring(this.contractAsset.beneficiaries.addresses[this.index].length - 5)
       }
-      if (this.beneficiary.username) return this.beneficiary.username
+      if (!this.beneficiary.chainAddress) return this.beneficiary.username
       return this.beneficiary.chainAddress.substring(0, 5) + '...' + this.beneficiary.chainAddress.substring(this.beneficiary.chainAddress.length - 5)
     },
     displayPrimary: function () {
@@ -83,10 +83,10 @@ export default {
       // return this.beneficiary.chainAddress.substring(0, 5) + '...' + this.beneficiary.chainAddress.substring(this.beneficiary.chainAddress.length - 5)
     },
     editBeneficiary: function () {
-      this.$emit('editBeneficiary', this.beneficiary)
+      this.$emit('update', { opcode: 'editBeneficiary', type: this.type, beneficiary: this.beneficiary })
     },
-    removeBeneficiary: function () {
-      this.$emit('removeBeneficiary', this.beneficiary)
+    delBeneficiary: function () {
+      this.$emit('update', { opcode: 'delBeneficiary', beneficiary: this.beneficiary, type: this.type })
     }
   },
   computed: {

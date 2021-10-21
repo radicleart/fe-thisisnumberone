@@ -1,5 +1,21 @@
 <template>
-<b-container class="text-white">
+<b-container class="text-white" v-if="loopRun">
+  <div class="d-flex justify-content-start my-3 mx-4">
+    <div class="mt-5">
+      <h1>Allocation vs Minted NFT</h1>
+      <b-row><b-col cols="4">Collection</b-col><b-col>{{loopRun.currentRun}}</b-col></b-row>
+      <b-row><b-col cols="4">Maker</b-col><b-col>{{loopRun.makerName}}</b-col></b-row>
+      <b-row><b-col cols="4"></b-col><b-col>{{loopRun.tokenCount}} / {{loopRun.versionLimit}} minted</b-col></b-row>
+      <b-row><b-col cols="4"></b-col><b-col><span class="pointer" @click="tokenMode = !tokenMode">toggle mode</span></b-col></b-row>
+    </div>
+  </div>
+  <b-row class="mb-4" v-if="tokenMode">
+    <PageableTokens :loopRun="loopRun"/>
+  </b-row>
+  <b-row class="mb-4">
+    <PageableAllocation :loopRun="loopRun"/>
+  </b-row>
+  <div v-if="showForm">
   <h1 class="text-white">NFT Allocations</h1>
   <div class="mb-3" role="group">
     <label for="punkIndexes">Clear allocations for {{loopRun.currentRunKey}}..</label>
@@ -28,27 +44,38 @@
   <div class="my-4 text-right">
     <b-button variant="outline-warning" @click.prevent="clearAllocations()">Clear By Punk Index</b-button>
   </div>
+  </div>
 </b-container>
 </template>
 
 <script>
+import { APP_CONSTANTS } from '@/app-constants'
+import PageableAllocation from '@/views/mgmnt/components/collections/PageableAllocation'
+import PageableTokens from '@/views/mgmnt/components/collections/PageableTokens'
 
 export default {
   name: 'ManageAllocation',
   components: {
+    PageableAllocation,
+    PageableTokens
   },
-  props: ['loopRun'],
   data () {
     return {
+      tokenMode: true,
+      currentRunKey: null,
       punkIndexes: null,
+      showForm: false,
       stxAddress: null,
       result: null
     }
   },
+  mounted () {
+    this.currentRunKey = this.$route.params.currentRunKey
+  },
   methods: {
     clearAllocations () {
       const bean = {
-        pnkIndexes: this.punkIndexes.split(','),
+        punkIndexes: this.punkIndexes.split(','),
         currentRunKey: this.loopRun.currentRunKey,
         stxAddress: this.stxAddress
       }
@@ -58,6 +85,10 @@ export default {
     }
   },
   computed: {
+    loopRun () {
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.currentRunKey)
+      return loopRun
+    },
     profile () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       return profile

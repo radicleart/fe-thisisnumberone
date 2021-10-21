@@ -1,6 +1,6 @@
 <template>
 <section class="" id="section-minting">
-  <b-container class="my-5 pt-5" v-if="!item">
+  <b-container class="my-5 pt-5" v-if="!item || !loopRun">
     <h1>{{message}}</h1>
   </b-container>
   <b-container :key="componentKey" class="my-3" v-else>
@@ -139,8 +139,19 @@ export default {
   },
   computed: {
     loopRun () {
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN]
+      let loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.runKey)
+      if (!loopRun) {
+        loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](process.env.VUE_APP_DEFAULT_LOOP_RUN)
+      }
       return loopRun
+    },
+    runKey () {
+      const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
+      let runKey = (this.item && this.item.currentRunKey) ? this.item.currentRunKey : defaultLoopRun
+      if (runKey.indexOf('/') > -1) {
+        runKey = runKey.split('/')[0]
+      }
+      return runKey
     },
     transactionUrl: function () {
       if (!this.item.mintInfo || !this.item.mintInfo.txId) return '#'
@@ -181,12 +192,12 @@ export default {
       if (this.nftIndex !== null && typeof this.nftIndex !== 'undefined' && this.nftIndex > -1) {
         return this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_NFT_INDEX](Number(this.nftIndex))
       }
-      let item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-      if (this.edition > 0) {
+      let item = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH_EDITION]({ assetHash: this.assetHash, edition: 1 })
+      if (!item) {
+        item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
+      }
+      if (this.edition > 1) {
         item = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH_EDITION]({ assetHash: this.assetHash, edition: this.edition })
-        if (!item) {
-          item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
-        }
       }
       return item
     },

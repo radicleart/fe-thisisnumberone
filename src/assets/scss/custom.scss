@@ -34,8 +34,12 @@ body h2 {
   margin-bottom: 15px;
 }
 body h3 {
-  font-size: 3rem;
+  font-size: 2.4rem;
   font-weight: 400;
+}
+body h4 {
+  font-size: 2.1rem;
+  font-weight: 300;
 }
 body p {
   font-size: 1.6rem;
@@ -74,7 +78,9 @@ input {
 select {
   font-weight: 700;
 }
-
+.navbar-dark .navbar-nav .nav-link {
+  color: #fff !important;
+}
 .no-scroll {
   overflow: hidden;
 }
