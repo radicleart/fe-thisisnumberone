@@ -64,7 +64,7 @@ export default {
       }
     },
     collectionUrl (loopRun) {
-      if (loopRun.type === 'punk') {
+      if (loopRun.type === 'punks') {
         return '/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey
       } else {
         return '/nft-marketplace/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey

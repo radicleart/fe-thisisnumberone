@@ -6,7 +6,7 @@
       <b-col cols="6">
         Role
       </b-col>
-      <b-col cols="3" class="text-right">
+      <b-col cols="3" class="text-right" v-if="!hidePrimaries">
         Primary Sale
       </b-col>
       <b-col cols="3" class="text-right">
@@ -14,16 +14,19 @@
       </b-col>
     </b-row>
     <b-row class="text-small my-2 py-2">
-      <b-col cols="12">
+      <b-col cols="12" v-for="(bene, index) in beneficiaries" :key="index">
+        <Beneficiary v-on="$listeners" :hidePrimaries="hidePrimaries" :beneficiary="bene" :index="index"/>
+        <!--
         <Beneficiary v-on="$listeners" :beneficiary="beneficiaries[1]" :index="1"/>
         <Beneficiary v-on="$listeners" :beneficiary="beneficiaries[0]" :index="0"/>
         <Beneficiary v-on="$listeners" :beneficiary="beneficiaries[2]" :index="2"/>
         <Beneficiary v-on="$listeners" :beneficiary="beneficiaries[3]" :index="3"/>
+        -->
       </b-col>
     </b-row>
     <b-row class="text-small border-top mt-2 pt-2">
       <b-col cols="6">Sum</b-col>
-      <b-col cols="3"  class="text-right">
+      <b-col cols="3"  class="text-right" v-if="!hidePrimaries">
         <div>{{getRoyaltySum()}}%</div>
       </b-col>
       <b-col cols="3" class="text-right">
@@ -43,7 +46,7 @@ export default {
   components: {
     Beneficiary
   },
-  props: ['beneficiaries'],
+  props: ['beneficiaries', 'hidePrimaries'],
   data () {
     return {
       editions: 1,

@@ -57,7 +57,7 @@
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="md" id="minting-modal">
-    <MintingFlow :loopRun="loopRun" :items="items" :mintAllocations="mintAllocations" v-on="$listeners"/>
+    <MintingFlow v-if="loopRun" :loopRun="loopRun" :items="items" :mintAllocations="mintAllocations" v-on="$listeners"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="lg" id="selling-modal">

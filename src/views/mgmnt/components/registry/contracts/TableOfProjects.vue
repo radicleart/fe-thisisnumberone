@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     pfields () {
-      return ['Contract', 'Title', 'Status', 'Actions']
+      return ['Contract', 'Title', 'Type', 'Status', 'Actions']
     },
     pvalues () {
       let mapped = []
@@ -65,6 +65,7 @@ export default {
         return {
           Contract: project.contractId.split('.')[1],
           Title: project.title,
+          Type: project.type,
           Status: project.status,
           Actions: null
         }

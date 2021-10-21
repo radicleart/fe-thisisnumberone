@@ -10,7 +10,7 @@
         <a class="ml-2 text-danger" href="#" @click="removeBeneficiary()"><b-icon icon="trash"/></a>
       </div>
     </b-col>
-    <b-col cols="3" class="text-right">
+    <b-col cols="3" class="text-right" v-if="!hidePrimaries">
       <div class="">{{displayPrimary()}}%</div>
     </b-col>
     <b-col cols="3" class="text-right">
@@ -45,7 +45,7 @@ export default {
   name: 'Beneficiary',
   components: {
   },
-  props: ['beneficiary', 'index', 'contractAsset'],
+  props: ['beneficiary', 'index', 'contractAsset', 'hidePrimaries'],
   data () {
     return {
       showBeneficiary: false,

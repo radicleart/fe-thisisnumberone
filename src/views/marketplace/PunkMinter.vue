@@ -1,127 +1,110 @@
 <template>
-<div class="mb-5" v-if="loaded">
-  <Banner/>
-  <div>
-    <b-container>
-      <h1 class="my-5 text-white">#1 NFT Collection</h1>
-      <div v-if="!loopRun">Collection not found</div>
-      <div v-else>
-        <PunkTracker @updateAllocation="updateAllocation" :items="items" :loopRun="loopRun" :mintAllocations="mintAllocations"/>
+<div v-if="loopRun">
+  <b-container fluid id="my-nft-tabs" class="px-5 text-white mt-5">
+    <b-row>
+      <b-col md="4" sm="12">
+        <h1 class="border-bottom mb-5">{{loopRun.currentRun}}</h1>
+        <CollectionSidebar :allowUploads="false" @update="update"/>
+      </b-col>
+      <b-col md="8" sm="12">
+        <h1 class="mb-4 border-bottom">Mint {{loopRun.currentRun}}</h1>
+        <!-- <PunkTracker @updateAllocation="updateAllocation" :items="items" :loopRun="loopRun" :mintAllocations="mintAllocations"/> -->
         <b-row>
-          <b-col class="text-center">
-            <h2 class="">{{loopRun.currentRun}}</h2>
-            <div class="mb-2 text-small">{{loopRun.description}}</div>
-            <div class="mb-5 text-small">by: <span class="text-warning">{{loopRun.makerName}}</span></div>
+          <b-col cols="4">
+            <img :src="getCollectionImageUrl(loopRun)" width="100%" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Collection\n' + loopRun.currentRun"/>
+            <div class="text-center mt-2 text-small">
+              <h3>{{loopRun.currentRun}} ({{loopRun.tokenCount + '/' + loopRun.versionLimit}})</h3>
+              <div v-if="mintingStatus() === 1">
+                <b-button class="mx-2" variant="warning" @click="startMinting()">Mint<span v-if="loopRun && loopRun.batchSize > 1"> Next {{loopRun.batchSize}}</span></b-button>
+              </div>
+              <div v-else-if="mintingStatus() === 2">
+                Public minting is paused
+              </div>
+              <div v-else>
+                Public minting starts soons
+              </div>
+            </div>
+            <!-- <div class="mt-2 text-small">by: <span class="text-warning">{{loopRun.makerName}}</span></div> -->
           </b-col>
         </b-row>
-        <b-row>
-          <b-col cols="12">
-            <MaybeMintable :mintAllocations="mintAllocations" :items="items" :loopRun="loopRun" :uiState="uiState"/>
-          </b-col>
-        </b-row>
-      </div>
-    </b-container>
-  </div>
+      </b-col>
+    </b-row>
+  </b-container>
+  <b-modal size="md" id="minting-modal">
+    <MintingCollectionFlow :loopRun="loopRun" @update="update"/>
+    <template #modal-footer class="text-center"><div class="w-100"></div></template>
+  </b-modal>
 </div>
 </template>
 
 <script>
-import PunkTracker from '@/views/marketplace/components/toolkit/nft-history/PunkTracker'
-import Banner from '@/views/marketplace/components/gallery/common/Banner'
-import MaybeMintable from '@/views/marketplace/components/gallery/MaybeMintable'
 import { APP_CONSTANTS } from '@/app-constants'
-import utils from '@/services/utils'
-
-// let imagePath = 'https://loopbomb.io/mijo-enterprises/image/upload/v1593596116/lb-v4/'
+import CollectionSidebar from '@/views/marketplace/components/gallery/CollectionSidebar'
+import MintingCollectionFlow from '@/views/marketplace/components/toolkit/mint-setup/MintingCollectionFlow'
 
 export default {
   name: 'PunkMinter',
   components: {
-    MaybeMintable,
-    Banner,
-    PunkTracker
+    CollectionSidebar,
+    MintingCollectionFlow
   },
   data () {
     return {
-      imagePath: 'https://res.cloudinary.com/mijo-enterprises/image/upload/v1633523528/collections/artists/artist1/set1/',
       loaded: false,
       items: [],
       uiState: 'locking',
       mintAllocations: [],
       gaiaAssets: [],
-      loopRun: null,
       makerUrlKey: null,
       currentRunKey: null,
       counter: 0
     }
   },
-  watch: {
-    'items' () {
-      if (this.fetchedItems) {
-        this.uiState = 'ready'
-      }
-    }
-  },
   mounted () {
     this.makerUrlKey = this.$route.params.maker
     this.currentRunKey = this.$route.params.collection
-    // const lockData = { stxAddress: this.profile.stxAddress, currentRunKey: this.currentRunKey }
-    this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.currentRunKey).then((loopRun) => {
-      this.loopRun = loopRun
-      // utils.fetchBase64FromImageUrl(this.imagePath + '1.png', document).then((data) => {
-      this.loaded = true
-      const endPointer = this.loopRun.batchPointer + this.loopRun.batchSize
-      for (let index = this.loopRun.batchPointer; index < endPointer; index++) {
-        this.createMetaData(index)
-      }
-    })
-    // })
+    if (window.eventBus && window.eventBus.$on) {
+      const $self = this
+      window.eventBus.$on('rpayEvent', function (data) {
+        if (data.opcode === 'cancel-minting') {
+          $self.$bvModal.hide('minting-modal')
+        }
+      })
+    }
   },
   methods: {
+    update (data) {
+      if (data.opcode === 'cancel') {
+        this.$bvModal.hide('minting-modal')
+      }
+    },
+    mintingStatus () {
+      if (this.loopRun.status !== 'active') {
+        return 2
+      } else if (!this.loopRun.guestList || this.loopRun.guestList.length === 0 || this.loopRun.guestList.indexOf(this.profile.stxAddress) > -1) {
+        return 1
+      } else {
+        return 3
+      }
+    },
+    startMinting: function () {
+      this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow' })
+      this.$store.commit('rpayStore/setDisplayCard', 100)
+      this.$bvModal.show('minting-modal')
+    },
     updateAllocation (data) {
       this.uiState = 'locked'
       this.$notify({ type: 'warning', title: 'Upload File', text: 'Allocation event - ' + data })
-    },
-    createMetaData (index) {
-      // create but don't store - wait till the last minute to register the batch!
-      // see component MintingFlow.vue
-      const image = this.imagePath + index + '.png'
-      const imgHash = utils.buildHash(image)
-      const myAsset = {
-        assetHash: imgHash,
-        attributes: {
-          artworkFile: {
-            type: 'image/png',
-            fileUrl: image
-          }
-        },
-        cryptoPunk: true,
-        image: image,
-        name: index
-      }
-      myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
-      this.gaiaAssets.push(myAsset)
-      this.mintAllocations.push({
-        stxAddress: this.profile.stxAddress,
-        currentRunKey: myAsset.currentRunKey,
-        punkIndex: index,
-        assetHash: imgHash,
-        status: 'reserved'
-      })
-      /**
-      this.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((gaiaAsset) => {
-        this.items.push(gaiaAsset)
-      }).catch(() => {
-        this.$notify({ type: 'error', title: 'Upload File', text: 'Collision - please reload to check for next available item!' })
-        this.errored = true
-      })
-      **/
     },
     getCollectionImageUrl (item) {
       return this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](item)
     }
   },
   computed: {
+    loopRun () {
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.$route.params.collection)
+      return loopRun
+    },
     profile () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       return profile
@@ -132,3 +115,26 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+#minting-modal .modal-content {
+  border: none !important;
+  background-color: transparent !important;
+}
+#minting-tools  .nav-link.active {
+  color: #000;
+}
+#minting-tools .nav-link:hover {
+  color: #ccc;
+}
+#minting-modal .modal-content {
+  border: none !important;
+  background-color: transparent !important;
+}
+#minting-tools  .nav-link.active {
+  color: #000;
+}
+#minting-tools .nav-link:hover {
+  color: #ccc;
+}
+
+</style>

@@ -69,26 +69,18 @@ const beneficiariesDefault = [
   {
     type: 'sale',
     username: 'owner.id',
-    role: 'Secondary Buyer/Owner',
-    royalty: 0,
-    secondaryRoyalty: 85, // note the owner is worked out runtime in secondaries
+    role: 'Seller',
+    royalty: 90,
+    secondaryRoyalty: 90, // note the owner is worked out runtime in secondaries
     chainAddress: null
   },
   {
     type: 'sale',
-    username: 'maker.id',
-    role: 'Maker/Minter',
-    royalty: 85,
-    secondaryRoyalty: 5,
-    chainAddress: null
-  },
-  {
-    type: 'sale',
-    username: 'numberone.id',
-    role: 'Number One',
+    username: 'artist',
+    role: 'Artist',
     email: 'info@thisisnumberone.com',
-    royalty: 12.5,
-    secondaryRoyalty: 7.5,
+    royalty: 9,
+    secondaryRoyalty: 9,
     chainAddress: 'SP1CS4FVXC59S65C3X1J3XRNZGWTG212JT7CG73AG'
   },
   {
@@ -96,8 +88,8 @@ const beneficiariesDefault = [
     username: 'Platform.id',
     role: 'Platform',
     email: 'info@brightblock.org',
-    royalty: 2.5,
-    secondaryRoyalty: 2.5,
+    royalty: 1,
+    secondaryRoyalty: 1,
     chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
   }
 ]
@@ -106,14 +98,14 @@ const beneficiariesMint = [
     type: 'mint',
     username: 'Artist',
     role: 'Artist',
-    royalty: 90,
+    royalty: 95,
     chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
   },
   {
     type: 'mint',
     username: 'Platform',
     role: 'Platform',
-    royalty: 10,
+    royalty: 5,
     chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
   }
 ]

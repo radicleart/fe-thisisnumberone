@@ -88,7 +88,8 @@ export default {
         ahash: '46295599467141f4f02cecc97cfd576067407a4f904f798674780601a1319c6c'
       }
       **/
-      const hashOfMessage = utils.sha256(this.items[0].assetHash)
+      // const hashOfMessage = utils.sha256(this.items[0].assetHash)
+      const hashOfMessage = utils.buildHash(this.items[0].assetHash)
       // const sig = utils.signPayloadEC(this.items[0].assetHash, keys1.privateKey)
       this.$store.dispatch('assetGeneralStore/stacksmateSignme', this.items[0].assetHash).then((signature) => {
         const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]

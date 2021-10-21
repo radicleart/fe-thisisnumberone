@@ -11,8 +11,9 @@
       <div><b-link :href="project.platformAddress" target="_blank" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Visit project website.'"><b-icon icon="arrow-up-right-square"/></b-link></div>
     </div>
      -->
+  </div>
     <div class="" v-if="showColls">
-      <div class="ml-5 my-3" v-for="(loopRun, index) in loopRunsByProject" :key="index">
+      <div class="ml-5 my-3" v-for="(loopRun, index) in allLoopRuns" :key="index">
         <!--
         <div class="mb-3 mx-5">
           <b-link class="text-warning" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">
@@ -22,10 +23,9 @@
         <div class="text-small"><b-link class="text-warning" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey"><span class="text-warning" v-b-tooltip.hover="{ variant: 'warning' }" :title="'View collection in marketplace.'">{{loopRun.tokenCount}} / {{loopRun.versionLimit}}</span></b-link></div>
         <div class="text-small">by: <b-link class="text-warning" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey"><span class="text-warning" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Mint new pieces in this collection.'">{{loopRun.makerName}}</span></b-link></div>
         -->
-        <h4 v-if="project.contractId === loopRun.contractId" class="pointer" @click="showCollection(loopRun)">{{loopRun.currentRun}}</h4>
+        <h4 class="pointer" @click="showCollection(loopRun)">{{loopRun.currentRun}}</h4>
       </div>
     </div>
-  </div>
   <div v-if="canUpload()">
     <h3 class="border-bottom mt-5">Uploads</h3>
     <div class="ml-5 my-3">
@@ -49,6 +49,7 @@ export default {
       loaded: false,
       showColls: true,
       projects: [],
+      loopRuns: [],
       contractId: null,
       makerUrlKey: null,
       currentRunKey: null
@@ -79,34 +80,21 @@ export default {
       return this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](item)
     },
     fetchFullRegistry () {
-      this.$store.dispatch('rpayStacksContractStore/fetchFullRegistry').then(() => {
-        this.$store.dispatch('rpayProjectStore/fetchProjectsByStatus', 'active').then((projects) => {
-          projects.forEach((p) => {
-            const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](p.contractId)
-            p.application = application
-          })
-          this.projects = utils.sortResults(projects)
-          this.makerUrlKey = this.loopRuns[0].makerUrlKey
-          this.currentRunKey = this.loopRuns[0].currentRunKey
-          this.contractId = this.loopRuns[0].contractId
-          /**
-          this.$store.dispatch('rpayCategoryStore/fetchLoopRuns').then((loopRuns) => {
-            this.makerUrlKey = loopRuns[0].makerUrlKey
-            this.currentRunKey = loopRuns[0].currentRunKey
-            this.contractId = loopRuns[0].contractId
-            this.loopRuns = loopRuns
-            this.loaded = true
-          })
-          **/
+      const $self = this
+      this.$store.dispatch('rpayProjectStore/fetchProjectsByStatus', 'active').then((projects) => {
+        $self.projects = utils.sortResults(projects)
+        $self.loopRuns = this.allLoopRuns
+        $self.projects.forEach((p) => {
+          const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](p.contractId)
+          p.application = application
+          // $self.loopRuns.concat(loopRuns.filter((o) => o.contractId === p.contractId))
         })
+        $self.loaded = true
       })
     }
   },
   computed: {
-    loopRunsByProject () {
-      return this.loopRuns.filter((o) => o.contractId === this.contractId)
-    },
-    loopRuns () {
+    allLoopRuns () {
       const loopRuns = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUNS]
       return loopRuns
     },

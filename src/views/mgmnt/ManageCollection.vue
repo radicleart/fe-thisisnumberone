@@ -1,14 +1,7 @@
 <template>
 
 <b-container class="text-white" v-if="loaded">
-  <div class="text-right">
-    <span class="mr-3 text-info" @click.prevent="allocations = !allocations">allocations</span>
-    <b-link class="text-info mt-3" to="/mgmnt/manage-collections"><b-icon icon="chevron-left"/> Back</b-link>
-  </div>
-  <div v-if="allocations">
-    <ManageAllocation :loopRun="loopRun"/>
-  </div>
-  <div v-else>
+  <div>
     <h1 class="text-white">Manage NFT Collection</h1>
     <b-form class="needs-validation form-transparent" novalidate @submit="checkForm" id="contact-form">
 
@@ -201,13 +194,11 @@
 <script>
 import LoopbombSpinner from '@/components/utils/LoopbombSpinner'
 import { APP_CONSTANTS } from '@/app-constants'
-import ManageAllocation from './components/collections/ManageAllocation'
 
 export default {
   name: 'ManageCollection',
   components: {
-    LoopbombSpinner,
-    ManageAllocation
+    LoopbombSpinner
   },
   data () {
     return {

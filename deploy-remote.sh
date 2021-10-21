@@ -4,7 +4,7 @@ set -e;
 export DEPLOYMENT=$1
 PATH_DEPLOY=../radsoc/volumes/www/production/thisisnumberone
 mkdir -p $PATH_DEPLOY
-export SERVER=zeno.brightblock.org
+export SERVER=locke.brightblock.org
 export BUILDER=build-stag
 if [ "$DEPLOYMENT" == "prod" ]; then
   SERVER=hume.brightblock.org;
@@ -39,7 +39,7 @@ cp -r ./dist/* $PATH_DEPLOY/.
 
 #SERVER=hume.brightblock.org
 #__pushcode
-#SERVER=zeno.brightblock.org
+#SERVER=locke.brightblock.org
 __pushcode
 
 exit 0;

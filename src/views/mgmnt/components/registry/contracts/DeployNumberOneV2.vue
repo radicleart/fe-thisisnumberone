@@ -706,7 +706,6 @@ export default {
             (the-owner                  (unwrap-panic (nft-get-owner? my-nft nftIndex)))
             (the-token-info             (map-get? nft-data {nft-index: nftIndex}))
             (the-sale-data              (map-get? nft-sale-data {nft-index: nftIndex}))
-            (the-beneficiary-data       (map-get? nft-beneficiaries {nft-index: nftIndex}))
             (the-edition-counter        (default-to u0 (get edition-counter (map-get? nft-edition-counter {nft-index: nftIndex}))))
             (the-offer-counter          (default-to u0 (get offer-counter (map-get? nft-offer-counter {nft-index: nftIndex}))))
             (the-high-bid-counter       (default-to u0 (get high-bid-counter (map-get? nft-high-bid-counter {nft-index: nftIndex}))))
@@ -717,7 +716,6 @@ export default {
                     (nftIndex nftIndex)
                     (tokenInfo the-token-info)
                     (saleData the-sale-data)
-                    (beneficiaryData the-beneficiary-data)
                     (owner the-owner)
             )
         )
@@ -845,6 +843,7 @@ export default {
     this.source = this.source.replaceAll('params.tokenName', cleanTokenName)
     this.source = this.source.replaceAll('params.tokenSymbol', this.project.symbol)
     this.source = this.source.replaceAll('params.mintPrice', this.project.mintPrice)
+    this.source = this.source.replaceAll('params.collectionLimit', this.project.collectionLimit)
     this.source = this.source.replaceAll('params.platformAddress', this.project.platformAddress)
     this.source = this.source.replaceAll('params.callBack', '"' + this.project.callBack + '"') // utils.stringToHex(this.project.callBack))
   },
@@ -936,6 +935,8 @@ export default {
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.mintPrice', rep1)
       rep1 = '<span class="text-danger bg-white">' + this.project.platformAddress + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.platformAddress', rep1)
+      rep1 = '<span class="text-danger bg-white">' + this.project.collectionLimit + '</span>'
+      contractSourceDisplay = contractSourceDisplay.replaceAll('params.collectionLimit', rep1)
       rep1 = '<span class="text-danger bg-white">' + utils.stringToHex(this.project.callBack) + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.callBack', rep1)
       return contractSourceDisplay

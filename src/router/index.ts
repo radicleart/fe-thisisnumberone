@@ -43,6 +43,7 @@ const ManagePrivileges = () => import(/* webpackChunkName: "ManagePrivileges" */
 const ManageRequests = () => import(/* webpackChunkName: "ManageRequests" */ '@/views/mgmnt/ManageRequests.vue')
 const ManageCollections = () => import(/* webpackChunkName: "ManageCollections" */ '@/views/mgmnt/ManageCollections.vue')
 const ManageCollection = () => import(/* webpackChunkName: "ManageCollection" */ '@/views/mgmnt/ManageCollection.vue')
+const ManageAllocation = () => import(/* webpackChunkName: "ManageAllocation" */ '@/views/mgmnt/ManageAllocation.vue')
 const ManageRoyalties = () => import(/* webpackChunkName: "ManageRoyalties" */ '@/views/mgmnt/ManageRoyalties.vue')
 const ManageOffers = () => import(/* webpackChunkName: "ManageOffers" */ '@/views/mgmnt/ManageOffers.vue')
 
@@ -274,9 +275,9 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: '/mgmnt/manage-collection',
-    name: 'manage-collection',
-    components: { default: ManageCollection, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
+    path: '/mgmnt/manage-allocation/:currentRunKey',
+    name: 'manage-allocation',
+    components: { default: ManageAllocation, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true

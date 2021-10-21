@@ -1,6 +1,7 @@
 <template>
-<b-container class="text-white">
+<b-container class="text-white" v-if="loopRun">
   <div class="text-right">
+    <span class="text-info mt-3" @click="resetRoyalties()"><b-icon icon="chevron-left"/> Reset</span>
     <b-link class="text-info mt-3" to="/mgmnt/manage-collections"><b-icon icon="chevron-left"/> Back</b-link>
   </div>
   <div>
@@ -19,7 +20,8 @@
     </b-tabs>
     <div class="my-4">
       <b-button class="mr-3" variant="warning" @click="saveRoyalties">save royalties</b-button>
-      <b-button variant="outline-warning" @click="newRoyalty = !newRoyalty">new royalty</b-button>
+      <b-button class="mr-3" variant="outline-warning" @click="newRoyalty = !newRoyalty">new royalty</b-button>
+      <b-button v-if="loopRun.type === 'punks'" variant="outline-warning" @click="sendToContract">send to contract</b-button>
     </div>
     <RoyaltyForm :key="componentKey" v-if="newRoyalty" :royalty="royalty" @update="update"/>
   </div>
@@ -45,27 +47,38 @@ export default {
       royalties: null,
       mintRoyalties: [],
       saleRoyalties: [],
-      componentKey: 0
+      componentKey: 0,
+      loopRun: null
     }
   },
   mounted () {
     this.currentRunKey = this.$route.params.currentRunKey
-    this.$store.dispatch('rpayCategoryStore/fetchRoyalties', this.currentRunKey).then((royalties) => {
-      if (!royalties) {
-        // const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
-        const configuration = this.$store.getters['rpayStore/getConfiguration']
-        // configuration.minter.beneficiaries[1].chainAddress = profile.stxAddress
-        // configuration.minter.beneficiaries[1].username = profile.username
-        this.mintRoyalties = configuration.minter.beneficiariesMint
-        this.saleRoyalties = configuration.minter.beneficiaries
-      } else {
-        this.royalties = royalties
-        this.mintRoyalties = royalties.mintRoyalties
-        this.saleRoyalties = royalties.saleRoyalties
-      }
+    this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.currentRunKey).then((loopRun) => {
+      this.loopRun = loopRun
+      this.$store.dispatch('rpayCategoryStore/fetchRoyalties', this.currentRunKey).then((royalties) => {
+        if (!royalties) {
+          // const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+          const configuration = this.$store.getters['rpayStore/getConfiguration']
+          // configuration.minter.beneficiaries[1].chainAddress = profile.stxAddress
+          // configuration.minter.beneficiaries[1].username = profile.username
+          this.mintRoyalties = configuration.minter.beneficiariesMint
+          this.saleRoyalties = configuration.minter.beneficiaries
+        } else {
+          this.royalties = royalties
+          this.mintRoyalties = royalties.mintRoyalties
+          this.saleRoyalties = royalties.saleRoyalties
+        }
+      })
     })
   },
   methods: {
+    resetRoyalties () {
+      const configuration = this.$store.getters['rpayStore/getConfiguration']
+      this.mintRoyalties = configuration.minter.beneficiariesMint
+      this.saleRoyalties = configuration.minter.beneficiaries
+      this.royalties = null
+      this.saveRoyalties()
+    },
     saveRoyalties () {
       if (!this.royalties) {
         this.royalties = {
@@ -120,6 +133,20 @@ export default {
         this.royalty.type = data.type
         this.componentKey++
       }
+    },
+    sendToContract: function () {
+      const data = {
+        contractAddress: this.loopRun.contractId.split('.')[0],
+        contractName: this.loopRun.contractId.split('.')[1],
+        beneficiaries: this.saleRoyalties,
+        minteficaries: this.mintRoyalties
+      }
+      this.$store.dispatch('rpayPurchaseStore/setCollectionRoyalties', data).then((result) => {
+        this.result = result
+      }).catch((error) => {
+        console.log(error)
+        this.sellingMessage = null
+      })
     }
   },
   computed: {
@@ -127,6 +154,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.btn {
+  width: inherit;
+}
 .text-muted {
   color: #ffd54f !important;
 }

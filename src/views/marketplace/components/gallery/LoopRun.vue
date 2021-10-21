@@ -18,7 +18,7 @@
       </div>
     </div>
   </div>
-  <div class="mt-5" v-else-if="parent === 'minting'">
+  <div class="" v-else-if="parent === 'minting'">
       <div v-if="limitReached">
         <span class="text-danger" router-tag="span" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Each run has unique elements that increase in scarcity with the expansion of each new version!'">
           Sorry, all minted for this run. Visit the <b-link class="text-info" to="/nft-marketplace">Marketplace</b-link>

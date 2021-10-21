@@ -112,9 +112,10 @@ export default {
         this.tabIndex = 1
         this.contractId = data.contractId
       } else if (data.opcode === 'open-deploy') {
-        this.showDeployTab = true
-        this.tabIndex = 2
+        this.contractId = data.project.contractId
         this.targetProject = data.project
+        this.tabIndex = 2
+        this.showDeployTab = true
       } else if (data.opcode === 'open-contract-manager') {
         this.contractId = data.contractId
         this.showContractManager = true

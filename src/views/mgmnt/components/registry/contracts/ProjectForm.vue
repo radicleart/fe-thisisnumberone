@@ -55,6 +55,14 @@
             <label for="status-name"><span class="text-danger">*</span> Project State</label>
             <b-form-select size="lg" id="status-name" v-model="project.status" :options="statusEnum"></b-form-select>
           </div>
+          <div class="text2" role="group">
+            <label for="type-name"><span class="text-danger">*</span> Project Type</label>
+            <b-form-select size="lg" id="type-name" v-model="project.type" :options="typeEnum"></b-form-select>
+          </div>
+          <div class="text2" v-if="project.type === 'punks'">
+            <div class=""><span v-b-tooltip.hover="{ variant: 'warning' }" title="The max NFTs in this collection.">Collection Limit</span></div>
+            <b-input type="number" v-model="project.collectionLimit"></b-input>
+          </div>
         </div>
       </div>
       <div class="row">
@@ -79,11 +87,14 @@ export default {
   data () {
     return {
       statusEnum: ['new', 'deployment', 'connected', 'active', 'inactive', 'disabled'],
+      typeEnum: ['punks', 'traditional'],
       project: {
         platformAddress: process.env.VUE_APP_REGISTRY_CONTRACT_ADDRESS,
         status: 'deployment',
+        collectionLimit: 0,
         image: 'https://images.prismic.io/dbid/cc7d59a2-65f4-45a2-b6e5-df136e2fd952_OS_thumb.png?auto=compress,format',
         owner: null,
+        type: 'traditional',
         description: 'The best NFT project ever..',
         updated: new Date().getTime(),
         title: 'my project',
@@ -137,6 +148,10 @@ export default {
         this.$notify({ type: 'error', title: 'Project Details', text: 'Please enter the mint price of your tokens (in micro stacks) between 0.001 and 100 stx' })
         result = false
       }
+      if (this.project.type === 'punks' && this.project.collectionLimit === 0) {
+        this.$notify({ type: 'error', title: 'Project Details', text: 'collectionLimit needs to be set for the collection.' })
+        result = false
+      }
       if (!this.project.callBack || !this.project.callBack.startsWith('https://')) {
         this.$notify({ type: 'error', title: 'Project Details', text: 'Please enter a secure (https) callback url for your tokens - we append the asset hash to retrieve meta data.' })
         result = false
@@ -174,6 +189,10 @@ export default {
       return cleanTokenName
     },
     saveProject: function () {
+      if (!this.validate()) return
+      if (this.project.type === 'traditional') {
+        this.project.collectionLimit = 0
+      }
       this.$store.dispatch('rpayProjectStore/saveProject', { project: this.project, imageData: null }).then((project) => {
         this.project = project
         this.$notify({ type: 'success', title: 'Projects', text: 'Project has been saved.' })

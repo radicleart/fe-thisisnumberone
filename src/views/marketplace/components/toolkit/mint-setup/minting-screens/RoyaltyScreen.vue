@@ -4,7 +4,7 @@
     <!-- <header-screen :allowEdit="false" :item="item"/> -->
     <div class="text-danger" v-html="errorMessage"></div>
     <EditEditions v-if="allowEditEditions" :item="item"/>
-    <Beneficiaries :beneficiaries="beneficiaries" v-on="$listeners" :item="item"/>
+    <Beneficiaries :hidePrimaries="hidePrimaries" :beneficiaries="beneficiaries" v-on="$listeners"/>
     <template v-slot:footer>
       <div class="d-flex justify-content-between">
         <b-button @click="saveData()" class="rounded w-50 mr-2" variant="outline-light">Cancel</b-button>
@@ -26,10 +26,10 @@ export default {
     EditEditions,
     Beneficiaries
   },
-  props: ['item', 'beneficiaries', 'errorMessage'],
+  props: ['item', 'beneficiaries', 'errorMessage', 'hidePrimaries'],
   data () {
     return {
-      allowEditEditions: true, // process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
+      allowEditEditions: false, // process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
       mintedMessage: null
     }
   },
