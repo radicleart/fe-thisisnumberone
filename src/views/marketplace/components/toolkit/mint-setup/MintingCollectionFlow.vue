@@ -7,11 +7,29 @@
           <ItemDisplay :item="null" :loopRun="loopRun"/>
         </template>
         <div class="bg-dark mt-0">
-          <RoyaltyScreen :hidePrimaries="true" :errorMessage="errorMessage" :item="null" @mintToken="beginMintProcess" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
+          <RoyaltyScreen :hidePrimaries="true" :mintButtonText="mintButtonText()" :errorMessage="errorMessage" :item="null" @mintToken="beginMintProcess" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
         </div>
       </b-card>
     </b-card-group>
   </div>
+  <b-modal scrollable id="result-modal" title="">
+    <div class="row">
+      <div class="col-12 my-1">
+        <h2>Crash Punk Minting</h2>
+        <div class="">Crash Punks mints on the Stacks / Bitcoin Blockchains</div>
+        <div class="">This can take a little while but once minted the Loop will appear
+          in your <b-link class="text-info" to="/my-nfts">NFT Library</b-link>
+        </div>
+        <div class="text-center mt-4">Please leave this tab open while we store your meta data.</div>
+        <div class="text-center mt-2"><b-icon icon="three-dots" animation="cylon" font-scale="4"></b-icon></div>
+      </div>
+    </div>
+    <template v-slot:modal-footer>
+      <div class="w-100">
+      </div>
+    </template>
+  </b-modal>
+
 </div>
 
 </template>
@@ -28,17 +46,18 @@ export default {
     RoyaltyScreen,
     ItemDisplay
   },
-  props: ['loopRun'],
+  props: ['loopRun', 'batchOption'],
   data () {
     return {
-      imagePath: 'https://res.cloudinary.com/mijo-enterprises/image/upload/v1633523528/collections/artists/artist1/set1/',
       loading: true,
       gaiaAssets: [],
       makerUrlKey: null,
+      mintAllocations: [],
       currentRunKey: null,
       errorMessage: null,
       beneficiaries: null,
       eBen: null,
+      gaiaed: 0,
       submitUrl: '/mesh/v2/stacksmate/square/charge'
     }
   },
@@ -64,6 +83,9 @@ export default {
     this.handleResult()
   },
   methods: {
+    mintButtonText () {
+      return 'Mint ' + this.batchOption + ' Now'
+    },
     handleResult () {
       if (window.eventBus && window.eventBus.$on) {
         const $self = this
@@ -71,6 +93,7 @@ export default {
           if (data.opcode === 'stx-transaction-sent') {
             $self.$bvModal.hide('minting-modal')
             if (data.txStatus === 'success') {
+              $self.$bvModal.hide('result-modal')
               $self.$notify({ type: 'success', title: 'Tx Sent', text: 'Punks minted and meta data saved to Gaia!' })
             } else if (data.txStatus.indexOf('abort') > -1) {
               const punkIndexes = []
@@ -87,13 +110,6 @@ export default {
               $self.$notify({ type: 'warning', title: 'Tx Replaced', text: 'We may have lost the tx id - if so your token is still safe and will be reconnected once confirmed.' })
             }
           } else if (data.opcode === 'collection-mint-token' || data.opcode === 'collection-mint-token-twenty') {
-            $self.gaiaAssets.forEach((ga) => {
-              ga.mintInfo = {
-                txId: data.txId,
-                txStatus: data.txStatus
-              }
-              $self.saveAsset(ga)
-            })
           }
         })
       }
@@ -104,7 +120,7 @@ export default {
       // 3. sign the hash of the first item in the batch (api call to stacksmate endpoint)
       // 4. build the parameters for the mint
       // 5. call rpay modult to build and broadcast transaction via web wallet
-      const lockData = { stxAddress: this.profile.stxAddress, currentRunKey: this.currentRunKey }
+      const lockData = { batchOption: this.batchOption, stxAddress: this.profile.stxAddress, currentRunKey: this.currentRunKey }
       this.$store.dispatch('rpayCategoryStore/fetchNextToMint', lockData).then((mintAllocations) => {
         // utils.fetchBase64FromImageUrl(this.imagePath + '1.png', document).then((data) => {
         if (!mintAllocations || mintAllocations.length === 0) {
@@ -117,7 +133,7 @@ export default {
           this.createMetaData(ma.punkIndex)
         })
         this.$store.dispatch('assetGeneralStore/stacksmateSignme', this.gaiaAssets[0].assetHash).then((signature) => {
-          if (this.loopRun.batchSize === 1) {
+          if (this.batchOption === 1) {
             this.mintCollectionSingle(this.getData(signature))
           } else {
             this.mintCollectionBatch(this.getData(signature))
@@ -127,10 +143,28 @@ export default {
         console.log(err)
       })
     },
+    updateMetaData (data) {
+      this.$bvModal.show('result-modal')
+      this.mintAllocations.forEach((ma) => {
+        const ga = this.gaiaAssets.find((o) => o.image.indexOf('/' + ma.punkIndex + '.png'))
+        ma.txId = data.txId
+        ma.status = (data.txStatus) ? data.txStatus : 'pending'
+        ma.assetHash = ga.assetHash
+      })
+      this.$store.dispatch('rpayCategoryStore/updateMintAllocations', this.mintAllocations)
+
+      this.gaiaAssets.forEach((ga) => {
+        ga.mintInfo = {
+          txId: data.txId,
+          txStatus: (data.txStatus) ? data.txStatus : 'pending'
+        }
+        this.saveAsset(ga)
+      })
+    },
     createMetaData (index) {
       // create but don't store - wait till the last minute to register the batch!
       // see component MintingFlow.vue
-      const image = this.imagePath + index + '.png'
+      const image = this.loopRun.punkImageBaseUrl + index + this.loopRun.punkImageType
       const imgHash = utils.buildHash(image)
       const myAsset = {
         assetHash: imgHash,
@@ -158,6 +192,7 @@ export default {
     saveAsset (gaiaAsset) {
       this.$store.dispatch('rpayMyItemStore/saveItem', gaiaAsset).then(() => {
         // this.$notify({ type: 'success', title: 'Meta Data', text: 'Meta data saved to users gaia hub! ' + gaiaAsset.assetHash })
+        this.gaiaed++
       }).catch(() => {
         this.$notify({ type: 'error', title: 'Upload File', text: 'Collision - please reload to check for next available item!' })
         this.errored = true
@@ -165,36 +200,16 @@ export default {
     },
     mintCollectionSingle: function (data) {
       this.$store.dispatch('rpayPurchaseStore/mintCollectionSingle', data).then((result) => {
-        const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](result.assetHash)
-        if (result.txId) {
-          item.mintInfo = {
-            txId: result.txId,
-            txStatus: result.txStatus,
-            timestamp: result.timestamp
-          }
-          this.$store.dispatch('rpayMyItemStore/quickSaveItem', item).then((item) => {
-            this.$emit('update', item)
-          })
-        }
-      }).catch((err) => {
-        this.errorMessage = 'Minting error: ' + err
+        this.updateMetaData(result)
+      }).catch(() => {
+        this.$store.dispatch('rpayCategoryStore/updateMintAllocations', this.mintAllocations)
       })
     },
     mintCollectionBatch: function (data) {
       this.$store.dispatch('rpayPurchaseStore/mintCollectionBatch', data).then((result) => {
-        const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](result.assetHash)
-        if (result.txId) {
-          item.mintInfo = {
-            txId: result.txId,
-            txStatus: result.txStatus,
-            timestamp: result.timestamp
-          }
-          this.$store.dispatch('rpayMyItemStore/quickSaveItem', item).then((item) => {
-            this.$emit('update', item)
-          })
-        }
-      }).catch((err) => {
-        this.errorMessage = 'Minting error: ' + err
+        this.updateMetaData(result)
+      }).catch(() => {
+        this.$store.dispatch('rpayCategoryStore/updateMintAllocations', this.mintAllocations)
       })
     },
     getData (signature) {

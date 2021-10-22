@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading">
-    <Pagination @changePage="gotoPage" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
+    <Pagination @changePage="gotoPage" :numberOfItems="numberOfItems" :pageSize="pageSize" v-if="numberOfItems > 0"/>
     <div id="my-table" class="row mx-auto" v-if="resultSet && resultSet.length > 0">
       <b-table striped hover :items="values()" :fields="fields()" class="bg-light text-dark">
         <template #cell(contractAddress)="data">
@@ -32,13 +32,12 @@ export default {
   components: {
     Pagination
   },
-  props: ['loopRun'],
+  props: ['loopRun', 'pageSize'],
   data () {
     return {
       resultSet: [],
       loading: true,
       doPaging: true,
-      pageSize: 10,
       numberOfItems: 0,
       page: 0,
       componentKey: 0

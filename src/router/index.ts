@@ -199,6 +199,15 @@ const routes: Array<RouteConfig> = [
       requiresAdmin: false
     }
   },
+  {
+    path: '/my-nfts/:collection',
+    name: 'my-nfts',
+    components: { default: MyNftLibrary, header: AboutNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false
+    }
+  },
   /**
    * admin section...
    */
@@ -269,6 +278,15 @@ const routes: Array<RouteConfig> = [
     path: '/mgmnt/manage-collections',
     name: 'manage-collections',
     components: { default: ManageCollections, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/mgmnt/manage-collection',
+    name: 'manage-collection',
+    components: { default: ManageCollection, adminNav: AdminNav, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: true

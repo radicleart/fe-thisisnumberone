@@ -1206,7 +1206,7 @@ export default {
     } else {
       throw new Error('unknown collection type.')
     }
-    this.source = this.source.replaceAll('params.collectionLimit', '"' + this.project.collectionLimit + '"') // utils.stringToHex(this.project.callBack))
+    this.source = this.source.replaceAll('params.collectionLimit', this.project.collectionLimit) // utils.stringToHex(this.project.callBack))
     this.source = this.source.replaceAll('params.callBack', '"' + this.project.callBack + '"') // utils.stringToHex(this.project.callBack))
   },
   methods: {
@@ -1296,6 +1296,8 @@ export default {
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.tokenSymbol', rep1)
       rep1 = '<span class="text-danger bg-white">' + this.project.mintPrice + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.mintPrice', rep1)
+      rep1 = '<span class="text-danger bg-white">' + this.project.collectionLimit + '</span>'
+      contractSourceDisplay = contractSourceDisplay.replaceAll('params.collectionLimit', rep1)
       rep1 = '<span class="text-danger bg-white">' + this.project.platformAddress + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.platformAddress', rep1)
       if (this.project.type === 'punks') {
@@ -1307,8 +1309,6 @@ export default {
       } else {
         throw new Error('unknown collection type.')
       }
-      rep1 = '<span class="text-danger bg-white">' + this.project.collectionLimit + '</span>'
-      contractSourceDisplay = contractSourceDisplay.replaceAll('params.collectionLimit', rep1)
       rep1 = '<span class="text-danger bg-white">' + utils.stringToHex(this.project.callBack) + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.callBack', rep1)
       return contractSourceDisplay

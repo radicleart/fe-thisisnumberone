@@ -13,13 +13,11 @@
         </b-col>
       </b-row>
     </b-col>
-    <b-col md="8" sm="12" v-else>
+    <b-col md="8" sm="12" v-else :key="componentKey">
       <h1 class="mb-4 border-bottom">NFTs</h1>
-      <div class="row mb-4">
-        <div v-for="(item, index) in myNfts" :key="index" class="mt-5 col-md-4 col-sm-6 col-xs-12">
-          <MySingleItem :asset="item"/>
-        </div>
-      </div>
+      <b-row class="mb-4">
+        <MyPageableItems :loopRun="loopRun"/>
+      </b-row>
     </b-col>
   </b-row>
 </b-container>
@@ -27,24 +25,25 @@
 
 <script>
 import CollectionSidebar from '@/views/marketplace/components/gallery/CollectionSidebar'
-import MySingleItem from '@/views/marketplace/components/gallery/MySingleItem'
-import MySingleNft from '@/views/marketplace/components/gallery/MySingleNft'
 import { APP_CONSTANTS } from '@/app-constants'
+import MyPageableItems from '@/views/marketplace/components/gallery/MyPageableItems'
 
 export default {
   name: 'MyNftLibrary',
   components: {
-    MySingleNft,
-    MySingleItem,
+    MyPageableItems,
     CollectionSidebar
   },
   data () {
     return {
       loaded: false,
-      showUploads: false
+      showUploads: false,
+      currentRunKey: null,
+      componentKey: 0
     }
   },
   mounted () {
+    /**
     this.data = { stxAddress: this.profile.stxAddress, mine: true }
     const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
     for (let i = 0; i < myContractAssets.length; i++) {
@@ -52,6 +51,8 @@ export default {
       if (ga) ga.contractAsset = Object.assign({}, myContractAssets[i])
       this.myNfts.push(ga)
     }
+    **/
+    this.currentRunKey = this.$route.params.collection
     this.loaded = true
   },
   methods: {
@@ -60,7 +61,10 @@ export default {
         this.showUploads = true
       } else if (data.opcode === 'show-collection') {
         this.showUploads = false
-        this.loopRun = data.loopRun
+        if (data.loopRun.currentRunKey !== this.$route.params.collection) {
+          this.$router.push('/my-nfts/' + data.loopRun.currentRunKey)
+        }
+        this.componentKey++
       }
     },
     startLogin () {
@@ -82,6 +86,10 @@ export default {
     }
   },
   computed: {
+    loopRun () {
+      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.$route.params.collection)
+      return loopRun
+    },
     gaiaAssets () {
       const gaiaAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEMS]
       return gaiaAssets

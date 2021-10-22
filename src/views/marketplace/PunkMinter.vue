@@ -15,7 +15,12 @@
             <div class="text-center mt-2 text-small">
               <h3>{{loopRun.currentRun}} ({{loopRun.tokenCount + '/' + loopRun.versionLimit}})</h3>
               <div v-if="mintingStatus() === 1">
-                <b-button class="mx-2" variant="warning" @click="startMinting()">Mint<span v-if="loopRun && loopRun.batchSize > 1"> Next {{loopRun.batchSize}}</span></b-button>
+                <div>
+                  <div class="d-flex justify-content-between">
+                    <b-form-select style="text-align: center; font-size: 2rem; font-weight: 700; height: 4rem;" v-if="loopRun.batchSize > 1" id="batchOption" v-model="batchOption" :options="batchOptions()"></b-form-select>
+                    <b-button class="mx-2" variant="warning" @click="startMinting()">Mint<span v-if="loopRun && loopRun.batchSize > 1"> Next {{batchOption}}</span></b-button>
+                  </div>
+                </div>
               </div>
               <div v-else-if="mintingStatus() === 2">
                 Public minting is paused
@@ -31,7 +36,7 @@
     </b-row>
   </b-container>
   <b-modal size="md" id="minting-modal">
-    <MintingCollectionFlow :loopRun="loopRun" @update="update"/>
+    <MintingCollectionFlow :loopRun="loopRun" @update="update" :batchOption="batchOption"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
 </div>
@@ -51,6 +56,7 @@ export default {
   data () {
     return {
       loaded: false,
+      batchOption: 1,
       items: [],
       uiState: 'locking',
       mintAllocations: [],
@@ -77,6 +83,13 @@ export default {
       if (data.opcode === 'cancel') {
         this.$bvModal.hide('minting-modal')
       }
+    },
+    batchOptions () {
+      const options = []
+      for (let i = 1; i <= this.loopRun.batchSize; i++) {
+        options.push(i)
+      }
+      return options
     },
     mintingStatus () {
       if (this.loopRun.status !== 'active') {

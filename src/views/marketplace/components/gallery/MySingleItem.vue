@@ -5,7 +5,7 @@
       <div class="text-left">
         <h6>{{mintedMessage}}</h6>
         <div class="text-xsmall d-flex justify-content-between">
-          <div class="text-right">{{currentRun}}</div>
+          <div class="text-right">{{loopRun.currentRun}}</div>
           <div class="text-right">{{created()}}</div>
         </div>
       </div>
@@ -60,7 +60,7 @@ export default {
   name: 'MySingleItem',
   components: {
   },
-  props: ['asset'],
+  props: ['asset', 'loopRun'],
   data () {
     return {
       image: null,

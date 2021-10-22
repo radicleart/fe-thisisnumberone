@@ -104,6 +104,28 @@
       </b-form-invalid-feedback>
     </div>
 
+    <div class="w-50 mb-3" role="group">
+      <label for="punkImageBaseUrl"><span class="text-danger">*</span> Base Image URL (e.g. https://imageserver.com/prod/artists/artist1/sets/set1/)</label>
+      <b-form-input
+        id="punkImageBaseUrl"
+        v-model="loopRun.punkImageBaseUrl"
+        aria-describedby="punkImageBaseUrl-feedback"
+        placeholder="Base URL to where the images are stored"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="w-50 mb-3" role="group">
+      <label for="punkImageType"><span class="text-danger">*</span> Base Image Type (.jpg, .png etc)</label>
+      <b-form-input
+        id="punkImageType"
+        v-model="loopRun.punkImageType"
+        aria-describedby="punkImageType-feedback"
+        placeholder="Base image type (include the dot)"
+        required
+      ></b-form-input>
+    </div>
+
     <div class="mb-3">
       <label for="description">Short Bio for Collection</label>
       <b-textarea
