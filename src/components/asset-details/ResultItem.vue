@@ -53,7 +53,7 @@ export default {
     assetUrl () {
       let assetUrl = '/assets/' + this.result.assetHash + '/1'
       if (this.result.contractAsset) {
-        assetUrl = '/nfts/' + this.result.contractAsset.nftIndex
+        assetUrl = '/nfts/' + this.result.contractAsset.contractId + '/' + this.result.contractAsset.nftIndex
       }
       return assetUrl
     },

@@ -34,7 +34,7 @@ export default {
     assetUrl: function () {
       if (this.$route.name === 'item-preview') {
         if (this.gaiaAsset.contractAsset) {
-          return 'https://thisisnumberone.com/nfts/' + this.gaiaAsset.contractAsset.nftIndex
+          return 'https://thisisnumberone.com/nfts/' + this.gaiaAsset.contractAsset.contractId + '/' + this.gaiaAsset.contractAsset.nftIndex
         }
         return 'https://thisisnumberone.com/nft-marketplace'
       }

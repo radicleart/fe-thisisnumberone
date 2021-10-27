@@ -270,6 +270,7 @@ export default {
     },
     updateItem () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.items[0].assetHash)
+      item.contractId = this.loopRun.contractId
       item.beneficiaries = this.beneficiaries
       this.$store.dispatch('rpayMyItemStore/saveItem', item).then((item) => {
         this.beneficiaries = item.beneficiaries

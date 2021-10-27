@@ -3,8 +3,6 @@ import { APP_CONSTANTS } from '@/app-constants'
 
 const STACKSMATE_API_PATH = process.env.VUE_APP_RISIDIO_API
 const MESH_API_PATH = process.env.VUE_APP_RISIDIO_API + '/mesh'
-const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
-const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 
 const assetGeneralStore = {
   namespaced: true,
@@ -73,7 +71,11 @@ const assetGeneralStore = {
   actions: {
     stacksmateSignme ({ commit }, assetHash) {
       return new Promise(function (resolve) {
-        axios.get(STACKSMATE_API_PATH + '/stacksmate/signme/' + assetHash).then((response) => {
+        let direct = STACKSMATE_API_PATH + '/stacksmate/signme/' + assetHash
+        if (MESH_API_PATH) {
+          direct = MESH_API_PATH + '/v2/stacksmate/signme/' + assetHash
+        }
+        axios.get(direct).then((response) => {
           commit('setSig', response.data)
           resolve(response.data)
         })
@@ -86,7 +88,7 @@ const assetGeneralStore = {
           functionName: data.functionName || 'general',
           nftIndex: (data.nftIndex) ? Number(data.nftIndex) : null,
           assetHash: data.assetHash,
-          contractId: STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
+          contractId: data.contractId
         }
         dispatch('rpayStacksContractStore/updateCache', cacheUpdate, { root: true })
       })
@@ -121,6 +123,16 @@ const assetGeneralStore = {
         })
       })
     },
+    fetchMetaData ({ state }, metaDataUrl) {
+      return new Promise(function (resolve, reject) {
+        axios.get(metaDataUrl).then((result) => {
+          state.metaDataUrl = metaDataUrl
+          resolve(result.data)
+        }).catch((error) => {
+          reject(new Error('Unable to find token filters: ' + error))
+        })
+      })
+    },
     tokenFilters ({ commit }) {
       return new Promise(function (resolve) {
         axios.get(MESH_API_PATH + '/v2/token-filters').then((result) => {
@@ -133,7 +145,7 @@ const assetGeneralStore = {
     },
     buildCacheAll ({ commit }) {
       return new Promise(function (resolve) {
-        axios.get(MESH_API_PATH + '/v2/build-cache').then((result) => {
+        axios.get(MESH_API_PATH + '/v2/build-application-cache').then((result) => {
           commit('setCacheState', result.data)
           resolve(result.data)
         }).catch((error) => {

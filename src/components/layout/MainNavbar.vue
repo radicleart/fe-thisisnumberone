@@ -1,4 +1,5 @@
 <template>
+<div>
 <b-navbar toggleable="sm" class="p-4" :fixed="getFixed()" type="dark" :variant="bgVariant()">
   <b-navbar-brand href="#"><b-link to="/"><img height="30px" :src="logo" /></b-link></b-navbar-brand>
 
@@ -31,43 +32,48 @@
         </div>
         <div class="mb-5" v-if="canUpload()"><b-link to="/upload-item">Create NFT</b-link></div>
         <div class="mb-5" v-if="profile.loggedIn"><b-link to="/profile">My Profile</b-link></div>
-        <div class="mt-5 pt-5 border-top" v-if="profile.loggedIn"><b-link to="/my-nfts">My NFTs</b-link></div>
+        <div class="mb-5 pb-5 border-bottom" v-if="profile.loggedIn"><b-link to="/my-nfts">My NFTs</b-link></div>
         <div class="mb-5" v-if="profile.superAdmin"><b-link to="/mgmnt/registry">Admin</b-link></div>
         <div class="mb-5" v-if="!profile.loggedIn && webWalletNeeded">
           <h1><a :href="webWalletLink" target="_blank">Get a Stacks Web Wallet <b-icon class="ml-3 mb-3" icon="arrow-up-right-square-fill"/></a></h1>
         </div>
         <div class="mb-5" @click="hide" v-if="profile.loggedIn"><b-link @click.prevent="logout()">Logout</b-link></div>
-        <div class="mb-5" v-else-if="!webWalletNeeded"><b-link @click.prevent="startLogin()">Login</b-link></div>
       </div>
     </template>
   </b-sidebar>
 
-  <b-collapse id="nav-collapse" is-nav align="center">
+  <b-collapse id="nav-collapse" is-nav align="right">
     <b-navbar-nav class="ml-auto">
       <b-nav-item v-if="profile.loggedIn && profile.superAdmin" class="mt-3 mr-4 mt-0 d-none d-lg-block d-xl-none" to="/mgmnt/registry">Admin</b-nav-item>
-      <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0" to="/my-nfts">My NFTs</b-nav-item>
-      <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0" to="/nft-marketplace">Marketplace</b-nav-item>
-      <b-nav-item v-if="profile.loggedIn && canUpload()" class="mt-3 mr-4 mt-0" to="/upload-item">Upload</b-nav-item>
-      <b-nav-item v-if="profile.loggedIn" class="mr-4"><a v-b-toggle.my-sidebar class="nav-text" ><b-icon icon="person" font-scale="2" class="mr-5 mb-3 mr-0"/></a></b-nav-item>
+      <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0" to="/my-nfts"><span class="mr-3"><img :src="listPoint"/></span> My NFTs</b-nav-item>
+      <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0" to="/nft-marketplace"><span class="mr-3"><img :src="listPoint"/></span>Marketplace</b-nav-item>
+      <b-nav-item v-if="profile.loggedIn && canUpload()" class="mt-3 mr-4 mt-0" to="/upload-item"><span class="mr-3"><img :src="listPoint"/></span>Upload</b-nav-item>
+      <!-- <b-nav-item class="mb-5" to="/about"><img height="15px" :src="wtf" alt="about link"/></b-nav-item> -->
+      <b-nav-item v-if="profile.loggedIn" class="mr-4"><a v-b-toggle.my-sidebar class="nav-text" ><b-icon icon="person" font-scale="2" class="mb-3 mr-0"/></a></b-nav-item>
       <b-nav-item v-else class="mt-3 text-big text-white" @click.prevent="startLogin()" href="#">Login</b-nav-item>
+      <MempoolReader/>
     </b-navbar-nav>
   </b-collapse>
 </b-navbar>
+<div class="d-flex justify-content-end mr-5">
+</div>
+</div>
 </template>
 
 <script>
+import MempoolReader from '@/components/utils/MempoolReader'
 import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
-  name: 'AboutNavbar',
+  name: 'MainNavbar',
   components: {
+    MempoolReader
   },
   data () {
     return {
       wtf: 'https://images.prismic.io/dbid/5b31fbd1-ca16-4fa0-bd5c-2d82b3ef98cc_WTF.png?auto=compress,format',
       logo: require('@/assets/img/navbar-footer/logo.svg'),
-      hollowWhiteOne: require('@/assets/img/Group 97.svg'),
-      rainbowOne: require('@/assets/img/Group 76.svg'),
+      listPoint: require('@/assets/img/phase2/Nav_Divider.png'),
       grid: require('@/assets/img/navbar-footer/grid.svg'),
       cross: require('@/assets/img/navbar-footer/cross.svg'),
       collapsed: true

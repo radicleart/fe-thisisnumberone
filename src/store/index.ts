@@ -310,7 +310,6 @@ export default new Vuex.Store({
               dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
               resolve(rootFile)
             })
-            // dispatch('rpayStacksContractStore/fetchAssetsByOwner', data).then(() => {})
           } else {
             dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN }, { root: true })
             resolve(null)

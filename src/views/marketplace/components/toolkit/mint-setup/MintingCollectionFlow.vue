@@ -2,34 +2,22 @@
 <div v-if="!loading" class="bg-dark d-flex justify-content-center">
   <div class="mx-auto">
     <b-card-group>
-      <b-card bg-variant="dark" class="text-white" header-tag="header" footer-tag="footer">
+      <b-card bg-variant="dark" class="border-white text-white" header-tag="header" footer-tag="footer">
         <template #header>
-          <ItemDisplay :item="null" :loopRun="loopRun"/>
         </template>
-        <div class="bg-dark mt-0">
-          <RoyaltyScreen :hidePrimaries="true" :mintButtonText="mintButtonText()" :errorMessage="errorMessage" :item="null" @mintToken="beginMintProcess" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
-        </div>
+        <b-row class="">
+          <b-col cols="4" class="px-5">
+            <ItemDisplay :item="null" :loopRun="loopRun"/>
+          </b-col>
+          <b-col cols="8" class="px-5">
+            <div class="bg-dark mt-0">
+              <RoyaltyScreen :hidePrimaries="true" :mintButtonText="mintButtonText()" :errorMessage="errorMessage" :item="null" @mintToken="beginMintProcess" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
+            </div>
+          </b-col>
+        </b-row>
       </b-card>
     </b-card-group>
   </div>
-  <b-modal scrollable id="result-modal" title="">
-    <div class="row">
-      <div class="col-12 my-1">
-        <h2>Crash Punk Minting</h2>
-        <div class="">Crash Punks mints on the Stacks / Bitcoin Blockchains</div>
-        <div class="">This can take a little while but once minted the Loop will appear
-          in your <b-link class="text-info" to="/my-nfts">NFT Library</b-link>
-        </div>
-        <div class="text-center mt-4">Please leave this tab open while we store your meta data.</div>
-        <div class="text-center mt-2"><b-icon icon="three-dots" animation="cylon" font-scale="4"></b-icon></div>
-      </div>
-    </div>
-    <template v-slot:modal-footer>
-      <div class="w-100">
-      </div>
-    </template>
-  </b-modal>
-
 </div>
 
 </template>
@@ -92,10 +80,7 @@ export default {
         window.eventBus.$on('rpayEvent', function (data) {
           if (data.opcode === 'stx-transaction-sent') {
             $self.$bvModal.hide('minting-modal')
-            if (data.txStatus === 'success') {
-              $self.$bvModal.hide('result-modal')
-              $self.$notify({ type: 'success', title: 'Tx Sent', text: 'Punks minted and meta data saved to Gaia!' })
-            } else if (data.txStatus.indexOf('abort') > -1) {
+            if (data.txStatus.indexOf('abort') > -1) {
               const punkIndexes = []
               $self.mintAllocations.forEach((ma) => {
                 punkIndexes.push(ma.punkIndex)
@@ -109,7 +94,6 @@ export default {
             } else if (data.txStatus.indexOf('replace') > -1) {
               $self.$notify({ type: 'warning', title: 'Tx Replaced', text: 'We may have lost the tx id - if so your token is still safe and will be reconnected once confirmed.' })
             }
-          } else if (data.opcode === 'collection-mint-token' || data.opcode === 'collection-mint-token-twenty') {
           }
         })
       }
@@ -139,12 +123,11 @@ export default {
             this.mintCollectionBatch(this.getData(signature))
           }
         })
-      }).catch((err) => {
-        console.log(err)
+      }).catch(() => {
+        this.$notify({ type: 'error', title: 'Minting', text: 'Server error callng mint - please try later!' })
       })
     },
     updateMetaData (data) {
-      this.$bvModal.show('result-modal')
       this.mintAllocations.forEach((ma) => {
         const ga = this.gaiaAssets.find((o) => o.image.indexOf('/' + ma.punkIndex + '.png'))
         ma.txId = data.txId
@@ -164,11 +147,16 @@ export default {
     createMetaData (index) {
       // create but don't store - wait till the last minute to register the batch!
       // see component MintingFlow.vue
+      if (!this.loopRun.punkImageBaseUrl || !this.loopRun.punkImageType) {
+        throw new Error('Expecting base urla nd type for the images.')
+      }
       const image = this.loopRun.punkImageBaseUrl + index + this.loopRun.punkImageType
-      const imgHash = utils.buildHash(image)
       const myAsset = {
-        assetHash: imgHash,
         attributes: {
+          buyNowPrice: 0,
+          editions: 1,
+          editionCost: 0,
+          index: index,
           artworkFile: {
             type: 'image/png',
             fileUrl: image,
@@ -183,11 +171,22 @@ export default {
       myAsset.contractId = this.loopRun.contractId
       let assetPath = myAsset.assetHash + '.json'
       if (myAsset.currentRunKey) {
-        assetPath = myAsset.currentRunKey + '/' + myAsset.assetHash + '.json'
+        assetPath = myAsset.currentRunKey + '/' + index + '.json'
       }
       myAsset.metaDataUrl = this.profile.gaiaHubConfig.url_prefix + this.profile.gaiaHubConfig.address + '/' + assetPath
+      this.buildAssetHash(myAsset)
       this.gaiaAssets.push(myAsset)
-      // this.saveAsset()
+    },
+    buildAssetHash (myAsset) {
+      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](this.loopRun.contractId)
+      let mintPrice = application.tokenContract.mintPrice
+      const defaultMintPrice = Number(process.env.VUE_APP_DEFAULT_MINT_PRICE)
+      mintPrice = Math.max(application.tokenContract.mintPrice, defaultMintPrice)
+      const editions = myAsset.attributes.editions
+      const editionCost = myAsset.attributes.editionCost
+      const buyNowPrice = myAsset.attributes.buyNowPrice
+      const hashish = myAsset.image + myAsset.metaDataUrl + mintPrice + editions + editionCost + buyNowPrice
+      myAsset.assetHash = utils.buildHash(hashish)
     },
     saveAsset (gaiaAsset) {
       this.$store.dispatch('rpayMyItemStore/saveItem', gaiaAsset).then(() => {
@@ -225,8 +224,8 @@ export default {
       const data = {
         message: hashOfMessage,
         sig: signature,
-        editions: (this.gaiaAssets[0].editions) ? this.gaiaAssets[0].editions : 1,
-        editionCost: (this.gaiaAssets[0].editionCost) ? this.gaiaAssets[0].editionCost : 0,
+        editions: this.gaiaAssets[0].attributes.editions,
+        editionCost: this.gaiaAssets[0].attributes.editionCost,
         buyNowPrice: this.gaiaAssets[0].attributes.buyNowPrice,
         mintPrice: mintPrice,
         owner: profile.stxAddress,
@@ -250,13 +249,6 @@ export default {
         data.functionName = 'collection-mint-token'
       }
       return data
-    },
-    updateItem () {
-      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.gaiaAssets[0].assetHash)
-      item.beneficiaries = this.beneficiaries
-      this.$store.dispatch('rpayMyItemStore/saveItem', item).then((item) => {
-        this.beneficiaries = item.beneficiaries
-      })
     },
     setPage () {
       this.loading = false

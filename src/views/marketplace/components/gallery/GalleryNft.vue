@@ -53,7 +53,7 @@ export default {
   methods: {
     marketplaceLink: function () {
       if (!this.item.contractAsset) return null
-      return process.env.VUE_APP_MARKETPLACE_URL + '/nfts/' + this.item.contractAsset.nftIndex
+      return process.env.VUE_APP_MARKETPLACE_URL + '/nfts/' + this.item.contractAsset.contractId + '/' + this.item.contractAsset.nftIndex
     },
     getSaleType: function () {
       return this.item.contractAsset.saleData.saleType
@@ -111,7 +111,7 @@ export default {
     },
     assetUrl () {
       if (this.item.contractAsset) {
-        return '/nfts/' + this.item.contractAsset.nftIndex
+        return '/nfts/' + this.item.contractAsset.contractId + '/' + this.item.contractAsset.nftIndex
       }
       return '#'
     }

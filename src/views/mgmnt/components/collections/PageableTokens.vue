@@ -8,7 +8,7 @@
         </template>
         <template #cell(Actions)="data">
           <span v-b-tooltip.hover="{ variant: 'warning' }" title="Manage royalties for this collection">
-            <a @click.prevent="update(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="credit-card"/></a>
+            <a @click.prevent="update(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="arrow-up-right-circle"/></a>
           </span>
         </template>
       </b-table>

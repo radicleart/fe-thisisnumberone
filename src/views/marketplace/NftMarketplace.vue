@@ -2,14 +2,14 @@
 <div v-if="loaded">
   <b-container fluid id="my-nft-tabs" class="px-5 text-white mt-5">
     <b-row>
-      <b-col md="4" sm="12">
+      <b-col md="3" sm="12">
         <h1 class="border-bottom mb-5">Marketplace</h1>
         <CollectionSidebar :allowUploads="false" @update="update"/>
       </b-col>
-      <b-col md="8" sm="12">
+      <b-col md="9" sm="12">
         <h1 class="mb-4 border-bottom">Collections</h1>
         <b-row>
-          <b-col md="3" sm="6" xs="12" v-for="(loopRun, index) in loopRuns" :key="index">
+          <b-col md="4" sm="6" xs="12" v-for="(loopRun, index) in loopRuns" :key="index">
             <div>
               <b-link class="text-warning" :to="collectionUrl(loopRun)">
                 <img width="100%" :src="getImageUrl(loopRun)"  v-b-tooltip.hover="{ variant: 'warning' }" :title="'Collection\n' + loopRun.currentRun"/>
@@ -96,8 +96,9 @@ export default {
   },
   computed: {
     allLoopRuns () {
-      const loopRuns = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUNS]
-      return loopRuns
+      const loopRunsActive = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUNS_BY_STATUS]('active')
+      const loopRunsInactive = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUNS_BY_STATUS]('inactive')
+      return loopRunsActive.concat(loopRunsInactive)
     },
     application () {
       const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](this.loopRun.contractId)

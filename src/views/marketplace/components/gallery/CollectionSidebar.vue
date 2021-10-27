@@ -1,6 +1,6 @@
 <template>
 <div class="text-small">
-  <h3 class="border-bottom pointer" @click="showColls = !showColls">Collections <b-icon v-if="showColls" icon="chevron-down"/> <b-icon v-else icon="chevron-right"/></h3>
+  <h3 class="border-bottom pointer" @click="showColls = !showColls"><b-icon font-scale="0.8" v-if="showColls" icon="chevron-down"/> <b-icon font-scale="0.8" v-else icon="chevron-right"/> Collections</h3>
   <div v-for="(project, index) in projects" :key="index" class="mb-5">
     <!--
     <div @click="contractId = project.contractId">
@@ -23,7 +23,7 @@
         <div class="text-small"><b-link class="text-warning" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey"><span class="text-warning" v-b-tooltip.hover="{ variant: 'warning' }" :title="'View collection in marketplace.'">{{loopRun.tokenCount}} / {{loopRun.versionLimit}}</span></b-link></div>
         <div class="text-small">by: <b-link class="text-warning" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey"><span class="text-warning" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Mint new pieces in this collection.'">{{loopRun.makerName}}</span></b-link></div>
         -->
-        <h4 v-if="loopRun.status !== 'disabled'" class="pointer" @click="showCollection(loopRun)">{{loopRun.currentRun}}</h4>
+        <p v-if="loopRun.status !== 'disabled'" class="pointer" @click="showCollection(loopRun)">{{loopRun.currentRun}}</p>
       </div>
     </div>
   <div v-if="canUpload()">

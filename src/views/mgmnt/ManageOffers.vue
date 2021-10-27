@@ -17,7 +17,7 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import OfferHistory2 from '@/views/marketplace/components/toolkit/offers/OfferHistory2'
-import moment from 'moment'
+import { DateTime } from 'luxon'
 
 export default {
   name: 'ManageOffers',
@@ -47,7 +47,7 @@ export default {
     },
     offerMade: function (madeData) {
       if (!madeData) return '-'
-      return moment(madeData).format('DD-MM hh:mm')
+      return DateTime.fromMillis(madeData).toLocaleString({ weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
     }
   },
   computed: {

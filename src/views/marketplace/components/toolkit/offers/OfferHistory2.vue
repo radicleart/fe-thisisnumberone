@@ -12,7 +12,7 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import moment from 'moment'
+import { DateTime } from 'luxon'
 
 export default {
   name: 'OfferHistory',
@@ -38,7 +38,7 @@ export default {
     },
     offerMade: function (madeData) {
       if (!madeData) return '-'
-      return moment(madeData).format('DD-MM hh:mm')
+      return DateTime.fromMillis(madeData).toLocaleString({ weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
     }
   },
   computed: {

@@ -47,7 +47,7 @@ export default {
       })
       if (!artistAssets || artistAssets.length === 0) return '#'
       if (artistAssets[0].contractAsset) {
-        this.$router.push('/nfts/' + artistAssets[0].contractAsset.nftIndex + '#asset-charity')
+        this.$router.push('/nfts/' + artistAssets[0].contractAsset.contractId + '/' + artistAssets[0].contractAsset.nftIndex + '#asset-charity')
       } else {
         this.$router.push('/assets/' + artistAssets[0].assetHash + '/1#asset-charity')
       }

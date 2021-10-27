@@ -3,7 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router'
 import store from '@/store'
 
 // templates
-import AboutNavbar from '@/components/layout/AboutNavbar.vue'
+// import AboutNavbar from '@/components/layout/AboutNavbar.vue'
 import MainNavbar from '@/components/layout/MainNavbar.vue'
 import MainFooter from '@/components/layout/MainFooter.vue'
 import AdminNav from '@/views/mgmnt/AdminNav.vue'
@@ -64,25 +64,25 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'splash',
-    components: { default: NumberOne, header: AboutNavbar, footer: MainFooter },
+    components: { default: Homepage, header: MainNavbar, footer: MainFooter },
     meta: { title: 'This is Number One on Stacks NFT Marketplace secured by Bitcoin' }
   },
   {
     path: '/home',
     name: 'home',
-    components: { default: Homepage, header: AboutNavbar, footer: MainFooter },
+    components: { default: Homepage, header: MainNavbar, footer: MainFooter },
     meta: { title: 'This is Number One on Stacks NFT Marketplace secured by Bitcoin' }
   },
   {
     path: '/number-one',
     name: 'number-one',
-    components: { default: NumberOne, header: AboutNavbar, footer: MainFooter },
+    components: { default: NumberOne, header: MainNavbar, footer: MainFooter },
     meta: { title: 'This is Number One on Stacks NFT Marketplace secured by Bitcoin' }
   },
   {
     path: '/nft-gallery',
     name: 'nft-gallery',
-    components: { default: NftGallery, header: AboutNavbar, footer: MainFooter },
+    components: { default: NftGallery, header: MainNavbar, footer: MainFooter },
     meta: { title: 'Marketplace for NFTs by the Number One Team Secured by Bitcoin' }
   },
   {
@@ -107,7 +107,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/exhibit-here',
     name: 'exhibit-here',
-    components: { default: ExhibitHere, header: AboutNavbar, footer: MainFooter },
+    components: { default: ExhibitHere, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -123,13 +123,13 @@ const routes: Array<RouteConfig> = [
   {
     path: '/login',
     name: 'login',
-    components: { default: Login, header: AboutNavbar, footer: HomeFooter },
+    components: { default: Login, header: MainNavbar, footer: HomeFooter },
     meta: { title: 'Login page' }
   },
   {
     path: '/profile',
     name: 'profile',
-    components: { default: ManageProfile, header: AboutNavbar, footer: MainFooter },
+    components: { default: ManageProfile, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -139,23 +139,23 @@ const routes: Array<RouteConfig> = [
   {
     path: '/information/:infoId',
     name: 'info-page',
-    components: { default: Information, header: AboutNavbar, footer: MainFooter }
+    components: { default: Information, header: MainNavbar, footer: MainFooter }
   },
   {
     path: '/charity/:charityId',
     name: 'charity-page',
-    components: { default: Charity, header: AboutNavbar, footer: MainFooter }
+    components: { default: Charity, header: MainNavbar, footer: MainFooter }
   },
   {
     path: '/assets/:assetHash/:edition',
     name: 'asset-by-hash',
-    components: { default: AssetDetails, header: AboutNavbar, footer: MainFooter },
+    components: { default: AssetDetails, header: MainNavbar, footer: MainFooter },
     meta: { title: 'Asset informations' }
   },
   {
-    path: '/nfts/:nftIndex',
+    path: '/nfts/:contractId/:nftIndex',
     name: 'asset-by-index',
-    components: { default: AssetDetails, header: AboutNavbar, footer: MainFooter },
+    components: { default: AssetDetails, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: false,
       requiresAdmin: false,
@@ -163,9 +163,19 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
+    path: '/nft-preview/:contractId/:nftIndex',
+    name: 'nft-preview',
+    components: { default: ItemPreview, header: MainNavbar, footer: MainFooter },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'NFT Preview'
+    }
+  },
+  {
     path: '/item-preview/:assetHash/:edition',
     name: 'item-preview',
-    components: { default: ItemPreview, header: AboutNavbar, footer: MainFooter },
+    components: { default: ItemPreview, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -175,7 +185,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/edit-item/:assetHash',
     name: 'edit-item',
-    components: { default: UpdateItem, header: AboutNavbar, footer: MainFooter },
+    components: { default: UpdateItem, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: false
@@ -184,7 +194,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/upload-item',
     name: 'upload-item',
-    components: { default: UploadItem, header: AboutNavbar, footer: MainFooter },
+    components: { default: UploadItem, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: false
@@ -193,7 +203,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/my-nfts',
     name: 'my-nfts',
-    components: { default: MyNftLibrary, header: AboutNavbar, footer: MainFooter },
+    components: { default: MyNftLibrary, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: false
@@ -202,7 +212,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/my-nfts/:collection',
     name: 'my-nfts',
-    components: { default: MyNftLibrary, header: AboutNavbar, footer: MainFooter },
+    components: { default: MyNftLibrary, header: MainNavbar, footer: MainFooter },
     meta: {
       requiresAuth: true,
       requiresAdmin: false

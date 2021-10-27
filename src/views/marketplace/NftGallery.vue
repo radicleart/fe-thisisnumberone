@@ -36,13 +36,11 @@ export default {
     }
   },
   mounted () {
-    this.findAssets()
+    // this.findAssets()
   },
   methods: {
     findAssets () {
-      // const pid = STX_CONTRACT_NAME.split('-')[0]
       this.$store.dispatch('rpayStacksContractStore/fetchContractDataFirstEditions').then(() => {
-        // this.resultSet = results
         this.loaded = true
       })
       this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {

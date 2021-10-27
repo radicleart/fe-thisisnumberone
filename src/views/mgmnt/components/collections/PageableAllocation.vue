@@ -5,7 +5,8 @@
       <b-table striped hover :items="values()" :fields="fields()" class="bg-light text-dark">
         <template #cell(Actions)="data">
           <span v-b-tooltip.hover="{ variant: 'warning' }" title="Manage royalties for this collection">
-            <a @click.prevent="update(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="credit-card"/></a>
+            <a :href="transactionUrl(data)" target="_blank" class="pointer text-info mr-2"><b-icon icon="arrow-up-right-circle"/></a>
+            <span @click="deleteOne(data)" class="pointer text-info mr-2"><b-icon icon="x-circle"/></span>
           </span>
         </template>
       </b-table>
@@ -14,7 +15,7 @@
     </div>
     <div class="d-flex justify-content-start my-3 mx-4" v-else>
       <div class="mt-5">
-        <p>Minting not yet begun for this collection...</p>
+        <p>No allocations.</p>
       </div>
     </div>
   </div>
@@ -46,8 +47,25 @@ export default {
     this.loading = false
   },
   methods: {
-    update () {
-      this.gotoPage(0)
+    deleteOne: function (data) {
+      const allocation = this.resultSet[data.index]
+      const bean = {
+        id: allocation.id,
+        punkIndexes: [allocation.punkIndex],
+        currentRunKey: allocation.currentRunKey,
+        stxAddress: null
+      }
+      this.$store.dispatch('rpayCategoryStore/deleteAllocation', bean).then((result) => {
+        this.resultSet[data.index] = result
+      })
+    },
+    transactionUrl: function (data) {
+      const allocation = this.resultSet[data.index]
+      let txId = allocation.txId
+      if (!txId) return '#'
+      if (!txId.startsWith('0x')) txId = '0x' + txId
+      const stacksApiUrl = process.env.VUE_APP_STACKS_EXPLORER
+      return stacksApiUrl + '/txid/' + txId + '?chain=' + process.env.VUE_APP_NETWORK
     },
     gotoPage (page) {
       // this.page = page - 1

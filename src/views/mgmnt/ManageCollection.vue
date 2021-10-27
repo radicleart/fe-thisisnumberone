@@ -23,9 +23,9 @@
     </div>
 
     <div class="mb-3" role="group">
-      <label for="currentRun-name"><span class="text-danger">*</span> Collection Name (max 30 chars)</label>
+      <label for="currentRun-name"><span class="text-danger">*</span> Collection Name (max 40 chars)</label>
       <b-form-input
-        maxlength="30"
+        maxlength="40"
         @keyup="setRunKey()"
         id="currentRun-name"
         v-model="loopRun.currentRun"

@@ -482,12 +482,12 @@ export default {
                     ;; if client bypasses UI clientMintPrice then charge mint-price
                     (myMintPrice (max-of (var-get mint-price) clientMintPrice))
                     (mintCounter (var-get mint-counter))
-                    (ahash (get asset-hash (map-get? nft-data {nft-index: (var-get mint-counter)})))
+                    (index (get nft-index (map-get? nft-lookup {asset-hash: asset-hash, edition: u1})))
                     (block-time (unwrap! (get-block-info? time u0) amount-not-set))
                 )
                 (asserts! (> maxEditions u0) editions-error)
                 (asserts! (> (stx-get-balance tx-sender) (var-get mint-price)) cant-pay-mint-price)
-                (asserts! (is-none ahash) asset-not-registered)
+                (asserts! (is-none index) asset-not-registered)
 
                 ;; Note: series original is really for later editions to refer back to this one - this one IS the series original
                 (map-insert nft-data {nft-index: mintCounter} {asset-hash: asset-hash, meta-data-url: metaDataUrl, max-editions: maxEditions, edition: u1, edition-cost: editionCost, mint-block-height: block-height, series-original: mintCounter})
@@ -533,14 +533,14 @@ export default {
                     ;; if client bypasses UI clientMintPrice then charge mint-price
                     (myMintPrice (max-of (var-get mint-price) clientMintPrice))
                     (mintCounter (var-get mint-counter))
-                    (ahash (get asset-hash (map-get? nft-data {nft-index: (var-get mint-counter)})))
+                    (index (get nft-index (map-get? nft-lookup {asset-hash: asset-hash, edition: u1})))
                     (block-time (unwrap! (get-block-info? time u0) amount-not-set))
                 )
                 (print {evt: "mint-token", sender: tx-sender, meta-data-url: metaDataUrl})
                 (asserts! (< mintCounter collection-max-supply) collection-limit-reached)
                 (asserts! (> maxEditions u0) editions-error)
                 (asserts! (> (stx-get-balance tx-sender) (var-get mint-price)) cant-pay-mint-price)
-                (asserts! (is-none ahash) asset-not-registered)
+                (asserts! (is-none index) asset-not-registered)
 
                 ;; Note: series original is really for later editions to refer back to this one - this one IS the series original
                 (map-insert nft-data {nft-index: mintCounter} {asset-hash: asset-hash, meta-data-url: metaDataUrl, max-editions: maxEditions, edition: u1, edition-cost: editionCost, mint-block-height: block-height, series-original: mintCounter})

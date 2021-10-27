@@ -1,6 +1,6 @@
 <template>
 <b-card-group>
-  <b-card class="text-white text-xsmall bg-dark" header-tag="header" footer-tag="footer">
+  <b-card class="text-white text-xsmall bg-dark" style="height: 50vh;" header-tag="header" footer-tag="footer">
     <!-- <header-screen :allowEdit="false" :item="item"/> -->
     <div class="text-danger" v-html="errorMessage"></div>
     <EditEditions v-if="allowEditEditions" :item="item"/>

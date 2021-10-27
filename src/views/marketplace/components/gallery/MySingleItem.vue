@@ -1,17 +1,17 @@
 <template>
 <div class="" v-if="asset">
-  <b-card bg-variant="white" class="mt-0 text-small py-2 text-dark">
+  <b-card bg-variant="black" class="bg-black mt-0 py-2 text-white">
     <div class="px-2">
       <div class="text-left">
-        <h6>{{mintedMessage}}</h6>
-        <div class="text-xsmall d-flex justify-content-between">
+        <h4>{{mintedMessage}}</h4>
+        <div class="text-small d-flex justify-content-between">
           <div class="text-right">{{loopRun.currentRun}}</div>
           <div class="text-right">{{created()}}</div>
         </div>
       </div>
     </div>
     <b-card-text class="">
-      <router-link :to="nextUrl" style="text-decoration: none;">
+      <b-link v-if="contractAsset" class="text-xsmall text-info" :to="'/nfts/' + contractAsset.contractId + '/' + contractAsset.nftIndex">
       <div @contextmenu="handler($event)" class="d-flex justify-content-center p-2">
           <img
             ref="itemImage"
@@ -19,7 +19,7 @@
             :height="newHeight"
             :src="image" @error="imageError()"/>
       </div>
-      </router-link>
+      </b-link>
     </b-card-text>
     <b-card-text>
       <div class="text-xsmall text-center mb-3">
@@ -35,14 +35,14 @@
         <div v-if="itemPreview">
           <div><a v-b-tooltip.bottom title="Download loopbomb" class="text-info text-light ml-3" href="#" @click.prevent="download"><b-icon class="text-info arrow-repeat" font-scale="1" icon="arrow-down-circle"></b-icon></a></div>
         </div>
-        <div v-else>
-          <b-link v-if="contractAsset" class="text-xsmall text-info" :to="'/item-preview/' + asset.assetHash + '/1'">manage item</b-link>
-          <b-link v-else class="text-xsmall text-info" :to="'/item-preview/' + asset.assetHash + '/1'">mint now</b-link>
+        <div v-else-if="myNfts">
+          <b-link v-if="contractAsset" class="text-small text-warning" :to="'/nft-preview/' + asset.contractAsset.contractId + '/' + asset.contractAsset.nftIndex">manage item</b-link>
+          <b-link v-else class="text-small text-warning" :to="'/item-preview/' + asset.assetHash + '/1'">mint now</b-link>
         </div>
         <div v-if="iAmOwner">
         </div>
         <div class="text-info" v-if="!marketplace && !nftPage">
-          <b-link v-if="contractAsset" class="text-xsmall text-info" :to="'/nfts/' + contractAsset.nftIndex">show in marketplace</b-link>
+          <b-link v-if="contractAsset" class="text-small text-warning" :to="'/nfts/' + contractAsset.contractId + '/' + contractAsset.nftIndex">show in marketplace</b-link>
         </div>
       </div>
     </b-card-text>
@@ -118,13 +118,6 @@ export default {
     **/
   },
   computed: {
-    currentRun () {
-      const loopRuns = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUNS]
-      if (loopRuns && loopRuns.length > 0) {
-        return loopRuns[loopRuns.length - 1].currentRun
-      }
-      return ''
-    },
     contractAsset () {
       if (this.asset.contractAsset) return this.asset.contractAsset
       const data = { assetHash: this.asset.assetHash, edition: 1 }
@@ -139,13 +132,16 @@ export default {
           return 'success'
         }
       }
-      return 'outline-dark'
+      return 'outline-light'
     },
     itemPreview () {
       return this.$route.name === 'item-preview'
     },
     marketplace () {
-      return this.$route.name === 'nft-marketplace'
+      return this.$route.name === 'nft-marketplace' || this.$route.name === 'nft-collection'
+    },
+    myNfts () {
+      return this.$route.name === 'my-nfts'
     },
     nftPage () {
       return this.$route.name.startsWith('asset-by-')
@@ -153,7 +149,7 @@ export default {
     nextUrl () {
       if (this.marketplace || this.nftPage) {
         if (this.contractAsset && this.contractAsset.tokenInfo) {
-          return '/nfts/' + this.contractAsset.nftIndex
+          return '/nfts/' + this.contractAsset.contractId + '/' + this.contractAsset.nftIndex
         } else {
           return '/nfts/' + this.asset.assetHash + '/0'
         }
@@ -208,6 +204,10 @@ export default {
 }
 </script>
 <style scoped>
+
+.btn {
+  width: inherit;
+}
 .card {
   background-color: #212529;
   padding: 0;

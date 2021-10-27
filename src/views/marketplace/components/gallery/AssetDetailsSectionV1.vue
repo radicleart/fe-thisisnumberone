@@ -50,12 +50,9 @@
                   <b-col md="6" sm="6" class="mb-3 text-center" v-else-if="getSaleType() > 0 && getSaleType() < 3">
                     <SquareButton v-b-tooltip.hover="{ variant: 'light' }" :title="ttBiddingHelp" @clickButton="openPurchaceDialog()" :theme="'light'" :label1="salesButtonLabel" :svgImage="hammer" :text-warning="true"/>
                   </b-col>
-                  <b-col md="6" sm="6" class="text-center">
-                    <SquareButton v-b-tooltip.hover="{ variant: 'light' }" :title="ttOfferingHelp" @clickButton="openOfferPurchaceDialog()" :theme="'light'" :label1="'MAKE OFFER'" :svgImage="hammer" :text-warning="true"/>
-                  </b-col>
                 </b-row>
               </div>
-              <NftHistory class="text-small mt-5" v-if="nftIndex > -1" @setPending="setPending" :nftIndex="nftIndex" />
+              <NftHistory class="text-small mt-5" v-if="nftIndex > -1" @setPending="setPending" :nftIndex="nftIndex" :loopRun="loopRun"/>
               <b-row class="my-4" v-else>
                 <b-col md="6" sm="12" class="mb-3">
                   <div class="more-link m-0" v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
@@ -70,7 +67,7 @@
       </b-col>
     </b-row>
   <b-modal size="lg" id="asset-offer-modal" class="text-left">
-    <PurchaseFlow v-if="showRpay === 1" :gaiaAsset="gaiaAsset" :forceOfferFlow="forceOfferFlow" @offerSent="offerSent"/>
+    <PurchaseFlow v-if="showRpay === 1" :gaiaAsset="gaiaAsset" :loopRun="loopRun" :forceOfferFlow="forceOfferFlow" @offerSent="offerSent"/>
     <AssetUpdatesModal v-if="showRpay === 2" @registerForUpdates="registerForUpdates"/>
     <template #modal-header="{ close }">
       <div class=" text-warning w-100 d-flex justify-content-end">
@@ -132,7 +129,7 @@ export default {
     SquareButton,
     MintInfo
   },
-  props: ['gaiaAsset'],
+  props: ['gaiaAsset', 'loopRun'],
   data: function () {
     return {
       forceOfferFlow: false,
