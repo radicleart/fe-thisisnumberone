@@ -66,8 +66,9 @@ export default {
         asc: true
       }
       this.resultSet = null
-      this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((results) => {
-        this.resultSet = results // this.resultSet.concat(results)
+      this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((result) => {
+        this.resultSet = result.gaiaAssets
+        this.tokenCount = result.tokenCount
         this.componentKey++
         this.loading = false
       })

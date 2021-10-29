@@ -122,7 +122,7 @@ export default {
           Index: counter + ($self.page * $self.pageSize),
           'Image Index': allocation.punkIndex,
           status: allocation.status,
-          stxAddress: allocation.stxAddress,
+          stxAddress: (allocation.stxAddress) ? allocation.stxAddress : allocation.from,
           assetHash: allocation.assetHash,
           Actions: null
         }

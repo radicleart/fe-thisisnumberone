@@ -1,19 +1,19 @@
 <template>
 <div id="memread" class="">
-<b-nav-item-dropdown right no-caret style="min-width: 450px; list-style: none;">
-  <template v-slot:button-content style="min-width: 450px;">
+<b-nav-item-dropdown right no-caret style="list-style: none;">
+  <template v-slot:button-content>
     <div class="pl-2 px-2 mem-lights">
       <span><b-icon class="m-0 p-0" font-scale="0.9" :class="mempoolTemp()" icon="circle-fill"/></span>
     </div>
   </template>
-  <b-dropdown-item style="min-width: 450px;">
-    <div class="text-warning p-3" style="min-width: 450px;">
+  <b-dropdown-item>
+    <div class="text-warning p-3">
       <div><a :class="mempoolTemp" :href="mempoolApi" target="_blank">Transactions in mempool: <span @click="fetchMempool()">{{mempool.total}}</span></a></div>
       <div :class="mempoolTemp()" v-if="mempoolTemp() === 'text-success'">Mint Away</div>
       <div :class="mempoolTemp()" v-if="mempoolTemp() === 'text-warning'">Mint with caution</div>
       <div :class="mempoolTemp()" v-if="mempoolTemp() === 'text-danger'">Minting paused due to high loads</div>
     </div>
-    <div class="text-warning p-3" style="min-width: 450px;">
+    <div class="text-warning p-3">
       <div>Thresholds</div>
       <div class="text-white"> &lt; {{mempoolSettings.threshold2}} = Mint Away</div>
       <div class="text-white"> &lt; {{mempoolSettings.threshold3}} = Mint with caution</div>

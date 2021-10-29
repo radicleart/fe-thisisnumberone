@@ -109,7 +109,6 @@ export default {
   mounted () {
     this.makerUrlKey = this.$route.params.maker
     this.currentRunKey = this.$route.params.collection
-    this.$store.dispatch()
     if (window.eventBus && window.eventBus.$on) {
       const $self = this
       window.eventBus.$on('rpayEvent', function (data) {

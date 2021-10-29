@@ -11,7 +11,7 @@
       </div>
     </div>
     <b-card-text class="">
-      <b-link v-if="contractAsset" class="text-xsmall text-info" :to="'/nfts/' + contractAsset.contractId + '/' + contractAsset.nftIndex">
+      <b-link class="text-xsmall text-info" :to="(contractAsset) ? '/nfts/' + contractAsset.contractId + '/' + contractAsset.nftIndex : '#'">
       <div @contextmenu="handler($event)" class="d-flex justify-content-center p-2">
           <img
             ref="itemImage"

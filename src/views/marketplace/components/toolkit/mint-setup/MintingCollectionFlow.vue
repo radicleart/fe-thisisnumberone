@@ -173,6 +173,9 @@ export default {
       if (myAsset.currentRunKey) {
         assetPath = myAsset.currentRunKey + '/' + index + '.json'
       }
+      if (!this.profile.gaiaHubConfig) {
+        location.reload()
+      }
       myAsset.metaDataUrl = this.profile.gaiaHubConfig.url_prefix + this.profile.gaiaHubConfig.address + '/' + assetPath
       this.buildAssetHash(myAsset)
       this.gaiaAssets.push(myAsset)

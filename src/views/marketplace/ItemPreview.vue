@@ -129,7 +129,8 @@ export default {
     updateCacheByHash (data) {
       this.$store.dispatch('rpayStacksContractStore/updateCacheByHash', data).then((result) => {
         if (result && typeof result.nftIndex !== 'undefined') this.nftIndex = result.nftIndex
-        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', result.nftIndex).then(() => {
+        data.nftIndex = result.nftIndex
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then(() => {
           // this.componentKey++
           // window.location.reload()
         })

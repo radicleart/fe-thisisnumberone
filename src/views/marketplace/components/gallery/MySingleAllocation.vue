@@ -5,7 +5,7 @@
       <div class="text-left">
         <div class="text-xsmall d-flex justify-content-between">
           <h6>Minting Punk {{allocation.punkIndex}}</h6>
-          <div class="text-right">(status: {{allocation.status}})</div>
+          <div class="text-right">(status: {{allocation.txStatus}})</div>
         </div>
         <div class="text-xsmall d-flex justify-content-between">
           <div class="text-right">{{loopRun.currentRun}}</div>
@@ -16,15 +16,15 @@
     <b-card-text class="">
       <div class="d-flex justify-content-center p-2">
           <div style="height: 100px; width: 100px;" class="center">
-            <b-icon v-if="allocation.status === 'pending'" icon="circle" animation="throb" font-scale="5"></b-icon>
-            <b-icon v-else-if="allocation.status === 'success'" class="text-success" icon="check-circle" font-scale="5"></b-icon>
+            <b-icon v-if="allocation.txStatus === 'pending'" icon="circle" animation="throb" font-scale="5"></b-icon>
+            <b-icon v-else-if="allocation.txStatus === 'success'" class="text-success" icon="check-circle" font-scale="5"></b-icon>
             <b-icon v-else class="text-danger" icon="x-circle" font-scale="5"></b-icon>
           </div>
       </div>
     </b-card-text>
     <b-card-text>
       <div class="text-xsmall text-center mb-3">
-        <span v-b-tooltip.hover="{ variant: 'warning' }" :title="'View on explorer'"><a class="text-dark" @click="checkTx(true)" :href="transactionUrl()" target="_blank">{{allocation.stxAddress}}</a></span>
+        <span v-b-tooltip.hover="{ variant: 'warning' }" :title="'View on explorer'"><a class="text-dark" @click="checkTx(true)" :href="transactionUrl()" target="_blank">{{allocation.from}}</a></span>
       </div>
     </b-card-text>
   </b-card>
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     checkTx: function (userLed) {
-      if (this.allocation.status !== 'pending') {
+      if (this.allocation.txStatus !== 'pending') {
         clearInterval(this.myChainChecker)
         return
       }
@@ -76,7 +76,7 @@ export default {
       this.$store.dispatch('rpayTransactionStore/fetchTransactionFromChainByTxId', txId).then((result) => {
         if (userLed) this.$notify({ type: 'warning', title: 'Check Status', text: 'Transaction status is ' + result.txStatus })
         if (result.txStatus !== 'pending') {
-          this.allocation.status = result.txStatus
+          this.allocation.txStatus = result.txStatus
           this.$store.dispatch('rpayCategoryStore/updateMintAllocations', [this.allocation])
         }
       })
@@ -88,8 +88,8 @@ export default {
       this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.allocation)
     },
     created () {
-      if (this.allocation.created) {
-        return DateTime.fromMillis(this.allocation.created).toLocaleString({ weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+      if (this.allocation.timestamp) {
+        return DateTime.fromMillis(this.allocation.timestamp).toLocaleString({ weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
       }
       return '?'
     },

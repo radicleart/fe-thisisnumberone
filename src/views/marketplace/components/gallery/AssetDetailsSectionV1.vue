@@ -12,7 +12,7 @@
         <b-row align-v="stretch" :style="'height: ' + videoHeight - 100 + 'px'">
           <b-col cols="12" class="">
             <div class="d-flex justify-content-between mb-5">
-              <div><router-link class="text-white" to="/nft-gallery"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
+              <div><router-link class="text-white" to="/nft-marketplace"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
               <div class="d-flex justify-content-between">
                 <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
                 <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white">
@@ -185,9 +185,11 @@ export default {
           this.pending = result
         } else if (this.pending.txStatus === 'pending' && result.txStatus === 'success') {
           if (result.functionName === 'mint-token') {
-            this.updateCacheByHash(result.assetHash)
+            const data = { contractId: this.loopRun.contractId, assetHash: result.assetHash }
+            this.updateCacheByHash(data)
           } else {
-            this.updateCacheByNftIndex(result.nftIndex)
+            const data = { contractId: this.loopRun.contractId, nftIndex: result.nftIndex }
+            this.updateCacheByNftIndex(data)
           }
         } else if (result.txStatus.startsWith('abort')) {
           this.$notify({ type: 'danger', title: 'Transaction Info', text: 'Transaction failed - check blockchain for cause.' })
@@ -219,14 +221,14 @@ export default {
       const attributes = this.$store.getters[APP_CONSTANTS.KEY_MEDIA_ATTRIBUTES](this.gaiaAsset)
       return attributes
     },
-    updateCacheByHash (assetHash) {
-      this.$store.dispatch('rpayStacksContractStore/updateCacheByHash', assetHash).then(() => {
-        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndAssetHash', assetHash)
+    updateCacheByHash (data) {
+      this.$store.dispatch('rpayStacksContractStore/updateCacheByHash', data).then(() => {
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndAssetHash', data)
       })
     },
-    updateCacheByNftIndex (nftIndex) {
-      this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', nftIndex).then(() => {
-        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', nftIndex)
+    updateCacheByNftIndex (data) {
+      this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', data).then(() => {
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data)
       })
     },
     update () {

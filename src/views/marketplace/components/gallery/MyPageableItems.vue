@@ -1,14 +1,17 @@
 <template>
   <div v-if="!loading">
-    <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
-    <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
-      <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" v-for="(asset, index) of resultSet" :key="index">
-        <MySingleItem :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
+    <h1 class="pointer mb-4 border-bottom" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> {{tokenCount}} Minted NFTs</h1>
+    <div class="mb-4" v-if="showMinted && loopRun">
+      <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
+      <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" v-for="(asset, index) of resultSet" :key="index">
+          <MySingleItem :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
+        </div>
       </div>
-    </div>
-    <div class="d-flex justify-content-start my-3 mx-4" v-else>
-      <div class="mt-5">
-        <p>No NFTs found for this collection...</p>
+      <div class="d-flex justify-content-start my-3 mx-4" v-else>
+        <div class="mt-5">
+          <p>No NFTs found for this collection...</p>
+        </div>
       </div>
     </div>
   </div>
@@ -19,8 +22,7 @@ import MySingleItem from './MySingleItem'
 import Pagination from './common/Pagination'
 import { APP_CONSTANTS } from '@/app-constants'
 
-const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
-const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
+const LOOP_RUN_DEF = process.env.VUE_APP_DEFAULT_LOOP_RUN
 
 export default {
   name: 'MyPageableItems',
@@ -30,7 +32,9 @@ export default {
   props: ['loopRun'],
   data () {
     return {
+      showMinted: true,
       resultSet: [],
+      tokenCount: null,
       pageSize: 500,
       loading: true,
       doPaging: true,
@@ -69,7 +73,7 @@ export default {
     },
     fetchPage (page) {
       const data = {
-        contractId: (this.loopRun) ? this.loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
+        runKey: (this.loopRun) ? this.loopRun.currentRunKey : LOOP_RUN_DEF,
         stxAddress: this.profile.stxAddress,
         asc: true,
         page: page,
@@ -80,9 +84,10 @@ export default {
         data.stxAddress = 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
       }
       this.resultSet = null
-      this.$store.dispatch('rpayStacksContractStore/fetchMyTokens', data).then((results) => {
-        this.resultSet = results // this.resultSet.concat(results)
-        this.numberOfItems = results.length
+      this.$store.dispatch('rpayStacksContractStore/fetchMyTokens', data).then((result) => {
+        this.resultSet = result.gaiaAssets // this.resultSet.concat(results)
+        this.tokenCount = result.tokenCount
+        this.numberOfItems = result.gaiaAssets.length
         this.loading = false
       })
     }

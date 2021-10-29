@@ -1,5 +1,5 @@
 <template>
-<b-container fluid id="my-nft-tabs" class="px-5 text-white mt-5" v-if="loaded">
+<b-container fluid id="my-nft-tabs" class="px-5 text-white mt-5" v-if="!loading">
   <b-row>
     <b-col md="3" sm="12">
       <h1 class="border-bottom mb-5">My NFTs</h1>
@@ -26,10 +26,7 @@
           <MySingleAllocation :myTxFilter="myTxFilter" :parent="'list-view'" :loopRun="loopRun" :allocation="allocation" :key="componentKey"/>
         </div>
       </b-row>
-      <h1 class="pointer mb-4 border-bottom" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> Minted NFTs</h1>
-      <div class="mb-4" v-if="showMinted && loopRun">
-        <MyPageableItems :loopRun="loopRun"/>
-      </div>
+      <MyPageableItems :loopRun="loopRun"/>
     </b-col>
   </b-row>
   <div v-if="profile.stxAddress === 'ST1R1061ZT6KPJXQ7PAXPFB6ZAZ6ZWW28G8HXK9G5'">
@@ -67,40 +64,48 @@ export default {
   },
   data () {
     return {
+      componentKey: 0,
+      loopRun: null,
       mdContractId: null,
       mdNftIndex: null,
       myTxFilter: 'pending',
-      loaded: false,
+      loading: true,
       showPending: true,
-      showMinted: true,
       showUploads: false,
-      currentRunKey: null,
-      componentKey: 0,
       allocations: []
     }
   },
   watch: {
     '$route' () {
-      this.currentRunKey = this.$route.params.collection
       this.fetchAllocations()
     }
   },
   mounted () {
-    this.mdContractId = this.loopRun.contractId
-    this.fetchAllocations()
-    /**
-    this.data = { stxAddress: this.profile.stxAddress, mine: true }
-    const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
-    for (let i = 0; i < myContractAssets.length; i++) {
-      const ga = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](myContractAssets[i].tokenInfo.assetHash)
-      if (ga) ga.contractAsset = Object.assign({}, myContractAssets[i])
-      this.myNfts.push(ga)
-    }
-    **/
-    this.currentRunKey = this.$route.params.collection
-    this.loaded = true
+    this.fetchLoopRun()
   },
   methods: {
+    fetchLoopRun () {
+      let currentRunKey = this.$route.params.collection
+      if (!currentRunKey) {
+        currentRunKey = process.env.VUE_APP_DEFAULT_LOOP_RUN
+      }
+      this.$store.dispatch('rpayCategoryStore/fetchLoopRun', currentRunKey).then((loopRun) => {
+        this.loopRun = loopRun
+        this.mdContractId = this.loopRun.contractId
+        this.fetchAllocations()
+        this.loading = false
+      })
+    },
+    fetchAllocations () {
+      const params = { stxAddress: this.profile.stxAddress, contractId: this.loopRun.contractId }
+      this.$store.dispatch('rpayTransactionStore/fetchByContractIdAndFrom', params).then((results) => {
+        this.allocations = results || []
+      })
+    },
+    filteredAllocations () {
+      if (!this.myTxFilter || this.myTxFilter === 'all') return this.allocations
+      return this.allocations.filter((o) => o.txStatus === this.myTxFilter)
+    },
     updateMetaData () {
       this.$store.dispatch('rpayStacksContractStore/fetchContractAssetByNftIndex', { contractId: this.mdContractId, nftIndex: this.mdNftIndex }).then((item) => {
         const assetHash = item.tokenInfo.assetHash
@@ -114,19 +119,6 @@ export default {
           this.$store.dispatch('rpayMyItemStore/saveItem', metaData)
         })
       })
-    },
-    fetchAllocations () {
-      let params = { stxAddress: this.profile.stxAddress, currentRunKey: this.currentRunKey }
-      if (!this.currentRunKey) {
-        params = { stxAddress: this.profile.stxAddress }
-      }
-      this.$store.dispatch('rpayCategoryStore/fetchAllocationsByRunKeyAndStxAddress', params).then((results) => {
-        this.allocations = results // (results) ? results.filter((o) => o.status !== 'success') : []
-      })
-    },
-    filteredAllocations () {
-      if (!this.myTxFilter || this.myTxFilter === 'all') return this.allocations
-      return this.allocations.filter((o) => o.status === this.myTxFilter)
     },
     update (data) {
       if (data.opcode === 'show-uploads') {
@@ -142,11 +134,10 @@ export default {
     startLogin () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       if (!profile.loggedIn) {
-        this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
+        this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
           this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: this.loopRun.currentRunKey, stxAddress: profile.stxAddress }, { root: true })
           this.$emit('registerByConnect')
-        }).catch((err) => {
-          console.log(err)
+        }).catch(() => {
           this.$store.commit('setModalMessage', 'Install the Stacks Web Wallet to get going on the decentralised web.')
           this.$root.$emit('bv::show::modal', 'waiting-modal')
           this.webWalletNeeded = true
@@ -158,39 +149,17 @@ export default {
     }
   },
   computed: {
-    loopRun () {
-      let currentRunKey = this.$route.params.collection
-      if (!currentRunKey) {
-        currentRunKey = process.env.VUE_APP_DEFAULT_LOOP_RUN
-      }
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](currentRunKey)
-      return loopRun
-    },
     gaiaAssets () {
       const gaiaAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEMS]
       return gaiaAssets
-    },
-    hasNfts () {
-      const myContractAssets = this.$store.getters[APP_CONSTANTS.KEY_MY_CONTRACT_ASSETS]
-      return myContractAssets && myContractAssets.length
     },
     profile () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile
     }
-    /**
-    myNfts () {
-      const myGaiaAssets = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS_BY_OWNER]({ stxAddress: this.profile.stxAddress })
-      if (process.env.VUE_APP_NETWORK === 'local') {
-        myGaiaAssets.concat(this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSETS_BY_OWNER]({ stxAddress: 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' }))
-      }
-      return myGaiaAssets
-    }
-    **/
   }
 }
 </script>
-
 <style scoped>
 #my-nft-tabs >>> .nav-link.active {
   color: #000 !important;

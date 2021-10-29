@@ -152,15 +152,17 @@ export default {
       })
     },
     updateCacheByHash () {
-      this.$store.dispatch('rpayStacksContractStore/updateCacheByHash', this.assetHash).then(() => {
-        this.$store.dispatch('rpayStacksContractStore/fetchAssetByHashAndEdition', { assetHash: this.assetHash, edition: 1 }).then((item) => {
+      const data = { contractId: this.loopRun.contractId, assetHash: this.assetHash }
+      this.$store.dispatch('rpayStacksContractStore/updateCacheByHash', data).then(() => {
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndAssetHash', data).then((item) => {
           this.$emit('update', item)
         })
       })
     },
     updateCacheByNftIndex () {
-      this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', { contractId: this.loopRun.contractId, nftIndex: this.nftIndex }).then(() => {
-        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', { contractId: this.loopRun.contractId, nftIndex: this.nftIndex }).then((item) => {
+      const data = { contractId: this.loopRun.contractId, nftIndex: this.nftIndex }
+      this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', data).then(() => {
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then((item) => {
           this.$emit('update', item)
         })
       })

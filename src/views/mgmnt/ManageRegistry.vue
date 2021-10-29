@@ -4,6 +4,7 @@
   <AddressLookup v-if="childPage === 'addressLookup'"/>
   -->
   <Contracts v-if="!childPage || childPage === 'contracts'"/>
+  <DeployContract v-if="childPage === 'deployContract'"/>
   <ContractForm v-if="childPage === 'contractForm'"/>
   <BuildCache v-if="childPage === 'buildCache'"/>
   <ExploreCache v-if="childPage === 'exploreCache'"/>
@@ -19,7 +20,7 @@ import Faucet from './components/registry/Faucet'
 import ContractForm from './components/registry/ContractForm'
 import Contracts from './components/registry/Contracts'
 import CacheFilters from './components/registry/CacheFilters'
-// import AddressLookup from './components/registry/AddressLookup'
+import DeployContract from './components/registry/DeployContract'
 import BuildCache from './components/registry/BuildCache'
 import ExploreCache from './components/registry/ExploreCache'
 
@@ -28,6 +29,7 @@ export default {
   components: {
     Settings,
     ContractForm,
+    DeployContract,
     Contracts,
     Faucet,
     CacheFilters,

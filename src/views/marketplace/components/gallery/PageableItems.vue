@@ -1,14 +1,28 @@
 <template>
   <div>
-    <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
-    <div id="my-table" class="row mx-auto" v-if="resultSet && resultSet.length > 0">
-      <div class="text-white col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
-        <MySingleItem v-if="!skipme(asset)" :loopRun="loopRun" :parent="'list-view'" :asset="asset" :key="componentKey"/>
+    <div class="mb-4 border-bottom d-flex justify-content-between">
+      <h1 class="pointer" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> {{numberOfItems}} NFTs</h1>
+      <div>
+        <b-form-checkbox
+          size="lg"
+          id="batchMode"
+          v-model="forSale"
+          name="forSale"
+          value="for sale"
+          unchecked-value="all"
+          @change="toggleSelling"
+          >
+          <div class="text-white pointer" v-if="forSale === 'all'"><b>All</b></div>
+          <div class="text-white pointer" v-else><b>For Sale</b></div>
+        </b-form-checkbox>
       </div>
     </div>
-    <div class="d-flex justify-content-start my-3 mx-4" v-else>
-      <div class="mt-5">
-        <p>Minting not yet begun for this collection...</p>
+    <div class="mb-4" v-if="showMinted" :key="componentKey">
+      <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
+      <div id="my-table" class="row mx-auto" v-if="resultSet && resultSet.length > 0">
+        <div class="text-white col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
+          <MySingleItem v-if="!skipme(asset)" :loopRun="loopRun" :parent="'list-view'" :asset="asset"/>
+        </div>
       </div>
     </div>
   </div>
@@ -30,6 +44,8 @@ export default {
   props: ['loopRun'],
   data () {
     return {
+      forSale: 'all',
+      showMinted: true,
       resultSet: [],
       pageSize: 50,
       loading: true,
@@ -75,16 +91,20 @@ export default {
       return false
     },
     gotoPage (page) {
-      // this.page = page - 1
+      this.page = page - 1
       this.fetchPage(page - 1)
     },
     isTheV2Contract () {
       return this.loopRun.contractId.indexOf('thisisnumberone-v2') > -1
     },
-    fetchPage (page) {
+    toggleSelling () {
+      this.fetchPage(0, true)
+    },
+    fetchPage (page, reset) {
       const data = {
         contractId: (this.loopRun) ? this.loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
         runKey: this.loopRun.currentRunKey,
+        forSale: this.forSale !== 'all',
         page: page,
         pageSize: this.pageSize
       }
@@ -95,15 +115,19 @@ export default {
         if (this.loopRun.currentRunKey === 'my_first_word') {
           data.pageSize = 5
         }
-        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractId', data).then((results) => {
-          this.resultSet = results // this.resultSet.concat(results)
-          this.componentKey++
+        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractId', data).then((result) => {
+          this.resultSet = result.gaiaAssets
+          this.tokenCount = result.tokenCount
+          this.numberOfItems = result.tokenCount
+          if (reset) this.componentKey++
           this.loading = false
         })
       } else {
-        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((results) => {
-          this.resultSet = results // this.resultSet.concat(results)
-          this.componentKey++
+        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((result) => {
+          this.resultSet = result.gaiaAssets
+          this.tokenCount = result.tokenCount
+          this.numberOfItems = result.tokenCount
+          if (reset) this.componentKey++
           this.loading = false
         })
       }

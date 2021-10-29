@@ -71,7 +71,7 @@ import TableOfContracts from './contracts/TableOfContracts.vue'
 import TableOfProjects from './contracts/TableOfProjects.vue'
 
 export default {
-  name: 'TokenList',
+  name: 'Contracts',
   components: {
     DeployContractFromFile,
     DeployNumberOneV2,

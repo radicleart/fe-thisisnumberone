@@ -64,7 +64,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'splash',
-    components: { default: Homepage, header: MainNavbar, footer: MainFooter },
+    components: { default: NumberOne, header: MainNavbar, footer: MainFooter },
     meta: { title: 'This is Number One on Stacks NFT Marketplace secured by Bitcoin' }
   },
   {
