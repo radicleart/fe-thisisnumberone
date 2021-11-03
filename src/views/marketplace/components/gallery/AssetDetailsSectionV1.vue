@@ -37,7 +37,7 @@
               <div v-else>
                 <b-row v-if="getSaleType() === 0">
                   <b-col md="6" sm="12" v-if="editionsAvailable">
-                    <EditionTrigger :item="gaiaAsset" @mintedEvent="mintedEvent"/>
+                    <EditionTrigger :item="gaiaAsset" @mintedEvent="mintedEvent" :loopRun="loopRun"/>
                   </b-col>
                   <b-col md="6" sm="12" v-else>
                     <SquareButton @clickButton="openUpdates()" :theme="'light'" :label1="'GET UPDATES'" :icon="'eye'" :text-warning="true"/>

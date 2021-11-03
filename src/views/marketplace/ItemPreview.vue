@@ -14,7 +14,7 @@
       <b-col md="8" sm="12" align-self="start" class="mb-4 text-white">
         <div>
           <div class="mb-2 d-flex justify-content-between">
-            <h2 class="d-block border-bottom mb-5">{{item.name}}</h2>
+            <h2 class="d-block border-bottom mb-5"><span v-if="item.contractAsset">#{{item.contractAsset.nftIndex}}</span> {{item.name}}</h2>
             <ItemActionMenu :item="item" />
           </div>
           <h6 v-if="item.artist" class="text-small">By : {{item.artist}}</h6>
@@ -71,21 +71,7 @@ export default {
         this.item = item
       })
     } else {
-      this.assetHash = this.$route.params.assetHash
-      this.edition = Number(this.$route.params.edition)
-      const data = {
-        edition: 1,
-        assetHash: this.assetHash
-      }
-      this.$store.dispatch('rpayStacksContractStore/fetchAssetByHashAndEdition', data).then((item) => {
-        if (!item) {
-          this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
-            this.item = item
-          })
-        } else {
-          this.item = item
-        }
-      })
+      this.fetchItem()
     }
     if (window.eventBus && window.eventBus.$on) {
       const $self = this
@@ -107,6 +93,25 @@ export default {
     }
   },
   methods: {
+    fetchItem () {
+      this.assetHash = this.$route.params.assetHash
+      this.edition = Number(this.$route.params.edition)
+      this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
+        this.item = item
+        const data = {
+          asc: true,
+          page: 0,
+          pageSize: 100,
+          stxAddress: (process.env.VUE_APP_NETWORK !== 'local') ? this.profile.stxAddress : 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
+        }
+        this.$store.dispatch('rpayStacksContractStore/fetchMyTokens', data).then((results) => {
+          if (results && results.tokenCount > 0) {
+            const item = results.gaiaAssets.find((o) => o.assetHash === this.assetHash)
+            if (item) this.item = item
+          }
+        })
+      })
+    },
     setPending (result) {
       if (this.pending) {
         const data = {
@@ -131,16 +136,14 @@ export default {
         if (result && typeof result.nftIndex !== 'undefined') this.nftIndex = result.nftIndex
         data.nftIndex = result.nftIndex
         this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then(() => {
-          // this.componentKey++
-          // window.location.reload()
+          this.fetchItem()
         })
       })
     },
     updateCacheByNftIndex (data) {
       this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', data).then(() => {
         this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then(() => {
-          // this.componentKey++
-          // window.location.reload()
+          this.fetchItem()
         })
       })
     },

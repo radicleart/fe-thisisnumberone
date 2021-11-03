@@ -2,14 +2,14 @@
 <div class="row text-small" v-if="editionsMintable">
   <div class="col-12">
     <div class="mt-4 mb-3">
-      <b-button variant="outline-warning" @click.prevent="openEditionDialog()">Mint Edition</b-button>
+      <b-button variant="outline-warning" @click.prevent="openEditionDialog()">Buy Edition</b-button>
     </div>
     <div>
       <span>{{currentMaxEditions - (editionCounter - 1)}} editions available at <span class="">{{currentCost}}</span> STX</span>
     </div>
   </div>
   <b-modal size="lg" id="edition-modal" class="text-left">
-    <edition-flow @mintedEvent="mintedEvent" v-if="showRpayEditions" :item="item"/>
+    <EditionFlow @mintedEvent="mintedEvent" v-if="showRpayEditions" :item="item" :loopRun="loopRun"/>
     <template #modal-header></template>
     <template #modal-footer><div></div></template>
   </b-modal>
@@ -24,7 +24,7 @@ export default {
   components: {
     EditionFlow
   },
-  props: ['item'],
+  props: ['item', 'loopRun'],
   data () {
     return {
       showRpayEditions: false

@@ -311,6 +311,7 @@ export default new Vuex.Store({
               resolve(rootFile)
             })
           } else {
+            dispatch('rpayCategoryStore/fetchLoopRuns')
             dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN }, { root: true })
             resolve(null)
           }

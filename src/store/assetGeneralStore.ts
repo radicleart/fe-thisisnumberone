@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { APP_CONSTANTS } from '@/app-constants'
 
-const STACKSMATE_API_PATH = process.env.VUE_APP_RISIDIO_API
+axios.defaults.withCredentials = true
+
 const MESH_API_PATH = process.env.VUE_APP_RISIDIO_API + '/mesh'
 
 const assetGeneralStore = {
@@ -69,18 +70,6 @@ const assetGeneralStore = {
     }
   },
   actions: {
-    stacksmateSignme ({ commit }, assetHash) {
-      return new Promise(function (resolve) {
-        let direct = STACKSMATE_API_PATH + '/stacksmate/signme/' + assetHash
-        if (MESH_API_PATH) {
-          direct = MESH_API_PATH + '/v2/stacksmate/signme/' + assetHash
-        }
-        axios.get(direct).then((response) => {
-          commit('setSig', response.data)
-          resolve(response.data)
-        })
-      })
-    },
     cacheUpdate ({ dispatch }, data) {
       return new Promise(function () {
         const cacheUpdate = {

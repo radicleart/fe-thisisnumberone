@@ -19,7 +19,7 @@
       </div>
     </b-col>
   </b-row>
-  <b-button :buttonLabel="'MINT EDITION'" @click="mintEdition">MINT EDITION</b-button>
+  <b-button :buttonLabel="'BUY EDITION'" @click="mintEdition">BUY EDITION</b-button>
 </div>
 </template>
 
@@ -27,11 +27,11 @@
 import RatesListing from '@/views/marketplace/components/toolkit/RatesListing'
 
 export default {
-  name: 'PurchaseBuyNow',
+  name: 'EditionFlow',
   components: {
     RatesListing
   },
-  props: ['item'],
+  props: ['item', 'loopRun'],
   data () {
     return {
       loading: true,
@@ -56,8 +56,8 @@ export default {
         editionCost: this.currentCost,
         action: methos,
         nftIndex: this.item.contractAsset.nftIndex,
-        contractAddress: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS,
-        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME,
+        contractAddress: this.loopRun.contractId.split('.')[0],
+        contractName: this.loopRun.contractId.split('.')[1],
         functionName: 'mint-edition'
       }
       this.$store.dispatch('rpayPurchaseStore/mintEdition', data).then((result) => {

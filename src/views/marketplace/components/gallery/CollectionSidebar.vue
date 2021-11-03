@@ -61,7 +61,7 @@ export default {
   methods: {
     canUpload () {
       const hasUploadPriv = this.$store.getters[APP_CONSTANTS.KEY_HAS_PRIVILEGE]('can-upload')
-      return this.allowUploads && hasUploadPriv
+      return this.$route.name === 'my-nfts' && ((this.allowUploads && hasUploadPriv) || this.profile.superAdmin)
     },
     showCollection (loopRun) {
       this.$emit('update', { opcode: 'show-collection', loopRun: loopRun })
@@ -94,6 +94,10 @@ export default {
     }
   },
   computed: {
+    profile () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      return profile
+    },
     allLoopRuns () {
       const loopRuns = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUNS]
       return loopRuns

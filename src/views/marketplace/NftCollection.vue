@@ -18,7 +18,8 @@
               <div class="text-small">
                 <h2>{{loopRun.currentRun}}</h2>
                 <p>by: <span class="text-warning">{{loopRun.makerName}}</span></p>
-                <p><b-link :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.versionLimit - loopRun.tokenCount}} still available</b-link></p>
+                <p v-if="loopRun.type === 'punks'"><b-link :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.versionLimit - loopRun.tokenCount}} still available</b-link></p>
+                <p v-else>{{loopRun.tokenCount}} artworks</p>
               </div>
           </b-col>
         </b-row>
