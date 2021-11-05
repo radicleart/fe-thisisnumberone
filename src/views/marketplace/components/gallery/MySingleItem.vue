@@ -12,16 +12,17 @@
     </div>
     <b-card-text class="">
       <b-link class="text-xsmall text-info" :to="(contractAsset) ? '/nfts/' + contractAsset.contractId + '/' + contractAsset.nftIndex : '#'">
-      <div @contextmenu="handler($event)" class="d-flex justify-content-center p-2">
-          <img
-            ref="itemImage"
-            :width="'100%'"
-            :height="newHeight"
-            :src="image" @error="imageError()"/>
-      </div>
+        <div @contextmenu="handler($event)" class="d-flex justify-content-center p-2">
+            <img
+              ref="itemImage"
+              :width="'100%'"
+              :height="newHeight"
+              :src="image" @error="imageError()"/>
+        </div>
       </b-link>
     </b-card-text>
     <b-card-text>
+      <PunkConnect :loopRun="loopRun" :asset="asset" @updateImage="updateImage"/> <!-- v-on="$listeners"/> -->
       <div class="text-xsmall text-center mb-3">
         <span v-if="contractAsset">{{contractAsset.owner}}</span>
         <span v-else>'ownership in progress'</span>
@@ -53,12 +54,13 @@
 <script>
 import { DateTime } from 'luxon'
 import { APP_CONSTANTS } from '@/app-constants'
-// import imageDataURI from 'image-data-uri'
+import PunkConnect from './PunkConnect'
 
 // noinspection JSUnusedGlobalSymbols
 export default {
   name: 'MySingleItem',
   components: {
+    PunkConnect
   },
   props: ['asset', 'loopRun'],
   data () {
@@ -80,6 +82,10 @@ export default {
     })
   },
   methods: {
+    updateImage (item) {
+      this.asset.image = item.image
+      this.image = item.image
+    },
     handler: function (e) {
       e.preventDefault()
     },

@@ -26,7 +26,12 @@
           <MySingleAllocation :myTxFilter="myTxFilter" :parent="'list-view'" :loopRun="loopRun" :allocation="allocation" :key="componentKey"/>
         </div>
       </b-row>
-      <MyPageableItems :loopRun="loopRun"/>
+      <div v-if="loopRun && (loopRun.status !== 'disabled')">
+        <MyPageableItems :loopRun="loopRun"/>
+      </div>
+      <div v-if="loopRun.type === 'punks' && loopRun.status === 'unrevealed'">
+        <p><b-link :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.currentRun}} artwork available - mint here!</b-link></p>
+      </div>
     </b-col>
   </b-row>
   <div v-if="profile.stxAddress === 'ST1R1061ZT6KPJXQ7PAXPFB6ZAZ6ZWW28G8HXK9G5'">
@@ -77,10 +82,17 @@ export default {
   },
   watch: {
     '$route' () {
-      this.fetchAllocations()
+      this.loading = true
+      this.fetchLoopRun()
     }
   },
   mounted () {
+    let currentRunKey = this.$route.params.collection
+    if (!currentRunKey) {
+      currentRunKey = process.env.VUE_APP_DEFAULT_LOOP_RUN
+      this.$router.push('/my-nfts/' + currentRunKey)
+      return
+    }
     this.fetchLoopRun()
   },
   methods: {

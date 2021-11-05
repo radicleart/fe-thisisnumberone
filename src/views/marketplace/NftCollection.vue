@@ -23,8 +23,11 @@
               </div>
           </b-col>
         </b-row>
-        <div class="mb-4" v-if="loopRun">
+        <div class="mb-4" v-if="loopRun && (loopRun.status === 'active' || loopRun.status === 'inactive')">
           <PageableItems :loopRun="loopRun"/>
+        </div>
+        <div class="mb-4" v-else-if="loopRun && loopRun.status === 'unrevealed'">
+          <p v-if="loopRun.type === 'punks'"><b-link :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.currentRun}} artwork available - mint here!</b-link></p>
         </div>
       </b-col>
     </b-row>

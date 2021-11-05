@@ -5,7 +5,7 @@
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
       <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" v-for="(asset, index) of resultSet" :key="index">
-          <MySingleItem :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
+          <MySingleItem @updateImage="updateImage" :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
         </div>
       </div>
       <div class="d-flex justify-content-start my-3 mx-4" v-else>
@@ -40,6 +40,7 @@ export default {
       doPaging: true,
       numberOfItems: 0,
       componentKey: 0,
+      nowOnPage: 0,
       currentRunKey: null
     }
   },
@@ -67,8 +68,12 @@ export default {
     }
   },
   methods: {
-    gotoPage (page) {
+    updateImage () {
       // this.page = page - 1
+      this.fetchPage(this.nowOnPage)
+    },
+    gotoPage (page) {
+      this.nowOnPage = page - 1
       this.fetchPage(page - 1)
     },
     fetchPage (page) {

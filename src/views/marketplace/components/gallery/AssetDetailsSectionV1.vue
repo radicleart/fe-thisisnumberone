@@ -16,8 +16,7 @@
               <div class="d-flex justify-content-between">
                 <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
                 <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white">
-                  <div v-if="isOwner"><router-link class="text-white" to="/my-nfts">{{salesBadgeLabel}}</router-link></div>
-                  <div v-else>{{salesBadgeLabel}}</div>
+                  <div>{{salesBadgeLabel}}</div>
                   <div v-if="showEndTime()">{{biddingEndTime()}}</div>
                 </div>
               </div>

@@ -92,7 +92,7 @@ export default {
     this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
       // this.uploadState++
       if (!item) {
-        this.$router.push('/my-nfts')
+        this.$router.push('/my-nfts/' + this.loopRun.currentRunKey)
         return
       }
       this.item = item

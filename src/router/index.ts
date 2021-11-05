@@ -153,6 +153,10 @@ const routes: Array<RouteConfig> = [
     meta: { title: 'Asset informations' }
   },
   {
+    path: '/nfts/:nftIndex',
+    redirect: '/nfts/' + process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME + '/:nftIndex'
+  },
+  {
     path: '/nfts/:contractId/:nftIndex',
     name: 'asset-by-index',
     components: { default: AssetDetails, header: MainNavbar, footer: MainFooter },

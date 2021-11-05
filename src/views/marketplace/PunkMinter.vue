@@ -11,7 +11,10 @@
         <!-- <PunkTracker @updateAllocation="updateAllocation" :items="items" :loopRun="loopRun" :mintAllocations="mintAllocations"/> -->
         <b-row class="mt-5">
           <b-col sm="7" xs="12">
-            <img :src="getCollectionImageUrl(loopRun)" width="100%" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Collection\n' + loopRun.currentRun"/>
+            <div>
+              <VideoJsPlayer v-if="loopRun.video" v-on="handleVideoEvent()" @error="setAltImg" :options="videoOptions()"/>
+              <img v-else :src="mintImage" width="100%" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Collection\n' + loopRun.currentRun"/>
+            </div>
           </b-col>
           <b-col sm="5" xs="12">
             <b-row style="height: 100%;">
@@ -23,6 +26,12 @@
               </b-col>
               <b-col cols="12" align-self="end">
                 <div class="mt-2">
+                  <span>{{credits}} Mints Remianing</span>
+                </div>
+                <div class="mt-2" v-if="walletTx">
+                  <a class="mr-2" :href="transactionUrl()" target="_blank"><b-icon class="text-warning" font-scale="1.2" icon="arrow-up-right-circle"/> view on explorer</a>
+                </div>
+                <div class="mt-2" v-else>
                   <div v-if="mintingStatus() === 1">
                     <div v-if="mintingOk()">
                       <b-row class="">
@@ -42,6 +51,9 @@
                   </div>
                   <div v-else-if="mintingStatus() === 2">
                     Public minting is paused
+                  </div>
+                  <div v-else-if="mintingStatus() === 5">
+                    Mint pass all used up!
                   </div>
                   <div v-else>
                     Public minting starts soons
@@ -84,16 +96,19 @@
 import { APP_CONSTANTS } from '@/app-constants'
 import CollectionSidebar from '@/views/marketplace/components/gallery/CollectionSidebar'
 import MintingCollectionFlow from '@/views/marketplace/components/toolkit/mint-setup/MintingCollectionFlow'
+import VideoJsPlayer from '@/views/marketplace/components/media/VideoJsPlayer'
 
 export default {
   name: 'PunkMinter',
   components: {
     CollectionSidebar,
+    VideoJsPlayer,
     MintingCollectionFlow
   },
   data () {
     return {
       hashone: require('@/assets/img/phase2/No1_outline.png'),
+      waitingImage: 'https://images.prismic.io/radsoc/f60d92d0-f733-46e2-9cb7-c59e33a15fc1_download.jpeg?auto=compress,format',
       loaded: false,
       batchOption: 1,
       result: null,
@@ -103,12 +118,26 @@ export default {
       gaiaAssets: [],
       makerUrlKey: null,
       currentRunKey: null,
+      walletTx: false,
+      mintImage: null,
+      allowed: false,
       counter: 0
     }
   },
   mounted () {
     this.makerUrlKey = this.$route.params.maker
     this.currentRunKey = this.$route.params.collection
+    this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.currentRunKey).then((loopRun) => {
+      const data = {
+        stxAddress: this.profile.stxAddress,
+        contractId: loopRun.contractId,
+        currentRunKey: this.$route.params.collection
+      }
+      this.$store.dispatch('rpayCategoryStore/checkGuestList', data).then((result) => {
+        this.mintImage = loopRun.mintImage1 || loopRun.image
+        this.allowed = result
+      })
+    })
     if (window.eventBus && window.eventBus.$on) {
       const $self = this
       window.eventBus.$on('rpayEvent', function (data) {
@@ -116,21 +145,40 @@ export default {
           $self.$bvModal.hide('minting-modal')
         } else if (data.opcode === 'stx-transaction-sent') {
           $self.$bvModal.hide('minting-modal')
+          $self.walletTx = data
           if (data.txStatus === 'success') {
+            $self.mintImage = $self.loopRun.mintImage3 || $self.loopRun.image
             $self.result = ' status: ' + data.txStatus
             $self.$bvModal.hide('result-modal')
             // $self.$notify({ type: 'success', title: 'Tx Sent', text: 'Punks minted and meta data saved to Gaia!' })
           } else if (data.txStatus === 'pending') {
             $self.result = ' status: ' + data.txStatus
-            $self.$bvModal.show('result-modal')
+            $self.mintImage = $self.loopRun.mintImage2 || $self.loopRun.image
+            // const vals = { stxAddress: $self.profile.stxAddress, currentRunKey: $self.loopRun.currentRunKey }
+            // $self.$store.dispatch('rpayCategoryStore/addToBlockList', vals)
+            // $self.$bvModal.show('result-modal')
           } else {
             $self.result = ' status: ' + data.txStatus
+            $self.mintImage = $self.loopRun.image
           }
         }
       })
     }
   },
   methods: {
+    transactionUrl: function () {
+      if (!this.walletTx) return '#'
+      let txId = this.walletTx.txId
+      if (!txId.startsWith('0x')) txId = '0x' + txId
+      const stacksApiUrl = process.env.VUE_APP_STACKS_EXPLORER
+      return stacksApiUrl + '/txid/' + txId + '?chain=' + process.env.VUE_APP_NETWORK
+    },
+    setAltImg: function (event) {
+      event.target.src = this.waitingImage
+    },
+    handleVideoEvent () {
+      return this.items.length === this.loopRun.batchSize
+    },
     preserveWhiteSpace: function (content) {
       return '<span class="text-description" style="white-space: break-spaces;">DESCRIPTION: ' + content + '</span>'
     },
@@ -152,15 +200,18 @@ export default {
       return options
     },
     mintingStatus () {
-      if (this.loopRun.status !== 'active') {
+      if (this.loopRun.status !== 'active' && this.loopRun.status !== 'unrevealed' && this.credits > 0) {
         return 2
-      } else if (!this.loopRun.guestList || this.loopRun.guestList.length === 0 || this.loopRun.guestList.indexOf(this.profile.stxAddress) > -1) {
+      } else if (this.allowed && this.credits > 0) {
         return 1
+      } else if (this.credits <= 0) {
+        return 5
       } else {
         return 3
       }
     },
     startMinting: function () {
+      this.$store.dispatch('rpayCategoryStore/registerSpin', this.profile)
       this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow' })
       this.$store.commit('rpayStore/setDisplayCard', 100)
       this.$bvModal.show('minting-modal')
@@ -169,8 +220,23 @@ export default {
       this.uiState = 'locked'
       this.$notify({ type: 'warning', title: 'Upload File', text: 'Allocation event - ' + data })
     },
-    getCollectionImageUrl (item) {
-      return this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](item)
+    videoOptions () {
+      const videoOptions = {
+        emitOnHover: false,
+        playOnHover: false,
+        assetHash: null,
+        bigPlayer: false,
+        autoplay: true,
+        muted: false,
+        controls: true,
+        showMeta: false,
+        dimensions: 'max-width: 100%; max-height: auto;',
+        aspectRatio: '1:1',
+        poster: this.loopRun.image,
+        sources: [{ src: this.loopRun.video }],
+        fluid: false
+      }
+      return videoOptions
     }
   },
   computed: {
@@ -192,6 +258,15 @@ export default {
     },
     fetchedItems () {
       return this.items.length === this.loopRun.batchSize
+    },
+    credits () {
+      if (!this.profile.loggedIn) return true
+      const loopRun = this.loopRun
+      if (loopRun) {
+        const remaining = loopRun.spinsPerDay - loopRun.spinsToday
+        return (remaining > 0) ? remaining : 0
+      }
+      return 0
     }
   }
 }

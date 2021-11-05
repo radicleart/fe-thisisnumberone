@@ -1,8 +1,8 @@
 <template>
 <b-card-text class="mt-2">
   <b-row>
-    <b-col cols="4"><img @contextmenu="handler($event)" style="" width="100%" :src="getCollectionImageUrl(loopRun)"/></b-col>
-    <b-col cols="8">
+    <b-col cols="12"><img @contextmenu="handler($event)" style="" width="100%" :src="getCollectionImageUrl(loopRun)"/></b-col>
+    <b-col cols="12">
       <p class="mt-4 mb-5"><LoopRun :parent="'minting'" :currentLoopRun="loopRun"/></p>
       <p class="text-bold" v-if="item">{{item.name}}</p>
       <div class="text-center mt-5">

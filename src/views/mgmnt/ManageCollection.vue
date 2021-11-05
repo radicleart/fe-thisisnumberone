@@ -148,6 +148,50 @@
     </div>
 
     <div class="mb-3" role="group">
+      <label for="image">Video for this Collection</label>
+      <b-form-input
+        id="video"
+        v-model="loopRun.video"
+        aria-describedby="video-feedback"
+        placeholder="video for this Collection"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="mb-3" role="group">
+      <label for="mintImage1">Minting Image 1 for this Collection</label>
+      <b-form-input
+        id="mintImage1"
+        v-model="loopRun.mintImage1"
+        aria-describedby="mintImage1-feedback"
+        placeholder="Mint Image 1 for this Collection"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="mb-3" role="group">
+      <label for="mintImage2">Minting Image 2 for this Collection</label>
+      <b-form-input
+        id="mintImage2"
+        v-model="loopRun.mintImage2"
+        aria-describedby="mintImage2-feedback"
+        placeholder="Mint Image 2 for this Collection"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="mb-3" role="group">
+      <label for="mintImage3">Minting Image 3 for this Collection</label>
+      <b-form-input
+        id="mintImage3"
+        v-model="loopRun.mintImage3"
+        aria-describedby="mintImage3-feedback"
+        placeholder="Mint Image 3 for this Collection"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="mb-3" role="group">
       <label for="externalUrl">External URL for this Collection</label>
       <b-form-input
         id="externalUrl"
@@ -229,13 +273,18 @@ export default {
       currentRunKey: null,
       contractIds: [],
       formSubmitted: false,
-      statusEnum: [{ text: 'Active', value: 'active' }, { text: 'Inactive', value: 'inactive' }, { text: 'Disabled', value: 'disabled' }],
+      statusEnum: [{ text: 'Active', value: 'active' }, { text: 'Minting Phase', value: 'unrevealed' }, { text: 'Inactive', value: 'inactive' }, { text: 'Disabled', value: 'disabled' }],
       typeEnum: [{ text: 'Traditional', value: 'traditional' }, { text: 'Crypto Punks', value: 'punks' }],
       batchSizeEnum: [1, 5, 10, 15, 20],
       loaded: false,
       loopRun: {
         status: 'active',
         contractId: null,
+        image: null,
+        mintImage1: null,
+        mintImage2: null,
+        mintImage3: null,
+        video: null,
         makerName: null,
         batchPointer: 0,
         makerUrlKey: null,

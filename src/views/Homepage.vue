@@ -29,8 +29,8 @@
         <b-col cols="6" class="p-0 px-2 mt-3">
           <div class="border text-center " id="container">
             <div id="content">
-              <div v-if="profile.loggedIn"><h3><b-link to="/my-nfts">My NFTs</b-link></h3></div>
-              <div v-else><h3><b-link to="/my-nfts">Login</b-link></h3></div>
+              <div v-if="profile.loggedIn"><h3><b-link :to="'/my-nfts/' + loopRun.currentRunKey">My NFTs</b-link></h3></div>
+              <div v-else><h3><b-link :to="'/my-nfts/' + loopRun.currentRunKey">Login</b-link></h3></div>
             </div>
           </div>
         </b-col>
@@ -49,6 +49,7 @@
 
 <script>
 import PrismicItems from '@/components/prismic/PrismicItems'
+import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'Homepage',
@@ -73,6 +74,21 @@ export default {
     }
   },
   computed: {
+    loopRun () {
+      let loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.runKey)
+      if (!loopRun) {
+        loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](process.env.VUE_APP_DEFAULT_LOOP_RUN)
+      }
+      return loopRun
+    },
+    runKey () {
+      const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
+      let runKey = (this.item && this.item.currentRunKey) ? this.item.currentRunKey : defaultLoopRun
+      if (runKey.indexOf('/') > -1) {
+        runKey = runKey.split('/')[0]
+      }
+      return runKey
+    },
     profile () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       return profile

@@ -3,12 +3,12 @@
   <b-container class="my-5 pt-5" v-if="!item || !loopRun">
     <h1>{{message}}</h1>
   </b-container>
-  <b-container :key="componentKey" class="my-3" v-else>
+  <b-container class="my-3" v-else>
     <b-row style="min-height: 40vh;" >
       <b-col md="4" sm="12" align-self="start" class="text-center">
         <MediaItemGeneral :classes="'item-image-preview'" :options="options" :mediaItem="getMediaItem().artworkFile"/>
         <div class="text-left text-small mt-3">
-          <b-link to="/my-nfts"><b-icon icon="chevron-left"/> Back</b-link>
+          <b-link :to="'/my-nfts/' + loopRun.currentRunKey"><b-icon icon="chevron-left"/> Back</b-link>
         </div>
       </b-col>
       <b-col md="8" sm="12" align-self="start" class="mb-4 text-white">
@@ -54,7 +54,6 @@ export default {
   data: function () {
     return {
       showHash: false,
-      componentKey: 0,
       nftIndex: null,
       assetHash: null,
       pending: null,
@@ -65,18 +64,11 @@ export default {
   mounted () {
     this.loading = false
     this.state = this.$route.query.state
-    if (this.$route.name === 'nft-preview') {
-      const data = { contractId: this.$route.params.contractId, nftIndex: Number(this.$route.params.nftIndex) }
-      this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then((item) => {
-        this.item = item
-      })
-    } else {
-      this.fetchItem()
-    }
+    this.fetchItem()
     if (window.eventBus && window.eventBus.$on) {
       const $self = this
       window.eventBus.$on('rpayEvent', function (data) {
-        if ($self.$route.name !== 'item-preview') return
+        if ($self.$route.name !== 'item-preview' && $self.$route.name !== 'nft-preview') return
         if (data.opcode === 'stx-transaction-sent') {
           // save transaction but not on gaia asset
           if (data.txId && data.functionName === 'mint-token' && data.txStatus === 'success') {
@@ -94,23 +86,30 @@ export default {
   },
   methods: {
     fetchItem () {
-      this.assetHash = this.$route.params.assetHash
-      this.edition = Number(this.$route.params.edition)
-      this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
-        this.item = item
-        const data = {
-          asc: true,
-          page: 0,
-          pageSize: 100,
-          stxAddress: (process.env.VUE_APP_NETWORK !== 'local') ? this.profile.stxAddress : 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
-        }
-        this.$store.dispatch('rpayStacksContractStore/fetchMyTokens', data).then((results) => {
-          if (results && results.tokenCount > 0) {
-            const item = results.gaiaAssets.find((o) => o.assetHash === this.assetHash)
-            if (item) this.item = item
-          }
+      if (this.$route.name === 'nft-preview') {
+        const data = { contractId: this.$route.params.contractId, nftIndex: Number(this.$route.params.nftIndex) }
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then((item) => {
+          this.item = item
         })
-      })
+      } else {
+        this.assetHash = this.$route.params.assetHash
+        this.edition = Number(this.$route.params.edition)
+        this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
+          this.item = item
+          const data = {
+            asc: true,
+            page: 0,
+            pageSize: 100,
+            stxAddress: (process.env.VUE_APP_NETWORK !== 'local') ? this.profile.stxAddress : 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
+          }
+          this.$store.dispatch('rpayStacksContractStore/fetchMyTokens', data).then((results) => {
+            if (results && results.tokenCount > 0) {
+              const item = results.gaiaAssets.find((o) => o.assetHash === this.assetHash)
+              if (item) this.item = item
+            }
+          })
+        })
+      }
     },
     setPending (result) {
       if (this.pending) {
@@ -148,7 +147,7 @@ export default {
       })
     },
     update () {
-      this.componentKey++
+      this.fetchItem()
     },
     getMediaItem () {
       const attributes = this.$store.getters[APP_CONSTANTS.KEY_MEDIA_ATTRIBUTES](this.item)
