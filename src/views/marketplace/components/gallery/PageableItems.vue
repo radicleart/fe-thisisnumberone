@@ -109,21 +109,42 @@ export default {
         pageSize: this.pageSize
       }
       if (!this.loopRun.currentRunKey) return
-      this.resultSet = null
+      this.resultSet = []
       if (this.isTheV2Contract()) {
-        data.asc = true
-        if (this.loopRun.currentRunKey === 'my_first_word') {
-          data.pageSize = 5
-        }
-        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractId', data).then((result) => {
+        this.fetchV2Page()
+      } else {
+        // after V2 we added the runKey/makerurl to the metaDataUrl to filter tokens more easily.
+        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((result) => {
           this.resultSet = result.gaiaAssets
           this.tokenCount = result.tokenCount
           this.numberOfItems = result.tokenCount
           if (reset) this.componentKey++
           this.loading = false
         })
+      }
+    },
+    fetchV2Page (page, reset) {
+      const data = {
+        contractId: (this.loopRun) ? this.loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
+        runKey: this.loopRun.currentRunKey,
+        forSale: this.forSale !== 'all',
+        page: page,
+        pageSize: this.pageSize
+      }
+      if (!this.loopRun.currentRunKey) return
+      this.resultSet = []
+      data.asc = true
+      if (this.loopRun.currentRunKey === process.env.VUE_APP_DEFAULT_LOOP_RUN) {
+        data.pageSize = 5
+        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractId', data).then((result) => {
+          this.resultSet = result.gaiaAssets
+          this.tokenCount = 5
+          this.numberOfItems = this.tokenCount
+          if (reset) this.componentKey++
+          this.loading = false
+        })
       } else {
-        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((result) => {
+        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndName', data).then((result) => {
           this.resultSet = result.gaiaAssets
           this.tokenCount = result.tokenCount
           this.numberOfItems = result.tokenCount

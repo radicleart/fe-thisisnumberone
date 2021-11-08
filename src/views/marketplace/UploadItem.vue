@@ -107,7 +107,7 @@ export default {
           if (data.media.type.indexOf('image') > -1) {
             myAsset.attributes.coverImage = data.media
           }
-          myAsset.contractId = this.loopRun.contractId
+          myAsset.projectId = this.loopRun.contractId
           myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
           this.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then(() => {
             this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
@@ -152,7 +152,7 @@ export default {
       this.$store.commit('setModalMessage', 'Uploading files - can take a while.. <a target="_blank" href="https://radiclesociety.medium.com/radicle-peer-to-peer-marketplaces-whats-the-deal-767960da195b">read why</a>')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
       this.item.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
-      this.item.contractId = this.loopRun.contractId
+      this.item.projectId = this.loopRun.contractId
       this.$store.dispatch('rpayMyItemStore/saveItem', { item: this.item, artworkFile: this.item.attributes.artworkFile[0], coverImage: this.item.attributes.coverImage[0] }).then(() => {
         this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
         this.$root.$emit('bv::hide::modal', 'waiting-modal')

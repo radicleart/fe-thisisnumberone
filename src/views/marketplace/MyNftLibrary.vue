@@ -128,6 +128,7 @@ export default {
           lastIndex = metaData.image.lastIndexOf('/')
           const index = metaData.image.substring(lastIndex + 1).split('.')[0]
           metaData.attributes.index = index
+          metaData.projectId = this.loopRun.contractId
           this.$store.dispatch('rpayMyItemStore/saveItem', metaData).then(() => {
             this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
           })

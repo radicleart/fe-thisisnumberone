@@ -44,6 +44,7 @@ export default {
         attributes.dataUrl = null
         myAsset.attributes[attributes.id] = attributes
         myAsset.image = myAsset.attributes[attributes.id].fileUrl
+        myAsset.projectId = this.loopRun.contractId
         myAsset.cryptoPunk = true
         this.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then(() => {
           this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')

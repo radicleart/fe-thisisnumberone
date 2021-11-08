@@ -180,7 +180,7 @@ export default {
         name: index
       }
       myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
-      myAsset.contractId = this.loopRun.contractId
+      myAsset.projectId = this.loopRun.contractId
       let assetPath = myAsset.assetHash + '.json'
       if (myAsset.currentRunKey) {
         assetPath = myAsset.currentRunKey + '/' + index + '.json'

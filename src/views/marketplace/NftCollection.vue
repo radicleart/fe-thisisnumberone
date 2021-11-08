@@ -35,7 +35,7 @@
 </div>
 <b-container v-else>
   Collection not found.
-  <span v-if="loopRun && loopRun.status === 'disabled'">This collection has been disabled.</span>
+  <span v-if="loopRun && loopRun.status === 'disabled'">This collection can't be shown at the present time.</span>
 </b-container>
 </template>
 
