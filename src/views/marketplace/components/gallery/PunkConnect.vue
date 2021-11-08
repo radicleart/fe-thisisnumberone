@@ -46,6 +46,7 @@ export default {
         myAsset.image = myAsset.attributes[attributes.id].fileUrl
         myAsset.cryptoPunk = true
         this.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then(() => {
+          this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
           this.$notify({ type: 'success', title: 'Save Data', text: 'Meta data saved to gaia!' })
           const data = { contractId: this.loopRun.contractId, nftIndex: myAsset.contractAsset.nftIndex }
           this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', data).then(() => {

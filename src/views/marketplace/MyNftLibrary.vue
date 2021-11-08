@@ -90,7 +90,7 @@ export default {
     let currentRunKey = this.$route.params.collection
     if (!currentRunKey) {
       currentRunKey = process.env.VUE_APP_DEFAULT_LOOP_RUN
-      this.$router.push('/my-nfts/' + currentRunKey)
+      if (this.$route.path !== '/my-nfts/' + currentRunKey) this.$router.push('/my-nfts/' + currentRunKey)
       return
     }
     this.fetchLoopRun()
@@ -128,7 +128,9 @@ export default {
           lastIndex = metaData.image.lastIndexOf('/')
           const index = metaData.image.substring(lastIndex + 1).split('.')[0]
           metaData.attributes.index = index
-          this.$store.dispatch('rpayMyItemStore/saveItem', metaData)
+          this.$store.dispatch('rpayMyItemStore/saveItem', metaData).then(() => {
+            this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
+          })
         })
       })
     },
@@ -138,7 +140,7 @@ export default {
       } else if (data.opcode === 'show-collection') {
         this.showUploads = false
         if (data.loopRun.currentRunKey !== this.$route.params.collection) {
-          this.$router.push('/my-nfts/' + data.loopRun.currentRunKey)
+          if (this.$route.path !== '/my-nfts/' + data.loopRun.currentRunKey) this.$router.push('/my-nfts/' + data.loopRun.currentRunKey)
         }
         this.componentKey++
       }

@@ -71,7 +71,7 @@ export default {
   components: {
     // Beneficiary
   },
-  props: ['item'],
+  props: ['item', 'loopRun'],
   data: function () {
     return {
       loading: true,
@@ -83,6 +83,9 @@ export default {
   },
   mounted () {
     let currentRunKey = this.item.currentRunKey
+    if (!currentRunKey) {
+      currentRunKey = this.loopRun.currentRunKey
+    }
     if (currentRunKey.indexOf('/') > -1) {
       currentRunKey = currentRunKey.split('/')[0]
     }

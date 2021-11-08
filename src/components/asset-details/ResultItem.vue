@@ -44,7 +44,7 @@ export default {
     },
     openAssetDetails () {
       if (this.result.assetHash !== this.$route.params.assetHash) {
-        this.$router.push(this.assetUrl)
+        if (this.$route.path !== this.assetUrl) this.$router.push(this.assetUrl)
       }
       VueScrollTo.scrollTo('#app', 2000)
     }

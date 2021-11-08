@@ -41,7 +41,7 @@ export default {
     if (this.$route.name === 'asset-by-index') {
       this.nftIndex = Number(this.$route.params.nftIndex)
       this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', { contractId: this.contractId, nftIndex: this.nftIndex }).then((gaiaAsset) => {
-        this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.parseRunKey(gaiaAsset.currentRunKey)).then((loopRun) => {
+        this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.parseRunKey(gaiaAsset)).then((loopRun) => {
           this.gaiaAsset = gaiaAsset
           this.loopRun = loopRun
           this.$store.dispatch('assetGeneralStore/cacheUpdate', { contractId: this.contractId, nftIndex: this.nftIndex })
@@ -58,8 +58,11 @@ export default {
     }
   },
   methods: {
-    parseRunKey (key) {
-      return (key.indexOf('/') > -1) ? key.split('/')[0] : key
+    parseRunKey (gaiaAsset) {
+      if (gaiaAsset.currentRunKey) {
+        return (gaiaAsset.currentRunKey.indexOf('/') > -1) ? gaiaAsset.currentRunKey.split('/')[0] : gaiaAsset.currentRunKey
+      }
+      return process.env.VUE_APP_DEFAULT_LOOP_RUN
     },
     getArtistPrismicId () {
       const artistId = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_ARTIST_ID](this.gaiaAsset.artist)

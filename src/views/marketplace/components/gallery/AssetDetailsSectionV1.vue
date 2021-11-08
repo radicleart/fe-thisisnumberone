@@ -31,7 +31,7 @@
               <div class="w-25">
                 <ShareLinks class="mt-4" :socialLinks="getSocialLinks()" :gaiaAsset="gaiaAsset" />
               </div>
-              <MintInfo class="my-5" :item="gaiaAsset" />
+              <MintInfo class="my-5" :item="gaiaAsset" :loopRun="loopRun" />
               <PendingTransactionInfo v-if="pending && pending.txStatus === 'pending'" :pending="pending"/>
               <div v-else>
                 <b-row v-if="getSaleType() === 0">
@@ -191,7 +191,7 @@ export default {
             this.updateCacheByNftIndex(data)
           }
         } else if (result.txStatus.startsWith('abort')) {
-          this.$notify({ type: 'danger', title: 'Transaction Info', text: 'Transaction failed - check blockchain for cause.' })
+          // this.$notify({ type: 'danger', title: 'Transaction Info', text: 'Transaction failed - check blockchain for cause.' })
         }
       }
       this.pending = result

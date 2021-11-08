@@ -36,7 +36,7 @@
           </div>
         </b-tab>
         <b-tab title="Royalties">
-          <ListBeneficiaries class="mt-3" :item="items[0]"/>
+          <ListBeneficiaries :loopRun="loopRun" class="mt-3" :item="items[0]"/>
         </b-tab>
         <b-tab title="Transfer">
           <TransferNft :item="items[0]"/>

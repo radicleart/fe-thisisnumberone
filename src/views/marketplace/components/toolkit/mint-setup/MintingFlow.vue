@@ -277,6 +277,7 @@ export default {
       item.contractId = this.loopRun.contractId
       item.beneficiaries = this.beneficiaries
       this.$store.dispatch('rpayMyItemStore/saveItem', item).then((item) => {
+        this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
         this.beneficiaries = item.beneficiaries
       })
     },

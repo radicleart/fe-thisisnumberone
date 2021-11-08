@@ -60,7 +60,9 @@ export default {
       } else if (data.opcode === 'show-collection') {
         this.showUploads = false
         this.loopRun = data.loopRun
-        this.$router.push('/nft-marketplace/' + data.loopRun.makerUrlKey + '/' + data.loopRun.currentRunKey)
+        if (this.$route.path !== '/nft-marketplace/' + data.loopRun.makerUrlKey + '/' + data.loopRun.currentRunKey) {
+          this.$router.push('/nft-marketplace/' + data.loopRun.makerUrlKey + '/' + data.loopRun.currentRunKey)
+        }
       }
     },
     collectionUrl (loopRun) {

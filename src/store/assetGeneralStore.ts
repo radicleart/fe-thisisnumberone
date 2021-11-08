@@ -92,9 +92,10 @@ const assetGeneralStore = {
         })
       })
     },
-    updateTokenFilter ({ commit }, tokenFilter) {
+    updateTokenFilter ({ commit, rootGetters }, tokenFilter) {
       return new Promise(function (resolve) {
-        axios.put(MESH_API_PATH + '/v2/token-filter', tokenFilter).then((result) => {
+        const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+        axios.put(MESH_API_PATH + '/v2/token-filter', tokenFilter, authHeaders).then((result) => {
           commit('addFilter', result.data)
           resolve(result.data)
         }).catch((error) => {
@@ -154,6 +155,8 @@ const assetGeneralStore = {
     },
     clearCache ({ commit }, contractId) {
       return new Promise(function (resolve, reject) {
+        // const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+        axios.defaults.withCredentials = true
         axios.get(MESH_API_PATH + '/v2/clear-cache/' + contractId).then((result) => {
           commit('setCacheState', result.data)
           resolve(result.data)
@@ -162,9 +165,10 @@ const assetGeneralStore = {
         })
       })
     },
-    buildSearchIndex ({ commit }, contractId) {
+    buildSearchIndex ({ commit, rootGetters }, contractId) {
       return new Promise(function (resolve) {
-        axios.get(MESH_API_PATH + '/v2/gaia/indexFiles/' + contractId).then((result) => {
+        const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+        axios.get(MESH_API_PATH + '/v2/gaia/indexFiles/' + contractId, authHeaders).then((result) => {
           commit('setCacheState', result.data)
           resolve(result.data)
         }).catch((error) => {
@@ -182,9 +186,10 @@ const assetGeneralStore = {
         })
       })
     },
-    registerForUpdates ({ commit }, data) {
+    registerForUpdates ({ commit, rootGetters }, data) {
       return new Promise(function (resolve, reject) {
-        axios.post(MESH_API_PATH + '/v2/register/email', data).then((result) => {
+        const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+        axios.post('http://127.0.0.1:8046/mesh/v2/register/email', data, authHeaders.headers).then((result) => {
           commit('addRegisteredEmail', data)
           resolve(result)
         }).catch((error) => {

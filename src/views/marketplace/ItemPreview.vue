@@ -20,7 +20,7 @@
           <h6 v-if="item.artist" class="text-small">By : {{item.artist}}</h6>
         </div>
         <p v-if="item.description" class="pt-4 text-small" v-html="preserveWhiteSpace(item.description)"></p>
-        <MintInfo :item="item" />
+        <MintInfo :item="item" :loopRun="loopRun"/>
         <PendingTransactionInfo v-if="pending && pending.txStatus === 'pending'" :pending="pending"/>
         <div v-else>
           <MintingTools class="w-100" :items="[item]" :loopRun="loopRun" @update="update"/>

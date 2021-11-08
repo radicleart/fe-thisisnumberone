@@ -124,6 +124,7 @@ export default {
     updateUploadState: function (data) {
       this.item.contractId = this.loopRun.contractId
       this.$store.dispatch('rpayMyItemStore/saveItem', this.item).then(() => {
+        this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
         if (data.change === 'done') {
           this.$router.push(this.itemPreviewUrl)
         } else if (data.change === 'up') {
@@ -148,6 +149,7 @@ export default {
           myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
           myAsset.contractId = this.loopRun.contractId
           $self.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((item) => {
+            $self.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
             $self.item = item
             $self.$store.commit('setModalMessage', '')
             $self.$root.$emit('bv::hide::modal', 'waiting-modal')
@@ -190,6 +192,7 @@ export default {
       this.item.contractId = this.loopRun.contractId
       this.item.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
       this.$store.dispatch('rpayMyItemStore/saveItem', this.item).then(() => {
+        this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
         this.$root.$emit('bv::hide::modal', 'success-modal')
         this.$store.commit('setModalMessage', '')
