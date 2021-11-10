@@ -41,8 +41,8 @@ export default {
 ;; (impl-trait 'params.platformAddress.nft-trait.nft-trait)
 ;; mainnet
 ;; (impl-trait SP3QSAJQ4EA8WXEDSRRKMZZ29NH91VZ6C5X88FGZQ.nft-approvable-trait.nft-approvable-trait)
-(impl-trait 'ST1R1061ZT6KPJXQ7PAXPFB6ZAZ6ZWW28G8HXK9G5.nft-approvable-trait.nft-approvable-trait)
-(impl-trait 'ST1R1061ZT6KPJXQ7PAXPFB6ZAZ6ZWW28G8HXK9G5.nft-trait.nft-trait)
+(impl-trait 'params.administrator.nft-approvable-trait.nft-approvable-trait)
+(impl-trait 'params.administrator.nft-trait.nft-trait)
 
 ;; contract variables
 (define-data-var administrator principal 'params.administrator)
