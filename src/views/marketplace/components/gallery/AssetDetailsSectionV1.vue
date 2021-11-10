@@ -24,8 +24,15 @@
           </b-col>
           <b-col md="12" align-self="end">
             <div class="w-100">
-              <h1 class="text-white">{{gaiaAsset.name}}</h1>
-              <h2>{{gaiaAsset.artist}}</h2>
+              <h1 class="text-white">{{mintedMessage}}</h1>
+              <div>
+                <div class="d-flex justify-content-between">
+                  <div>by <span class="text-warning">{{loopRun.makerName}}</span> from collection <span class="text-warning">{{loopRun.currentRun}}</span> {{editionMessage}}</div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end">
+                <div>{{created()}}</div>
+              </div>
               <div v-if="gaiaAsset.description" class="w-100 text-white" v-html="preserveWhiteSpace(gaiaAsset.description)">
               </div>
               <div class="w-25">
@@ -178,6 +185,18 @@ export default {
     }, this)
   },
   methods: {
+    created () {
+      if (this.gaiaAsset && this.gaiaAsset.mintInfo && this.gaiaAsset.mintInfo.timestamp) {
+        return DateTime.fromMillis(this.gaiaAsset.mintInfo.timestamp).toLocaleString({ weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+      } else if (this.gaiaAsset && this.gaiaAsset.updated) {
+        return DateTime.fromMillis(this.gaiaAsset.updated).toLocaleString({ weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+      }
+      return ''
+    },
+    mintedEvent (data) {
+      this.$bvModal.hide('edition-modal')
+      this.$emit('mintedEvent', data)
+    },
     setPending (result) {
       if (this.pending) {
         if (!result || !result.txStatus || result.txStatus === 'pending') {
@@ -343,6 +362,18 @@ export default {
     }
   },
   computed: {
+    mintedMessage () {
+      if (this.gaiaAsset.contractAsset) {
+        return '#' + this.gaiaAsset.contractAsset.nftIndex + ' ' + this.gaiaAsset.name
+      }
+      return this.gaiaAsset.name
+    },
+    editionMessage () {
+      if (this.gaiaAsset.contractAsset && this.gaiaAsset.contractAsset.tokenInfo.maxEditions > 1) {
+        return '(' + this.gaiaAsset.contractAsset.tokenInfo.edition + ' of ' + this.gaiaAsset.contractAsset.tokenInfo.maxEditions + ')'
+      }
+      return null
+    },
     transactionUrl: function () {
       if (!this.gaiaAsset.mintInfo || !this.gaiaAsset.mintInfo.txId) return '#'
       const stacksApiUrl = process.env.VUE_APP_STACKS_EXPLORER

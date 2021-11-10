@@ -3,15 +3,15 @@
   <b-card bg-variant="black" class="bg-black mt-0 py-2 text-white">
     <div class="px-2">
       <div class="text-left">
-        <h4>{{mintedMessage}}</h4>
+        <p class="text-bold">{{mintedMessage}}</p>
         <div class="text-small d-flex justify-content-between">
-          <div class="text-right">{{loopRun.currentRun}}</div>
+          <div class="text-right">{{loopRun.currentRun}} {{editionMessage}}</div>
           <div class="text-right">{{created()}}</div>
         </div>
       </div>
     </div>
     <b-card-text class="">
-      <b-link class="text-xsmall text-info" :to="(contractAsset) ? '/nfts/' + contractAsset.contractId + '/' + contractAsset.nftIndex : '#'">
+      <b-link class="text-xsmall text-info" :to="nextUrl">
         <div @contextmenu="handler($event)" class="d-flex justify-content-center p-2">
             <img
               ref="itemImage"
@@ -161,7 +161,7 @@ export default {
         }
       } else {
         if (this.contractAsset && this.contractAsset.tokenInfo) {
-          return '/item-preview/' + this.contractAsset.tokenInfo.assetHash + '/' + this.contractAsset.tokenInfo.edition
+          return '/nft-preview/' + this.contractAsset.contractId + '/' + this.contractAsset.nftIndex
         } else {
           return '/item-preview/' + this.asset.assetHash + '/0'
         }
@@ -172,6 +172,12 @@ export default {
         return '#' + this.contractAsset.nftIndex + ' ' + this.asset.name
       }
       return this.asset.name
+    },
+    editionMessage () {
+      if (this.contractAsset && this.contractAsset.tokenInfo.maxEditions > 1) {
+        return '(' + this.contractAsset.tokenInfo.edition + ' of ' + this.contractAsset.tokenInfo.maxEditions + ')'
+      }
+      return null
     },
     nextBid () {
       const nextBid = this.$store.getters[APP_CONSTANTS.KEY_BIDDING_NEXT_BID](this.contractAsset)

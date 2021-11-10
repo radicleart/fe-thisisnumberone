@@ -55,6 +55,7 @@ export default {
     return {
       showHash: false,
       nftIndex: null,
+      notCount: 0,
       assetHash: null,
       pending: null,
       item: null,
@@ -80,6 +81,9 @@ export default {
             $self.$store.dispatch('rpayMyItemStore/quickSaveItem', item)
           }
           $self.update()
+          if (data.txStatus === 'pending') {
+            $self.setPending(data)
+          }
         }
       })
     }
@@ -125,7 +129,8 @@ export default {
           data.nftIndex = result.nftIndex
           this.updateCacheByNftIndex(data)
         } else {
-          this.$notify({ type: 'danger', title: 'Transaction Info', text: 'Transaction failed - check blockchain for cause.' })
+          if (this.notCount === 0) this.$notify({ type: 'danger', title: 'Transaction Info', text: 'Transaction failed - check blockchain for cause.' })
+          this.notCount++
         }
       }
       this.pending = result

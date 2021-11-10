@@ -1,33 +1,21 @@
 <template>
 <div class="text-small">
-  <h3 class="border-bottom pointer" @click="showColls = !showColls"><b-icon font-scale="0.8" v-if="showColls" icon="chevron-down"/> <b-icon font-scale="0.8" v-else icon="chevron-right"/> Collections</h3>
-  <div v-for="(project, index) in projects" :key="index" class="mb-5">
-    <!--
-    <div @click="contractId = project.contractId">
-      <img width="100%" :src="getImageUrl(project)"  v-b-tooltip.hover="{ variant: 'warning' }" :title="'View Collections for Contract\n' + project.contractId"/>
+  <div class="mb-5">
+    <h3 class="mb-4 border-bottom pointer" @click="showSearch"><b-icon font-scale="0.8" v-if="showSearchFilters" icon="chevron-down"/> <b-icon font-scale="0.8" v-else icon="chevron-right"/> Search Filters</h3>
+    <div v-if="showSearchFilters">
+      <SearchBar v-on="$listeners" :displayClass="''" :mode="'search'"/>
     </div>
-    <div class="text-small d-flex justify-content-between">
-      <div>{{projectId(project)}}</div>
-      <div><b-link :href="project.platformAddress" target="_blank" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Visit project website.'"><b-icon icon="arrow-up-right-square"/></b-link></div>
-    </div>
-     -->
   </div>
+  <div class="mb-5">
+    <h3 class="border-bottom pointer mb-4" @click="showColls = !showColls"><b-icon font-scale="0.8" v-if="showColls" icon="chevron-down"/> <b-icon font-scale="0.8" v-else icon="chevron-right"/> Collections</h3>
     <div class="" v-if="showColls">
       <div class="ml-5 my-3" v-for="(loopRun, index) in allLoopRuns" :key="index">
-        <!--
-        <div class="mb-3 mx-5">
-          <b-link class="text-warning" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">
-            <img height="150px" :src="getImageUrl(loopRun)"  v-b-tooltip.hover="{ variant: 'warning' }" :title="'Collection\n' + loopRun.currentRun"/>
-          </b-link>
-        </div>
-        <div class="text-small"><b-link class="text-warning" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey"><span class="text-warning" v-b-tooltip.hover="{ variant: 'warning' }" :title="'View collection in marketplace.'">{{loopRun.tokenCount}} / {{loopRun.versionLimit}}</span></b-link></div>
-        <div class="text-small">by: <b-link class="text-warning" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey"><span class="text-warning" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Mint new pieces in this collection.'">{{loopRun.makerName}}</span></b-link></div>
-        -->
-        <p v-if="loopRun.status !== 'disabled'" class="pointer" @click="showCollection(loopRun)">{{loopRun.currentRun}}</p>
+        <p :class="isSelected(loopRun.currentRunKey)" v-if="loopRun.status !== 'disabled'" class="pointer" @click="showCollection(loopRun)">{{loopRun.currentRun}}</p>
       </div>
     </div>
+  </div>
   <div v-if="canUpload()">
-    <h3 class="border-bottom mt-5">Uploads</h3>
+    <h3 class="border-bottom mb-4">Uploads</h3>
     <div class="ml-5 my-3">
       <h4 class="pointer" @click="showUploads()">manage</h4>
     </div>
@@ -38,16 +26,19 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import utils from '@/services/utils'
+import SearchBar from '@/views/marketplace/components/gallery/SearchBar'
 
 export default {
   name: 'CollectionSidebar',
   components: {
+    SearchBar
   },
   props: ['allowUploads'],
   data () {
     return {
       loaded: false,
       showColls: true,
+      showSearchFilters: false,
       projects: [],
       loopRuns: [],
       contractId: null,
@@ -62,6 +53,10 @@ export default {
     canUpload () {
       const hasUploadPriv = this.$store.getters[APP_CONSTANTS.KEY_HAS_PRIVILEGE]('can-upload')
       return this.$route.name === 'my-nfts' && ((this.allowUploads && hasUploadPriv) || this.profile.superAdmin)
+    },
+    showSearch () {
+      this.showSearchFilters = !this.showSearchFilters
+      this.$emit('update', { opcode: 'show-search' })
     },
     showCollection (loopRun) {
       this.$emit('update', { opcode: 'show-collection', loopRun: loopRun })
@@ -78,6 +73,9 @@ export default {
     },
     getImageUrl (item) {
       return this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](item)
+    },
+    isSelected (runKey) {
+      return (!this.showSearchFilters && this.$route.path.indexOf(runKey) > -1) ? 'text-warning' : ''
     },
     fetchFullRegistry () {
       const $self = this

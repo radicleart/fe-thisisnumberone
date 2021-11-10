@@ -1,23 +1,6 @@
 <template>
   <div>
-    <div class="mb-4 border-bottom d-flex justify-content-between">
-      <h1 class="pointer" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> {{numberOfItems}} NFTs</h1>
-      <div>
-        <b-form-checkbox
-          size="lg"
-          id="batchMode"
-          v-model="forSale"
-          name="forSale"
-          value="for sale"
-          unchecked-value="all"
-          @change="toggleSelling"
-          >
-          <div class="text-white pointer" v-if="forSale === 'all'"><b>All</b></div>
-          <div class="text-white pointer" v-else><b>For Sale</b></div>
-        </b-form-checkbox>
-      </div>
-    </div>
-    <div class="mb-4" v-if="showMinted" :key="componentKey">
+    <div class="mb-4" :key="componentKey">
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
       <div id="my-table" class="row mx-auto" v-if="resultSet && resultSet.length > 0">
         <div class="text-white col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
@@ -39,13 +22,12 @@ const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 export default {
   name: 'PageableItems',
   components: {
-    MySingleItem, Pagination
+    MySingleItem,
+    Pagination
   },
-  props: ['loopRun'],
+  props: ['loopRun', 'defQuery'],
   data () {
     return {
-      forSale: 'all',
-      showMinted: true,
       resultSet: [],
       pageSize: 50,
       loading: true,
@@ -59,7 +41,7 @@ export default {
     const $self = this
     let resizeTimer
     this.numberOfItems = this.loopRun.tokenCount
-    this.fetchPage(0)
+    this.fetchPage(0, false, this.defQuery)
     this.loading = false
 
     window.addEventListener('resize', function () {
@@ -72,8 +54,6 @@ export default {
     window.onscroll = () => {
       const bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight
       if (bottomOfWindow) {
-        // $self.page++
-        // $self.fetchPage()
       }
     }
   },
@@ -92,48 +72,53 @@ export default {
     },
     gotoPage (page) {
       this.page = page - 1
-      this.fetchPage(page - 1)
+      this.fetchPage(page - 1, false, this.defQuery)
     },
     isTheV2Contract () {
-      return this.loopRun.contractId.indexOf('thisisnumberone-v2') > -1
+      return this.loopRun.contractId.indexOf(STX_CONTRACT_NAME) > -1
     },
-    toggleSelling () {
-      this.fetchPage(0, true)
-    },
-    fetchPage (page, reset) {
+    fetchPage (page, reset, query) {
+      let queryStr = '?query='
+      if (query && query.forSale !== 'all') queryStr += 'forSale,'
+      if (query && query.allEditions === 'firsts') queryStr += 'firsts,'
+      if (query && query.sort) queryStr += query.sort + ','
       const data = {
-        contractId: (this.loopRun) ? this.loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
         runKey: this.loopRun.currentRunKey,
-        forSale: this.forSale !== 'all',
+        forSale: query && query.forSale !== 'all',
+        query: queryStr,
         page: page,
         pageSize: this.pageSize
       }
-      if (!this.loopRun.currentRunKey) return
       this.resultSet = []
-      if (this.isTheV2Contract()) {
-        this.fetchV2Page()
+      if (query.allCollections !== 'all') {
+        data.contractId = (this.loopRun) ? this.loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
+        if (this.isTheV2Contract()) {
+          data.contractId = null
+          this.fetchV2Page(data, reset)
+        } else {
+          // after V2 we added the runKey/makerurl to the metaDataUrl to filter tokens more easily.
+          this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((result) => {
+            this.resultSet = result.gaiaAssets
+            this.tokenCount = result.tokenCount
+            this.numberOfItems = result.tokenCount
+            if (reset) this.componentKey++
+            this.loading = false
+          })
+        }
       } else {
-        // after V2 we added the runKey/makerurl to the metaDataUrl to filter tokens more easily.
-        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((result) => {
+        data.runKey = query.query
+        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndName', data).then((result) => {
           this.resultSet = result.gaiaAssets
           this.tokenCount = result.tokenCount
           this.numberOfItems = result.tokenCount
-          if (reset) this.componentKey++
+          this.componentKey++
           this.loading = false
         })
       }
     },
-    fetchV2Page (page, reset) {
-      const data = {
-        contractId: (this.loopRun) ? this.loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
-        runKey: this.loopRun.currentRunKey,
-        forSale: this.forSale !== 'all',
-        page: page,
-        pageSize: this.pageSize
-      }
+    fetchV2Page (data, reset) {
       if (!this.loopRun.currentRunKey) return
       this.resultSet = []
-      data.asc = true
       if (this.loopRun.currentRunKey === process.env.VUE_APP_DEFAULT_LOOP_RUN) {
         data.pageSize = 5
         this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractId', data).then((result) => {
@@ -158,10 +143,6 @@ export default {
     profile () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile
-    },
-    mintCounter () {
-      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME)
-      return application.tokenContract.mintCounter
     }
   }
 }

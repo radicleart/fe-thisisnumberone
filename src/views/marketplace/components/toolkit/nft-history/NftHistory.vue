@@ -130,6 +130,8 @@ export default {
           this.$emit('setPending', events[0])
           if (events[0].txStatus && events[0].txStatus === 'pending') {
             this.previouslyPending = true
+          } else {
+            clearInterval(this.timer)
           }
           if (this.previouslyPending && events[0].txStatus && events[0].txStatus !== 'pending') {
             this.update()

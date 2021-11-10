@@ -15,10 +15,19 @@
     </div>
     <b-card-text class="">
       <div class="d-flex justify-content-center p-2">
-          <div style="height: 100px; width: 100px;" class="center">
-            <b-icon v-if="allocation.txStatus === 'pending'" icon="circle" animation="throb" font-scale="5"></b-icon>
-            <b-icon v-else-if="allocation.txStatus === 'success'" class="text-success" icon="check-circle" font-scale="5"></b-icon>
-            <b-icon v-else class="text-danger" icon="x-circle" font-scale="5"></b-icon>
+          <div v-if="allocation.txStatus === 'pending'" class="center">
+            <div  v-if="loopRun.mintImage2">
+              <img width="100px" height="100px" :src="loopRun.mintImage" icon="circle" animation="throb" font-scale="5"/>
+            </div>
+            <div  v-else>
+              <b-icon v-if="allocation.txStatus === 'pending'" icon="circle" animation="throb" font-scale="5"></b-icon>
+            </div>
+          </div>
+          <div v-else-if="allocation.txStatus === 'success'" class="center">
+              <img width="100px" height="100px" :src="loopRun.mintImage3" icon="circle" animation="throb" font-scale="5"/>
+          </div>
+          <div v-else style="height: 100px; width: 100px;" class="center">
+            <b-icon class="text-danger" icon="x-circle" font-scale="5"></b-icon>
           </div>
       </div>
     </b-card-text>

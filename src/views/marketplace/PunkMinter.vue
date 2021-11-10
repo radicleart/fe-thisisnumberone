@@ -26,7 +26,7 @@
               </b-col>
               <b-col cols="12" align-self="end">
                 <div class="mt-2">
-                  <span>{{credits}} Mints Remianing</span>
+                  <span>{{credits}} Mints Remaining</span>
                 </div>
                 <div class="mt-2" v-if="walletTx">
                   <a class="mr-2" :href="transactionUrl()" target="_blank"><b-icon class="text-warning" font-scale="1.2" icon="arrow-up-right-circle"/> view on explorer</a>

@@ -39,7 +39,7 @@
           <ListBeneficiaries :loopRun="loopRun" class="mt-3" :item="items[0]"/>
         </b-tab>
         <b-tab title="Transfer">
-          <TransferNft :item="items[0]"/>
+          <TransferNft :loopRun="loopRun" :item="items[0]"/>
         </b-tab>
         <b-tab title="Next" v-if="profile.superAdmin && contractNameNext">
           <b-button @click="startMinting()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>

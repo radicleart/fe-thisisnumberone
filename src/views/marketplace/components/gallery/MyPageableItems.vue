@@ -4,7 +4,7 @@
     <div class="mb-4" v-if="showMinted && loopRun">
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
       <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
-        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" v-for="(asset, index) of resultSet" :key="index">
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12" v-for="(asset, index) of resultSet" :key="index">
           <MySingleItem @updateImage="updateImage" :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
         </div>
       </div>
@@ -78,6 +78,7 @@ export default {
     },
     fetchPage (page) {
       const data = {
+        // contractId: (this.loopRun) ? this.loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
         runKey: (this.loopRun) ? this.loopRun.currentRunKey : LOOP_RUN_DEF,
         stxAddress: this.profile.stxAddress,
         asc: true,
