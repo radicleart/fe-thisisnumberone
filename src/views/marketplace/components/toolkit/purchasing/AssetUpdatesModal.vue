@@ -13,7 +13,7 @@
   <b-form-invalid-feedback id="email-feedback">
     Enter email
   </b-form-invalid-feedback>
-  <ActionRow :buttonLabel="'Submit'" @clickButton="registerForUpdates"/>
+  <ActionRow :buttonLabel="'Submit'" :svgImage="mail" @clickButton="registerForUpdates"/>
 </div>
 </template>
 
@@ -37,7 +37,10 @@ export default {
       return re.test(this.email)
     },
     registerForUpdates: function () {
-      if (!this.isValid()) return
+      if (!this.isValid()) {
+        this.$notify({ type: 'warning', title: 'Email Address Missing', text: 'Please enter an email address.' })
+        return
+      }
       this.$emit('registerForUpdates', this.email)
     }
   },

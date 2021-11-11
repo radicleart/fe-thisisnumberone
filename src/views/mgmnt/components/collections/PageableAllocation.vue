@@ -1,14 +1,12 @@
 <template>
   <div v-if="!loading">
-    <Pagination @changePage="gotoPage" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
+    <Pagination @changePage="gotoPage" :numberOfItems="numberOfItems" :pageSize="pageSize" v-if="numberOfItems > 0"/>
     <div id="my-table" class="row mx-auto" v-if="resultSet && resultSet.length > 0">
       <b-table striped hover :items="values()" :fields="fields()" class="bg-light text-dark">
-        <template #cell(contractAddress)="data">
-          <b-link class="text-info" size="sm" variant="warning" v-on:click="updateRequest(data)" v-html="data.value"></b-link>
-        </template>
         <template #cell(Actions)="data">
           <span v-b-tooltip.hover="{ variant: 'warning' }" title="Manage royalties for this collection">
-            <a @click.prevent="update(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="credit-card"/></a>
+            <a :href="transactionUrl(data)" target="_blank" class="pointer text-info mr-2"><b-icon icon="arrow-up-right-circle"/></a>
+            <span @click="deleteOne(data)" class="pointer text-info mr-2"><b-icon icon="x-circle"/></span>
           </span>
         </template>
       </b-table>
@@ -17,7 +15,7 @@
     </div>
     <div class="d-flex justify-content-start my-3 mx-4" v-else>
       <div class="mt-5">
-        <p>Minting not yet begun for this collection...</p>
+        <p>No allocations.</p>
       </div>
     </div>
   </div>
@@ -32,13 +30,12 @@ export default {
   components: {
     Pagination
   },
-  props: ['loopRun'],
+  props: ['loopRun', 'pageSize'],
   data () {
     return {
       resultSet: [],
       loading: true,
       doPaging: true,
-      pageSize: 10,
       numberOfItems: 0,
       page: 0,
       componentKey: 0
@@ -50,8 +47,25 @@ export default {
     this.loading = false
   },
   methods: {
-    update () {
-      this.gotoPage(0)
+    deleteOne: function (data) {
+      const allocation = this.resultSet[data.index]
+      const bean = {
+        id: allocation.id,
+        punkIndexes: [allocation.punkIndex],
+        currentRunKey: allocation.currentRunKey,
+        stxAddress: null
+      }
+      this.$store.dispatch('rpayCategoryStore/deleteAllocation', bean).then((result) => {
+        this.resultSet[data.index] = result
+      })
+    },
+    transactionUrl: function (data) {
+      const allocation = this.resultSet[data.index]
+      let txId = allocation.txId
+      if (!txId) return '#'
+      if (!txId.startsWith('0x')) txId = '0x' + txId
+      const stacksApiUrl = process.env.VUE_APP_STACKS_EXPLORER
+      return stacksApiUrl + '/txid/' + txId + '?chain=' + process.env.VUE_APP_NETWORK
     },
     gotoPage (page) {
       // this.page = page - 1
@@ -67,7 +81,7 @@ export default {
         asc: true
       }
       this.resultSet = null
-      this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((results) => {
+      this.$store.dispatch('rpayCategoryStore/fetchAllocationsByRunKey', data).then((results) => {
         this.resultSet = results // this.resultSet.concat(results)
         this.componentKey++
         this.loading = false
@@ -81,12 +95,14 @@ export default {
           sortable: true
         },
         {
-          key: 'nftIndex',
+          key: 'Image Index',
           sortable: true
         },
         {
-          key: 'Image Index',
-          sortable: true
+          key: 'status'
+        },
+        {
+          key: 'stxAddress'
         },
         {
           key: 'assetHash'
@@ -100,13 +116,14 @@ export default {
       let mapped = []
       let counter = -1
       const $self = this
-      mapped = this.resultSet.map(function (token) {
+      mapped = this.resultSet.map(function (allocation) {
         counter++
         return {
           Index: counter + ($self.page * $self.pageSize),
-          nftIndex: token.contractAsset.nftIndex,
-          'Image Index': token.name,
-          assetHash: token.contractAsset.tokenInfo.assetHash,
+          'Image Index': allocation.punkIndex,
+          status: allocation.status,
+          stxAddress: (allocation.stxAddress) ? allocation.stxAddress : allocation.from,
+          assetHash: allocation.assetHash,
           Actions: null
         }
       })

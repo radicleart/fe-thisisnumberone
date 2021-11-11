@@ -48,7 +48,6 @@ export default {
     },
     setCategory: function (category) {
       this.item.category = category
-      // this.$store.dispatch('rpayMyItemStore/saveItem', this.item)
       this.componentKey++
     },
     changeKeywords: function () {

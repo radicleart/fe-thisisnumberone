@@ -97,7 +97,6 @@ export default {
         if (!data.media.id === 'artworkFile') {
           throw new Error('not allowed - use UpdatItem instead')
         }
-        const $self = this
         this.$store.commit('setModalMessage', 'Fetched. Saving file info to library.')
         this.$store.dispatch('rpayMyItemStore/saveAttributesObject', { assetHash: data.media.dataHash, attributes: data.media }).then((attributes) => {
           const myAsset = {
@@ -108,14 +107,16 @@ export default {
           if (data.media.type.indexOf('image') > -1) {
             myAsset.attributes.coverImage = data.media
           }
+          myAsset.projectId = this.loopRun.contractId
           myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
-          $self.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then(() => {
-            $self.$store.commit('setModalMessage', 'Saved NFT file.')
+          this.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then(() => {
+            this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
+            this.$store.commit('setModalMessage', 'Saved NFT file.')
             this.$root.$emit('bv::hide::modal', 'waiting-modal')
-            $self.$router.push('/edit-item/' + data.media.dataHash)
+            this.$router.push('/edit-item/' + data.media.dataHash)
           }).catch((error) => {
-            $self.$store.commit('setModalMessage', 'Error occurred processing file upload.')
-            $self.result = error
+            this.$store.commit('setModalMessage', 'Error occurred processing file upload.')
+            this.result = error
           })
         })
       }
@@ -151,7 +152,9 @@ export default {
       this.$store.commit('setModalMessage', 'Uploading files - can take a while.. <a target="_blank" href="https://radiclesociety.medium.com/radicle-peer-to-peer-marketplaces-whats-the-deal-767960da195b">read why</a>')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
       this.item.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
+      this.item.projectId = this.loopRun.contractId
       this.$store.dispatch('rpayMyItemStore/saveItem', { item: this.item, artworkFile: this.item.attributes.artworkFile[0], coverImage: this.item.attributes.coverImage[0] }).then(() => {
+        this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
         this.$root.$emit('bv::show::modal', 'success-modal')
         this.$store.commit('setModalMessage', 'Uploading... once its saved you\'ll be able to mint this artowrk - registering your ownership on the blockchain. Once registered you\'ll be able to prove you own this artwork and be able to benefit not only from its sale but also from all secondary sales.')

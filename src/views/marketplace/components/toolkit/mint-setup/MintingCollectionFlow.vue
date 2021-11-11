@@ -2,16 +2,34 @@
 <div v-if="!loading" class="bg-dark d-flex justify-content-center">
   <div class="mx-auto">
     <b-card-group>
-      <b-card bg-variant="dark" class="text-white" header-tag="header" footer-tag="footer">
+      <b-card bg-variant="dark" class="border-white text-white" header-tag="header" footer-tag="footer">
         <template #header>
-          <ItemDisplay :item="null" :loopRun="loopRun"/>
         </template>
-        <div class="bg-dark mt-0">
-          <RoyaltyScreen :hidePrimaries="true" :errorMessage="errorMessage" :item="null" @mintToken="beginMintProcess" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
-        </div>
+        <b-row class="">
+          <b-col cols="4" class="px-5">
+            <ItemDisplay :item="null" :loopRun="loopRun"/>
+          </b-col>
+          <b-col cols="8" class="px-5">
+            <div class="bg-dark mt-0">
+              <RoyaltyScreen :hidePrimaries="true" :mintButtonText="mintButtonText()" :errorMessage="errorMessage" :item="null" @mintToken="beginMintProcess" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
+            </div>
+          </b-col>
+        </b-row>
       </b-card>
     </b-card-group>
   </div>
+  <b-modal scrollable id="upload-modal" title="">
+    <div class="row">
+      <div class="col-12 my-1">
+        <h2>Uploading Assets</h2>
+        <div class="">Uploading ({{gaiaed}}) assets to your decentralised data store</div>
+        <div class="text-center mt-2"><b-icon icon="three-dots" animation="cylon" font-scale="4"></b-icon></div>
+      </div>
+    </div>
+    <template v-slot:modal-footer>
+      <div></div>
+    </template>
+  </b-modal>
 </div>
 
 </template>
@@ -28,24 +46,27 @@ export default {
     RoyaltyScreen,
     ItemDisplay
   },
-  props: ['loopRun'],
+  props: ['loopRun', 'batchOption'],
   data () {
     return {
-      imagePath: 'https://res.cloudinary.com/mijo-enterprises/image/upload/v1633523528/collections/artists/artist1/set1/',
       loading: true,
       gaiaAssets: [],
       makerUrlKey: null,
+      mintAllocations: [],
       currentRunKey: null,
       errorMessage: null,
       beneficiaries: null,
       eBen: null,
+      gaiaed: 0,
       submitUrl: '/mesh/v2/stacksmate/square/charge'
     }
   },
   watch: {
-    'items' () {
-      if (this.fetchedItems) {
-        this.uiState = 'ready'
+    'gaiaed' () {
+      if (this.gaiaed === this.mintAllocations.length) {
+        this.gaiaUploadComplete()
+        // this.$bvModal.hide('upload-modal')
+        this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
       }
     }
   },
@@ -64,15 +85,16 @@ export default {
     this.handleResult()
   },
   methods: {
+    mintButtonText () {
+      return 'Mint ' + this.batchOption + ' Now'
+    },
     handleResult () {
       if (window.eventBus && window.eventBus.$on) {
         const $self = this
         window.eventBus.$on('rpayEvent', function (data) {
           if (data.opcode === 'stx-transaction-sent') {
             $self.$bvModal.hide('minting-modal')
-            if (data.txStatus === 'success') {
-              $self.$notify({ type: 'success', title: 'Tx Sent', text: 'Punks minted and meta data saved to Gaia!' })
-            } else if (data.txStatus.indexOf('abort') > -1) {
+            if (data.txStatus.indexOf('abort') > -1) {
               const punkIndexes = []
               $self.mintAllocations.forEach((ma) => {
                 punkIndexes.push(ma.punkIndex)
@@ -86,14 +108,6 @@ export default {
             } else if (data.txStatus.indexOf('replace') > -1) {
               $self.$notify({ type: 'warning', title: 'Tx Replaced', text: 'We may have lost the tx id - if so your token is still safe and will be reconnected once confirmed.' })
             }
-          } else if (data.opcode === 'collection-mint-token' || data.opcode === 'collection-mint-token-twenty') {
-            $self.gaiaAssets.forEach((ga) => {
-              ga.mintInfo = {
-                txId: data.txId,
-                txStatus: data.txStatus
-              }
-              $self.saveAsset(ga)
-            })
           }
         })
       }
@@ -104,58 +118,98 @@ export default {
       // 3. sign the hash of the first item in the batch (api call to stacksmate endpoint)
       // 4. build the parameters for the mint
       // 5. call rpay modult to build and broadcast transaction via web wallet
-      const lockData = { stxAddress: this.profile.stxAddress, currentRunKey: this.currentRunKey }
+      const lockData = { batchOption: this.batchOption, stxAddress: this.profile.stxAddress, currentRunKey: this.currentRunKey }
       this.$store.dispatch('rpayCategoryStore/fetchNextToMint', lockData).then((mintAllocations) => {
-        // utils.fetchBase64FromImageUrl(this.imagePath + '1.png', document).then((data) => {
         if (!mintAllocations || mintAllocations.length === 0) {
-          this.$notify({ type: 'success', title: 'All Minted', text: 'We hey - no more left - better luck next time!' })
+          this.$notify({ type: 'success', title: 'All Minted', text: 'Wey hey - no more left - better luck next time!' })
           return
         }
         this.loaded = true
         this.mintAllocations = mintAllocations
+        // this.$bvModal.show('upload-modal')
         this.mintAllocations.forEach((ma) => {
           this.createMetaData(ma.punkIndex)
         })
-        this.$store.dispatch('assetGeneralStore/stacksmateSignme', this.gaiaAssets[0].assetHash).then((signature) => {
-          if (this.loopRun.batchSize === 1) {
-            this.mintCollectionSingle(this.getData(signature))
-          } else {
-            this.mintCollectionBatch(this.getData(signature))
-          }
-        })
-      }).catch((err) => {
-        console.log(err)
+      }).catch(() => {
+        this.$notify({ type: 'error', title: 'Minting', text: 'Server error callng mint - please try later!' })
+      })
+    },
+    gaiaUploadComplete () {
+      this.$store.dispatch('rpayPurchaseStore/stacksmateSignme', this.gaiaAssets[0].assetHash).then((signature) => {
+        if (this.batchOption === 1) {
+          this.mintCollectionSingle(this.getData(signature))
+        } else {
+          this.mintCollectionBatch(this.getData(signature))
+        }
+      })
+    },
+    updateMetaData (data) {
+      this.mintAllocations.forEach((ma) => {
+        const ga = this.gaiaAssets.find((o) => o.image.indexOf('/' + ma.punkIndex + '.png'))
+        ma.txId = data.txId
+        ma.status = (data.txStatus) ? data.txStatus : 'pending'
+        ma.assetHash = ga.assetHash
+      })
+      this.$store.dispatch('rpayCategoryStore/updateMintAllocations', this.mintAllocations)
+
+      this.gaiaAssets.forEach((ga) => {
+        ga.mintInfo = {
+          txId: data.txId,
+          txStatus: (data.txStatus) ? data.txStatus : 'pending'
+        }
+        this.saveAssetWithMintTxId(ga)
       })
     },
     createMetaData (index) {
-      // create but don't store - wait till the last minute to register the batch!
-      // see component MintingFlow.vue
-      const image = this.imagePath + index + '.png'
-      const imgHash = utils.buildHash(image)
+      const artworkFile = {
+        type: 'image/png',
+        fileUrl: this.loopRun.mintImage3,
+        id: 'artworkFile',
+        ratio: '1:1'
+      }
       const myAsset = {
-        assetHash: imgHash,
         attributes: {
-          artworkFile: {
-            type: 'image/png',
-            fileUrl: image,
-            ratio: '1:1'
-          }
+          buyNowPrice: 0,
+          editions: 1,
+          editionCost: 0,
+          index: index,
+          artworkFile: artworkFile
         },
         cryptoPunk: true,
-        image: image,
+        image: this.loopRun.mintImage3,
         name: index
       }
       myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
-      myAsset.contractId = this.loopRun.contractId
+      myAsset.projectId = this.loopRun.contractId
       let assetPath = myAsset.assetHash + '.json'
       if (myAsset.currentRunKey) {
-        assetPath = myAsset.currentRunKey + '/' + myAsset.assetHash + '.json'
+        assetPath = myAsset.currentRunKey + '/' + index + '.json'
+      }
+      if (!this.profile.gaiaHubConfig) {
+        location.reload()
       }
       myAsset.metaDataUrl = this.profile.gaiaHubConfig.url_prefix + this.profile.gaiaHubConfig.address + '/' + assetPath
-      this.gaiaAssets.push(myAsset)
-      // this.saveAsset()
+      this.buildAssetHash(myAsset)
+      this.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((item) => {
+        this.gaiaed++
+        this.gaiaAssets.push(item)
+      }).catch((error) => {
+        this.$notify({ type: 'error', title: 'Save Data', text: 'Error save meta data file to gaia!' })
+        this.result = error
+      })
     },
-    saveAsset (gaiaAsset) {
+    buildAssetHash (myAsset) {
+      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](this.loopRun.contractId)
+      let mintPrice = application.tokenContract.mintPrice
+      const defaultMintPrice = Number(process.env.VUE_APP_DEFAULT_MINT_PRICE)
+      mintPrice = Math.max(application.tokenContract.mintPrice, defaultMintPrice)
+      const editions = myAsset.attributes.editions
+      const editionCost = myAsset.attributes.editionCost
+      const buyNowPrice = myAsset.attributes.buyNowPrice
+      const hashish = myAsset.image + myAsset.metaDataUrl + mintPrice + editions + editionCost + buyNowPrice
+      myAsset.assetHash = utils.buildHash(hashish)
+    },
+    saveAssetWithMintTxId (gaiaAsset) {
       this.$store.dispatch('rpayMyItemStore/saveItem', gaiaAsset).then(() => {
         // this.$notify({ type: 'success', title: 'Meta Data', text: 'Meta data saved to users gaia hub! ' + gaiaAsset.assetHash })
       }).catch(() => {
@@ -165,36 +219,16 @@ export default {
     },
     mintCollectionSingle: function (data) {
       this.$store.dispatch('rpayPurchaseStore/mintCollectionSingle', data).then((result) => {
-        const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](result.assetHash)
-        if (result.txId) {
-          item.mintInfo = {
-            txId: result.txId,
-            txStatus: result.txStatus,
-            timestamp: result.timestamp
-          }
-          this.$store.dispatch('rpayMyItemStore/quickSaveItem', item).then((item) => {
-            this.$emit('update', item)
-          })
-        }
-      }).catch((err) => {
-        this.errorMessage = 'Minting error: ' + err
+        this.updateMetaData(result)
+      }).catch(() => {
+        this.$store.dispatch('rpayCategoryStore/updateMintAllocations', this.mintAllocations)
       })
     },
     mintCollectionBatch: function (data) {
       this.$store.dispatch('rpayPurchaseStore/mintCollectionBatch', data).then((result) => {
-        const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](result.assetHash)
-        if (result.txId) {
-          item.mintInfo = {
-            txId: result.txId,
-            txStatus: result.txStatus,
-            timestamp: result.timestamp
-          }
-          this.$store.dispatch('rpayMyItemStore/quickSaveItem', item).then((item) => {
-            this.$emit('update', item)
-          })
-        }
-      }).catch((err) => {
-        this.errorMessage = 'Minting error: ' + err
+        this.updateMetaData(result)
+      }).catch(() => {
+        this.$store.dispatch('rpayCategoryStore/updateMintAllocations', this.mintAllocations)
       })
     },
     getData (signature) {
@@ -210,8 +244,8 @@ export default {
       const data = {
         message: hashOfMessage,
         sig: signature,
-        editions: (this.gaiaAssets[0].editions) ? this.gaiaAssets[0].editions : 1,
-        editionCost: (this.gaiaAssets[0].editionCost) ? this.gaiaAssets[0].editionCost : 0,
+        editions: this.gaiaAssets[0].attributes.editions,
+        editionCost: this.gaiaAssets[0].attributes.editionCost,
         buyNowPrice: this.gaiaAssets[0].attributes.buyNowPrice,
         mintPrice: mintPrice,
         owner: profile.stxAddress,
@@ -235,13 +269,6 @@ export default {
         data.functionName = 'collection-mint-token'
       }
       return data
-    },
-    updateItem () {
-      const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.gaiaAssets[0].assetHash)
-      item.beneficiaries = this.beneficiaries
-      this.$store.dispatch('rpayMyItemStore/saveItem', item).then((item) => {
-        this.beneficiaries = item.beneficiaries
-      })
     },
     setPage () {
       this.loading = false

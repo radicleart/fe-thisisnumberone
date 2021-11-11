@@ -1,33 +1,15 @@
 <template>
 <div class="text-small">
-  <h3 class="border-bottom pointer" @click="showColls = !showColls">Collections <b-icon v-if="showColls" icon="chevron-down"/> <b-icon v-else icon="chevron-right"/></h3>
-  <div v-for="(project, index) in projects" :key="index" class="mb-5">
-    <!--
-    <div @click="contractId = project.contractId">
-      <img width="100%" :src="getImageUrl(project)"  v-b-tooltip.hover="{ variant: 'warning' }" :title="'View Collections for Contract\n' + project.contractId"/>
-    </div>
-    <div class="text-small d-flex justify-content-between">
-      <div>{{projectId(project)}}</div>
-      <div><b-link :href="project.platformAddress" target="_blank" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Visit project website.'"><b-icon icon="arrow-up-right-square"/></b-link></div>
-    </div>
-     -->
-  </div>
+  <div class="mb-5">
+    <h3 class="border-bottom pointer mb-4" @click="showColls = !showColls"><b-icon font-scale="0.8" v-if="showColls" icon="chevron-down"/> <b-icon font-scale="0.8" v-else icon="chevron-right"/> Collections</h3>
     <div class="" v-if="showColls">
       <div class="ml-5 my-3" v-for="(loopRun, index) in allLoopRuns" :key="index">
-        <!--
-        <div class="mb-3 mx-5">
-          <b-link class="text-warning" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">
-            <img height="150px" :src="getImageUrl(loopRun)"  v-b-tooltip.hover="{ variant: 'warning' }" :title="'Collection\n' + loopRun.currentRun"/>
-          </b-link>
-        </div>
-        <div class="text-small"><b-link class="text-warning" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey"><span class="text-warning" v-b-tooltip.hover="{ variant: 'warning' }" :title="'View collection in marketplace.'">{{loopRun.tokenCount}} / {{loopRun.versionLimit}}</span></b-link></div>
-        <div class="text-small">by: <b-link class="text-warning" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey"><span class="text-warning" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Mint new pieces in this collection.'">{{loopRun.makerName}}</span></b-link></div>
-        -->
-        <h4 class="pointer" @click="showCollection(loopRun)">{{loopRun.currentRun}}</h4>
+        <p :class="isSelected(loopRun.currentRunKey)" v-if="loopRun.status !== 'disabled'" class="pointer" @click="showCollection(loopRun)">{{loopRun.currentRun}}</p>
       </div>
     </div>
+  </div>
   <div v-if="canUpload()">
-    <h3 class="border-bottom mt-5">Uploads</h3>
+    <h3 class="border-bottom mb-4">Uploads</h3>
     <div class="ml-5 my-3">
       <h4 class="pointer" @click="showUploads()">manage</h4>
     </div>
@@ -61,7 +43,7 @@ export default {
   methods: {
     canUpload () {
       const hasUploadPriv = this.$store.getters[APP_CONSTANTS.KEY_HAS_PRIVILEGE]('can-upload')
-      return this.allowUploads && hasUploadPriv
+      return this.$route.name === 'my-nfts' && ((this.allowUploads && hasUploadPriv) || this.profile.superAdmin)
     },
     showCollection (loopRun) {
       this.$emit('update', { opcode: 'show-collection', loopRun: loopRun })
@@ -79,6 +61,9 @@ export default {
     getImageUrl (item) {
       return this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](item)
     },
+    isSelected (runKey) {
+      return (this.$route.path.indexOf(runKey) > -1) ? 'text-warning' : ''
+    },
     fetchFullRegistry () {
       const $self = this
       this.$store.dispatch('rpayProjectStore/fetchProjectsByStatus', 'active').then((projects) => {
@@ -94,6 +79,10 @@ export default {
     }
   },
   computed: {
+    profile () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      return profile
+    },
     allLoopRuns () {
       const loopRuns = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUNS]
       return loopRuns

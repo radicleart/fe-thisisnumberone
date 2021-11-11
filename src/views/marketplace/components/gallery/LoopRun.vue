@@ -26,7 +26,7 @@
       </div>
       <div v-else>
         <div>
-          Collection: <a class="text-info" :href="origin + '/nft-marketplace/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey" target="_blank">{{loopRun.currentRun}}</a>
+          Collection: <a class="text-warning" :href="origin + '/nft-marketplace/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey" target="_blank">{{loopRun.currentRun}}</a>
         </div>
         <div>
           Minting Fee: {{mintPrice}} STX
@@ -57,8 +57,6 @@ export default {
   },
   mounted () {
     if (this.loopRun) {
-      // const runKey = this.loopRun.currentRunKey
-      // this.$store.dispatch('rpayCategoryStore/fetchMintCountForCollection', runKey)
       if (this.limitReached) {
         this.$emit('loopRun', { opcode: 'limit-reached' })
       }

@@ -15,7 +15,7 @@
       <b-row v-if="showRoyalties">
         <b-col cols="12" class="mt-3">
           <h6 style="font-weight: 700;">Royalty Payments</h6>
-          <ListBeneficiaries :item="item" />
+          <ListBeneficiaries :loopRun="loopRun" :item="item" />
         </b-col>
       </b-row>
     </b-alert>
@@ -32,7 +32,7 @@ export default {
   components: {
     ListBeneficiaries
   },
-  props: ['item'],
+  props: ['item', 'loopRun'],
   data () {
     return {
       showRoyalties: false

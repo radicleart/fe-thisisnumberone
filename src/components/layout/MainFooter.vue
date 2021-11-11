@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-black" v-if="content">
+  <div class="bg-black mt-5" v-if="content">
     <div class="footer-break-line" :style="'background-image: url(' + getBreakLine + ')'"></div>
 
     <div class="footer-container">

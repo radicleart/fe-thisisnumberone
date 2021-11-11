@@ -1,5 +1,5 @@
 <template>
-  <b-button-group class="text-white" id="parent-group" v-if="loaded">
+  <b-button-group class="" id="parent-group" v-if="loaded">
     <b-button @click="$emit('clickButton')" class="btn-square" :class="colorHover">
       <span class="d-flex justify-content-center" v-if="icon">
         <b-icon :class="(textWarning) ? 'text-warning' : ''" style="width: 30px; height: 30px;" :icon="icon"/>

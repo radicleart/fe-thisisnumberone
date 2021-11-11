@@ -49,19 +49,19 @@ export default {
       } else if (data.errorMessage) {
         this.$store.commit('setModalMessage', data.errorMessage)
       } else if (data.media) {
-        const $self = this
         this.$store.commit('setModalMessage', 'Fetched. Saving file info to library.')
         this.$store.dispatch('rpayMyItemStore/saveAttributesObject', { assetHash: this.item.assetHash, attributes: data.media }).then((attributes) => {
           const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.item.assetHash)
           myAsset.attributes[attributes.id] = attributes
-          $self.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((item) => {
-            $self.item = item
-            $self.$store.commit('setModalMessage', '')
-            $self.$root.$emit('bv::hide::modal', 'waiting-modal')
-            $self.componentKey++
+          this.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((item) => {
+            this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
+            this.item = item
+            this.$store.commit('setModalMessage', '')
+            this.$root.$emit('bv::hide::modal', 'waiting-modal')
+            this.componentKey++
           }).catch((error) => {
-            $self.$store.commit('setModalMessage', 'Error occurred processing file upload.')
-            $self.result = error
+            this.$store.commit('setModalMessage', 'Error occurred processing file upload.')
+            this.result = error
           })
         })
       }

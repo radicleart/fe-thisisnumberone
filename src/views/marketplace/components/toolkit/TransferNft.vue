@@ -29,15 +29,13 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 
-const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
-const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 const NETWORK = process.env.VUE_APP_NETWORK
 
 export default {
   name: 'TransferNft',
   components: {
   },
-  props: ['item'],
+  props: ['item', 'loopRun'],
   data: function () {
     return {
       toAddress: null,
@@ -52,8 +50,8 @@ export default {
       this.transferring = 'transfer started...'
       const contractAsset = this.item.contractAsset
       const data = {
-        contractAddress: STX_CONTRACT_ADDRESS,
-        contractName: STX_CONTRACT_NAME,
+        contractAddress: this.loopRun.contractId.split('.')[0],
+        contractName: this.loopRun.contractId.split('.')[1],
         nftIndex: contractAsset.nftIndex,
         owner: contractAsset.owner,
         recipient: this.toAddress

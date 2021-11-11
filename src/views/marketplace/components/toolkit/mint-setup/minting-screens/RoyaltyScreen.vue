@@ -1,6 +1,6 @@
 <template>
 <b-card-group>
-  <b-card class="text-white text-xsmall bg-dark" header-tag="header" footer-tag="footer">
+  <b-card class="text-white text-xsmall bg-dark" style="min-height: 30vh;" header-tag="header" footer-tag="footer">
     <!-- <header-screen :allowEdit="false" :item="item"/> -->
     <div class="text-danger" v-html="errorMessage"></div>
     <EditEditions v-if="allowEditEditions" :item="item"/>
@@ -8,7 +8,7 @@
     <template v-slot:footer>
       <div class="d-flex justify-content-between">
         <b-button @click="saveData()" class="rounded w-50 mr-2" variant="outline-light">Cancel</b-button>
-        <b-button @click="sendMintEvent()" v-if="allowMint()"  class="w-50 ml-2" variant="warning">Mint Now</b-button>
+        <b-button @click="sendMintEvent()" v-if="allowMint()"  class="w-50 ml-2" variant="warning"><span v-if="mintButtonText">{{mintButtonText}}</span><span v-else>Mint Now</span></b-button>
       </div>
     </template>
   </b-card>
@@ -26,7 +26,7 @@ export default {
     EditEditions,
     Beneficiaries
   },
-  props: ['item', 'beneficiaries', 'errorMessage', 'hidePrimaries'],
+  props: ['item', 'beneficiaries', 'errorMessage', 'hidePrimaries', 'mintButtonText'],
   data () {
     return {
       allowEditEditions: false, // process.env.VUE_APP_ALLOW_EDIT_EDITIONS,

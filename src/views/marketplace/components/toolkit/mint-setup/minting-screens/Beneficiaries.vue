@@ -6,11 +6,11 @@
       <b-col cols="6">
         Role
       </b-col>
-      <b-col cols="3" class="text-right" v-if="!hidePrimaries">
-        Primary Sale
+      <b-col cols="3" class="text-right">
+        <span v-if="!hidePrimaries">Primary Sale</span>
       </b-col>
       <b-col cols="3" class="text-right">
-        Secondary Sales
+        Secondaries
       </b-col>
     </b-row>
     <b-row class="text-small my-2 py-2">
@@ -26,8 +26,8 @@
     </b-row>
     <b-row class="text-small border-top mt-2 pt-2">
       <b-col cols="6">Sum</b-col>
-      <b-col cols="3"  class="text-right" v-if="!hidePrimaries">
-        <div>{{getRoyaltySum()}}%</div>
+      <b-col cols="3"  class="text-right">
+        <div v-if="!hidePrimaries">{{getRoyaltySum()}}%</div>
       </b-col>
       <b-col cols="3" class="text-right">
         <div>{{getRoyaltySecSum()}}%</div>

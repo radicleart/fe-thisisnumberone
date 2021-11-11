@@ -13,6 +13,16 @@
             </b-container>
           </div>
           <div v-else>
+            <div class="mb-3" role="group">
+              <label for="contractId"><span class="text-danger">*</span> contract id</label>
+              <b-form-input
+                id="contractId"
+                v-model="contractId"
+                placeholder="contract id"
+                trim
+                required
+              ></b-form-input>
+            </div>
             <div>
               <div class="mb-3">
                 <b-textarea
@@ -64,6 +74,7 @@ export default {
       project: {
         contractId: REGISTRY_CONTRACT_ADDRESS + '.' + REGISTRY_CONTRACT_NAME
       },
+      contractId: null,
       txData: null,
       nonce: 0,
       loading: true,
@@ -81,6 +92,7 @@ export default {
     }
   },
   mounted () {
+    this.contractId = this.project.contractId
     this.loading = false
   },
   methods: {
@@ -119,6 +131,7 @@ export default {
         return
       }
       // contractName = this.this.files[0].name.split(/\./)[1]
+      this.project.contractId = this.contractId
       this.project.network = NETWORK
       this.project.codeBody = this.plainFile()
       this.$store.dispatch('rpayStacksStore/deployProjectContract', this.project).then(() => {

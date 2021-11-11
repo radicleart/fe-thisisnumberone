@@ -1,6 +1,6 @@
 <template>
 <section id="number-one-section" class="">
-  <number-one-section />
+  <number-one-section/>
 </section>
 </template>
 
@@ -16,17 +16,7 @@ export default {
     return {
     }
   },
-  mounted () {
-    this.findAssets()
-  },
   methods: {
-    findAssets () {
-      // const pid = STX_CONTRACT_NAME.split('-')[0]
-      this.$store.dispatch('rpayStacksContractStore/fetchContractDataFirstEditions').then(() => {
-        // this.resultSet = results
-        this.loaded = true
-      })
-    }
   },
   computed: {
   }

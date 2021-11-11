@@ -363,8 +363,11 @@ label {
   border-radius: 0%;
 }
 .hash1-image {
-  max-width: 100%;
+  width: 100%;
   border-radius: 0%;
+}
+#asset-details .hash1-image {
+  border: none;
 }
 .item-image {
   height: auto;

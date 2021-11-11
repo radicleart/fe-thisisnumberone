@@ -21,9 +21,6 @@
 import GalleryNft from '@/views/marketplace/components/gallery/GalleryNft'
 import { APP_CONSTANTS } from '@/app-constants'
 
-const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
-const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
-
 export default {
   name: 'NftGallery',
   components: {
@@ -36,17 +33,12 @@ export default {
     }
   },
   mounted () {
-    this.findAssets()
+    // this.findAssets()
   },
   methods: {
     findAssets () {
-      // const pid = STX_CONTRACT_NAME.split('-')[0]
       this.$store.dispatch('rpayStacksContractStore/fetchContractDataFirstEditions').then(() => {
-        // this.resultSet = results
         this.loaded = true
-      })
-      this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then((results) => {
-        this.searchSet = results
       })
     }
   },

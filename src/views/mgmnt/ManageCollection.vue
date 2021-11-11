@@ -23,9 +23,9 @@
     </div>
 
     <div class="mb-3" role="group">
-      <label for="currentRun-name"><span class="text-danger">*</span> Collection Name (max 30 chars)</label>
+      <label for="currentRun-name"><span class="text-danger">*</span> Collection Name (max 40 chars)</label>
       <b-form-input
-        maxlength="30"
+        maxlength="40"
         @keyup="setRunKey()"
         id="currentRun-name"
         v-model="loopRun.currentRun"
@@ -104,6 +104,28 @@
       </b-form-invalid-feedback>
     </div>
 
+    <div class="w-50 mb-3" role="group">
+      <label for="punkImageBaseUrl"><span class="text-danger">*</span> Base Image URL (e.g. https://imageserver.com/prod/artists/artist1/sets/set1/)</label>
+      <b-form-input
+        id="punkImageBaseUrl"
+        v-model="loopRun.punkImageBaseUrl"
+        aria-describedby="punkImageBaseUrl-feedback"
+        placeholder="Base URL to where the images are stored"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="w-50 mb-3" role="group">
+      <label for="punkImageType"><span class="text-danger">*</span> Base Image Type (.jpg, .png etc)</label>
+      <b-form-input
+        id="punkImageType"
+        v-model="loopRun.punkImageType"
+        aria-describedby="punkImageType-feedback"
+        placeholder="Base image type (include the dot)"
+        required
+      ></b-form-input>
+    </div>
+
     <div class="mb-3">
       <label for="description">Short Bio for Collection</label>
       <b-textarea
@@ -121,6 +143,50 @@
         v-model="loopRun.image"
         aria-describedby="image-feedback"
         placeholder="Image for this Collection"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="mb-3" role="group">
+      <label for="image">Video for this Collection</label>
+      <b-form-input
+        id="video"
+        v-model="loopRun.video"
+        aria-describedby="video-feedback"
+        placeholder="video for this Collection"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="mb-3" role="group">
+      <label for="mintImage1">Minting Image 1 for this Collection</label>
+      <b-form-input
+        id="mintImage1"
+        v-model="loopRun.mintImage1"
+        aria-describedby="mintImage1-feedback"
+        placeholder="Mint Image 1 for this Collection"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="mb-3" role="group">
+      <label for="mintImage2">Minting Image 2 for this Collection</label>
+      <b-form-input
+        id="mintImage2"
+        v-model="loopRun.mintImage2"
+        aria-describedby="mintImage2-feedback"
+        placeholder="Mint Image 2 for this Collection"
+        required
+      ></b-form-input>
+    </div>
+
+    <div class="mb-3" role="group">
+      <label for="mintImage3">Minting Image 3 for this Collection</label>
+      <b-form-input
+        id="mintImage3"
+        v-model="loopRun.mintImage3"
+        aria-describedby="mintImage3-feedback"
+        placeholder="Mint Image 3 for this Collection"
         required
       ></b-form-input>
     </div>
@@ -207,13 +273,18 @@ export default {
       currentRunKey: null,
       contractIds: [],
       formSubmitted: false,
-      statusEnum: [{ text: 'Active', value: 'active' }, { text: 'Inactive', value: 'inactive' }, { text: 'Disabled', value: 'disabled' }],
+      statusEnum: [{ text: 'Active', value: 'active' }, { text: 'Minting Phase', value: 'unrevealed' }, { text: 'Inactive', value: 'inactive' }, { text: 'Disabled', value: 'disabled' }],
       typeEnum: [{ text: 'Traditional', value: 'traditional' }, { text: 'Crypto Punks', value: 'punks' }],
       batchSizeEnum: [1, 5, 10, 15, 20],
       loaded: false,
       loopRun: {
         status: 'active',
         contractId: null,
+        image: null,
+        mintImage1: null,
+        mintImage2: null,
+        mintImage3: null,
+        video: null,
         makerName: null,
         batchPointer: 0,
         makerUrlKey: null,

@@ -61,7 +61,7 @@ const subscribeApiNews = function (that) {
     stompClient.disconnect()
   }
   stompClient.connect({}, function () {
-    stompClient.subscribe('/queue/transaction-news-' + that.nftIndex, function (response) {
+    stompClient.subscribe('/queue/transaction-news-' + that.nftIndex + '-' + that.loopRun.contractId, function (response) {
       const pending = JSON.parse(response.body)
       that.$emit('setPending', pending)
       // that.checkForPendingTransactions('fetchNFTEvents', that.nftIndex)
@@ -76,7 +76,7 @@ export default {
   name: 'NFTHistroy',
   components: {
   },
-  props: ['nftIndex', 'assetHash'],
+  props: ['nftIndex', 'assetHash', 'loopRun'],
   data: function () {
     return {
       events: null,
@@ -119,12 +119,19 @@ export default {
      * if found inform the parent (/item-preview or /nft/:index)
      */
     checkForPendingTransactions (methos, arg0) {
-      this.$store.dispatch('rpayTransactionStore/' + methos, arg0).then((events) => {
+      const data = {
+        contractId: this.loopRun.contractId,
+        nftIndex: arg0,
+        assetHash: arg0
+      }
+      this.$store.dispatch('rpayTransactionStore/' + methos, data).then((events) => {
         if (events && events.length > 0) {
           this.events = events.reverse()
           this.$emit('setPending', events[0])
           if (events[0].txStatus && events[0].txStatus === 'pending') {
             this.previouslyPending = true
+          } else {
+            clearInterval(this.timer)
           }
           if (this.previouslyPending && events[0].txStatus && events[0].txStatus !== 'pending') {
             this.update()
@@ -147,15 +154,17 @@ export default {
       })
     },
     updateCacheByHash () {
-      this.$store.dispatch('rpayStacksContractStore/updateCacheByHash', this.assetHash).then(() => {
-        this.$store.dispatch('rpayStacksContractStore/fetchAssetByHashAndEdition', { assetHash: this.assetHash, edition: 1 }).then((item) => {
+      const data = { contractId: this.loopRun.contractId, assetHash: this.assetHash }
+      this.$store.dispatch('rpayStacksContractStore/updateCacheByHash', data).then(() => {
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndAssetHash', data).then((item) => {
           this.$emit('update', item)
         })
       })
     },
     updateCacheByNftIndex () {
-      this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', this.nftIndex).then(() => {
-        this.$store.dispatch('rpayStacksContractStore/fetchAssetByNftIndex', this.nftIndex).then((item) => {
+      const data = { contractId: this.loopRun.contractId, nftIndex: this.nftIndex }
+      this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', data).then(() => {
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then((item) => {
           this.$emit('update', item)
         })
       })

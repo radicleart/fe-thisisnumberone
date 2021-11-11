@@ -44,7 +44,7 @@ export default {
     },
     openAssetDetails () {
       if (this.result.assetHash !== this.$route.params.assetHash) {
-        this.$router.push(this.assetUrl)
+        if (this.$route.path !== this.assetUrl) this.$router.push(this.assetUrl)
       }
       VueScrollTo.scrollTo('#app', 2000)
     }
@@ -53,7 +53,7 @@ export default {
     assetUrl () {
       let assetUrl = '/assets/' + this.result.assetHash + '/1'
       if (this.result.contractAsset) {
-        assetUrl = '/nfts/' + this.result.contractAsset.nftIndex
+        assetUrl = '/nfts/' + this.result.contractAsset.contractId + '/' + this.result.contractAsset.nftIndex
       }
       return assetUrl
     },

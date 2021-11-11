@@ -6,6 +6,7 @@
     <li><b-nav-item to="/mgmnt/registry/addressLookup" :class="getClass('addressLookup')">Addresses</b-nav-item></li>
     -->
     <li><b-nav-item to="/mgmnt/registry/contracts" :class="getClass('contracts')">Contracts</b-nav-item></li>
+    <li><b-nav-item to="/mgmnt/registry/deployContract" :class="getClass('deployContract')">Deploy Contract</b-nav-item></li>
     <li><b-nav-item to="/mgmnt/registry/buildCache" :class="getClass('buildCache')">Build Cache</b-nav-item></li>
     <li><b-nav-item to="/mgmnt/registry/contractForm" :class="getClass('contractForm')">Contract Update</b-nav-item></li>
     <li><b-nav-item to="/mgmnt/registry/exploreCache" :class="getClass('exploreCache')">Explore Cache</b-nav-item></li>

@@ -1,10 +1,9 @@
 import axios from 'axios'
 import { APP_CONSTANTS } from '@/app-constants'
 
-const STACKSMATE_API_PATH = process.env.VUE_APP_RISIDIO_API
+axios.defaults.withCredentials = true
+
 const MESH_API_PATH = process.env.VUE_APP_RISIDIO_API + '/mesh'
-const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
-const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 
 const assetGeneralStore = {
   namespaced: true,
@@ -71,14 +70,6 @@ const assetGeneralStore = {
     }
   },
   actions: {
-    stacksmateSignme ({ commit }, assetHash) {
-      return new Promise(function (resolve) {
-        axios.get(STACKSMATE_API_PATH + '/stacksmate/signme/' + assetHash).then((response) => {
-          commit('setSig', response.data)
-          resolve(response.data)
-        })
-      })
-    },
     cacheUpdate ({ dispatch }, data) {
       return new Promise(function () {
         const cacheUpdate = {
@@ -86,7 +77,7 @@ const assetGeneralStore = {
           functionName: data.functionName || 'general',
           nftIndex: (data.nftIndex) ? Number(data.nftIndex) : null,
           assetHash: data.assetHash,
-          contractId: STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
+          contractId: data.contractId
         }
         dispatch('rpayStacksContractStore/updateCache', cacheUpdate, { root: true })
       })
@@ -101,9 +92,10 @@ const assetGeneralStore = {
         })
       })
     },
-    updateTokenFilter ({ commit }, tokenFilter) {
+    updateTokenFilter ({ commit, rootGetters }, tokenFilter) {
       return new Promise(function (resolve) {
-        axios.put(MESH_API_PATH + '/v2/token-filter', tokenFilter).then((result) => {
+        const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+        axios.put(MESH_API_PATH + '/v2/token-filter', tokenFilter, authHeaders).then((result) => {
           commit('addFilter', result.data)
           resolve(result.data)
         }).catch((error) => {
@@ -121,6 +113,16 @@ const assetGeneralStore = {
         })
       })
     },
+    fetchMetaData ({ state }, metaDataUrl) {
+      return new Promise(function (resolve, reject) {
+        axios.get(metaDataUrl).then((result) => {
+          state.metaDataUrl = metaDataUrl
+          resolve(result.data)
+        }).catch((error) => {
+          reject(new Error('Unable to find token filters: ' + error))
+        })
+      })
+    },
     tokenFilters ({ commit }) {
       return new Promise(function (resolve) {
         axios.get(MESH_API_PATH + '/v2/token-filters').then((result) => {
@@ -133,7 +135,7 @@ const assetGeneralStore = {
     },
     buildCacheAll ({ commit }) {
       return new Promise(function (resolve) {
-        axios.get(MESH_API_PATH + '/v2/build-cache').then((result) => {
+        axios.get(MESH_API_PATH + '/v2/build-application-cache').then((result) => {
           commit('setCacheState', result.data)
           resolve(result.data)
         }).catch((error) => {
@@ -153,6 +155,8 @@ const assetGeneralStore = {
     },
     clearCache ({ commit }, contractId) {
       return new Promise(function (resolve, reject) {
+        // const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+        axios.defaults.withCredentials = true
         axios.get(MESH_API_PATH + '/v2/clear-cache/' + contractId).then((result) => {
           commit('setCacheState', result.data)
           resolve(result.data)
@@ -161,9 +165,10 @@ const assetGeneralStore = {
         })
       })
     },
-    buildSearchIndex ({ commit }, contractId) {
+    buildSearchIndex ({ commit, rootGetters }, contractId) {
       return new Promise(function (resolve) {
-        axios.get(MESH_API_PATH + '/v2/gaia/indexFiles/' + contractId).then((result) => {
+        const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+        axios.get(MESH_API_PATH + '/v2/gaia/indexFiles/' + contractId, authHeaders).then((result) => {
           commit('setCacheState', result.data)
           resolve(result.data)
         }).catch((error) => {
@@ -181,9 +186,10 @@ const assetGeneralStore = {
         })
       })
     },
-    registerForUpdates ({ commit }, data) {
+    registerForUpdates ({ commit, rootGetters }, data) {
       return new Promise(function (resolve, reject) {
-        axios.post(MESH_API_PATH + '/v2/register/email', data).then((result) => {
+        const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+        axios.post('http://127.0.0.1:8046/mesh/v2/register/email', data, authHeaders.headers).then((result) => {
           commit('addRegisteredEmail', data)
           resolve(result)
         }).catch((error) => {

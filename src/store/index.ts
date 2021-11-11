@@ -306,13 +306,12 @@ export default new Vuex.Store({
             }
             dispatch('rpayCategoryStore/fetchLoopRuns')
             dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
-            dispatch('rpayStacksContractStore/fetchAssetsByOwner', data).then(() => {
-              dispatch('rpayMyItemStore/initSchema').then(rootFile => {
-                dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
-                resolve(rootFile)
-              })
+            dispatch('rpayMyItemStore/initSchema').then(rootFile => {
+              dispatch('rpayAuthStore/fetchAccountInfo', { stxAddress: profile.stxAddress, force: true })
+              resolve(rootFile)
             })
           } else {
+            dispatch('rpayCategoryStore/fetchLoopRuns')
             dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN }, { root: true })
             resolve(null)
           }

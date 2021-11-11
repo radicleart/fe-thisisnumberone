@@ -3,29 +3,29 @@
   <b-container class="my-5 pt-5" v-if="!item || !loopRun">
     <h1>{{message}}</h1>
   </b-container>
-  <b-container :key="componentKey" class="my-3" v-else>
+  <b-container class="my-3" v-else>
     <b-row style="min-height: 40vh;" >
       <b-col md="4" sm="12" align-self="start" class="text-center">
         <MediaItemGeneral :classes="'item-image-preview'" :options="options" :mediaItem="getMediaItem().artworkFile"/>
         <div class="text-left text-small mt-3">
-          <b-link to="/my-nfts"><b-icon icon="chevron-left"/> Back</b-link>
+          <b-link :to="'/my-nfts/' + loopRun.currentRunKey"><b-icon icon="chevron-left"/> Back</b-link>
         </div>
       </b-col>
       <b-col md="8" sm="12" align-self="start" class="mb-4 text-white">
         <div>
           <div class="mb-2 d-flex justify-content-between">
-            <h2 class="d-block border-bottom mb-5">{{item.name}}</h2>
+            <h2 class="d-block border-bottom mb-5"><span v-if="item.contractAsset">#{{item.contractAsset.nftIndex}}</span> {{item.name}}</h2>
             <ItemActionMenu :item="item" />
           </div>
           <h6 v-if="item.artist" class="text-small">By : {{item.artist}}</h6>
         </div>
         <p v-if="item.description" class="pt-4 text-small" v-html="preserveWhiteSpace(item.description)"></p>
-        <MintInfo :item="item" />
+        <MintInfo :item="item" :loopRun="loopRun"/>
         <PendingTransactionInfo v-if="pending && pending.txStatus === 'pending'" :pending="pending"/>
         <div v-else>
           <MintingTools class="w-100" :items="[item]" :loopRun="loopRun" @update="update"/>
         </div>
-        <NftHistory class="mt-5" @update="update" @setPending="setPending" :nftIndex="(item.contractAsset) ? item.contractAsset.nftIndex : -1" :assetHash="item.assetHash"/>
+        <NftHistory class="mt-5" @update="update" @setPending="setPending" :loopRun="loopRun" :nftIndex="(item.contractAsset) ? item.contractAsset.nftIndex : -1" :assetHash="item.assetHash"/>
       </b-col>
     </b-row>
   </b-container>
@@ -54,23 +54,22 @@ export default {
   data: function () {
     return {
       showHash: false,
-      componentKey: 0,
       nftIndex: null,
+      notCount: 0,
       assetHash: null,
       pending: null,
+      item: null,
       message: 'No item available...'
     }
   },
   mounted () {
     this.loading = false
     this.state = this.$route.query.state
-    this.assetHash = this.$route.params.assetHash
-    this.edition = Number(this.$route.params.edition)
-    this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndAssetHash', this.assetHash)
+    this.fetchItem()
     if (window.eventBus && window.eventBus.$on) {
       const $self = this
       window.eventBus.$on('rpayEvent', function (data) {
-        if ($self.$route.name !== 'item-preview') return
+        if ($self.$route.name !== 'item-preview' && $self.$route.name !== 'nft-preview') return
         if (data.opcode === 'stx-transaction-sent') {
           // save transaction but not on gaia asset
           if (data.txId && data.functionName === 'mint-token' && data.txStatus === 'success') {
@@ -82,44 +81,78 @@ export default {
             $self.$store.dispatch('rpayMyItemStore/quickSaveItem', item)
           }
           $self.update()
+          if (data.txStatus === 'pending') {
+            $self.setPending(data)
+          }
         }
       })
     }
   },
   methods: {
+    fetchItem () {
+      if (this.$route.name === 'nft-preview') {
+        const data = { contractId: this.$route.params.contractId, nftIndex: Number(this.$route.params.nftIndex) }
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then((item) => {
+          this.item = item
+        })
+      } else {
+        this.assetHash = this.$route.params.assetHash
+        this.edition = Number(this.$route.params.edition)
+        this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
+          this.item = item
+          const data = {
+            asc: true,
+            page: 0,
+            pageSize: 100,
+            stxAddress: (process.env.VUE_APP_NETWORK !== 'local') ? this.profile.stxAddress : 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
+          }
+          this.$store.dispatch('rpayStacksContractStore/fetchMyTokens', data).then((results) => {
+            if (results && results.tokenCount > 0) {
+              const item = results.gaiaAssets.find((o) => o.assetHash === this.assetHash)
+              if (item) this.item = item
+            }
+          })
+        })
+      }
+    },
     setPending (result) {
       if (this.pending) {
+        const data = {
+          contractId: this.loopRun.contractId
+        }
         if (!result || !result.txStatus || result.txStatus === 'pending') {
           this.pending = result
         } else if (result.txStatus === 'success' && result.functionName === 'mint-token') {
-          this.updateCacheByHash(result.assetHash)
+          data.assetHash = result.assetHash
+          this.updateCacheByHash(data)
         } else if (result.txStatus === 'success' && result.functionName !== 'mint-token') {
-          this.updateCacheByNftIndex(result.nftIndex)
+          data.nftIndex = result.nftIndex
+          this.updateCacheByNftIndex(data)
         } else {
-          this.$notify({ type: 'danger', title: 'Transaction Info', text: 'Transaction failed - check blockchain for cause.' })
+          if (this.notCount === 0) this.$notify({ type: 'danger', title: 'Transaction Info', text: 'Transaction failed - check blockchain for cause.' })
+          this.notCount++
         }
       }
       this.pending = result
     },
-    updateCacheByHash (assetHash) {
-      this.$store.dispatch('rpayStacksContractStore/updateCacheByHash', assetHash).then((result) => {
+    updateCacheByHash (data) {
+      this.$store.dispatch('rpayStacksContractStore/updateCacheByHash', data).then((result) => {
         if (result && typeof result.nftIndex !== 'undefined') this.nftIndex = result.nftIndex
-        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', result.nftIndex).then(() => {
-          // this.componentKey++
-          // window.location.reload()
+        data.nftIndex = result.nftIndex
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then(() => {
+          this.fetchItem()
         })
       })
     },
-    updateCacheByNftIndex (nftIndex) {
-      this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', nftIndex).then(() => {
-        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', nftIndex).then(() => {
-          // this.componentKey++
-          // window.location.reload()
+    updateCacheByNftIndex (data) {
+      this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', data).then(() => {
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then(() => {
+          this.fetchItem()
         })
       })
     },
     update () {
-      this.componentKey++
+      this.fetchItem()
     },
     getMediaItem () {
       const attributes = this.$store.getters[APP_CONSTANTS.KEY_MEDIA_ATTRIBUTES](this.item)
@@ -187,7 +220,8 @@ export default {
       }
       return videoOptions
     },
-    item () {
+    /**
+    item1 () {
       // get the item from my uploads - then try my nfts
       if (this.nftIndex !== null && typeof this.nftIndex !== 'undefined' && this.nftIndex > -1) {
         return this.$store.getters[APP_CONSTANTS.KEY_ASSET_FROM_NFT_INDEX](Number(this.nftIndex))
@@ -201,6 +235,7 @@ export default {
       }
       return item
     },
+    **/
     profile () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       return profile

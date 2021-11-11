@@ -6,14 +6,21 @@
       <b-row><b-col cols="4">Collection</b-col><b-col>{{loopRun.currentRun}}</b-col></b-row>
       <b-row><b-col cols="4">Maker</b-col><b-col>{{loopRun.makerName}}</b-col></b-row>
       <b-row><b-col cols="4"></b-col><b-col>{{loopRun.tokenCount}} / {{loopRun.versionLimit}} minted</b-col></b-row>
-      <b-row><b-col cols="4"></b-col><b-col><span class="pointer" @click="tokenMode = !tokenMode">toggle mode</span></b-col></b-row>
+      <b-row>
+        <b-col cols="4"></b-col>
+        <b-col>
+          <span class="text-warning" v-if="tokenMode">Showing Tokens</span>
+          <span class="text-warning" v-else>Showing Allocations</span>
+          <span class="pointer ml-3" @click="tokenMode = !tokenMode">toggle</span>
+        </b-col>
+      </b-row>
     </div>
   </div>
   <b-row class="mb-4" v-if="tokenMode">
-    <PageableTokens :loopRun="loopRun"/>
+    <PageableTokens :loopRun="loopRun" :pageSize="pageSize"/>
   </b-row>
-  <b-row class="mb-4">
-    <PageableAllocation :loopRun="loopRun"/>
+  <b-row class="mb-4" v-else>
+    <PageableAllocation :loopRun="loopRun" :pageSize="pageSize"/>
   </b-row>
   <div v-if="showForm">
   <h1 class="text-white">NFT Allocations</h1>
@@ -61,6 +68,7 @@ export default {
   },
   data () {
     return {
+      pageSize: 1000,
       tokenMode: true,
       currentRunKey: null,
       punkIndexes: null,

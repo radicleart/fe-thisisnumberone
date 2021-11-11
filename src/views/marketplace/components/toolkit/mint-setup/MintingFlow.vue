@@ -3,6 +3,7 @@
   <div class="mx-auto">
     <b-card-group>
       <b-card bg-variant="dark" class="text-white" header-tag="header" footer-tag="footer">
+        <!--
         <template #header>
           <ItemDisplay :item="item" :loopRun="loopRun"/>
         </template>
@@ -10,6 +11,19 @@
           <RoyaltyScreen :errorMessage="errorMessage" :item="item" @mintToken="mintTwentyTokens" @editBeneficiary="editBeneficiary" @removeBeneficiary="removeBeneficiary" @updateBeneficiary="updateBeneficiary" @addNewBeneficiary="addNewBeneficiary" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
           <AddBeneficiaryScreen :errorMessage="errorMessage" :eBen="eBen" @addBeneficiary="addBeneficiary" :beneficiaries="beneficiaries" :item="item" v-if="displayCard === 102"/>
         </div>
+        -->
+        <b-row class="">
+          <b-col cols="4" class="px-5">
+            <ItemDisplay :item="null" :loopRun="loopRun"/>
+          </b-col>
+          <b-col cols="8" class="px-5">
+            <div class="bg-dark mt-0">
+              <RoyaltyScreen :errorMessage="errorMessage" :item="item" @mintToken="mintTwentyTokens" @editBeneficiary="editBeneficiary" @removeBeneficiary="removeBeneficiary" @updateBeneficiary="updateBeneficiary" @addNewBeneficiary="addNewBeneficiary" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
+              <AddBeneficiaryScreen :errorMessage="errorMessage" :eBen="eBen" @addBeneficiary="addBeneficiary" :beneficiaries="beneficiaries" :item="item" v-if="displayCard === 102"/>
+            </div>
+          </b-col>
+        </b-row>
+
       </b-card>
     </b-card-group>
   </div>
@@ -43,6 +57,10 @@ export default {
   },
   mounted () {
     this.$store.dispatch('rpayCategoryStore/fetchRoyalties', this.loopRun.currentRunKey).then((royalties) => {
+      if (!royalties || !royalties.saleRoyalties) {
+        this.$notify({ type: 'warning', title: 'Royalties', text: 'Please save the royalties on the collection before minting.' })
+        return
+      }
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       this.minteficaries = royalties.mintRoyalties
       this.beneficiaries = royalties.saleRoyalties
@@ -91,7 +109,7 @@ export default {
       // const hashOfMessage = utils.sha256(this.items[0].assetHash)
       const hashOfMessage = utils.buildHash(this.items[0].assetHash)
       // const sig = utils.signPayloadEC(this.items[0].assetHash, keys1.privateKey)
-      this.$store.dispatch('assetGeneralStore/stacksmateSignme', this.items[0].assetHash).then((signature) => {
+      this.$store.dispatch('rpayPurchaseStore/stacksmateSignme', this.items[0].assetHash).then((signature) => {
         const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
         const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](this.loopRun.contractId)
         let mintPrice = application.tokenContract.mintPrice
@@ -270,8 +288,10 @@ export default {
     },
     updateItem () {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.items[0].assetHash)
+      item.projectId = this.loopRun.contractId
       item.beneficiaries = this.beneficiaries
       this.$store.dispatch('rpayMyItemStore/saveItem', item).then((item) => {
+        this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
         this.beneficiaries = item.beneficiaries
       })
     },

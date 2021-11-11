@@ -10,13 +10,13 @@
         <a class="ml-2 text-danger" href="#" @click="removeBeneficiary()"><b-icon icon="trash"/></a>
       </div>
     </b-col>
-    <b-col cols="3" class="text-right" v-if="!hidePrimaries">
-      <div class="">{{displayPrimary()}}%</div>
+    <b-col cols="3" class="text-right">
+      <div v-if="!hidePrimaries">{{displayPrimary()}}%</div>
     </b-col>
     <b-col cols="3" class="text-right">
       <div class="">{{displaySecondary()}}%</div>
     </b-col>
-    <b-col cols="11" class="bg-light py-2 mt-1 my-2 ml-3" v-if="showBeneficiary">
+    <b-col cols="11" class="bg-dark text-warning py-2 mt-1 my-2 ml-3" v-if="showBeneficiary">
       <b-row v-if="index === 0">
         <b-col md="3" sm="12">Address</b-col>
         <b-col md="9" sm="12" class="">Seller Address</b-col>

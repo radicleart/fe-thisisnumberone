@@ -1,9 +1,9 @@
 <template>
-<b-container fluid id="number-one-container">
-  <b-row align-h="center" style="min-height: 91vh" v-if="loaded" class="mb-5">
+<b-container fluid id="number-one-container" v-if="!loading">
+  <b-row align-h="center" style="min-height: 91vh" class="mb-5">
     <b-col lg="8" sm="10" class="mb-5" align-self="center">
       <div id="video-column" :style="dimensions">
-        <result-grid id="grid-container" @videoHoverOut="resetContainer" @videoHover="updateContainer" class="container text-center" :outerOptions="videoOptions"/>
+        <ResultGrid :results="resultSet" id="grid-container" @videoHoverOut="resetContainer" @videoHover="updateContainer" class="container text-center" :outerOptions="videoOptions"/>
       </div>
     </b-col>
     <b-col lg="4" sm="10" align-self="center" :key="componentKey">
@@ -15,9 +15,9 @@
               <img width="100%" height="100%" :src="bannerImage1(artistId)"/>
             </div>
             <div style="position: relative; left: -10px;">
-              <div class="text-white p-5" style="position: absolute; bottom: 0;">
-                <p class="my-0 text-artist">{{gaiaAsset.artist}}</p>
-                <p class="mb-2 text-artwork">{{gaiaAsset.name}}</p>
+              <div v-if="asset" class="text-white p-5" style="position: absolute; bottom: 0;">
+                <p class="my-0 text-artist">{{asset.artist}}</p>
+                <p class="mb-2 text-artwork">{{asset.name}}</p>
               </div>
             </div>
           </div>
@@ -34,6 +34,10 @@ import ResultGrid from '@/components/asset-details/ResultGrid'
 import Vue from 'vue'
 import PrismicItems from '@/components/prismic/PrismicItems'
 
+const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
+const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
+const DEFAULT_LOOP_RUN = process.env.VUE_APP_DEFAULT_LOOP_RUN
+
 export default {
   name: 'NumberOneSection',
   components: {
@@ -42,8 +46,12 @@ export default {
   },
   data () {
     return {
+      resultSet: [],
+      asset: null,
+      pageSize: 50,
+      loading: true,
+      numberOfItems: 0,
       show: true,
-      loaded: true,
       componentKey: null,
       // logo: require('@/assets/img/logo-rainbow.svg'),
       rainbowOne: require('@/assets/img/Group 76.svg'),
@@ -60,6 +68,7 @@ export default {
     }
   },
   mounted () {
+    this.fetchPage(0)
     this.resizeContainers()
   },
   updated () {
@@ -69,6 +78,24 @@ export default {
     }, this)
   },
   methods: {
+    fetchPage (page) {
+      this.$store.dispatch('rpayCategoryStore/fetchLoopRun', DEFAULT_LOOP_RUN).then((loopRun) => {
+        this.loopRun = loopRun
+        const data = {
+          contractId: (loopRun) ? loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
+          asc: true,
+          runKey: loopRun.currentRunKey,
+          page: page,
+          pageSize: 5
+        }
+        this.resultSet = null
+        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractId', data).then((result) => {
+          this.resultSet = result.gaiaAssets
+          this.numberOfItems = result.tokenCount
+          this.loading = false
+        })
+      })
+    },
     resizeContainers () {
       let resizeTimer
       const $self = this
@@ -90,14 +117,15 @@ export default {
       const tooltip = this.$store.getters[APP_CONSTANTS.KEY_TOOL_TIP]('tt-stacks-address')
       return (tooltip) ? tooltip[0].text : ''
     },
-    gaiaAsset (assetHash) {
-      const gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](assetHash)
+    getGaiaAsset (assetHash) {
+      const gaiaAsset = this.resultSet.find((o) => o.assetHash === assetHash)
       return gaiaAsset
     },
     updateContainer (vo) {
       if (!vo || !vo.assetHash) return
-      this.gaiaAsset = this.$store.getters[APP_CONSTANTS.KEY_GAIA_ASSET_BY_HASH](vo.assetHash)
-      this.artistId = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_ARTIST_ID](this.gaiaAsset.artist)
+      this.asset = this.getGaiaAsset(vo.assetHash)
+      if (!this.asset) return
+      this.artistId = this.$store.getters[APP_CONSTANTS.KEY_CONTENT_ARTIST_ID](this.asset.artist)
       this.componentKey++
     },
     bannerImage () {
@@ -131,16 +159,6 @@ export default {
     content () {
       const content = this.$store.getters['contentStore/getHomepage']
       return content
-    },
-    getOwningAddress () {
-      if (this.gaiaAsset && this.gaiaAsset.contractAsset && this.gaiaAsset.contractAsset.owner) {
-        const address = this.gaiaAsset.contractAsset.owner
-        if (window.innerWidth > 1100) {
-          return address
-        }
-        return address.substring(0, 5) + '...' + address.substring(address.length - 5)
-      }
-      return ''
     }
   }
 }

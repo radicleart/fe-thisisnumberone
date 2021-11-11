@@ -33,11 +33,10 @@ export default {
       this.currentPage = this.page
     }
   },
-  props: ['numberOfItems'],
+  props: ['numberOfItems', 'pageSize'],
   data () {
     return {
       page: 0,
-      pageSize: 9,
       doPaging: true,
       currentPage: 1
     }

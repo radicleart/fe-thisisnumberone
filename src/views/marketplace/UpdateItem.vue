@@ -92,7 +92,7 @@ export default {
     this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
       // this.uploadState++
       if (!item) {
-        this.$router.push('/my-nfts')
+        this.$router.push('/my-nfts/' + this.loopRun.currentRunKey)
         return
       }
       this.item = item
@@ -122,7 +122,9 @@ export default {
       })
     },
     updateUploadState: function (data) {
+      this.item.projectId = this.loopRun.contractId
       this.$store.dispatch('rpayMyItemStore/saveItem', this.item).then(() => {
+        this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
         if (data.change === 'done') {
           this.$router.push(this.itemPreviewUrl)
         } else if (data.change === 'up') {
@@ -145,7 +147,9 @@ export default {
           const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
           myAsset.attributes[attributes.id] = attributes
           myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
+          myAsset.projectId = this.loopRun.contractId
           $self.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((item) => {
+            $self.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
             $self.item = item
             $self.$store.commit('setModalMessage', '')
             $self.$root.$emit('bv::hide::modal', 'waiting-modal')
@@ -185,8 +189,10 @@ export default {
       this.showWaitingModal = true
       this.$store.commit('setModalMessage', 'Uploading... once its saved you\'ll be able to mint this artwork - registering your ownership on the blockchain. Once registered you\'ll be able to prove you own it and be able to benefit from sales and from secondary sales.')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
+      this.item.projectId = this.loopRun.contractId
       this.item.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
       this.$store.dispatch('rpayMyItemStore/saveItem', this.item).then(() => {
+        this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
         this.$root.$emit('bv::hide::modal', 'success-modal')
         this.$store.commit('setModalMessage', '')

@@ -1,6 +1,8 @@
 <template>
+<div>
     <b-form>
       <div class="row">
+        <h2>Update Signing Key</h2>
         <div class="col-md-12 col-xs-12">
           <div class="mb-4">
             <div class="d-flex justify-content-between">
@@ -12,6 +14,7 @@
         </div>
       </div>
     </b-form>
+</div>
 </template>
 
 <script>

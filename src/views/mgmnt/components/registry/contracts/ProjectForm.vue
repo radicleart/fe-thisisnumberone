@@ -86,8 +86,6 @@ export default {
   props: ['contractId'],
   data () {
     return {
-      statusEnum: ['new', 'deployment', 'connected', 'active', 'inactive', 'disabled'],
-      typeEnum: ['punks', 'traditional'],
       project: {
         platformAddress: process.env.VUE_APP_REGISTRY_CONTRACT_ADDRESS,
         status: 'deployment',
@@ -103,7 +101,9 @@ export default {
         contractAddress: null,
         contractName: null,
         callBack: 'https://thisisnumberone.com/nfts/'
-      }
+      },
+      statusEnum: ['new', 'deployment', 'connected', 'active', 'inactive', 'disabled'],
+      typeEnum: ['punks', 'traditional']
     }
   },
   mounted () {
@@ -114,6 +114,7 @@ export default {
       })
     } else {
       this.project.contractId = this.profile.stxAddress + '.' + 'myproject-V001'
+      this.project.callBack += this.project.contractId + '/'
       this.project.owner = this.profile.stxAddress
       this.project.title = 'My New Project'
       this.project.symbol = 'NWP'

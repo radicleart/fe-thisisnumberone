@@ -53,13 +53,12 @@ export default {
   methods: {
     marketplaceLink: function () {
       if (!this.item.contractAsset) return null
-      return process.env.VUE_APP_MARKETPLACE_URL + '/nfts/' + this.item.contractAsset.nftIndex
+      return process.env.VUE_APP_MARKETPLACE_URL + '/nfts/' + this.item.contractAsset.contractId + '/' + this.item.contractAsset.nftIndex
     },
     getSaleType: function () {
       return this.item.contractAsset.saleData.saleType
     },
     mintedEvent (data) {
-      // this.$store.commit('setModalMessage', 'Transaction sent. <br/>While you are waiting please take a minute to fill in <a style="font-size: 2.0rem; color: blue" href="https://shrl.ink/HPyh" target="_blank" rel="noopener noreferrer"> this survey.</a><br/> You can find your NFT on the /my-nfts page here and in your Stacks Wallet.<br/><br/><a href="' + this.explorer + data.txId + '?chain=mainnet" target="_blank">Track the transaction here</a>')
       this.$store.commit('setModalMessage', 'Transaction sent.<br/>You can find your NFTs here by clicking on My NFTs in the account section.<br/><a class="text-white" href="' + this.explorer + data.txId + '?chain=mainnet" target="_blank">Track your transaction here</a>')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
     }
@@ -111,7 +110,7 @@ export default {
     },
     assetUrl () {
       if (this.item.contractAsset) {
-        return '/nfts/' + this.item.contractAsset.nftIndex
+        return '/nfts/' + this.item.contractAsset.contractId + '/' + this.item.contractAsset.nftIndex
       }
       return '#'
     }

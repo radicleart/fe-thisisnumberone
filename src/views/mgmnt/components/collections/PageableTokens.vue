@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading">
-    <Pagination @changePage="gotoPage" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
+    <Pagination @changePage="gotoPage" :numberOfItems="numberOfItems" :pageSize="pageSize" v-if="numberOfItems > 0"/>
     <div id="my-table" class="row mx-auto" v-if="resultSet && resultSet.length > 0">
       <b-table striped hover :items="values()" :fields="fields()" class="bg-light text-dark">
         <template #cell(contractAddress)="data">
@@ -8,7 +8,7 @@
         </template>
         <template #cell(Actions)="data">
           <span v-b-tooltip.hover="{ variant: 'warning' }" title="Manage royalties for this collection">
-            <a @click.prevent="update(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="credit-card"/></a>
+            <a @click.prevent="update(data)" class="text-info mr-2" href="#" target="_blank"><b-icon icon="arrow-up-right-circle"/></a>
           </span>
         </template>
       </b-table>
@@ -32,13 +32,12 @@ export default {
   components: {
     Pagination
   },
-  props: ['loopRun'],
+  props: ['loopRun', 'pageSize'],
   data () {
     return {
       resultSet: [],
       loading: true,
       doPaging: true,
-      pageSize: 10,
       numberOfItems: 0,
       page: 0,
       componentKey: 0
@@ -67,8 +66,9 @@ export default {
         asc: true
       }
       this.resultSet = null
-      this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((results) => {
-        this.resultSet = results // this.resultSet.concat(results)
+      this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((result) => {
+        this.resultSet = result.gaiaAssets
+        this.tokenCount = result.tokenCount
         this.componentKey++
         this.loading = false
       })
