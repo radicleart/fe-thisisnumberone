@@ -1,8 +1,8 @@
 <template>
-<b-container style="width:80%;" class="mt-4 text-center">
+<b-container style="width:100%" class="mt-4 text-center">
   <b-row>
     <b-col>
-      <img width="100%" src="https://images.prismic.io/dbid/2ad7e97c-417a-4c24-bfa1-91a2a0be391e_WTF2_1200.gif?auto=compress,format" />
+      <img width="65%" src="https://images.prismic.io/dbid/2ad7e97c-417a-4c24-bfa1-91a2a0be391e_WTF2_1200.gif?auto=compress,format" />
     </b-col>
   </b-row>
   <b-row>
@@ -66,16 +66,4 @@ export default {
 </script>
 
 <style scoped>
-#container {
-  border: 1pt solid white;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#content {
-  flex: 0 0 120px;
-}
 </style>
