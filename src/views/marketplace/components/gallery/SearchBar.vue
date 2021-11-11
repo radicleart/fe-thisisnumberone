@@ -14,13 +14,13 @@
           v-on:keyup.enter.prevent="toggleSearching()"
         ></b-form-input>
       </div>
-      <div class="pointer ml-3" v-if="mode === 'search' || mode === 'traditional' || mode === 'punks'">
+      <div class="pointer ml-3" v-if="showReverseDir()">
         <span @click="reverseDir()"><span class="text-warning" v-if="query.sortDir === 'sortDown'">most recent</span><span v-else>least recent</span></span>
       </div>
-      <div class="pointer ml-3" v-if="mode === 'search' || mode === 'traditional' || mode === 'punks'">
+      <div class="pointer ml-3" v-if="showEditions()">
         <span @click="reverseEditions()"><span class="text-warning" v-if="query.editions">all editions</span><span v-else>first editions</span></span>
       </div>
-      <div class="pointer" v-if="mode === 'search' || mode === 'traditional' || mode === 'punks'">
+      <div class="pointer" v-if="showSelling()">
         <b-nav-item-dropdown class="" no-caret :right="(mode !== 'search')">
           <template v-slot:button-content class="xg-dd">
             <span class="text-warning" v-if="query.onSale">on sale</span><span v-else>on sale</span>
@@ -80,6 +80,18 @@ export default {
         this.query.sortDir = 'sortUp'
       }
       this.toggleSearching()
+    },
+    showReverseDir () {
+      if (this.mode === 'loopbomb') return true
+      return this.mode === 'search' || this.mode === 'traditional' || this.mode === 'punks'
+    },
+    showEditions () {
+      if (this.mode === 'loopbomb') return false
+      return this.mode === 'search' || this.mode === 'traditional' || this.mode === 'punks'
+    },
+    showSelling () {
+      if (this.mode === 'loopbomb') return true
+      return this.mode === 'search' || this.mode === 'traditional' || this.mode === 'punks'
     },
     reverseEditions () {
       this.query.editions = !this.query.editions

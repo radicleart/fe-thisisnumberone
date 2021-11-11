@@ -1,8 +1,6 @@
 import axios from 'axios'
 import { APP_CONSTANTS } from '@/app-constants'
 
-axios.defaults.withCredentials = true
-
 const MESH_API_PATH = process.env.VUE_APP_RISIDIO_API + '/mesh'
 
 const assetGeneralStore = {
@@ -143,9 +141,10 @@ const assetGeneralStore = {
         })
       })
     },
-    buildCache ({ commit }, contractId) {
+    buildCache ({ commit, rootGetters }, contractId) {
       return new Promise(function (resolve) {
-        axios.get(MESH_API_PATH + '/v2/build-cache/' + contractId).then((result) => {
+        const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+        axios.get(MESH_API_PATH + '/v2/build-cache/' + contractId, authHeaders).then((result) => {
           commit('setCacheState', result.data)
           resolve(result.data)
         }).catch((error) => {
@@ -153,11 +152,11 @@ const assetGeneralStore = {
         })
       })
     },
-    clearCache ({ commit }, contractId) {
+    clearCache ({ commit, rootGetters }, contractId) {
       return new Promise(function (resolve, reject) {
-        // const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
-        axios.defaults.withCredentials = true
-        axios.get(MESH_API_PATH + '/v2/clear-cache/' + contractId).then((result) => {
+        const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+        // axios.defaults.withCredentials = true
+        axios.get(MESH_API_PATH + '/v2/clear-cache/' + contractId, authHeaders).then((result) => {
           commit('setCacheState', result.data)
           resolve(result.data)
         }).catch((error) => {
