@@ -1,6 +1,6 @@
 <template>
 <div>
-  <MediaUpload class="text-center" :myUploadId="'coverImage'" :dims="dims" :contentModel="contentModel" :mediaFiles="mediaFilesImage()" :limit="1" :sizeLimit="3" :mediaTypes="'image'" @updateMedia="updateMedia($event)"/>
+  <MediaUpload class="text-center" :hideLinkPaste=true :myUploadId="'coverImage'" :dims="dims" :contentModel="contentModel" :mediaFiles="mediaFilesImage()" :limit="1" :sizeLimit="3" :mediaTypes="'image'" @updateMedia="updateMedia($event)"/>
 </div>
 </template>
 
