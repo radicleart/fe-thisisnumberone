@@ -3,8 +3,8 @@
   <div class="text-right text-small"><b-link @click="$emit('cancel')" class="pt-1 px-3 text-danger"><b-icon icon="chevron-left"/> Back</b-link></div>
   <div class="text-white"><h3>About You</h3></div>
   <div class="text-danger">
-    <MediaItemGeneral v-if="userProfile.avatar" :classes="'avatar-image'" :options="options" @deleteMediaItem="deleteMediaItem" :mediaItem="userProfile.avatar"/>
-    <MyAvatar v-else @updateProfile="updateProfile" :avatar="userProfile.avatar"/>
+    <MediaItemGeneral v-if="userProfile.image" :classes="'avatar-image'" :options="options" @deleteMediaItem="deleteMediaItem" :mediaItem="{ fileUrl: userProfile.image }"/>
+    <MyAvatar v-else @updateProfile="updateProfile" :avatar="userProfile.image"/>
   </div>
   <b-card class="mt-1" role="group">
     <label for="name">First / Last Name<span class="text-danger">*</span></label>
@@ -12,19 +12,19 @@
       id="name"
       v-model="userProfile.name"
       :state="nameState"
-      aria-describedby="name-help name-feedback"
+      aria-describedby="name-feedback"
       placeholder="Enter your name"
       trim
     ></b-form-input>
     <b-form-invalid-feedback id="name-feedback">
       Enter at least 3 letters
     </b-form-invalid-feedback>
-    <label for="name">Tag / Moniker<span class="text-danger">*</span></label>
+    <label for="tag">Tag / Moniker<span class="text-danger">*</span></label>
     <b-form-input
-      id="name"
+      id="tag"
       v-model="userProfile.tag"
       :state="tagState"
-      aria-describedby="tag-help tag-feedback"
+      aria-describedby="tag-feedback"
       placeholder="Enter your tag"
       trim
     ></b-form-input>
@@ -47,7 +47,7 @@
       id="email"
       v-model="userProfile.email"
       :state="emailState"
-      aria-describedby="email-help email-feedback"
+      aria-describedby="email-feedback"
       placeholder="Enter email"
       trim
     ></b-form-input>
@@ -58,36 +58,23 @@
     <b-form-input
       id="website"
       v-model="userProfile.links.website"
-      :state="websiteState"
-      aria-describedby="website-help website-feedback"
       placeholder="https://..."
       trim
     ></b-form-input>
-    <b-form-invalid-feedback id="website-feedback">
-      website or portfolio
-    </b-form-invalid-feedback>
     <label for="twitter">Twitter</label>
     <b-form-input
       id="twitter"
       v-model="userProfile.links.twitter"
-      aria-describedby="twitter-help twitter-feedback"
       placeholder="https://..."
       trim
     ></b-form-input>
-    <b-form-invalid-feedback id="website-feedback">
-      twitter
-    </b-form-invalid-feedback>
     <label for="instagram">Instagram</label>
     <b-form-input
       id="instagram"
       v-model="userProfile.links.instagram"
-      aria-describedby="instagram-help instagram-feedback"
       placeholder="https://..."
       trim
     ></b-form-input>
-    <b-form-invalid-feedback id="instagram-feedback">
-      Instagram
-    </b-form-invalid-feedback>
   </b-card>
 
   <div class="text-white mt-5"><h3>Agreements</h3></div>
@@ -96,7 +83,7 @@
     <b-form-checkbox
       size="lg"
       id="termsofuse"
-      v-model="userProfile.termsofuse"
+      v-model="userProfile.termsOfUse"
       name="termsofuse"
       value="accepted"
       unchecked-value="unaccepted"
@@ -133,13 +120,12 @@ export default {
   },
   methods: {
     deleteMediaItem: function () {
-      this.userProfile.avatar = null
+      this.userProfile.image = null
       this.$store.commit('setModalMessage', 'Saving your data to your gaia hub.')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
-      this.$store.dispatch('rpayMyItemStore/saveUserProfile', this.userProfile).then((rootFile) => {
-        this.userProfile = rootFile.userProfile
+      this.$store.dispatch('rpayProfileStore/saveProfile', this.userProfile).then(() => {
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
-        this.$notify({ type: 'warning', title: 'Profile', text: 'Removed avatar image!' })
+        this.$notify({ type: 'warning', title: 'Profile', text: 'Removed profile image!' })
         this.stage = 0
       }).catch(() => {
         this.$store.commit('setModalMessage', 'Error occurred updating profile.')
@@ -147,20 +133,18 @@ export default {
     },
     updateProfile: function (data) {
       if (data.mediaItem) {
-        this.userProfile.avatar = data.mediaItem
-        this.userProfile.avatar.dataUrl = null // the image should be stored in gaia by this point
+        this.userProfile.image = data.mediaItem.fileUrl
       } else if (data.deleteMedia) {
-        this.userProfile.avatar = null
+        this.userProfile.image = null
       }
       this.$store.commit('setModalMessage', 'Saving your data to your gaia hub.')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
-      this.$store.dispatch('rpayMyItemStore/saveUserProfile', this.userProfile).then((rootFile) => {
-        this.userProfile = rootFile.userProfile
+      this.$store.dispatch('rpayProfileStore/saveProfile', this.userProfile).then(() => {
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
         this.$notify({ type: 'warning', title: 'Profile', text: 'Profile has been saved!' })
         this.stage = 0
       }).catch(() => {
-        this.$store.commit('setModalMessage', 'Error occurred saving profile.')
+        this.$store.commit('setModalMessage', 'Error occurred processing file upload.')
       })
     },
     isValid: function (email) {
@@ -179,9 +163,9 @@ export default {
         autoplay: false,
         muted: true,
         controls: true,
-        showMeta: true,
+        showMeta: false,
         aspectRatio: '1:1',
-        poster: (this.avatar) ? this.avatar.fileUrl : null,
+        poster: this.image,
         sources: [],
         fluid: false
       }
@@ -194,21 +178,9 @@ export default {
       if (!this.formSubmitted && !this.userProfile.tag) return null
       return (this.userProfile.tag && this.userProfile.tag.length > 2)
     },
-    termsofuseState () {
-      if (!this.formSubmitted && !this.userProfile.termsofuse) return null
-      return (this.userProfile.termsofuse && this.userProfile.termsofuse.length > 2)
-    },
     emailState () {
       if (!this.formSubmitted && !this.userProfile.email) return null
       return (this.isValid(this.userProfile.email))
-    },
-    websiteState () {
-      if (!this.formSubmitted && !this.userProfile.links.website) return null
-      return (this.userProfile.links.website.length > 0)
-    },
-    instagramState () {
-      if (!this.formSubmitted && !this.userProfile.links.instagram) return null
-      return (this.userProfile.links.instagram)
     }
   }
 }

@@ -2,9 +2,9 @@
 <section v-if="content" class="text-info text-danger">
   <b-container class="center-section py-5">
     <b-row align-h="center">
-      <b-col v-if="stage === 0" align-self="start" md="6" sm="10" xs="8" class="mb-4 d-flex justify-content-end">
-        <MediaItemGeneral v-if="userProfile.avatar" :classes="'avatar-image'" :options="options" :mediaItem="userProfile.avatar"/>
-        <b-avatar v-else square variant="light" size="600px"></b-avatar>
+      <b-col v-if="stage === 0" align-self="center" md="6" sm="10" xs="8" class="mb-4 d-flex justify-content-center align-items-center">
+        <MediaItemGeneral v-if="userProfile.image" :classes="'avatar-image'" :options="options" :mediaItem="{ fileUrl: userProfile.image }"/>
+        <b-avatar v-else variant="light" size="4em" v-b-tooltip.hover title="Edit your profile to upload an avatar image"></b-avatar>
       </b-col>
       <b-col v-if="stage === 0" md="6" sm="10" xs="8" align-self="start" class="text-left text-white pr-5" style="position: relative; top: 5px;">
         <b-row>
@@ -37,7 +37,7 @@
           </div>
         </b-col>
         <b-col md="6" sm="12" align-self="start">
-          <MediaItemGeneral v-if="userProfile.avatar" :classes="'avatar-image'" :options="options" :mediaItem="userProfile.avatar"/>
+          <MediaItemGeneral v-if="userProfile.image" :classes="'avatar-image'" :options="options" :mediaItem="{ fileUrl: userProfile.image }"/>
           <b-avatar v-else square variant="light" size="600px"></b-avatar>
         </b-col>
       </b-row>
@@ -72,7 +72,7 @@ export default {
       stage: 0,
       loaded: false,
       userProfile: {
-        avatar: null,
+        image: null,
         name: null,
         email: null,
         description: null,
@@ -88,9 +88,38 @@ export default {
   watch: {
   },
   mounted () {
-    this.$store.dispatch('rpayMyItemStore/initSchema', false).then((rootFile) => {
-      if (rootFile.userProfile) {
-        this.userProfile = rootFile.userProfile
+    const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+    this.$store.dispatch('rpayProfileStore/fetchProfile', profile.stxAddress).then((userProfile) => {
+      if (userProfile) {
+        this.userProfile = userProfile
+      } else {
+        this.userProfile.stxAddress = profile.stxAddress
+
+        this.$store.dispatch('rpayMyItemStore/initSchema', false).then((rootFile) => {
+          if (rootFile.userProfile) {
+            if (rootFile.userProfile.avatar) this.userProfile.image = rootFile.userProfile.avatar.fileUrl
+            this.userProfile.name = rootFile.userProfile.name
+            this.userProfile.email = rootFile.userProfile.email
+            this.userProfile.tag = rootFile.userProfile.tag
+            this.userProfile.termsOfUse = rootFile.userProfile.termsofuse
+            this.userProfile.description = rootFile.userProfile.description
+            if (rootFile.userProfile.links) {
+              this.userProfile.links.website = rootFile.userProfile.links.website
+              this.userProfile.links.instagram = rootFile.userProfile.links.instagram
+              this.userProfile.links.facebook = rootFile.userProfile.links.facebook
+              this.userProfile.links.twitter = rootFile.userProfile.links.twitter
+            }
+            this.$store.dispatch('rpayProfileStore/saveProfile', this.userProfile).then(() => {
+              this.$store.dispatch('rpayMyItemStore/deleteUserProfile', false).then(() => {
+                console.log('Successfully migrated profile')
+              }).catch((exception) => {
+                this.$store.commit('setModalMessage', 'Error occurred deleting user profile from Gaia: ' + exception)
+              })
+            }).catch((exception) => {
+              this.$store.commit('setModalMessage', 'Error occurred saving profile to the db: ' + exception)
+            })
+          }
+        })
       }
       this.loaded = true
     })
@@ -123,15 +152,13 @@ export default {
     },
     updateProfile: function (data) {
       if (data.mediaItem) {
-        this.userProfile.avatar = data.mediaItem
-        this.userProfile.avatar.dataUrl = null // the image should be stored in gaia by this point
+        this.userProfile.image = data.mediaItem.fileUrl
       } else if (data.deleteMedia) {
-        this.userProfile.avatar = null
+        this.userProfile.image = null
       }
       this.$store.commit('setModalMessage', 'Saving your data to your gaia hub.')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
-      this.$store.dispatch('rpayMyItemStore/saveUserProfile', this.userProfile).then((rootFile) => {
-        this.userProfile = rootFile.userProfile
+      this.$store.dispatch('rpayProfileStore/saveProfile', this.userProfile).then(() => {
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
         this.$notify({ type: 'warning', title: 'Profile', text: 'Profile has been saved!' })
         this.stage = 0
@@ -154,25 +181,19 @@ export default {
       return (this.userProfile.links.instagram)
     },
     profileComplete () {
-      if (this.userProfile.name && this.userProfile.email && this.userProfile.avatar) return true
+      if (this.userProfile.email && this.userProfile.image && this.userProfile.termsOfUse === 'accepted') return true
       return false
     },
     incompleteProfileMessage () {
       const missingFieldsList = []
 
-      if (this.userProfile.name === null || this.userProfile.name === '') missingFieldsList.push('your name')
-      if (this.userProfile.email === null || this.userProfile.email === '') missingFieldsList.push('an email address')
-      if (this.userProfile.avatar === null) missingFieldsList.push('a profile image')
+      if (this.userProfile.email === null || this.userProfile.email === '') missingFieldsList.push('add an email address')
+      if (this.userProfile.image === null) missingFieldsList.push('add a profile image')
+      if (this.userProfile.termsOfUse !== 'accepted') missingFieldsList.push('accept the T\'s and C\'s')
 
       if (missingFieldsList.length === 0) return ''
 
-      let missingFields = missingFieldsList.join(', ')
-
-      if (missingFieldsList.length > 1) {
-        missingFields = missingFields.substring(0, missingFields.lastIndexOf(', ')) + ' and ' + missingFields.substring(missingFields.lastIndexOf(', ') + 1)
-      }
-
-      return 'Edit your profile and add ' + missingFields + ' to apply!'
+      return 'Edit your profile and ' + missingFieldsList.join(' and ') + ' to apply!'
     },
     options () {
       return {
@@ -184,9 +205,9 @@ export default {
         autoplay: false,
         muted: true,
         controls: true,
-        showMeta: true,
+        showMeta: false,
         aspectRatio: '1:1',
-        poster: (this.avatar) ? this.avatar.fileUrl : null,
+        poster: this.image,
         sources: [],
         fluid: false
       }
