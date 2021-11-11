@@ -28,7 +28,7 @@
         </b-col>
         <b-col cols="6" class="p-0 px-2 mt-3">
           <div class="border text-center " id="container">
-            <div id="content">
+            <div id="content" v-if="loopRun">
               <div v-if="profile.loggedIn"><h3><b-link :to="'/my-nfts/' + loopRun.currentRunKey">My NFTs</b-link></h3></div>
               <div v-else><h3><b-link :to="'/my-nfts/' + loopRun.currentRunKey">Login</b-link></h3></div>
             </div>

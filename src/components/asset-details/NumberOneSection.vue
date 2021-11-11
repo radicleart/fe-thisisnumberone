@@ -85,7 +85,6 @@ export default {
           contractId: (loopRun) ? loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
           asc: true,
           runKey: loopRun.currentRunKey,
-          forSale: false,
           page: page,
           pageSize: 5
         }

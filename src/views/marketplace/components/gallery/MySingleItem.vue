@@ -5,7 +5,7 @@
       <div class="text-left">
         <p class="text-bold">{{mintedMessage}}</p>
         <div class="text-small d-flex justify-content-between">
-          <div class="text-right">{{loopRun.currentRun}} {{editionMessage}}</div>
+          <div class="text-right"><span v-if="loopRun">{{loopRun.currentRun}}</span> {{editionMessage}}</div>
           <div class="text-right">{{created()}}</div>
         </div>
       </div>
@@ -22,7 +22,7 @@
       </b-link>
     </b-card-text>
     <b-card-text>
-      <PunkConnect :loopRun="loopRun" :asset="asset" @updateImage="updateImage"/> <!-- v-on="$listeners"/> -->
+      <PunkConnect v-if="loopRun" :loopRun="loopRun" :asset="asset" @updateImage="updateImage"/> <!-- v-on="$listeners"/> -->
       <div class="text-xsmall text-center mb-3">
         <span v-if="contractAsset">{{contractAsset.owner}}</span>
         <span v-else>'ownership in progress'</span>

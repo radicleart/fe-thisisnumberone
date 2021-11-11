@@ -8,6 +8,7 @@
 
 <script>
 import utils from '@/services/utils'
+import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'PunkConnect',
@@ -23,7 +24,8 @@ export default {
       this.fixMetaData()
     },
     allowRevealImage () {
-      return this.loopRun.status === 'active' && this.asset.image.indexOf(this.loopRun.mintImage3) > -1
+      const image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
+      return this.loopRun.status === 'active' && image && image.indexOf(this.loopRun.mintImage3) > -1
     },
     fixMetaData () {
       // create but don't store - wait till the last minute to register the batch!

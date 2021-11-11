@@ -16,6 +16,7 @@ import Information from '../views/Information.vue'
 import ExhibitHere from '../views/ExhibitHere.vue'
 import ManageProfile from '../views/ManageProfile.vue'
 
+const Relaunch = () => import('../views/Relaunch.vue')
 const Homepage = () => import('../views/Homepage.vue')
 const NumberOne = () => import('../views/NumberOne.vue')
 
@@ -64,7 +65,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'splash',
-    components: { default: NumberOne, header: MainNavbar, footer: MainFooter },
+    components: { default: Relaunch },
     meta: { title: 'This is Number One on Stacks NFT Marketplace secured by Bitcoin' }
   },
   {

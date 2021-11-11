@@ -40,14 +40,13 @@ export default {
     this.collection = this.$route.params.collection
     const $self = this
     let resizeTimer
-    this.numberOfItems = this.loopRun.tokenCount
+    if (this.loopRun) this.numberOfItems = this.loopRun.tokenCount
     this.fetchPage(0, false, this.defQuery)
     this.loading = false
 
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer)
       resizeTimer = setTimeout(function () {
-        $self.$store.commit('loopStore/setWinDims')
         $self.componentKey += 1
       }, 400)
     })
@@ -59,7 +58,7 @@ export default {
   },
   methods: {
     skipme (asset) {
-      if (this.isTheV2Contract()) {
+      if (this.loopRun && this.isTheV2Contract()) {
         if (this.loopRun.currentRunKey === 'my_first_word') {
           return asset.contractAsset.nftIndex > 4
         } else if (this.loopRun.currentRunKey === 'number_one') {
@@ -75,16 +74,18 @@ export default {
       this.fetchPage(page - 1, false, this.defQuery)
     },
     isTheV2Contract () {
-      return this.loopRun.contractId.indexOf(STX_CONTRACT_NAME) > -1
+      return this.loopRun && this.loopRun.contractId.indexOf(STX_CONTRACT_NAME) > -1
     },
     fetchPage (page, reset, query) {
-      let queryStr = '?query='
-      if (query && query.forSale !== 'all') queryStr += 'forSale,'
-      if (query && query.allEditions === 'firsts') queryStr += 'firsts,'
-      if (query && query.sort) queryStr += query.sort + ','
+      let queryStr = '?'
+      queryStr += 'sortDir=' + query.sortDir + '&'
+      if (query.query) queryStr += 'query=' + query.query + '&'
+      if (query.edition) queryStr += 'edition=' + query.edition + '&'
+      if (query.onSale) queryStr += 'onSale=true&'
+      if (query.editions) queryStr += 'editions=true&'
+      if (query.sortField) queryStr += 'sortField=' + query.sortField + '&'
       const data = {
-        runKey: this.loopRun.currentRunKey,
-        forSale: query && query.forSale !== 'all',
+        runKey: (this.loopRun) ? this.loopRun.currentRunKey : null,
         query: queryStr,
         page: page,
         pageSize: this.pageSize
@@ -101,17 +102,18 @@ export default {
             this.resultSet = result.gaiaAssets
             this.tokenCount = result.tokenCount
             this.numberOfItems = result.tokenCount
+            this.$emit('tokenCount', { numbTokens: result.tokenCount })
             if (reset) this.componentKey++
             this.loading = false
           })
         }
       } else {
-        data.runKey = query.query
-        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndName', data).then((result) => {
+        this.$store.dispatch('rpayStacksContractStore/fetchTokensByFilters', data).then((result) => {
           this.resultSet = result.gaiaAssets
           this.tokenCount = result.tokenCount
           this.numberOfItems = result.tokenCount
-          this.componentKey++
+          this.$emit('tokenCount', { numbTokens: result.tokenCount })
+          if (reset) this.componentKey++
           this.loading = false
         })
       }
@@ -119,20 +121,33 @@ export default {
     fetchV2Page (data, reset) {
       if (!this.loopRun.currentRunKey) return
       this.resultSet = []
+      data.contractId = this.loopRun.contractId
       if (this.loopRun.currentRunKey === process.env.VUE_APP_DEFAULT_LOOP_RUN) {
         data.pageSize = 5
         this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractId', data).then((result) => {
           this.resultSet = result.gaiaAssets
           this.tokenCount = 5
           this.numberOfItems = this.tokenCount
+          this.$emit('tokenCount', { numbTokens: data.pageSize })
+          if (reset) this.componentKey++
+          this.loading = false
+        })
+      } else if (this.loopRun.currentRunKey.indexOf('genesis') > -1) {
+        this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractId', data).then((result) => {
+          this.resultSet = result.gaiaAssets
+          this.tokenCount = result.tokenCount
+          this.numberOfItems = result.tokenCount
+          this.$emit('tokenCount', { numbTokens: 'Up to ' + result.tokenCount })
           if (reset) this.componentKey++
           this.loading = false
         })
       } else {
+        data.runKey = this.loopRun.currentRunKey
         this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndName', data).then((result) => {
           this.resultSet = result.gaiaAssets
           this.tokenCount = result.tokenCount
           this.numberOfItems = result.tokenCount
+          this.$emit('tokenCount', { numbTokens: 'Up to ' + result.tokenCount })
           if (reset) this.componentKey++
           this.loading = false
         })

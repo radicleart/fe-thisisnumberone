@@ -4,6 +4,7 @@
     <b-form :inline="(mode !== 'search')" @submit.prevent>
       <div class="ml-3" v-if="mode === 'search'">
         <b-form-input
+          style="height: 25px; font-weight: 700; font-size: 0.8rem;"
           size="sm"
           id="search"
           v-model="query.query"
@@ -13,33 +14,23 @@
           v-on:keyup.enter.prevent="toggleSearching()"
         ></b-form-input>
       </div>
-      <div class="ml-3" v-if="mode === 'search' || mode === 'traditional' || mode === 'punks'">
-        <b-form-checkbox
-          size="lg"
-          id="forSale"
-          v-model="query.forSale"
-          name="forSale"
-          value="for sale"
-          unchecked-value="all"
-          @change="toggleSearching"
-          >
-          <div class="text-white pointer"><b>Selling</b></div>
-        </b-form-checkbox>
+      <div class="pointer ml-3" v-if="mode === 'search' || mode === 'traditional' || mode === 'punks'">
+        <span @click="reverseDir()"><span class="text-warning" v-if="query.sortDir === 'sortDown'">most recent</span><span v-else>least recent</span></span>
       </div>
-      <div class="ml-3" v-if="mode === 'search' || mode === 'traditional'">
-        <b-form-checkbox
-          size="lg"
-          id="allEditions"
-          v-model="query.allEditions"
-          name="allEditions"
-          checked-value="yes"
-          unchecked-value="firsts"
-          @change="toggleSearching"
-          >
-          <div class="text-white pointer"><b>All Editions</b></div>
-        </b-form-checkbox>
+      <div class="pointer ml-3" v-if="mode === 'search' || mode === 'traditional' || mode === 'punks'">
+        <span @click="reverseEditions()"><span class="text-warning" v-if="query.editions">all editions</span><span v-else>first editions</span></span>
       </div>
-      <div class="ml-3" v-if="mode === 'search'">
+      <div class="pointer" v-if="mode === 'search' || mode === 'traditional' || mode === 'punks'">
+        <b-nav-item-dropdown class="" no-caret :right="(mode !== 'search')">
+          <template v-slot:button-content class="xg-dd">
+            <span class="text-warning" v-if="query.onSale">on sale</span><span v-else>on sale</span>
+          </template>
+          <b-dropdown-item class="pl-0 m-0"  @click.prevent="reverseOnSale('lowest')">lowest price</b-dropdown-item>
+          <b-dropdown-item class="pl-0 m-0"  @click.prevent="reverseOnSale('highest')">highest price</b-dropdown-item>
+          <b-dropdown-item class="pl-0 m-0"  @click.prevent="reverseOnSale('ignore')">ignore price</b-dropdown-item>
+        </b-nav-item-dropdown>
+      </div>
+      <div class="ml-3" v-if="mode === 'search1'">
         <b-form-checkbox
           size="lg"
           id="collections"
@@ -71,17 +62,52 @@ export default {
       query: {
         query: null,
         allCollections: 'one',
-        forSale: 'all',
-        allEditions: 'firsts',
-        sort: 'sortUp'
+        onSale: false,
+        onAuction: false,
+        editions: false,
+        createdBefore: null,
+        createdAfter: null,
+        sortField: 'nftIndex',
+        sortDir: 'sortDown'
       }
     }
   },
   methods: {
+    reverseDir () {
+      if (this.query.sortDir === 'sortUp') {
+        this.query.sortDir = 'sortDown'
+      } else {
+        this.query.sortDir = 'sortUp'
+      }
+      this.toggleSearching()
+    },
+    reverseEditions () {
+      this.query.editions = !this.query.editions
+      this.toggleSearching()
+    },
+    reverseOnSale (type) {
+      if (type === 'ignore') {
+        this.query.onSale = false
+        this.query.sortField = 'nftIndex'
+        this.query.sortDir = 'sortDown'
+      } else {
+        this.query.onSale = true
+        this.query.sortField = 'saleData.buyNowOrStartingPrice'
+        if (type === 'lowest') {
+          this.query.sortDir = 'sortUp'
+        } else {
+          this.query.sortDir = 'sortDown'
+        }
+      }
+      this.toggleSearching()
+    },
     toggleSearching () {
       this.query.allCollections = 'one'
       if (this.mode === 'search') {
         this.query.allCollections = 'all'
+      }
+      if (this.query.query && this.query.query.length > 0) {
+        this.query.sortField = 'updated'
       }
       this.$emit('updateResults', { opcode: 'update-results', query: this.query })
     }
@@ -91,4 +117,7 @@ export default {
 }
 </script>
 <style>
+.nav-item {
+  list-style-type: none;
+}
 </style>

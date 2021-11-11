@@ -55,7 +55,6 @@ export default {
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer)
       resizeTimer = setTimeout(function () {
-        $self.$store.commit('loopStore/setWinDims')
         $self.componentKey += 1
       }, 400)
     })
