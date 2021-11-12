@@ -62,28 +62,28 @@ export default {
   },
   methods: {
     buildSearchIndex: function () {
-      this.$store.dispatch('assetGeneralStore/buildSearchIndex').then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/buildSearchIndex').then((result) => {
         this.$notify({ type: 'success', title: 'Indexing', text: result })
       }).catch((err) => {
         this.$notify({ type: 'error', title: 'Indexing', text: err })
       })
     },
     buildCache: function () {
-      this.$store.dispatch('assetGeneralStore/buildCache').then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/buildCache').then((result) => {
         this.$notify({ type: 'success', title: 'Indexing', text: result })
       }).catch((err) => {
         this.$notify({ type: 'error', title: 'Indexing', text: err })
       })
     },
     clearSearchIndex: function () {
-      this.$store.dispatch('assetGeneralStore/clearSearchIndex').then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/clearSearchIndex').then((result) => {
         this.$notify({ type: 'success', title: 'Indexing', text: result })
       }).catch((err) => {
         this.$notify({ type: 'error', title: 'Indexing', text: err })
       })
     },
     clearCache: function () {
-      this.$store.dispatch('assetGeneralStore/clearCache').then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/clearCache').then((result) => {
         this.$notify({ type: 'success', title: 'clear indexing', text: result })
       }).catch((err) => {
         this.$notify({ type: 'error', title: 'clear indexing', text: err })

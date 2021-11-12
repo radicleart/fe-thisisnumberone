@@ -75,7 +75,7 @@ export default {
   watch: {
   },
   mounted () {
-    this.$store.dispatch('assetGeneralStore/tokenFilters').then((tokenFilters) => {
+    this.$store.dispatch('rpayManageCacheStore/tokenFilters').then((tokenFilters) => {
       this.tokenFilters = tokenFilters || []
       this.loaded = true
     })
@@ -108,7 +108,7 @@ export default {
       this.$bvModal.show('filter-modal')
     },
     deleteFilter (data) {
-      this.$store.dispatch('assetGeneralStore/deleteTokenFilter', data.item.Id).then(() => {
+      this.$store.dispatch('rpayManageCacheStore/deleteTokenFilter', data.item.Id).then(() => {
         const index = this.tokenFilters.findIndex((o) => o.id === data.item.Id)
         if (index > -1) {
           this.tokenFilters.splice(index, 1)
@@ -116,7 +116,7 @@ export default {
       })
     },
     saveFilter () {
-      this.$store.dispatch('assetGeneralStore/updateTokenFilter', this.filter).then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/updateTokenFilter', this.filter).then((result) => {
         this.updateLocal(result)
       })
     },
@@ -127,7 +127,7 @@ export default {
       } else {
         return
       }
-      this.$store.dispatch('assetGeneralStore/updateTokenFilter', data).then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/updateTokenFilter', data).then((result) => {
         this.updateLocal(result)
       })
     },

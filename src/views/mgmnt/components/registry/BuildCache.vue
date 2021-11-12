@@ -48,35 +48,35 @@ export default {
   },
   methods: {
     buildSearchIndex: function (contractId) {
-      this.$store.dispatch('assetGeneralStore/buildSearchIndex', contractId).then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/buildSearchIndex', contractId).then((result) => {
         this.$notify({ type: 'success', title: 'Indexing', text: result })
       }).catch((err) => {
         this.$notify({ type: 'error', title: 'Indexing', text: err })
       })
     },
     buildCacheAll: function () {
-      this.$store.dispatch('assetGeneralStore/buildCacheAll').then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/buildCacheAll').then((result) => {
         this.$notify({ type: 'success', title: 'Indexing', text: result })
       }).catch((err) => {
         this.$notify({ type: 'error', title: 'Indexing', text: err })
       })
     },
     buildCache: function (contractId) {
-      this.$store.dispatch('assetGeneralStore/buildCache', contractId).then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/buildCache', contractId).then((result) => {
         this.$notify({ type: 'success', title: 'Indexing', text: result })
       }).catch((err) => {
         this.$notify({ type: 'error', title: 'Indexing', text: err })
       })
     },
     clearSearchIndex: function (contractId) {
-      this.$store.dispatch('assetGeneralStore/clearSearchIndex', contractId).then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/clearSearchIndex', contractId).then((result) => {
         this.$notify({ type: 'success', title: 'Indexing', text: result })
       }).catch((err) => {
         this.$notify({ type: 'error', title: 'Indexing', text: err })
       })
     },
     clearCache: function (contractId) {
-      this.$store.dispatch('assetGeneralStore/clearCache', contractId).then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/clearCache', contractId).then((result) => {
         this.$notify({ type: 'success', title: 'clear indexing', text: result })
       }).catch((err) => {
         this.$notify({ type: 'error', title: 'clear indexing', text: err })

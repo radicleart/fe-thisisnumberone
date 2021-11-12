@@ -6,9 +6,10 @@
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
-import assetGeneralStore from './assetGeneralStore'
 import contentStore from './contentStore'
 import publicItemsStore from './publicItemsStore'
+import axios from 'axios'
+import { APP_CONSTANTS } from '@/app-constants'
 
 Vue.use(Vuex)
 
@@ -219,7 +220,6 @@ const setup = function (data) {
 
 export default new Vuex.Store({
   modules: {
-    assetGeneralStore,
     contentStore,
     publicItemsStore
   },
@@ -295,14 +295,23 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    initApplication ({ dispatch }) {
+    initApplication ({ dispatch, rootGetters }) {
       return new Promise(resolve => {
         dispatch('rpayAuthStore/fetchMyAccount').then(profile => {
           dispatch('rpayStacksContractStore/fetchFullRegistry')
           if (profile.loggedIn) {
+            const authHeaders = rootGetters[APP_CONSTANTS.KEY_AUTH_HEADERS]
+            axios.interceptors.request.use(function (config) {
+              config.headers.Authorization = authHeaders.headers.Authorization
+              config.headers.IdentityAddress = authHeaders.headers.IdentityAddress
+              config.headers.STX_ADDRESS = profile.stxAddress
+              return config
+            })
             const data = { stxAddress: 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG', mine: true }
             if (process.env.VUE_APP_NETWORK !== 'local') {
               data.stxAddress = profile.stxAddress
+            } else {
+              dispatch('rpayStacksStore/fetchMacSkyWalletInfo')
             }
             dispatch('rpayCategoryStore/fetchLoopRuns')
             dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })

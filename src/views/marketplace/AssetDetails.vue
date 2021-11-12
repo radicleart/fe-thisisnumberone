@@ -44,7 +44,7 @@ export default {
         this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.parseRunKey(gaiaAsset)).then((loopRun) => {
           this.gaiaAsset = gaiaAsset
           this.loopRun = loopRun
-          this.$store.dispatch('assetGeneralStore/cacheUpdate', { contractId: this.contractId, nftIndex: this.nftIndex })
+          this.$store.dispatch('rpayManageCacheStore/cacheUpdate', { contractId: this.contractId, nftIndex: this.nftIndex })
           this.loading = false
         })
       })
@@ -52,7 +52,7 @@ export default {
       this.assetHash = this.$route.params.assetHash
       this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndAssetHash', { contractId: this.contractId, assetHash: this.assetHash }).then((gaiaAsset) => {
         this.gaiaAsset = gaiaAsset
-        this.$store.dispatch('assetGeneralStore/cacheUpdate', { contractId: this.contractId, assetHash: this.assetHash })
+        this.$store.dispatch('rpayManageCacheStore/cacheUpdate', { contractId: this.contractId, assetHash: this.assetHash })
         this.loading = false
       })
     }

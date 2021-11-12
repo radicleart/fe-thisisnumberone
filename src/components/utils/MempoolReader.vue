@@ -3,7 +3,7 @@
 <b-nav-item-dropdown right no-caret style="list-style: none;">
   <template v-slot:button-content>
     <div class="pl-2 px-2 mem-lights">
-      <span @click="runRandomn"><b-icon class="m-0 p-0" font-scale="0.9" :class="mempoolTemp()" icon="circle-fill"/></span>
+      <span><b-icon class="m-0 p-0" font-scale="0.9" :class="mempoolTemp()" icon="circle-fill"/></span>
     </div>
   </template>
   <b-dropdown-item>
@@ -42,12 +42,6 @@ export default {
   methods: {
     fetchMempool () {
       this.$store.dispatch('rpayStacksContractStore/fetchMempool').then((mempool) => {
-        console.log(mempool)
-      })
-    },
-    runRandomn () {
-      const contractId = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME
-      this.$store.dispatch('assetGeneralStore/clearCache', contractId).then((mempool) => {
         console.log(mempool)
       })
     },

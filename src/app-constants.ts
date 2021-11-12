@@ -27,8 +27,8 @@ export const APP_CONSTANTS = {
   KEY_FAVOURITES: 'rpayProjectStore/getFavourites',
   DISP_SAVE_PROJECT: 'rpayProjectStore/saveProject',
 
-  KEY_ALL_OFFERS_ON_ASSET: 'assetGeneralStore/getAllOffersForAsset',
-  KEY_HIGHEST_OFFER_ON_ASSET: 'assetGeneralStore/getHighestOfferForAsset',
+  KEY_ALL_OFFERS_ON_ASSET: 'rpayManageCacheStore/getAllOffersForAsset',
+  KEY_HIGHEST_OFFER_ON_ASSET: 'rpayManageCacheStore/getHighestOfferForAsset',
 
   KEY_HAS_PRIVILEGE: 'rpayPrivilegeStore/hasPrivilege',
   KEY_AVAILABLE_PRIVILEGES: 'rpayPrivilegeStore/getAvailablePrivileges',

@@ -124,7 +124,7 @@ export default {
         const metaDataUrl = item.tokenInfo.metaDataUrl
         let lastIndex = metaDataUrl.lastIndexOf('/')
         const newUrl = metaDataUrl.substring(0, lastIndex + 1) + assetHash + '.json'
-        this.$store.dispatch('assetGeneralStore/fetchMetaData', newUrl).then((metaData) => {
+        this.$store.dispatch('rpayManageCacheStore/fetchMetaData', newUrl).then((metaData) => {
           lastIndex = metaData.image.lastIndexOf('/')
           const index = metaData.image.substring(lastIndex + 1).split('.')[0]
           metaData.attributes.index = index

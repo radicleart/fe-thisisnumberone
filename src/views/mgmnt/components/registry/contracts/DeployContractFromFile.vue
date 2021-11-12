@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     buildCache: function () {
-      this.$store.dispatch('assetGeneralStore/buildCache').then((result) => {
+      this.$store.dispatch('rpayManageCacheStore/buildCache').then((result) => {
         this.$notify({ type: 'success', title: 'Indexing', text: result })
       }).catch((err) => {
         this.$notify({ type: 'error', title: 'Indexing', text: err })
