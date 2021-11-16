@@ -80,7 +80,6 @@ export default {
             }
             $self.$store.dispatch('rpayMyItemStore/quickSaveItem', item)
           }
-          $self.update()
           if (data.txStatus === 'pending') {
             $self.setPending(data)
           }

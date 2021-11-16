@@ -9,6 +9,9 @@
           <div class="mr-1" v-for="(field, index) in invalidItems" :key="index">{{field}}</div>
         </div>
         <div>
+          <ChooseCollection :type="'traditional'" @updateCollection="updateCollection"/>
+        </div>
+        <div>
           <ItemFormPart1 v-if="uploadState > 2" @upload-state="updateUploadState" :item="item" :upload="true" :formSubmitted="formSubmitted"/>
           <ItemFormPart2 v-if="uploadState > 3" @upload-state="updateUploadState" :item="item" :upload="true" :formSubmitted="formSubmitted"/>
         </div>
@@ -37,13 +40,15 @@ import NftCoverImage from '@/views/marketplace/components/update/NftCoverImage'
 import ItemFormPart1 from '@/views/marketplace/components/update/ItemFormPart1'
 import ItemFormPart2 from '@/views/marketplace/components/update/ItemFormPart2'
 import utils from '@/services/utils'
+import ChooseCollection from '@/views/marketplace/components/toolkit/ChooseCollection'
 
 export default {
   name: 'UpdateItem',
   components: {
     NftCoverImage,
     ItemFormPart1,
-    ItemFormPart2
+    ItemFormPart2,
+    ChooseCollection
   },
   data () {
     return {
@@ -52,6 +57,7 @@ export default {
       formSubmitted: false,
       dims: { width: 360, height: 202 },
       showErrors: false,
+      overrideLoopRun: null,
       componentKey: 0,
       uploadState: 10,
       loaded: false,
@@ -100,6 +106,9 @@ export default {
     })
   },
   methods: {
+    updateCollection (data) {
+      this.overrideLoopRun = data.loopRun
+    },
     hasFile (file) {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
       if (!item || !item.attributes) return
@@ -190,7 +199,11 @@ export default {
       this.$store.commit('setModalMessage', 'Uploading... once its saved you\'ll be able to mint this artwork - registering your ownership on the blockchain. Once registered you\'ll be able to prove you own it and be able to benefit from sales and from secondary sales.')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
       this.item.projectId = this.loopRun.contractId
-      this.item.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
+      if (this.overrideLoopRun) {
+        this.item.currentRunKey = this.overrideLoopRun.currentRunKey + '/' + this.overrideLoopRun.makerUrlKey
+      } else {
+        this.item.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
+      }
       this.$store.dispatch('rpayMyItemStore/saveItem', this.item).then(() => {
         this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
         this.$root.$emit('bv::hide::modal', 'waiting-modal')
