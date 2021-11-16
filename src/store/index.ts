@@ -80,18 +80,63 @@ const beneficiariesDefault = [
     username: 'artist',
     role: 'Artist',
     email: 'info@thisisnumberone.com',
-    royalty: 9,
-    secondaryRoyalty: 9,
-    chainAddress: 'SP1CS4FVXC59S65C3X1J3XRNZGWTG212JT7CG73AG'
+    royalty: 8,
+    secondaryRoyalty: 8,
+    chainAddress: 'ST120HPHF8AZXS2SCXMXAX3XF4XT35C0HCJZ3NS8S'
   },
   {
     type: 'sale',
     username: 'Platform.id',
     role: 'Platform',
     email: 'info@brightblock.org',
-    royalty: 1,
-    secondaryRoyalty: 1,
-    chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
+    royalty: 0.4,
+    secondaryRoyalty: 0.4,
+    chainAddress: 'ST1P89TEC03E29V5MYJBSCC8KWR1A243ZG382B1X5'
+  },
+  {
+    type: 'sale',
+    username: 'Platform.id',
+    role: 'Platform',
+    email: 'info@brightblock.org',
+    royalty: 0.4,
+    secondaryRoyalty: 0.4,
+    chainAddress: 'ST1WJY09D3DEE45B1PY8TAV838VCH9HNEJXB2ZBPQ'
+  },
+  {
+    type: 'sale',
+    username: 'Platform.id',
+    role: 'Platform',
+    email: 'info@brightblock.org',
+    royalty: 0.4,
+    secondaryRoyalty: 0.4,
+    chainAddress: 'ST2KAEEGWXNBFWTT5DJG14WH3G2CEFPWV99YPJPMR'
+  },
+  {
+    type: 'sale',
+    username: 'Platform.id',
+    role: 'Platform',
+    email: 'info@brightblock.org',
+    royalty: 0.4,
+    secondaryRoyalty: 0.4,
+    chainAddress: 'ST37Y2WXPXA2GFBAWPPVK8GANJBXR9NNK6F0K0PD'
+  },
+  {
+    type: 'sale',
+    username: 'Platform.id',
+    role: 'Platform',
+    email: 'info@brightblock.org',
+    royalty: 0.2,
+    secondaryRoyalty: 0.2,
+    chainAddress: 'ST2HMPFXR919ZGJHP0EP52J7NQ6WQ25RC2S1M1FSX'
+  },
+  {
+    type: 'sale',
+    username: 'Platform.id',
+    role: 'Platform',
+    email: 'info@brightblock.org',
+    royalty: 0.2,
+    secondaryRoyalty: 0.2,
+    chainAddress: 'ST2H1GA0VFR6CBA9VSCCY94RQP17KHVBQ9PKJG3N0'
   }
 ]
 const beneficiariesMint = [
@@ -100,14 +145,21 @@ const beneficiariesMint = [
     username: 'Artist',
     role: 'Artist',
     royalty: 95,
-    chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
+    chainAddress: 'ST29N24XJPW2WRVF6S2JWBC3TJBGBA5EXPSC03Y0G'
   },
   {
     type: 'mint',
     username: 'Platform',
     role: 'Platform',
-    royalty: 5,
-    chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
+    royalty: 1.25,
+    chainAddress: 'ST3BTM84FYABJGJ83519GG5NSV0A6A13D4N25KH1K'
+  },
+  {
+    type: 'mint',
+    username: 'Platform',
+    role: 'Platform',
+    royalty: 3.75,
+    chainAddress: 'ST2MTCSN0662CGS0ECW0E7C22WQSX585Z97P25J7Y'
   }
 ]
 const payment = {

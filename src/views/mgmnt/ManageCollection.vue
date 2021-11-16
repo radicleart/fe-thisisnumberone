@@ -45,7 +45,6 @@
       <b-form-input
         id="currentRunKey-name"
         v-model="loopRun.currentRunKey"
-        readonly
         aria-describedby="currentRunKey-help currentRunKey-feedback"
         placeholder="Collection Key"
         required
@@ -78,7 +77,6 @@
       <b-form-input
         maxlength="30"
         id="makerUrlKey-name"
-        readonly
         v-model="loopRun.makerUrlKey"
         aria-describedby="makerUrlKey-help makerUrlKey-feedback"
         placeholder="Maker URL Key"

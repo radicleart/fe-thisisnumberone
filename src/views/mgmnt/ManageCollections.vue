@@ -2,10 +2,11 @@
 <b-container class="text-white" v-if="loopRuns">
   <h1 class="text-white">NFT Collections</h1>
   <div class="text-right">
-    <b-link class="text-info" to="/mgmnt/manage-collection">new collection</b-link>
+    <span class="pointer text-warning pr-3 mr-3 border-right" @click="updateTable">show disabled</span>
+    <b-link class="text-warning" to="/mgmnt/manage-collection">new collection</b-link>
   </div>
   <div>
-    <b-table striped hover :items="values()" :fields="fields()" class="bg-light text-dark">
+    <b-table :key="componentKey" striped hover :items="values()" :fields="fields()" class="bg-light text-dark">
       <template #cell(contractAddress)="data">
         <b-link class="text-info" size="sm" variant="warning" v-on:click="updateRequest(data)" v-html="data.value"></b-link>
       </template>
@@ -50,6 +51,8 @@ export default {
   data () {
     return {
       loaded: false,
+      componentKey: 0,
+      showDisabled: false,
       contractId: process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME,
       currenRunKey: null,
       loopRun: null
@@ -89,13 +92,19 @@ export default {
         this.$router.push('/mgmnt/manage-collections/' + this.loopRuns[index].currentRunKey)
       }
     },
+    updateTable () {
+      this.showDisabled = !this.showDisabled
+      this.componentKey++
+    },
     fields () {
       return ['contractAddress', 'contractName', 'currentRunKey', 'currentRun', 'versionLimit', 'Mints Per Day', 'Status', 'Actions']
     },
     values () {
       let mapped = []
       const $self = this
-      mapped = this.loopRuns.map(function (loopRun) {
+      let collections = this.loopRuns
+      if (!this.showDisabled) collections = this.loopRuns.filter((o) => o.status !== 'disabled')
+      mapped = collections.map(function (loopRun) {
         if (!loopRun.contractId) loopRun.contractId = $self.contractId
         const cId = loopRun.contractId.split('.')[0]
         return {

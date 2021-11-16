@@ -5,11 +5,11 @@
   </div>
   <div class="mt-1 d-flex justify-content-end">
     <div class="text-small text-right">
-      <ItemActionMenu :item="item"/>
+      <ItemActionMenu :item="item" :loopRun="loopRun"/>
     </div>
   </div>
   <div class="mt-4 text-left">
-    <b-link router-tag="a" :to="assetUrl">{{item.name}}</b-link>
+    <b-link router-tag="a" :to="assetUrl">{{mintedMessage}}</b-link>
   </div>
   <div class="text-small text-left">
     <div><b-link router-tag="a" :to="assetUrl">{{salesButtonLabel}}</b-link></div>
@@ -28,7 +28,7 @@ export default {
     MediaItemGeneral,
     ItemActionMenu
   },
-  props: ['item', 'token'],
+  props: ['item', 'token', 'loopRun'],
   data () {
     return {
     }
@@ -43,6 +43,15 @@ export default {
     }
   },
   computed: {
+    mintedMessage () {
+      if (this.item.contractAsset && this.loopRun && this.loopRun.type === 'punks') {
+        return this.loopRun.currentRun + ' #' + this.item.contractAsset.nftIndex
+      }
+      if (this.item.contractAsset) {
+        return '#' + this.item.contractAsset.nftIndex + ' ' + this.asset.name
+      }
+      return this.asset.name
+    },
     salesButtonLabel () {
       if (!this.token) return 'NOT MINTED'
       return 'MINTED #' + this.token.nftIndex + ' (Ed. ' + this.token.tokenInfo.edition + ' of ' + this.token.tokenInfo.maxEditions + ')'

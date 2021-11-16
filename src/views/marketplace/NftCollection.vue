@@ -32,7 +32,7 @@
             </b-col>
           </b-row>
         </div>
-        <div :key="searchKey" class="mb-4" v-if="loopRun && (loopRun.status === 'active' || loopRun.status === 'inactive')">
+        <div :key="searchKey" class="mb-4" v-if="loopRun && (loopRun.status === 'unrevealed' || loopRun.status === 'active' || loopRun.status === 'inactive')">
           <PageableItems @tokenCount="tokenCount" :defQuery="defQuery" :loopRun="loopRun"/>
         </div>
         <div class="mb-4" v-else-if="loopRun && loopRun.status === 'unrevealed'">

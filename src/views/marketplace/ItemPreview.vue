@@ -14,8 +14,8 @@
       <b-col md="8" sm="12" align-self="start" class="mb-4 text-white">
         <div>
           <div class="mb-2 d-flex justify-content-between">
-            <h2 class="d-block border-bottom mb-5"><span v-if="item.contractAsset">#{{item.contractAsset.nftIndex}}</span> {{item.name}}</h2>
-            <ItemActionMenu :item="item" />
+            <h2 class="d-block border-bottom mb-5">{{mintedMessage}}</h2>
+            <ItemActionMenu :item="item" :loopRun="loopRun"/>
           </div>
           <h6 v-if="item.artist" class="text-small">By : {{item.artist}}</h6>
         </div>
@@ -170,6 +170,15 @@ export default {
     }
   },
   computed: {
+    mintedMessage () {
+      if (this.item.contractAsset && this.loopRun && this.loopRun.type === 'punks') {
+        return this.loopRun.currentRun + ' #' + this.item.contractAsset.nftIndex
+      }
+      if (this.item.contractAsset) {
+        return '#' + this.item.contractAsset.nftIndex + ' ' + this.item.name
+      }
+      return this.item.name
+    },
     loopRun () {
       let loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.runKey)
       if (!loopRun) {

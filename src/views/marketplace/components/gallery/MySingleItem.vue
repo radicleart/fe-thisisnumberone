@@ -22,6 +22,7 @@
       </b-link>
     </b-card-text>
     <b-card-text>
+      <!-- Enables connecting meta data to the actual punk crash -->
       <PunkConnect v-if="loopRun" :loopRun="loopRun" :asset="asset" @updateImage="updateImage"/> <!-- v-on="$listeners"/> -->
       <div class="text-xsmall text-center mb-3">
         <span v-if="contractAsset">{{contractAsset.owner}}</span>
@@ -168,6 +169,9 @@ export default {
       }
     },
     mintedMessage () {
+      if (this.contractAsset && this.loopRun && this.loopRun.type === 'punks') {
+        return this.loopRun.currentRun + ' #' + this.contractAsset.nftIndex
+      }
       if (this.contractAsset) {
         return '#' + this.contractAsset.nftIndex + ' ' + this.asset.name
       }

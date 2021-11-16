@@ -27,7 +27,7 @@
               <h1 class="text-white">{{mintedMessage}}</h1>
               <div>
                 <div class="d-flex justify-content-between">
-                  <div>by <span class="text-warning">{{loopRun.makerName}}</span> from collection <span class="text-warning">{{loopRun.currentRun}}</span> {{editionMessage}}</div>
+                  <div>by <span class="text-warning">{{loopRun.makerName}}</span> <span v-if="loopRun.type !== 'punks'">from collection <span class="text-warning">{{loopRun.currentRun}}</span></span> {{editionMessage}}</div>
                 </div>
               </div>
               <div class="d-flex justify-content-end">
@@ -363,6 +363,9 @@ export default {
   },
   computed: {
     mintedMessage () {
+      if (this.gaiaAsset.contractAsset && this.loopRun && this.loopRun.type === 'punks') {
+        return this.loopRun.currentRun + ' #' + this.gaiaAsset.contractAsset.nftIndex
+      }
       if (this.gaiaAsset.contractAsset) {
         return '#' + this.gaiaAsset.contractAsset.nftIndex + ' ' + this.gaiaAsset.name
       }

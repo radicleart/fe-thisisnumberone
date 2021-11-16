@@ -34,21 +34,6 @@
       </div>
     </b-col>
   </b-row>
-  <div v-if="profile.stxAddress === 'ST1R1061ZT6KPJXQ7PAXPFB6ZAZ6ZWW28G8HXK9G5'">
-      <div class="row">
-        <h2>Update Meta Data</h2>
-        <div class="col-md-12 col-xs-12">
-          <div class="mb-4">
-            <div class="d-flex justify-content-between">
-              <div class="text2"><span v-b-tooltip.hover="{ variant: 'warning' }" title="signer - public key 33 bytes">Signer</span></div>
-            </div>
-            <b-input v-model="mdContractId" placeholder="mdContractId"></b-input>
-            <b-input v-model="mdNftIndex" placeholder="mdNftIndex"></b-input>
-            <b-button class="mr-3" variant="light" @click.prevent="updateMetaData()">Update</b-button>
-          </div>
-        </div>
-      </div>
-  </div>
 </b-container>
 </template>
 
@@ -72,7 +57,6 @@ export default {
       componentKey: 0,
       loopRun: null,
       mdContractId: null,
-      mdNftIndex: null,
       myTxFilter: 'pending',
       loading: true,
       showPending: true,
@@ -117,23 +101,6 @@ export default {
     filteredAllocations () {
       if (!this.myTxFilter || this.myTxFilter === 'all') return this.allocations
       return this.allocations.filter((o) => o.txStatus === this.myTxFilter)
-    },
-    updateMetaData () {
-      this.$store.dispatch('rpayStacksContractStore/fetchContractAssetByNftIndex', { contractId: this.mdContractId, nftIndex: this.mdNftIndex }).then((item) => {
-        const assetHash = item.tokenInfo.assetHash
-        const metaDataUrl = item.tokenInfo.metaDataUrl
-        let lastIndex = metaDataUrl.lastIndexOf('/')
-        const newUrl = metaDataUrl.substring(0, lastIndex + 1) + assetHash + '.json'
-        this.$store.dispatch('rpayManageCacheStore/fetchMetaData', newUrl).then((metaData) => {
-          lastIndex = metaData.image.lastIndexOf('/')
-          const index = metaData.image.substring(lastIndex + 1).split('.')[0]
-          metaData.attributes.index = index
-          metaData.projectId = this.loopRun.contractId
-          this.$store.dispatch('rpayMyItemStore/saveItem', metaData).then(() => {
-            this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
-          })
-        })
-      })
     },
     update (data) {
       if (data.opcode === 'show-uploads') {
