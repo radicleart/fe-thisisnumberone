@@ -25,7 +25,9 @@
         <div v-else>
           <MintingTools class="w-100" :items="[item]" :loopRun="loopRun" @update="update"/>
         </div>
-        <NftHistory class="mt-5" @update="update" @setPending="setPending" :loopRun="loopRun" :nftIndex="(item.contractAsset) ? item.contractAsset.nftIndex : -1" :assetHash="item.assetHash"/>
+        <div :key="componentKey">
+          <NftHistory class="mt-5" @update="update" @setPending="setPending" :loopRun="loopRun" :nftIndex="(item.contractAsset) ? item.contractAsset.nftIndex : -1" :assetHash="item.assetHash"/>
+        </div>
       </b-col>
     </b-row>
   </b-container>
@@ -54,6 +56,7 @@ export default {
   data: function () {
     return {
       showHash: false,
+      componentKey: 0,
       nftIndex: null,
       notCount: 0,
       assetHash: null,
@@ -71,6 +74,7 @@ export default {
       window.eventBus.$on('rpayEvent', function (data) {
         if ($self.$route.name !== 'item-preview' && $self.$route.name !== 'nft-preview') return
         if (data.opcode === 'stx-transaction-sent') {
+          $self.componentKey++
           // save transaction but not on gaia asset
           if (data.txId && data.functionName === 'mint-token' && data.txStatus === 'success') {
             const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
@@ -78,11 +82,11 @@ export default {
               txId: data.txId,
               txStatus: data.txStatus
             }
-            $self.$store.dispatch('rpayMyItemStore/quickSaveItem', item)
+            $self.$store.dispatch('rpayMyItemStore/quickSaveItem', item).then(() => {
+              $self.setPending(data)
+            })
           }
-          if (data.txStatus === 'pending') {
-            $self.setPending(data)
-          }
+          $self.setPending(data)
         }
       })
     }
@@ -139,7 +143,8 @@ export default {
         if (result && typeof result.nftIndex !== 'undefined') this.nftIndex = result.nftIndex
         data.nftIndex = result.nftIndex
         this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then(() => {
-          this.fetchItem()
+          if (this.nftIndex) this.$router.push('/nft-preview/' + this.loopRun.contractId + '/' + result.nftIndex)
+          else this.fetchItem()
         })
       })
     },

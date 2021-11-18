@@ -39,15 +39,13 @@ export default {
 ;; (impl-trait .nft-trait.nft-trait)
 ;; (impl-trait .nft-tradable-trait.nft-tradable-trait)
 
-(impl-trait 'ST1NXBK3K5YYMD6FD41MVNP3JS1GABZ8TRVX023PT.nft-tradable-trait.nft-tradable-trait)
-(impl-trait 'ST1NXBK3K5YYMD6FD41MVNP3JS1GABZ8TRVX023PT.nft-trait-t1.nft-trait)
+(impl-trait 'params.administrator.nft-trait-t1.nft-trait)
 ;; (impl-trait 'SP1JSH2FPE8BWNTP228YZ1AZZ0HE0064PS6RXRAY4.nft-trait.nft-trait)
-;; (impl-trait 'params.administrator.nft-tradable-trait.nft-tradable-trait)
+(impl-trait 'params.administrator.nft-tradable-trait.nft-tradable-trait)
 
 ;; contract variables
 (define-data-var administrator principal 'params.administrator)
 (define-data-var mint-price uint uparams.mintPrice)
-(define-data-var base-token-uri (string-ascii 256) params.callBack)
 (define-data-var mint-counter uint u0)
 (define-data-var signer (buff 33) 0x02815c03f6d7181332afb1b0114f5a1c97286b6092957910ae3fab4006598aee1b)
 (define-data-var is-collection bool params.projectType)
@@ -67,7 +65,7 @@ export default {
 ;; data structures
 (define-map nft-approvals {nft-index: uint} {approval: principal})
 (define-map nft-lookup {asset-hash: (buff 32), edition: uint} {nft-index: uint})
-(define-map nft-data {nft-index: uint} {asset-hash: (buff 32), meta-data-url: (buff 200), max-editions: uint, edition: uint, edition-cost: uint, series-original: uint})
+(define-map nft-data {nft-index: uint} {asset-hash: (buff 32), meta-data-url: (string-ascii 256), max-editions: uint, edition: uint, edition-cost: uint, series-original: uint})
 (define-map nft-sale-data {nft-index: uint} {sale-type: uint, increment-stx: uint, reserve-stx: uint, amount-stx: uint, bidding-end-time: uint, sale-cycle-index: uint})
 (define-map nft-beneficiaries {nft-index: uint} { addresses: (list 10 principal), shares: (list 10 uint), secondaries: (list 10 uint) })
 (define-map nft-bid-history {nft-index: uint, bid-index: uint} {sale-cycle: uint, bidder: principal, amount: uint, bid-in-block: uint})
@@ -109,21 +107,32 @@ export default {
 (define-constant bidding-amount-error (err u39))
 (define-constant bidding-endtime-error (err u40))
 (define-constant collection-limit-reached (err u41))
-
 (define-constant nft-not-owned-err (err u401)) ;; unauthorized
 (define-constant sender-equals-recipient-err (err u405)) ;; method not allowed
 (define-constant nft-not-found-err (err u404)) ;; not found
 
-;; interface methods
 ;; from nft-trait: Last token ID, limited to uint range
-;; note decrement as mint counter is the id of the next nft
 (define-read-only (get-last-token-id)
   (ok (- (var-get mint-counter) u1))
 )
 
 ;; from nft-trait: URI for metadata associated with the token
 (define-read-only (get-token-uri (nftIndex uint))
-  (ok (some (var-get base-token-uri)))
+  (ok (get meta-data-url (map-get? nft-data {nft-index: nftIndex})))
+)
+;; allows the meta data url to change - e.g. when an nft transfers from buyer to seller allows the meta data to move to new owners gaia storage.
+(define-public (update-meta-data-url (nftIndex uint) (newMetaDataUrl (string-ascii 256)))
+    (let
+        (
+            (ahash           (unwrap! (get asset-hash   (map-get? nft-data {nft-index: nftIndex})) not-allowed))
+            (edition         (unwrap! (get edition (map-get? nft-data {nft-index: nftIndex})) not-allowed))
+            (editionCost     (unwrap! (get edition-cost (map-get? nft-data {nft-index: nftIndex})) not-allowed))
+            (maxEditions     (unwrap! (get max-editions (map-get? nft-data {nft-index: nftIndex})) not-allowed))
+            (seriesOriginal  (unwrap! (get series-original (map-get? nft-data {nft-index: nftIndex})) not-allowed))
+        )
+        (asserts! (is-owner-or-approval nftIndex contract-caller) not-allowed)
+        (ok (map-set nft-data {nft-index: nftIndex} {asset-hash: ahash, meta-data-url: newMetaDataUrl, max-editions: maxEditions, edition: edition, edition-cost: editionCost, series-original: seriesOriginal}))
+    )
 )
 
 ;; from nft-trait: Gets the owner of the 'SPecified token ID.
@@ -251,16 +260,6 @@ export default {
     )
 )
 
-;; the contract administrator can change the base uri - where meta data for tokens in this contract
-;; are located
-(define-public (update-base-token-uri (new-base-token-uri (string-ascii 256)))
-    (begin
-        (asserts! (is-eq (var-get administrator) contract-caller) not-allowed)
-        (var-set base-token-uri new-base-token-uri)
-        (ok true)
-    )
-)
-
 ;; the contract administrator can change the mint price
 (define-public (update-mint-price (new-mint-price uint))
     (begin
@@ -293,7 +292,7 @@ export default {
 )
 
 ;; mint twenty tokens
-(define-public (mint-token-twenty (signature (buff 65)) (message (buff 32)) (hashes (list 20 (buff 32))) (meta-urls (list 20 (buff 200))) (maxEditions uint) (editionCost uint) (clientMintPrice uint) (buyNowPrice uint) (mintAddresses (list 4 principal)) (mintShares (list 4 uint)) (addresses (list 10 principal)) (shares (list 10 uint)) (secondaries (list 10 uint)))
+(define-public (mint-token-twenty (signature (buff 65)) (message (buff 32)) (hashes (list 20 (buff 32))) (meta-urls (list 20 (string-ascii 256))) (maxEditions uint) (editionCost uint) (clientMintPrice uint) (buyNowPrice uint) (mintAddresses (list 4 principal)) (mintShares (list 4 uint)) (addresses (list 10 principal)) (shares (list 10 uint)) (secondaries (list 10 uint)))
     (begin
         (unwrap! (mint-token signature message (unwrap! (element-at hashes u0) not-allowed) (unwrap! (element-at meta-urls u0) not-allowed) maxEditions editionCost clientMintPrice buyNowPrice mintAddresses mintShares addresses shares secondaries) not-allowed)
         (unwrap! (mint-token signature message (unwrap! (element-at hashes u1) not-allowed) (unwrap! (element-at meta-urls u1) not-allowed) maxEditions editionCost clientMintPrice buyNowPrice mintAddresses mintShares addresses shares secondaries) not-allowed)
@@ -321,7 +320,7 @@ export default {
 )
 
 ;; mint twenty tokens
-(define-public (collection-mint-token-twenty (signature (buff 65)) (message (buff 32)) (hashes (list 20 (buff 32))) (meta-urls (list 20 (buff 200))) (maxEditions uint) (editionCost uint) (clientMintPrice uint) (buyNowPrice uint))
+(define-public (collection-mint-token-twenty (signature (buff 65)) (message (buff 32)) (hashes (list 20 (buff 32))) (meta-urls (list 20 (string-ascii 256))) (maxEditions uint) (editionCost uint) (clientMintPrice uint) (buyNowPrice uint))
     (begin
         (unwrap! (collection-mint-token signature message (unwrap! (element-at hashes u0) not-allowed) (unwrap! (element-at meta-urls u0) not-allowed) maxEditions editionCost clientMintPrice buyNowPrice) not-allowed)
         (unwrap! (collection-mint-token signature message (unwrap! (element-at hashes u1) not-allowed) (unwrap! (element-at meta-urls u1) not-allowed) maxEditions editionCost clientMintPrice buyNowPrice) not-allowed)
@@ -361,7 +360,7 @@ export default {
 ;; Note series-original in the case of the original in series is just
 ;; mintCounter - for editions this provides a safety hook back to the original in cases
 ;; where the asset hash is unknown (ie cant be found from nft-lookup).
-(define-public (mint-token (signature (buff 65)) (message-hash (buff 32)) (asset-hash (buff 32)) (metaDataUrl (buff 200)) (maxEditions uint) (editionCost uint) (clientMintPrice uint) (buyNowPrice uint) (mintAddresses (list 4 principal)) (mintShares (list 4 uint)) (addresses (list 10 principal)) (shares (list 10 uint)) (secondaries (list 10 uint)))
+(define-public (mint-token (signature (buff 65)) (message-hash (buff 32)) (asset-hash (buff 32)) (metaDataUrl (string-ascii 256)) (maxEditions uint) (editionCost uint) (clientMintPrice uint) (buyNowPrice uint) (mintAddresses (list 4 principal)) (mintShares (list 4 uint)) (addresses (list 10 principal)) (shares (list 10 uint)) (secondaries (list 10 uint)))
     (begin
         (asserts! (is-ok (recover-pubkey signature message-hash)) (err u9))
         (print "mint-token pubkey recovered")
@@ -408,7 +407,7 @@ export default {
     )
 )
 
-(define-public (collection-mint-token (signature (buff 65)) (message-hash (buff 32)) (asset-hash (buff 32)) (metaDataUrl (buff 200)) (maxEditions uint) (editionCost uint) (clientMintPrice uint) (buyNowPrice uint))
+(define-public (collection-mint-token (signature (buff 65)) (message-hash (buff 32)) (asset-hash (buff 32)) (metaDataUrl (string-ascii 256)) (maxEditions uint) (editionCost uint) (clientMintPrice uint) (buyNowPrice uint))
     (begin
         (asserts! (is-ok (recover-pubkey signature message-hash)) (err u9))
         (if (< (len metaDataUrl) u10) (ok (var-get mint-counter))
@@ -789,9 +788,6 @@ export default {
 (define-read-only (is-administrator)
     (ok (is-eq (var-get administrator) tx-sender)))
 
-(define-read-only (get-base-token-uri)
-    (var-get base-token-uri))
-
 (define-read-only (get-mint-counter)
   (ok (var-get mint-counter))
 )
@@ -855,14 +851,12 @@ export default {
         (
             (the-administrator  (var-get administrator))
             (the-mint-price  (var-get mint-price))
-            (the-base-token-uri  (var-get base-token-uri))
             (the-mint-counter  (var-get mint-counter))
             (the-token-name  token-name)
             (the-token-symbol  token-symbol)
         )
         (ok (tuple  (administrator the-administrator)
                     (mintPrice the-mint-price)
-                    (baseTokenUri the-base-token-uri)
                     (mintCounter the-mint-counter)
                     (tokenName the-token-name)
                     (tokenSymbol the-token-symbol)))
@@ -943,6 +937,7 @@ export default {
         (+ split (unwrap! (pay-royalty payer myMintPrice (unwrap! (element-at mintAddresses u1) payment-address-error) (unwrap! (element-at mintShares u1) payment-share-error)) payment-share-error))
         (+ split (unwrap! (pay-royalty payer myMintPrice (unwrap! (element-at mintAddresses u2) payment-address-error) (unwrap! (element-at mintShares u2) payment-share-error)) payment-share-error))
         (+ split (unwrap! (pay-royalty payer myMintPrice (unwrap! (element-at mintAddresses u3) payment-address-error) (unwrap! (element-at mintShares u3) payment-share-error)) payment-share-error))
+        ;; (print {evt: "paymint-split", nftIndex: nftIndex, payer: payer, mintPrice: myMintPrice, txSender: tx-sender})
         (ok split)
     )
 )
@@ -995,6 +990,7 @@ export default {
         (+ split (unwrap! (pay-royalty payer saleAmount (unwrap! (element-at addresses u7) payment-address-error) (unwrap! (if (is-eq saleCycle u1) (element-at shares u7) (element-at secondaries u7)) payment-share-error)) payment-share-error))
         (+ split (unwrap! (pay-royalty payer saleAmount (unwrap! (element-at addresses u8) payment-address-error) (unwrap! (if (is-eq saleCycle u1) (element-at shares u8) (element-at secondaries u8)) payment-share-error)) payment-share-error))
         (+ split (unwrap! (pay-royalty payer saleAmount (unwrap! (element-at addresses u9) payment-address-error) (unwrap! (if (is-eq saleCycle u1) (element-at shares u9) (element-at secondaries u9)) payment-share-error)) payment-share-error))
+        ;; (print {evt: "payment-split", nftIndex: nftIndex, saleCycle: saleCycle, payer: payer, saleAmount: saleAmount, txSender: tx-sender})
         (ok split)
     )
 )

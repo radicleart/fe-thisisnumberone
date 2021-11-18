@@ -48,9 +48,9 @@ export default {
         return this.loopRun.currentRun + ' #' + this.item.contractAsset.nftIndex
       }
       if (this.item.contractAsset) {
-        return '#' + this.item.contractAsset.nftIndex + ' ' + this.asset.name
+        return '#' + this.item.contractAsset.nftIndex + ' ' + this.item.name
       }
-      return this.asset.name
+      return this.item.name
     },
     salesButtonLabel () {
       if (!this.token) return 'NOT MINTED'

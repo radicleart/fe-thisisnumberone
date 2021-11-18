@@ -59,7 +59,7 @@ import PunkConnect from './PunkConnect'
 
 // noinspection JSUnusedGlobalSymbols
 export default {
-  name: 'MySingleItem',
+  name: 'MyWalletNft',
   components: {
     PunkConnect
   },
@@ -91,7 +91,7 @@ export default {
       e.preventDefault()
     },
     imageError () {
-      this.image = this.asset.attributes.artworkFile.fileUrl
+      this.image = this.asset.image
     },
     created () {
       if (this.asset && this.asset.mintInfo && this.asset.mintInfo.timestamp) {
@@ -101,35 +101,10 @@ export default {
       }
       return ''
     }
-    /**
-    download () {
-      const extUrl = this.asset.attributes.artworkFile.fileUrl
-      imageDataURI.encodeFromURL(extUrl).then(dataUrl => {
-        // RETURNS image data URI :: 'data:image/pngbase64,PNGDATAURI/'
-        const image = dataUrl.replace('image/png', 'image/octet-stream')
-        const link = document.createElement('a')
-        link.download = this.asset.name + '.png'
-        link.href = image
-        link.click()
-      }).catch(() => {
-        imageDataURI.encodeFromURL(extUrl).then(dataUrl => {
-          // RETURNS image data URI :: 'data:image/pngbase64,PNGDATAURI/'
-          const image = dataUrl.replace('image/png', 'image/octet-stream')
-          const link = document.createElement('a')
-          link.download = this.asset.name + '.png'
-          link.href = image
-          link.click()
-        })
-      })
-    }
-    **/
   },
   computed: {
     contractAsset () {
-      if (this.asset.contractAsset) return this.asset.contractAsset
-      const data = { assetHash: this.asset.assetHash, edition: 1 }
-      const gaiaAsset = this.$store.getters['rpayStacksContractStore/getAssetByHashAndEdition'](data)
-      return (gaiaAsset) ? gaiaAsset.contractAsset : null
+      return this.asset.contractAsset
     },
     variant () {
       if (this.contractAsset) {

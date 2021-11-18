@@ -57,7 +57,7 @@ export default {
       formSubmitted: false,
       dims: { width: 360, height: 202 },
       showErrors: false,
-      overrideLoopRun: null,
+      loopRun: null,
       componentKey: 0,
       uploadState: 10,
       loaded: false,
@@ -107,7 +107,7 @@ export default {
   },
   methods: {
     updateCollection (data) {
-      this.overrideLoopRun = data.loopRun
+      this.loopRun = data.loopRun
     },
     hasFile (file) {
       const item = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
@@ -217,10 +217,6 @@ export default {
     }
   },
   computed: {
-    loopRun () {
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.runKey)
-      return loopRun
-    },
     runKey () {
       const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
       let runKey = (this.item && this.item.currentRunKey) ? this.item.currentRunKey : defaultLoopRun

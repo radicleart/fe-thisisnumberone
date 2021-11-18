@@ -1,5 +1,5 @@
 <template>
-<section :key="componentKey" id="asset-details-section" v-if="gaiaAsset && gaiaAsset.contractAsset" class="text-white">
+<section id="asset-details-section" v-if="gaiaAsset && gaiaAsset.contractAsset" class="text-white">
   <b-container class="center-section" style="min-height: 50vh;">
     <b-row align-h="center" :style="'min-height: ' + videoHeight + 'px'">
       <b-col lg="7" sm="10" class="mb-5">
@@ -22,7 +22,7 @@
               </div>
             </div>
           </b-col>
-          <b-col md="12" align-self="end">
+          <b-col md="12" align-self="end" :key="componentKey">
             <div class="w-100">
               <h1 class="text-white">{{mintedMessage}}</h1>
               <div>
@@ -58,7 +58,9 @@
                   </b-col>
                 </b-row>
               </div>
-              <NftHistory class="text-small mt-5" v-if="nftIndex > -1" @setPending="setPending" :nftIndex="nftIndex" :loopRun="loopRun"/>
+              <div v-if="nftIndex > -1">
+                <NftHistory class="text-small mt-5" @setPending="setPending" :nftIndex="nftIndex" :loopRun="loopRun"/>
+              </div>
               <b-row class="my-4" v-else>
                 <b-col md="6" sm="12" class="mb-3">
                   <div class="more-link m-0" v-scroll-to="{ element: '#artist-section', duration: 1000 }"><b-link class="text-white">Find out more</b-link></div>
@@ -168,12 +170,13 @@ export default {
     if (window.eventBus && window.eventBus.$on) {
       window.eventBus.$on('rpayEvent', function (data) {
         if ($self.$route.name.indexOf('asset-by-') === -1) return
+        $self.componentKey++
         $self.$bvModal.hide('asset-offer-modal')
         $self.$bvModal.hide('result-modal')
         $self.txData = data
         if (data.opcode.indexOf('stx-transaction-sent') > -1) {
           if (data.txStatus === 'pending') {
-            $self.$bvModal.show('result-modal')
+            // $self.$bvModal.show('result-modal')
           }
           $self.update()
         }

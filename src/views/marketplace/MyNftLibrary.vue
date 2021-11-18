@@ -14,6 +14,15 @@
       </b-row>
     </b-col>
     <b-col md="8" sm="12" v-else :key="componentKey">
+      <div v-if="showWalletNfts">
+        <MyWalletNfts/>
+      </div>
+      <div v-else-if="loopRun && (loopRun.status !== 'disabled')">
+        <MyPageableItems :loopRun="loopRun"/>
+      </div>
+      <div v-if="loopRun && loopRun.type === 'punks' && loopRun.status === 'unrevealed'">
+        <p><b-link :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.currentRun}} artwork available - mint here!</b-link></p>
+      </div>
       <h1 class="pointer mb-4 border-bottom" @click="showPending = !showPending"><b-icon font-scale="0.6" v-if="showPending" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> My Transactions</h1>
       <b-row class="mb-4" v-if="showPending && loopRun">
         <div class="w-100 d-flex justify-content-end">
@@ -26,12 +35,6 @@
           <MySingleAllocation :myTxFilter="myTxFilter" :parent="'list-view'" :loopRun="loopRun" :allocation="allocation" :key="componentKey"/>
         </div>
       </b-row>
-      <div v-if="loopRun && (loopRun.status !== 'disabled')">
-        <MyPageableItems :loopRun="loopRun"/>
-      </div>
-      <div v-if="loopRun.type === 'punks' && loopRun.status === 'unrevealed'">
-        <p><b-link :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.currentRun}} artwork available - mint here!</b-link></p>
-      </div>
     </b-col>
   </b-row>
 </b-container>
@@ -43,11 +46,13 @@ import MySingleNft from '@/views/marketplace/components/gallery/MySingleNft'
 import CollectionSidebar from '@/views/marketplace/components/gallery/CollectionSidebar'
 import { APP_CONSTANTS } from '@/app-constants'
 import MyPageableItems from '@/views/marketplace/components/gallery/MyPageableItems'
+import MyWalletNfts from '@/views/marketplace/components/gallery/MyWalletNfts'
 
 export default {
   name: 'MyNftLibrary',
   components: {
     MyPageableItems,
+    MyWalletNfts,
     MySingleAllocation,
     CollectionSidebar,
     MySingleNft
@@ -56,11 +61,11 @@ export default {
     return {
       componentKey: 0,
       loopRun: null,
-      mdContractId: null,
       myTxFilter: 'pending',
       loading: true,
       showPending: true,
       showUploads: false,
+      showWalletNfts: false,
       allocations: []
     }
   },
@@ -73,11 +78,14 @@ export default {
   mounted () {
     let currentRunKey = this.$route.params.collection
     if (!currentRunKey) {
+      this.showWalletNfts = true
+      this.loading = false
       currentRunKey = process.env.VUE_APP_DEFAULT_LOOP_RUN
-      if (this.$route.path !== '/my-nfts/' + currentRunKey) this.$router.push('/my-nfts/' + currentRunKey)
-      return
+      this.fetchLoopRun()
+      // if (this.$route.path !== '/my-nfts/' + currentRunKey) this.$router.push('/my-nfts/' + currentRunKey)
+    } else {
+      this.fetchLoopRun()
     }
-    this.fetchLoopRun()
   },
   methods: {
     fetchLoopRun () {
@@ -87,7 +95,6 @@ export default {
       }
       this.$store.dispatch('rpayCategoryStore/fetchLoopRun', currentRunKey).then((loopRun) => {
         this.loopRun = loopRun
-        this.mdContractId = this.loopRun.contractId
         this.fetchAllocations()
         this.loading = false
       })
@@ -103,6 +110,7 @@ export default {
       return this.allocations.filter((o) => o.txStatus === this.myTxFilter)
     },
     update (data) {
+      this.showWalletNfts = false
       if (data.opcode === 'show-uploads') {
         this.showUploads = true
       } else if (data.opcode === 'show-collection') {
@@ -111,6 +119,9 @@ export default {
           if (this.$route.path !== '/my-nfts/' + data.loopRun.currentRunKey) this.$router.push('/my-nfts/' + data.loopRun.currentRunKey)
         }
         this.componentKey++
+      } else if (data.opcode === 'show-wallet-nfts') {
+        if (this.$route.path !== '/my-nfts') this.$router.push('/my-nfts')
+        this.showWalletNfts = true
       }
     },
     startLogin () {

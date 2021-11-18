@@ -29,9 +29,6 @@
               <div>
                 <a class="text-white" :href="items[0].contractAsset.tokenInfo.metaDataUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Meta Data URL: ' + items[0].contractAsset.tokenInfo.metaDataUrl" target="_blank"><b-icon class="mr-1" icon="arrow-up-right-circle"/>Meta Data URL</a>
               </div>
-              <div>
-                <a class="text-white" :href="application.tokenContract.baseTokenUri + items[0].contractAsset.nftIndex" v-b-tooltip.hover="{ variant: 'light' }" :title="'Base Token URL: ' + application.tokenContract.baseTokenUri + items[0].contractAsset.nftIndex" target="_blank"><b-icon class="mr-1" icon="arrow-up-right-circle"/>Base Token URL</a>
-              </div>
             </div>
           </div>
         </b-tab>

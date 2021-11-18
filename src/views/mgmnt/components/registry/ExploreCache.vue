@@ -15,7 +15,6 @@
       <div class="col-2">App Index</div><div class="col-2">{{application.appIndex}}</div>
       <div class="col-2">Storage</div><div class="col-2">{{application.storageModel}}</div>
       <div class="col-2">Status</div><div class="col-2">{{application.status}}</div>
-      <div class="col-2">Base URL</div><div class="col-10">{{application.tokenContract.baseTokenUri}}</div>
       <div class="col-2">administrator</div><div class="col-10">{{application.tokenContract.administrator}}</div>
       <div class="col-2">Mint Fee</div><div class="col-10">{{application.tokenContract.mintPrice}}</div>
       <div class="col-2">Mint Counter</div><div class="col-10">{{application.tokenContract.mintCounter}}</div>

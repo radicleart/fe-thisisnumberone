@@ -3,8 +3,7 @@
   <span class="ml-2 border-bottom" ><b-link :to="itemPreviewUrl">open</b-link></span>
   <span v-if="this.item.contractAsset && application && application.tokenContract">
     <span class="ml-2 border-bottom"><a :href="item.contractAsset.tokenInfo.metaDataUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Meta Data URL: ' + item.contractAsset.tokenInfo.metaDataUrl" target="_blank">meta data</a></span>
-    <span class="ml-2 border-bottom"><a class="text-warning" :href="application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" v-b-tooltip.hover="{ variant: 'light' }" :title="'Base Token URL: ' + application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" target="_blank">nft link</a></span>
-    <span class="ml-2 border-bottom" v-if="item.mintInfo"><a :href="transactionUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Base Token URL: ' + application.tokenContract.baseTokenUri + item.contractAsset.nftIndex" target="_blank">mint tx</a></span>
+    <span class="ml-2 border-bottom" v-if="item.mintInfo"><a :href="transactionUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Show on explorer'" target="_blank">explorer</a></span>
   </span>
   <span v-else>
     <span class="ml-2 border-bottom" v-if="showEditLink"><b-link :to="'/edit-item/' + item.assetHash"><span class="mb-0">edit</span></b-link></span>

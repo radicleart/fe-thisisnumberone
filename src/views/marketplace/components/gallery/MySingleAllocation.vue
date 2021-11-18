@@ -16,10 +16,10 @@
     <b-card-text class="">
       <div class="d-flex justify-content-center p-2">
           <div v-if="allocation.txStatus === 'pending'" class="center">
-            <div  v-if="loopRun.mintImage2">
+            <!-- <div v-if="loopRun.mintImage2">
               <img width="100px" height="100px" :src="loopRun.mintImage" icon="circle" animation="throb" font-scale="5"/>
-            </div>
-            <div  v-else>
+            </div> -->
+            <div>
               <b-icon v-if="allocation.txStatus === 'pending'" icon="circle" animation="throb" font-scale="5"></b-icon>
             </div>
           </div>

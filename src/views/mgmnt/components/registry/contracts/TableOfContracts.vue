@@ -5,11 +5,6 @@
     is connected to the Number One Registry</p>
   <div class="mt-5">
     <b-table striped hover :items="values()" :fields="fields()" class="mt-3 bg-light text-dark">
-      <template #cell(Name)="data">
-        <span v-b-tooltip.hover="{ variant: 'warning' }"  :title="'base token uri - the display link on the site of origin'">
-          <a class="text-info mr-2" :href="baseTokenUri(data)" target="_blank">{{data.value}}</a>
-        </span>
-      </template>
       <template #cell(Contract)="data">
         <span v-b-tooltip.hover="{ variant: 'warning' }" title="Contract details in the blockchain explorer">
           <a class="text-info mr-2" :href="transactionUrl(data)" target="_blank">{{data.value}}</a>
@@ -56,7 +51,6 @@ export default {
           Symbol: application.tokenContract.tokenSymbol,
           Owner: $self.truncat(application.owner),
           'App Index': application.appIndex,
-          'Token URI': '<a href="' + application.tokenContract.baseTokenUri + '" target="_blank">Token URI</a>',
           Administrator: $self.truncat(application.tokenContract.administrator),
           Counter: application.tokenContract.mintCounter,
           // Price: application.tokenContract.mintPrice,
@@ -73,9 +67,6 @@ export default {
     updateContractMeta: function (data) {
       const contractId = this.registry.applications[data.index].contractId
       this.$emit('update', { opcode: 'project-update', contractId: contractId })
-    },
-    baseTokenUri: function (data) {
-      return this.registry.applications[data.index].tokenContract.baseTokenUri + 0
     },
     transactionUrl: function (data) {
       const txId = this.registry.applications[data.index].contractId
