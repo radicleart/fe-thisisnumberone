@@ -1,9 +1,9 @@
 <template>
 <div class="" v-if="asset">
-  <b-card bg-variant="black" class="bg-black mt-0 py-2 text-white">
+  <b-card bg-variant="black" class="py-4 px-3 bg-black mt-0 py-2 text-white">
     <div class="px-2">
       <div class="text-left">
-        <p class="text-bold">{{mintedMessage}}</p>
+        <p style="height: 2rem;" class="overflow-hidden text-bold">{{mintedMessage}}</p>
         <div class="text-small d-flex justify-content-between">
           <div class="text-right"><span v-if="loopRun">{{loopRun.currentRun}}</span> {{editionMessage}}</div>
           <div class="text-right">{{created()}}</div>
@@ -12,10 +12,10 @@
     </div>
     <b-card-text class="">
       <b-link class="text-xsmall text-info" :to="nextUrl">
-        <div @contextmenu="handler($event)" class="d-flex justify-content-center p-2">
+        <div style="min-height: 100px;" @contextmenu="handler($event)" class="d-flex justify-content-center p-2">
             <img
               ref="itemImage"
-              :width="'100%'"
+              :width="newWidth"
               :height="newHeight"
               :src="image" @error="imageError()"/>
         </div>
@@ -63,10 +63,11 @@ export default {
   components: {
     PunkConnect
   },
-  props: ['asset', 'loopRun'],
+  props: ['asset', 'loopRun', 'parent'],
   data () {
     return {
       image: null,
+      newWidth: '100%',
       newHeight: null
     }
   },
@@ -74,15 +75,26 @@ export default {
     this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
     const $self = this
     const $ele = this.$refs.itemImage
+    if ((this.contractAsset.metaDataUrl.indexOf('loopbomb') > -1) || (this.loopRun && this.loopRun.currentRunKey.indexOf('loop') > -1)) {
+      this.newHeight = '100%'
+    }
     this.$nextTick(() => {
       if (!$ele) {
         return
       }
-      $self.newHeight = $ele.clientWidth * 1 // 1024 / 716
-      $ele.style.height = (Math.floor($self.newHeight)).toString() + 'px'
+      if (this.loopRun.currentRunKey.indexOf('loop') > -1) {
+        this.newWidth = ($ele.clientHeight * 716) / 1024
+        $ele.style.width = (Math.floor($self.newWidth)).toString() + 'px'
+      } else {
+        $self.newHeight = $ele.clientWidth * 1 // 1024 / 716
+        $ele.style.height = (Math.floor($self.newHeight)).toString() + 'px'
+      }
     })
   },
   methods: {
+    isLoopbomb () {
+      return ((this.contractAsset && this.contractAsset.tokenInfo.metaDataUrl.indexOf('loopbomb') > -1) || (this.loopRun && this.loopRun.currentRunKey.indexOf('loop') > -1))
+    },
     updateImage (item) {
       this.asset.image = item.image
       this.image = item.image

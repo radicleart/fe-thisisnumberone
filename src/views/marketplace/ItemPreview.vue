@@ -4,7 +4,7 @@
     <h1>{{message}}</h1>
   </b-container>
   <b-container class="my-3" v-else>
-    <b-row style="min-height: 40vh;" >
+    <b-row :key="componentKey" style="min-height: 40vh;" >
       <b-col md="4" sm="12" align-self="start" class="text-center">
         <MediaItemGeneral :classes="'item-image-preview'" :options="options" :mediaItem="getMediaItem().artworkFile"/>
         <div class="text-left text-small mt-3">
@@ -25,7 +25,7 @@
         <div v-else>
           <MintingTools class="w-100" :items="[item]" :loopRun="loopRun" @update="update"/>
         </div>
-        <div :key="componentKey">
+        <div>
           <NftHistory class="mt-5" @update="update" @setPending="setPending" :loopRun="loopRun" :nftIndex="(item.contractAsset) ? item.contractAsset.nftIndex : -1" :assetHash="item.assetHash"/>
         </div>
       </b-col>
@@ -143,7 +143,7 @@ export default {
         if (result && typeof result.nftIndex !== 'undefined') this.nftIndex = result.nftIndex
         data.nftIndex = result.nftIndex
         this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then(() => {
-          if (this.nftIndex) this.$router.push('/nft-preview/' + this.loopRun.contractId + '/' + result.nftIndex)
+          if (this.nftIndex && this.$route.name !== 'nft-preview') this.$router.push('/nft-preview/' + this.loopRun.contractId + '/' + result.nftIndex)
           else this.fetchItem()
         })
       })

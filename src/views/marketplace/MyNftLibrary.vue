@@ -100,6 +100,7 @@ export default {
       })
     },
     fetchAllocations () {
+      if (!this.loopRun) return
       const params = { stxAddress: this.profile.stxAddress, contractId: this.loopRun.contractId }
       this.$store.dispatch('rpayTransactionStore/fetchByContractIdAndFrom', params).then((results) => {
         this.allocations = results || []

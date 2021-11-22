@@ -39,4 +39,18 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-# fe-thisisnumberone
+# testnet
+
+
+see https://github.com/blockstack/stacks-blockchain/blob/63d24b1185bca6a35988aa90667bc5f0a226acb9/testnet/stacks-node/conf/testnet-follower-conf.toml
+
+see https://github.com/blockstack/stacks-blockchain/issues/2943
+
+docker run -d --rm \
+  --name stacks-blockchain \
+  -v $(pwd)/persistent-data/stacks-blockchain/testnet:/root/stacks-node/data \
+  -v $(pwd)/config/testnet:/src/stacks-node \
+  -p 20443:20443 \
+  -p 20444:20444 \
+  blockstack/stacks-blockchain \
+/bin/stacks-node start --config /src/stacks-node/Config.toml

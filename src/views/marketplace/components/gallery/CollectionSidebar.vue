@@ -1,6 +1,6 @@
 <template>
 <div class="text-small">
-  <div class="mb-5">
+  <div class="mb-5" v-if="isMyNfts()">
     <h3 class="border-bottom mb-4">My Wallet</h3>
     <div class="ml-5 my-3">
       <h4 class="pointer" @click="showNftWallet()">all my nfts</h4>
@@ -51,6 +51,9 @@ export default {
       const hasUploadPriv = this.$store.getters[APP_CONSTANTS.KEY_HAS_PRIVILEGE]('can-upload')
       return this.$route.name === 'my-nfts' && ((this.allowUploads && hasUploadPriv) || this.profile.superAdmin)
     },
+    isMyNfts () {
+      return this.$route.name === 'my-nfts'
+    },
     showNftWallet () {
       this.$emit('update', { opcode: 'show-wallet-nfts' })
     },
@@ -71,7 +74,7 @@ export default {
       return this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](item)
     },
     isSelected (runKey) {
-      return (this.$route.path.indexOf(runKey) > -1) ? 'text-warning' : ''
+      return (this.$route.path.indexOf('/' + runKey) > -1) ? 'text-warning' : ''
     },
     fetchFullRegistry () {
       const $self = this

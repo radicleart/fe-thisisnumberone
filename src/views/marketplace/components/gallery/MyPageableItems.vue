@@ -46,12 +46,12 @@ export default {
   },
   mounted () {
     this.currentRunKey = this.$route.params.collection
-    const $self = this
-    let resizeTimer
     // this.numberOfItems = 500 // this.loopRun.tokenCount
     this.fetchPage(0)
     this.loading = false
 
+    const $self = this
+    let resizeTimer
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer)
       resizeTimer = setTimeout(function () {

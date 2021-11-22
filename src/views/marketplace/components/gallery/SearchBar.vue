@@ -1,6 +1,18 @@
 <template>
 <div :class="displayClass">
-  <div>
+  <div v-if="mode.indexOf('wallet') > -1">
+    <div>
+      <div class="pointer" v-if="assetNames.length > 0">
+        <b-nav-item-dropdown class="" no-caret>
+          <template v-slot:button-content class="xg-dd">
+            <span class="text-warning">filter by asset</span>
+          </template>
+          <b-dropdown-item v-for="(assetName, index) in assetNames" :key="index" class="pl-0 m-0"  @click.prevent="toggleSearching(assetName)">{{assetName}}</b-dropdown-item>
+        </b-nav-item-dropdown>
+      </div>
+    </div>
+  </div>
+  <div v-else>
     <b-form :inline="(mode !== 'search')" @submit.prevent>
       <div class="ml-3" v-if="mode === 'search'">
         <b-form-input
@@ -50,6 +62,7 @@
 </template>
 
 <script>
+import { APP_CONSTANTS } from '@/app-constants'
 
 export default {
   name: 'SearchBar',
@@ -59,6 +72,7 @@ export default {
   data () {
     return {
       showCollectionsFilter: false,
+      assetNames: [],
       query: {
         query: null,
         allCollections: 'one',
@@ -71,6 +85,15 @@ export default {
         sortDir: 'sortDown'
       }
     }
+  },
+  mounted () {
+    const data = {
+      // stxAddress: (NETWORK === 'local') ? 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' : this.profile.stxAddress
+      stxAddress: this.profile.stxAddress
+    }
+    this.$store.dispatch('rpayStacksContractStore/fetchAssetNames', data).then((assetNames) => {
+      this.assetNames = assetNames
+    })
   },
   methods: {
     reverseDir () {
@@ -113,18 +136,26 @@ export default {
       }
       this.toggleSearching()
     },
-    toggleSearching () {
-      this.query.allCollections = 'one'
-      if (this.mode === 'search') {
-        this.query.allCollections = 'all'
+    toggleSearching (asset) {
+      if (this.mode.indexOf('wallet') > -1) {
+        this.$emit('updateResults', { opcode: 'update-results', query: asset })
+      } else {
+        this.query.allCollections = 'one'
+        if (this.mode === 'search') {
+          this.query.allCollections = 'all'
+        }
+        if (this.query.query && this.query.query.length > 0) {
+          this.query.sortField = 'updated'
+        }
+        this.$emit('updateResults', { opcode: 'update-results', query: this.query })
       }
-      if (this.query.query && this.query.query.length > 0) {
-        this.query.sortField = 'updated'
-      }
-      this.$emit('updateResults', { opcode: 'update-results', query: this.query })
     }
   },
   computed: {
+    profile () {
+      const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
+      return profile
+    }
   }
 }
 </script>

@@ -78,7 +78,11 @@ export default {
     },
     fetchPage (page, reset, query) {
       let queryStr = '?'
-      queryStr += 'sortDir=' + query.sortDir + '&'
+      if (this.loopRun.currentRunKey === 'my_first_word') {
+        queryStr += 'sortDir=sortUp&'
+      } else {
+        queryStr += 'sortDir=' + query.sortDir + '&'
+      }
       if (query.query) queryStr += 'query=' + query.query + '&'
       if (query.edition) queryStr += 'edition=' + query.edition + '&'
       if (query.onSale) queryStr += 'onSale=true&'

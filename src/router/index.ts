@@ -30,6 +30,7 @@ const About = () => import('../views/About.vue')
 // Public Marketplace Routes
 const ItemPreview = () => import('@/views/marketplace/ItemPreview.vue')
 const AssetDetails = () => import('@/views/marketplace/AssetDetails.vue')
+const MetaData = () => import(/* webpackChunkName: "MetaData" */ '@/views/marketplace/MetaData.vue')
 const MyNftLibrary = () => import('@/views/marketplace/MyNftLibrary.vue')
 const NftGallery = () => import('@/views/marketplace/NftGallery.vue')
 const NftMarketplace = () => import('@/views/marketplace/NftMarketplace.vue')
@@ -156,6 +157,21 @@ const routes: Array<RouteConfig> = [
   {
     path: '/nfts/:nftIndex',
     redirect: '/nfts/' + process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME + '/:nftIndex'
+  },
+  {
+    path: '/nfts/:nftIndex',
+    redirect: '/meta-data/' + process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME + '/:nftIndex'
+    // redirect: '/nfts/' + process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME + '/:nftIndex'
+  },
+  {
+    path: '/meta-data/:contractId/:nftIndex',
+    name: 'meta-data',
+    components: { default: MetaData }
+  },
+  {
+    path: '/meta-data/:contractId',
+    name: 'meta-data',
+    components: { default: MetaData }
   },
   {
     path: '/nfts/:contractId/:nftIndex',

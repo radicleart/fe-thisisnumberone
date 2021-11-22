@@ -1,14 +1,17 @@
 <template>
   <div v-if="!loading">
-    <div class="mt-5 d-flex justify-content-between">
-      <h1 class="pointer mb-4 border-bottom" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> {{tokenCount}} Wallet NFTs</h1>
-      <div><span class="text-warning pointer" @click="cacheWalletNfts">Read my NFTs</span></div>
+    <div class="border-bottom mb-4 mt-5 d-flex justify-content-between">
+      <h1 class="pointer" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> {{tokenCount}} Wallet NFTs</h1>
+      <div class="d-flex justify-content-between">
+        <SearchBar class="w-50" :displayClass="'text-small text-end'" @updateResults="updateResults" :mode="'wallet'"/>
+        <span class="text-warning pointer" @click.prevent="cacheWalletNfts" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Refresh your NFT wallet information'"><b-icon icon="arrow-clockwise" font-scale="1"/></span>
+      </div>
     </div>
     <div class="mb-4" v-if="showMinted">
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="tokenCount" v-if="numberOfItems < tokenCount"/>
       <div class="row" v-if="resultSet && resultSet.length > 0">
         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
-          <MyWalletNft :asset="asset" />
+          <MySingleItem @updateImage="updateImage" :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
         </div>
       </div>
       <div class="d-flex justify-content-start my-3 mx-4" v-else>
@@ -21,15 +24,17 @@
 </template>
 
 <script>
-import MyWalletNft from './MyWalletNft'
+import MySingleItem from './MySingleItem'
 import Pagination from './common/Pagination'
 import { APP_CONSTANTS } from '@/app-constants'
+import SearchBar from '@/views/marketplace/components/gallery/SearchBar'
 
 export default {
   name: 'MyWalletNfts',
   components: {
+    SearchBar,
     Pagination,
-    MyWalletNft
+    MySingleItem
   },
   data () {
     return {
@@ -45,12 +50,20 @@ export default {
       cached: 0,
       cachedPage: 0,
       cachedPageSize: 50,
-      currentRunKey: null,
+      defQuery: null,
       timer: null
     }
   },
   mounted () {
     this.fetchPage(0)
+    const $self = this
+    let resizeTimer
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(function () {
+        $self.componentKey += 1
+      }, 400)
+    })
   },
   methods: {
     updateImage () {
@@ -63,6 +76,7 @@ export default {
     },
     cacheWalletNfts () {
       const data = {
+        // stxAddress: (NETWORK === 'local') ? 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' : this.profile.stxAddress
         stxAddress: this.profile.stxAddress,
         page: this.cachedPage,
         pageSize: this.cachedPageSize
@@ -83,15 +97,25 @@ export default {
         }
       })
     },
+    updateResults (data) {
+      if (data.query === 'refresh') {
+        this.cacheWalletNfts()
+      } else {
+        this.defQuery = data.query
+        this.fetchPage(0)
+      }
+    },
     fetchPage (page) {
       const data = {
+        // stxAddress: (NETWORK === 'local') ? 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' : this.profile.stxAddress
         stxAddress: this.profile.stxAddress,
         page: page,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        query: '?' + this.defQuery
       }
       this.resultSet = []
       this.$store.dispatch('rpayStacksContractStore/fetchWalletNftsByFilters', data).then((result) => {
-        this.resultSet = result.tokens
+        this.resultSet = result.gaiaAssets
         this.tokenCount = result.tokenCount
         if (this.tokenCount === 0) {
           this.cacheWalletNfts()
@@ -103,6 +127,9 @@ export default {
     }
   },
   computed: {
+    loopRun () {
+      return null
+    },
     profile () {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       return profile
