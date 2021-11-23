@@ -15,10 +15,10 @@
       <div class="text-center">
         <div><b-link class="text-white top-content" to="/about"><img height="30px" :src="wtf" alt="about link"/></b-link></div>
         <div v-if="profile.loggedIn" class="border-bottom py-5 mt-5 my-4 text-white text-center">
-          <div>
+          <div v-if="profile.username !== profile.stxAddress">
             <span class="mr-3 stx-username">{{profile.username}}</span>
           </div>
-          <div class="text-small mt-0" v-if="profile.username !== profile.stxAddress">
+          <div class="text-small mt-0">
             <span class="text-warning">{{profile.stxAddress}}</span>
           </div>
           <div v-if="profile.accountInfo" class="text-small">
