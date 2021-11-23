@@ -4,11 +4,12 @@
     <!-- <header-screen :allowEdit="false" :item="item"/> -->
     <div class="text-danger" v-html="errorMessage"></div>
     <EditEditions v-if="allowEditEditions" :item="item"/>
-    <Beneficiaries :hidePrimaries="hidePrimaries" :beneficiaries="beneficiaries" v-on="$listeners"/>
+    <!-- <Beneficiaries :hidePrimaries="hidePrimaries" :beneficiaries="beneficiaries" v-on="$listeners"/> -->
+    <ListBeneficiaries :loopRun="loopRun" :item="item" />
     <template v-slot:footer>
       <div class="d-flex justify-content-between">
         <b-button @click="saveData()" class="rounded w-50 mr-2" variant="outline-light">Cancel</b-button>
-        <b-button @click="sendMintEvent()" v-if="allowMint()"  class="w-50 ml-2" variant="warning"><span v-if="mintButtonText">{{mintButtonText}}</span><span v-else>Mint Now</span></b-button>
+        <b-button @click="sendMintEvent()" class="w-50 ml-2" variant="warning"><span v-if="mintButtonText">{{mintButtonText}}</span><span v-else>Mint Now</span></b-button>
       </div>
     </template>
   </b-card>
@@ -17,16 +18,17 @@
 
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
-import Beneficiaries from './Beneficiaries'
+// import Beneficiaries from './Beneficiaries'
 import EditEditions from './EditEditions'
+import ListBeneficiaries from '@/views/marketplace/components/toolkit/ListBeneficiaries'
 
 export default {
   name: 'RoyaltyScreen',
   components: {
     EditEditions,
-    Beneficiaries
+    ListBeneficiaries
   },
-  props: ['item', 'beneficiaries', 'errorMessage', 'hidePrimaries', 'mintButtonText'],
+  props: ['loopRun', 'item', 'errorMessage', 'hidePrimaries', 'mintButtonText'],
   data () {
     return {
       allowEditEditions: false, // process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
@@ -43,6 +45,7 @@ export default {
       else if (displayCard === 102) return 1
       else if (displayCard === 104) return 2
     },
+    /**
     allowMint () {
       let sum = 0
       this.beneficiaries.forEach((o) => {
@@ -51,6 +54,7 @@ export default {
       sum = Math.round(sum * 100) / 100
       return sum === 100.00
     },
+    **/
     saveData: function () {
       window.eventBus.$emit('rpayEvent', { opcode: 'cancel-minting' })
     },

@@ -1,7 +1,7 @@
 <template>
 <div v-if="events">
   <h6 class="text-white">NFT History</h6>
-  <b-row>
+  <b-row class="text-xsmall">
     <b-col md="12" sm="12">
       <b-table striped hover :items="values()" :fields="fields()" class="bg-light text-dark">
         <template #cell(status)="data">
@@ -248,6 +248,8 @@ export default {
         return 'Opening Bid'
       } else if (functionName === 'place-bid') {
         return 'Bid Placed'
+      } else if (functionName === 'set-approved') {
+        return 'Approvals'
       }
       return functionName.replaceAll('-', ' ')
     },

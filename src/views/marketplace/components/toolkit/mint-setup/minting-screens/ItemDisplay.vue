@@ -1,5 +1,5 @@
 <template>
-<b-card-text class="mt-2">
+<b-card-text class="mt-2 text-small">
   <b-row>
     <b-col cols="12"><img @contextmenu="handler($event)" style="" width="100%" :src="getCollectionImageUrl(loopRun)"/></b-col>
     <b-col cols="12">

@@ -5,15 +5,15 @@
       <h1 class="border-bottom mb-5">My NFTs</h1>
       <CollectionSidebar :allowUploads="true" @update="update"/>
     </b-col>
-    <b-col md="9" sm="12" v-if="showUploads">
-      <h1 class="mb-4 border-bottom">Uploads</h1>
-      <b-row>
-        <b-col v-for="(gaiaAsset, index) in gaiaAssets" :key="index" lg="3" md="6" sm="6" xs="12">
-          <MySingleNft class="mb-2" :item="gaiaAsset"/>
-        </b-col>
-      </b-row>
-    </b-col>
-    <b-col md="8" sm="12" v-else :key="componentKey">
+    <b-col md="9" sm="12" >
+      <div v-if="showUploads">
+        <h1 class="mb-4 border-bottom">Uploads</h1>
+        <b-row>
+          <b-col v-for="(gaiaAsset, index) in gaiaAssets" :key="index" lg="3" md="6" sm="6" xs="12">
+            <MySingleNft class="mb-2" :item="gaiaAsset"/>
+          </b-col>
+        </b-row>
+      </div>
       <div v-if="showWalletNfts">
         <MyWalletNfts/>
       </div>
@@ -23,18 +23,20 @@
       <div v-if="loopRun && loopRun.type === 'punks' && loopRun.status === 'unrevealed'">
         <p><b-link :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.currentRun}} artwork available - mint here!</b-link></p>
       </div>
-      <h1 class="pointer mb-4 border-bottom" @click="showPending = !showPending"><b-icon font-scale="0.6" v-if="showPending" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> My Transactions</h1>
-      <b-row class="mb-4" v-if="showPending && loopRun">
-        <div class="w-100 d-flex justify-content-end">
-          <span @click="myTxFilter = 'pending'" class="pointer mr-3 text-light" :style="(myTxFilter === 'pending') ? 'text-decoration: underline' : ''">pending</span>
-          <span @click="myTxFilter = 'success'" class="pointer mr-3 text-light" :style="(myTxFilter === 'success') ? 'text-decoration: underline' : ''">success</span>
-          <span @click="myTxFilter = 'failed'" class="pointer mr-3 text-light" :style="(myTxFilter === 'failed') ? 'text-decoration: underline' : ''">failed</span>
-          <span @click="myTxFilter = 'all'" class="pointer mr-5 text-light" :style="(myTxFilter === 'all') ? 'text-decoration: underline' : ''">all</span>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" v-for="(allocation, index) of filteredAllocations()" :key="index">
-          <MySingleAllocation :myTxFilter="myTxFilter" :parent="'list-view'" :loopRun="loopRun" :allocation="allocation" :key="componentKey"/>
-        </div>
-      </b-row>
+      <div>
+        <h1 class="pointer mb-4 border-bottom" @click="showPending = !showPending"><b-icon font-scale="0.6" v-if="showPending" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> My Transactions</h1>
+        <b-row class="mb-4" v-if="showPending && loopRun">
+          <div class="w-100 d-flex justify-content-end">
+            <span @click="myTxFilter = 'pending'" class="pointer mr-3 text-light" :style="(myTxFilter === 'pending') ? 'text-decoration: underline' : ''">pending</span>
+            <span @click="myTxFilter = 'success'" class="pointer mr-3 text-light" :style="(myTxFilter === 'success') ? 'text-decoration: underline' : ''">success</span>
+            <span @click="myTxFilter = 'failed'" class="pointer mr-3 text-light" :style="(myTxFilter === 'failed') ? 'text-decoration: underline' : ''">failed</span>
+            <span @click="myTxFilter = 'all'" class="pointer mr-5 text-light" :style="(myTxFilter === 'all') ? 'text-decoration: underline' : ''">all</span>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" v-for="(allocation, index) of filteredAllocations()" :key="index">
+            <MySingleAllocation :myTxFilter="myTxFilter" :parent="'list-view'" :loopRun="loopRun" :allocation="allocation" :key="componentKey"/>
+          </div>
+        </b-row>
+      </div>
     </b-col>
   </b-row>
 </b-container>
@@ -60,6 +62,7 @@ export default {
   data () {
     return {
       componentKey: 0,
+      approved: false,
       loopRun: null,
       myTxFilter: 'pending',
       loading: true,
@@ -112,10 +115,10 @@ export default {
     },
     update (data) {
       this.showWalletNfts = false
+      this.showUploads = false
       if (data.opcode === 'show-uploads') {
         this.showUploads = true
       } else if (data.opcode === 'show-collection') {
-        this.showUploads = false
         if (data.loopRun.currentRunKey !== this.$route.params.collection) {
           if (this.$route.path !== '/my-nfts/' + data.loopRun.currentRunKey) this.$router.push('/my-nfts/' + data.loopRun.currentRunKey)
         }

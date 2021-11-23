@@ -55,9 +55,9 @@ export default {
   methods: {
     chainAddress: function () {
       if (this.contractAsset) {
-        // return this.contractAsset.beneficiaries.addresses[this.index].substring(0, 5) + '...' + this.contractAsset.beneficiaries.addresses[this.index].substring(this.contractAsset.beneficiaries.addresses[this.index].length - 5)
+        return this.contractAsset.beneficiaries.addresses[this.index].substring(0, 5) + '...' + this.contractAsset.beneficiaries.addresses[this.index].substring(this.contractAsset.beneficiaries.addresses[this.index].length - 5)
       }
-      // if (this.beneficiary.username) return this.beneficiary.username
+      if (this.beneficiary.username) return this.beneficiary.username
       return this.beneficiary.chainAddress.substring(0, 5) + '...' + this.beneficiary.chainAddress.substring(this.beneficiary.chainAddress.length - 5)
     },
     displayPrimary: function () {
@@ -90,6 +90,10 @@ export default {
     }
   },
   computed: {
+    application () {
+      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](this.loopRun.contractId)
+      return application
+    },
     profile () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       return profile

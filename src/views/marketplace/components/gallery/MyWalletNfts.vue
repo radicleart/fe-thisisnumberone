@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading">
     <div class="border-bottom mb-4 mt-5 d-flex justify-content-between">
-      <h1 class="pointer" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> {{tokenCount}} Wallet NFTs</h1>
+      <h1 class="pointer" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> NFT Balance ({{tokenCount}})</h1>
       <div class="d-flex justify-content-between">
         <SearchBar class="w-50" :displayClass="'text-small text-end'" @updateResults="updateResults" :mode="'wallet'"/>
         <span class="text-warning pointer" @click.prevent="cacheWalletNfts" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Refresh your NFT wallet information'"><b-icon icon="arrow-clockwise" font-scale="1"/></span>

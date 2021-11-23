@@ -2,7 +2,7 @@
   <div>
     <div class="mb-4" :key="componentKey">
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
-      <div id="my-table" class="row mx-auto" v-if="resultSet && resultSet.length > 0">
+      <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
         <div class="text-white col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
           <MySingleItem v-if="!skipme(asset)" :loopRun="loopRun" :parent="'list-view'" :asset="asset"/>
         </div>
@@ -18,6 +18,7 @@ import { APP_CONSTANTS } from '@/app-constants'
 
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
+const STX_CONTRACT_NAME_V2 = process.env.VUE_APP_STACKS_CONTRACT_NAME_V2
 
 export default {
   name: 'PageableItems',
@@ -74,11 +75,11 @@ export default {
       this.fetchPage(page - 1, false, this.defQuery)
     },
     isTheV2Contract () {
-      return this.loopRun && this.loopRun.contractId.indexOf(STX_CONTRACT_NAME) > -1
+      return this.loopRun && this.loopRun.contractId.indexOf(STX_CONTRACT_NAME_V2) > -1
     },
     fetchPage (page, reset, query) {
       let queryStr = '?'
-      if (this.loopRun.currentRunKey === 'my_first_word') {
+      if (this.loopRun && this.loopRun.currentRunKey === 'my_first_word') {
         queryStr += 'sortDir=sortUp&'
       } else {
         queryStr += 'sortDir=' + query.sortDir + '&'

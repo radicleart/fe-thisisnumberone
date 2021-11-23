@@ -18,7 +18,7 @@
       </div>
     </div>
   </div>
-  <div class="" v-else-if="parent === 'minting'">
+  <div class="text-small" v-else-if="parent === 'minting'">
       <div v-if="limitReached">
         <span class="text-danger" router-tag="span" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Each run has unique elements that increase in scarcity with the expansion of each new version!'">
           Sorry, all minted for this run. Visit the <b-link class="text-info" to="/nft-marketplace">Marketplace</b-link>
@@ -26,10 +26,10 @@
       </div>
       <div v-else>
         <div>
-          Collection: <a class="text-warning" :href="origin + '/nft-marketplace/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey" target="_blank">{{loopRun.currentRun}}</a>
+          <a class="text-warning" :href="origin + '/nft-marketplace/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey" target="_blank">{{loopRun.currentRun}}</a>
         </div>
         <div>
-          Minting Fee: {{mintPrice}} STX
+          Minting: {{mintPrice}} STX
         </div>
       </div>
   </div>

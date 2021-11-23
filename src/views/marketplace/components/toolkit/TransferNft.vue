@@ -53,6 +53,7 @@ export default {
         contractAddress: this.loopRun.contractId.split('.')[0],
         contractName: this.loopRun.contractId.split('.')[1],
         nftIndex: contractAsset.nftIndex,
+        sendAsSky: true,
         owner: contractAsset.owner,
         recipient: this.toAddress
       }

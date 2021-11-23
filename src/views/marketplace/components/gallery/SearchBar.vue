@@ -138,7 +138,7 @@ export default {
     },
     toggleSearching (asset) {
       if (this.mode.indexOf('wallet') > -1) {
-        this.$emit('updateResults', { opcode: 'update-results', query: asset })
+        this.$emit('updateResults', { opcode: 'update-results', query: 'query=' + asset })
       } else {
         this.query.allCollections = 'one'
         if (this.mode === 'search') {

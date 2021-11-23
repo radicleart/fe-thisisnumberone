@@ -34,8 +34,7 @@ const marketConfig = {
   searchMenu: false,
   sideMenu: false
 }
-/**
-const beneficiariesDefault = [
+const beneficiariesV2 = [
   {
     username: 'jim',
     role: 'Jim',
@@ -65,7 +64,6 @@ const beneficiariesDefault = [
     chainAddress: 'SP3N4AJFZZYC4BK99H53XP8KDGXFGQ2PRSQP2HGT6'
   }
 ]
-**/
 const beneficiariesDefault = [
   {
     type: 'sale',
@@ -139,6 +137,46 @@ const beneficiariesDefault = [
     chainAddress: 'ST2H1GA0VFR6CBA9VSCCY94RQP17KHVBQ9PKJG3N0'
   }
 ]
+/**
+const beneficiariesV2 = [
+  {
+    type: 'sale',
+    username: 'artist',
+    role: 'Artist',
+    email: 'info@thisisnumberone.com',
+    royalty: 25,
+    secondaryRoyalty: 25,
+    chainAddress: 'SPZRAE52H2NC2MDBEV8W99RFVPK8Q9BW8H88XV9N'
+  },
+  {
+    type: 'sale',
+    username: 'Platform.id',
+    role: 'Platform',
+    email: 'info@brightblock.org',
+    royalty: 25,
+    secondaryRoyalty: 25,
+    chainAddress: 'SP162D87CY84QVVCMJKNKGHC7GGXFGA0TAR9D0XJW'
+  },
+  {
+    type: 'sale',
+    username: 'Platform.id',
+    role: 'Platform',
+    email: 'info@brightblock.org',
+    royalty: 25,
+    secondaryRoyalty: 25,
+    chainAddress: 'SP1CS4FVXC59S65C3X1J3XRNZGWTG212JT7CG73AG'
+  },
+  {
+    type: 'sale',
+    username: 'Platform.id',
+    role: 'Platform',
+    email: 'info@brightblock.org',
+    royalty: 25,
+    secondaryRoyalty: 25,
+    chainAddress: 'SP4DYYK99BZS7S95KYYEJAJE5VJ21F57M4NS0Q5F'
+  }
+]
+**/
 const beneficiariesMint = [
   {
     type: 'mint',
@@ -217,7 +255,8 @@ const minter = {
   ],
   enableRoyalties: true,
   beneficiaries: beneficiariesDefault,
-  beneficiariesMint: beneficiariesMint
+  beneficiariesMint: beneficiariesMint,
+  beneficiariesV2: beneficiariesV2
 }
 
 const lookAndFeel = {

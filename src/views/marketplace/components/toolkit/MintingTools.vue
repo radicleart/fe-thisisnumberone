@@ -38,6 +38,9 @@
         <b-tab title="Transfer">
           <TransferNft :loopRun="loopRun" :item="items[0]"/>
         </b-tab>
+        <b-tab title="Operator">
+          <ApprovalFlow :loopRun="loopRun" :item="items[0]"/>
+        </b-tab>
         <b-tab title="Next" v-if="profile.superAdmin && contractNameNext">
           <b-button @click="startMinting()" :theme="'light'" :label1="'MINT ITEM'" :icon="'eye'"/>
         </b-tab>
@@ -54,7 +57,8 @@
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="md" id="minting-modal">
-    <MintingFlow v-if="loopRun" :loopRun="loopRun" :items="items" :mintAllocations="mintAllocations" v-on="$listeners"/>
+    <MintingFlowV2 v-if="isTheV2Contract()" :loopRun="loopRun" :items="items" v-on="$listeners"/>
+    <MintingFlow v-else-if="loopRun" :loopRun="loopRun" :items="items" :mintAllocations="mintAllocations" v-on="$listeners"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal size="lg" id="selling-modal">
@@ -66,33 +70,38 @@
 
 <script>
 import MintingFlow from './mint-setup/MintingFlow'
+import MintingFlowV2 from './mint-setup/MintingFlowV2'
 import SellingFlow from './sell-setup/SellingFlow'
 import { APP_CONSTANTS } from '@/app-constants'
 import AcceptOffer from '@/views/marketplace/components/toolkit/AcceptOffer'
 // import ManageEditions from '@/views/marketplace/components/toolkit/editions/ManageEditions'
 import TransferNft from '@/views/marketplace/components/toolkit/TransferNft'
+import ApprovalFlow from '@/views/marketplace/components/toolkit/approvals/ApprovalFlow'
 import ListBeneficiaries from '@/views/marketplace/components/toolkit/ListBeneficiaries'
 // import OfferHistory from '@/views/marketplace/components/toolkit/offers/OfferHistory'
 // import BidHistory from '@/views/marketplace/components/toolkit/bids/BidHistory'
 
-// const RisidioPay = () => import('risidio-pay')
+const STX_CONTRACT_NAME_V2 = process.env.VUE_APP_STACKS_CONTRACT_NAME_V2
 
 export default {
   name: 'MintingTools',
   components: {
     MintingFlow,
+    MintingFlowV2,
     SellingFlow,
     // OfferHistory,
     // BidHistory,
     // RisidioPay,
     AcceptOffer,
     TransferNft,
+    ApprovalFlow,
     ListBeneficiaries
     // ManageEditions
   },
   props: ['items', 'loopRun', 'mintAllocations'],
   data: function () {
     return {
+      showApprovals: false,
       allowEditEditions: process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
       contractNameNext: process.env.VUE_APP_STACKS_CONTRACT_NAME_NEXT,
       showRpay: false,
@@ -113,6 +122,9 @@ export default {
     }
   },
   methods: {
+    isTheV2Contract () {
+      return this.loopRun && this.loopRun.contractId.indexOf(STX_CONTRACT_NAME_V2) > -1
+    },
     cancel: function () {
       this.$bvModal.hide('selling-modal')
       this.$bvModal.hide('minting-modal')

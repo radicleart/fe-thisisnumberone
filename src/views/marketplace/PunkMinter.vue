@@ -6,7 +6,7 @@
         <h1 class="border-bottom mb-5">{{loopRun.currentRun}}</h1>
         <CollectionSidebar :allowUploads="false" @update="update"/>
       </b-col>
-      <b-col md="9" sm="12">
+      <b-col :key="componentKey" md="9" sm="12">
         <h1 class="mb-5 border-bottom">{{loopRun.currentRun}} by: <span class="text-warning">{{loopRun.makerName}}</span></h1>
         <!-- <PunkTracker @updateAllocation="updateAllocation" :items="items" :loopRun="loopRun" :mintAllocations="mintAllocations"/> -->
         <b-row class="mt-5">
@@ -32,8 +32,8 @@
                   <a class="mr-2" :href="transactionUrl()" target="_blank"><b-icon class="text-warning" font-scale="1.2" icon="arrow-up-right-circle"/> view on explorer</a>
                 </div>
                 <div class="mt-2" v-else>
-                  <div v-if="mintingStatus() === 1">
-                    <div v-if="mintingOk()">
+                  <div v-if="mintingStatus === 1">
+                    <div v-if="mintingOk">
                       <b-row class="">
                         <b-col cols="6" class="px-0 pr-1 pl-4 mx-0">
                           <b-form-select style="text-align: center; font-size: 2rem; font-weight: 700; height: 4rem;" v-if="loopRun.batchSize > 1" id="batchOption" v-model="batchOption" :options="batchOptions()"></b-form-select>
@@ -49,10 +49,10 @@
                       </div>
                     </div>
                   </div>
-                  <div v-else-if="mintingStatus() === 2">
+                  <div v-else-if="mintingStatus === 2">
                     Public minting is paused
                   </div>
-                  <div v-else-if="mintingStatus() === 5">
+                  <div v-else-if="mintingStatus === 5">
                     Mint pass all used up!
                   </div>
                   <div v-else>
@@ -109,9 +109,12 @@ export default {
     return {
       hashone: require('@/assets/img/phase2/No1_outline.png'),
       waitingImage: 'https://images.prismic.io/radsoc/f60d92d0-f733-46e2-9cb7-c59e33a15fc1_download.jpeg?auto=compress,format',
+      componentKey: 0,
       loaded: false,
       batchOption: 1,
+      mintingStatus: 3,
       result: null,
+      loopRun: null,
       items: [],
       uiState: 'locking',
       mintAllocations: [],
@@ -128,6 +131,7 @@ export default {
     this.makerUrlKey = this.$route.params.maker
     this.currentRunKey = this.$route.params.collection
     this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.currentRunKey).then((loopRun) => {
+      this.loopRun = loopRun
       const data = {
         stxAddress: this.profile.stxAddress,
         contractId: loopRun.contractId,
@@ -136,6 +140,7 @@ export default {
       this.$store.dispatch('rpayCategoryStore/checkGuestList', data).then((result) => {
         this.mintImage = loopRun.mintImage1 || loopRun.image
         this.allowed = result
+        this.setMintingStatus()
       })
     })
     if (window.eventBus && window.eventBus.$on) {
@@ -145,13 +150,19 @@ export default {
           $self.$bvModal.hide('minting-modal')
         } else if (data.opcode === 'stx-transaction-sent') {
           $self.$bvModal.hide('minting-modal')
-          $self.walletTx = data
           if (data.txStatus === 'success') {
-            $self.mintImage = $self.loopRun.mintImage3 || $self.loopRun.image
-            $self.result = ' status: ' + data.txStatus
-            $self.$bvModal.hide('result-modal')
+            $self.walletTx = false
+            $self.$store.dispatch('rpayCategoryStore/fetchLoopRun', $self.currentRunKey).then((loopRun) => {
+              $self.loopRun = loopRun
+              $self.setMintingStatus()
+              $self.componentKey++
+              $self.mintImage = $self.loopRun.mintImage3 || $self.loopRun.image
+              $self.result = ' status: ' + data.txStatus
+              $self.$bvModal.hide('result-modal')
+            })
             // $self.$notify({ type: 'success', title: 'Tx Sent', text: 'Punks minted and meta data saved to Gaia!' })
           } else if (data.txStatus === 'pending') {
+            $self.walletTx = data
             $self.result = ' status: ' + data.txStatus
             $self.mintImage = $self.loopRun.mintImage2 || $self.loopRun.image
             // const vals = { stxAddress: $self.profile.stxAddress, currentRunKey: $self.loopRun.currentRunKey }
@@ -182,6 +193,17 @@ export default {
     preserveWhiteSpace: function (content) {
       return '<span class="text-description" style="white-space: break-spaces;">DESCRIPTION: ' + content + '</span>'
     },
+    setMintingStatus () {
+      if (this.loopRun.status !== 'active' && this.loopRun.status !== 'unrevealed' && this.credits > 0) {
+        this.mintingStatus = 2
+      } else if (this.allowed && this.credits > 0) {
+        this.mintingStatus = 1
+      } else if (this.credits <= 0) {
+        this.mintingStatus = 5
+      } else {
+        this.mintingStatus = 3
+      }
+    },
     mintingOk () {
       return this.mempool && this.mempool.total < this.mempoolSettings.threshold3
     },
@@ -198,17 +220,6 @@ export default {
         options.push(i)
       }
       return options
-    },
-    mintingStatus () {
-      if (this.loopRun.status !== 'active' && this.loopRun.status !== 'unrevealed' && this.credits > 0) {
-        return 2
-      } else if (this.allowed && this.credits > 0) {
-        return 1
-      } else if (this.credits <= 0) {
-        return 5
-      } else {
-        return 3
-      }
     },
     startMinting: function () {
       this.$store.dispatch('rpayCategoryStore/registerSpin', this.profile)
@@ -247,10 +258,6 @@ export default {
     mempoolSettings () {
       const mempoolSettings = this.$store.getters[APP_CONSTANTS.KEY_MEMPOOL_SETTINGS]
       return mempoolSettings || {}
-    },
-    loopRun () {
-      const loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.$route.params.collection)
-      return loopRun
     },
     profile () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
