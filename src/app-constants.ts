@@ -15,6 +15,7 @@ export const APP_CONSTANTS = {
 
   KEY_CATEGORIES: 'rpayCategoryStore/getCategories',
   GET_LOOP_RUN: 'rpayCategoryStore/getLoopRun',
+  GET_ADMIN_LOOP_RUNS: 'rpayCategoryStore/getAdminLoopRuns',
   GET_LOOP_RUNS: 'rpayCategoryStore/getLoopRuns',
   GET_LOOP_RUNS_BY_STATUS: 'rpayCategoryStore/getLoopRunsByStatus',
   KEY_MEDIA_ATTRIBUTES: 'rpayCategoryStore/getMediaAttributes',

@@ -438,7 +438,7 @@ export default {
     },
     domainsState () {
       if (!this.formSubmitted && !this.loopRun.domains) return null
-      return (this.loopRun.domains.includes(window.location.hostname))
+      return (this.loopRun.domains.length > 0)
     }
   }
 }
