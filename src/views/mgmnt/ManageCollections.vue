@@ -123,7 +123,7 @@ export default {
   },
   computed: {
     loopRuns () {
-      const loopRuns = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUNS]
+      const loopRuns = this.$store.getters[APP_CONSTANTS.GET_ADMIN_LOOP_RUNS]
       return loopRuns
     }
   }

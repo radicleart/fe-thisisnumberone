@@ -23,6 +23,22 @@
     </div>
 
     <div class="mb-3" role="group">
+      <label for="domains"><span class="text-danger">*</span>Domains</label>
+      <b-form-input
+        id="domains"
+        v-model="loopRun.domains"
+        :state="domainsState"
+        aria-describedby="domains-help domains-feedback"
+        trim
+        required
+      ></b-form-input>
+      <b-form-text id="domains-help">Comma separated list of domains where this collection can be managed/shown.</b-form-text>
+      <b-form-invalid-feedback id="domains-feedback">
+        The domains must include {{defaultDomain}}
+      </b-form-invalid-feedback>
+    </div>
+
+    <div class="mb-3" role="group">
       <label for="currentRun-name"><span class="text-danger">*</span> Collection Name (max 40 chars)</label>
       <b-form-input
         maxlength="40"
@@ -275,6 +291,7 @@ export default {
       typeEnum: [{ text: 'Traditional', value: 'traditional' }, { text: 'Crypto Punks', value: 'punks' }],
       batchSizeEnum: [1, 5, 10, 15, 20],
       loaded: false,
+      defaultDomain: location.hostname,
       loopRun: {
         status: 'active',
         contractId: null,
@@ -292,7 +309,8 @@ export default {
         spinsPerDay: 0,
         currentRunKey: null,
         currentRun: null,
-        versionLimit: 100
+        versionLimit: 100,
+        domains: location.hostname
       }
     }
   },
@@ -417,6 +435,10 @@ export default {
     currentRunState () {
       if (!this.formSubmitted && !this.loopRun.currentRun) return null
       return (this.loopRun.currentRun && this.loopRun.currentRun.length > 0)
+    },
+    domainsState () {
+      if (!this.formSubmitted && !this.loopRun.domains) return null
+      return (this.loopRun.domains.length > 0)
     }
   }
 }
