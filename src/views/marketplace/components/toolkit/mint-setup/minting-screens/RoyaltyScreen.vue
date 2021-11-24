@@ -31,7 +31,7 @@ export default {
   props: ['loopRun', 'item', 'errorMessage', 'hidePrimaries', 'mintButtonText'],
   data () {
     return {
-      allowEditEditions: false, // process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
+      allowEditEditions: true, // process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
       mintedMessage: null
     }
   },

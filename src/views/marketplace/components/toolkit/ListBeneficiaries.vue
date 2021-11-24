@@ -43,7 +43,7 @@ export default {
     }
   },
   mounted () {
-    let currentRunKey = (this.item) ? this.item.currentRunKey : null
+    let currentRunKey = (this.item) ? this.item.attributes.collection : null
     if (!currentRunKey) {
       currentRunKey = this.loopRun.currentRunKey
     }

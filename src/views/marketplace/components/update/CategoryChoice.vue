@@ -4,7 +4,7 @@
     <div class="mb-3" :key="componentKey">
       <label for="categories">Main category :</label>
       <br/>
-      <b-badge id="categories" @click="setCategory(kw)" class="pointer mr-3 mb-3 py-2 pt-3 px-5" v-for="(kw, index) in categories" :key="index" pill :variant="(item.category && item.category.name === kw.name) ? 'secondary' : 'warning'">{{kw.displayName}}</b-badge>
+      <b-badge id="categories" @click="setCategory(kw)" class="pointer mr-3 mb-3 py-2 pt-3 px-5" v-for="(kw, index) in categories" :key="index" pill :variant="(item.attributes.category && item.attributes.category.name === kw.name) ? 'secondary' : 'warning'">{{kw.displayName}}</b-badge>
     </div>
     <label for="item-keywords">Keywords (comma separated) :</label>
     <b-form-input
@@ -38,35 +38,36 @@ export default {
   watch: {
   },
   mounted () {
+    this.keywords = this.item.attributes.keywords
     this.$store.dispatch('publicItemsStore/fetchKeywords').then((keywords) => {
       this.systemKeywords = keywords
     })
   },
   methods: {
     isCategory: function (category) {
-      return (this.item.category && this.item.category.name === category.name)
+      return (this.item.attributes.category && this.item.attributes.category.name === category.name)
     },
     setCategory: function (category) {
-      this.item.category = category
+      this.item.attributes.category = category
       this.componentKey++
     },
     changeKeywords: function () {
       if (!this.keywords) {
         this.keywords = ''
       }
-      this.item.keywords = []
+      this.item.attributes.keywords = []
       this.keywords.split(',').forEach(keyword => {
         keyword = keyword.trim()
         if (keyword && keyword.length > 1) {
-          this.item.keywords.push({ name: keyword.trim(), displayName: keyword.trim() })
+          this.item.attributes.keywords.push({ name: keyword.trim(), displayName: keyword.trim() })
         }
       })
     }
   },
   computed: {
     itemKeywordsState () {
-      if (!this.formSubmitted && !this.item.keywords) return null
-      return (this.item.keywords && this.item.keywords.length > 0)
+      if (!this.formSubmitted && !this.item.attributes.keywords) return null
+      return (this.item.attributes.keywords && this.item.attributes.keywords.length > 0)
     },
     categories () {
       const categories = this.$store.getters[APP_CONSTANTS.KEY_CATEGORIES]

@@ -7,7 +7,7 @@
     </b-col>
     <b-col md="9" sm="12" >
       <div v-if="showUploads">
-        <h1 class="mb-4 border-bottom">Uploads</h1>
+        <h1 class="mb-4 border-bottom">Uploads (<b-link to="/upload-item">new</b-link>)</h1>
         <b-row>
           <b-col v-for="(gaiaAsset, index) in gaiaAssets" :key="index" lg="3" md="6" sm="6" xs="12">
             <MySingleNft class="mb-2" :item="gaiaAsset"/>

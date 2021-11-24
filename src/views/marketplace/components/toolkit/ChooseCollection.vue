@@ -13,10 +13,15 @@ export default {
   name: 'ChooseCollection',
   components: {
   },
-  props: ['type'],
+  props: ['type', 'runKey'],
   data: function () {
     return {
       currentRunKey: null
+    }
+  },
+  mounted () {
+    if (this.runKey) {
+      this.currentRunKey = this.runKey
     }
   },
   methods: {

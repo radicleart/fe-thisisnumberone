@@ -151,7 +151,7 @@ export default {
       this.showWaitingModal = true
       this.$store.commit('setModalMessage', 'Uploading files - can take a while.. <a target="_blank" href="https://radiclesociety.medium.com/radicle-peer-to-peer-marketplaces-whats-the-deal-767960da195b">read why</a>')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
-      this.item.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
+      this.item.attributes.collection = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
       this.item.projectId = this.loopRun.contractId
       this.$store.dispatch('rpayMyItemStore/saveItem', { item: this.item, artworkFile: this.item.attributes.artworkFile[0], coverImage: this.item.attributes.coverImage[0] }).then(() => {
         this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
@@ -172,7 +172,7 @@ export default {
     },
     runKey () {
       const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
-      let runKey = (this.item && this.item.currentRunKey) ? this.item.currentRunKey : defaultLoopRun
+      let runKey = (this.item && this.item.attributes.collection) ? this.item.attributes.collection : defaultLoopRun
       if (runKey.indexOf('/') > -1) {
         runKey = runKey.split('/')[0]
       }

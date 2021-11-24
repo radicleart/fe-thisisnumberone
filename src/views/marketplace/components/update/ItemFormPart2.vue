@@ -35,7 +35,7 @@
 
 <script>
 export default {
-  name: 'ItemFormPart1',
+  name: 'ItemFormPart2',
   props: ['upload', 'item', 'formSubmitted'],
   data: function () {
     return {

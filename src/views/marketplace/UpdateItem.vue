@@ -9,7 +9,7 @@
           <div class="mr-1" v-for="(field, index) in invalidItems" :key="index">{{field}}</div>
         </div>
         <div>
-          <ChooseCollection :type="'traditional'" @updateCollection="updateCollection"/>
+          <ChooseCollection :type="'traditional'" :runKey="runKey" @updateCollection="updateCollection"/>
         </div>
         <div>
           <ItemFormPart1 v-if="uploadState > 2" @upload-state="updateUploadState" :item="item" :upload="true" :formSubmitted="formSubmitted"/>
@@ -102,7 +102,10 @@ export default {
         return
       }
       this.item = item
-      this.loaded = true
+      this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.runKey).then((loopRun) => {
+        this.loopRun = loopRun
+        this.loaded = true
+      })
     })
   },
   methods: {
@@ -131,7 +134,6 @@ export default {
       })
     },
     updateUploadState: function (data) {
-      this.item.projectId = this.loopRun.contractId
       this.$store.dispatch('rpayMyItemStore/saveItem', this.item).then(() => {
         this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
         if (data.change === 'done') {
@@ -200,9 +202,9 @@ export default {
       this.$root.$emit('bv::show::modal', 'waiting-modal')
       this.item.projectId = this.loopRun.contractId
       if (this.overrideLoopRun) {
-        this.item.currentRunKey = this.overrideLoopRun.currentRunKey + '/' + this.overrideLoopRun.makerUrlKey
+        this.item.attributes.collection = this.overrideLoopRun.currentRunKey + '/' + this.overrideLoopRun.makerUrlKey
       } else {
-        this.item.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
+        this.item.attributes.collection = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
       }
       this.$store.dispatch('rpayMyItemStore/saveItem', this.item).then(() => {
         this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
@@ -219,7 +221,7 @@ export default {
   computed: {
     runKey () {
       const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
-      let runKey = (this.item && this.item.currentRunKey) ? this.item.currentRunKey : defaultLoopRun
+      let runKey = (this.item && this.item.attributes.collection) ? this.item.attributes.collection : defaultLoopRun
       if (runKey.indexOf('/') > -1) {
         runKey = runKey.split('/')[0]
       }

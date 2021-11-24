@@ -68,26 +68,26 @@ export default {
       }
     },
     openAllocations (data) {
-      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.currentRunKey)
+      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.attributes.collection)
       if (index > -1) {
         this.$router.push('/mgmnt/manage-allocation/' + this.loopRuns[index].currentRunKey)
       }
     },
     updateRoyalties (data) {
-      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.currentRunKey)
+      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.attributes.collection)
       if (index > -1) {
         this.$router.push('/mgmnt/manage-royalties/' + this.loopRuns[index].currentRunKey)
       }
     },
     updateGuestList (data) {
-      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.currentRunKey)
+      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.attributes.collection)
       if (index > -1) {
         this.loopRun = this.loopRuns[index]
         this.$bvModal.show('guest-list-modal')
       }
     },
     updateRequest (data) {
-      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.currentRunKey)
+      const index = this.loopRuns.findIndex((o) => o.currentRunKey === data.item.attributes.collection)
       if (index > -1) {
         this.$router.push('/mgmnt/manage-collections/' + this.loopRuns[index].currentRunKey)
       }

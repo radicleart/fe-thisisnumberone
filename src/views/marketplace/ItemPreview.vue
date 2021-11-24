@@ -56,6 +56,7 @@ export default {
   data: function () {
     return {
       showHash: false,
+      contractId: null,
       componentKey: 0,
       nftIndex: null,
       notCount: 0,
@@ -67,6 +68,7 @@ export default {
   },
   mounted () {
     this.loading = false
+    this.contractId = this.$route.params.contractId
     this.state = this.$route.query.state
     this.fetchItem()
     if (window.eventBus && window.eventBus.$on) {
@@ -94,7 +96,7 @@ export default {
   methods: {
     fetchItem () {
       if (this.$route.name === 'nft-preview') {
-        const data = { contractId: this.$route.params.contractId, nftIndex: Number(this.$route.params.nftIndex) }
+        const data = { contractId: this.contractId, nftIndex: Number(this.$route.params.nftIndex) }
         this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then((item) => {
           this.item = item
         })
@@ -189,15 +191,15 @@ export default {
       return this.item.name
     },
     loopRun () {
-      let loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.runKey)
-      if (!loopRun) {
-        loopRun = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](process.env.VUE_APP_DEFAULT_LOOP_RUN)
+      const loopRuns = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUNS]
+      if (!loopRuns || !this.contractId) {
+        return this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.runKey)
       }
-      return loopRun
+      return loopRuns.find((o) => o.contractId === this.contractId && o.currentRunKey.indexOf(this.runKey > -1))
     },
     runKey () {
       const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
-      let runKey = (this.item && this.item.currentRunKey) ? this.item.currentRunKey : defaultLoopRun
+      let runKey = (this.item && this.item.attributes.collection) ? this.item.attributes.collection : defaultLoopRun
       if (runKey.indexOf('/') > -1) {
         runKey = runKey.split('/')[0]
       }

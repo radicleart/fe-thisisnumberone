@@ -48,6 +48,7 @@ export default {
   },
   methods: {
     canUpload () {
+      if (this.profile.exhibitRequest && this.profile.exhibitRequest.status === 2) return true
       const hasUploadPriv = this.$store.getters[APP_CONSTANTS.KEY_HAS_PRIVILEGE]('can-upload')
       return this.$route.name === 'my-nfts' && ((this.allowUploads && hasUploadPriv) || this.profile.superAdmin)
     },
