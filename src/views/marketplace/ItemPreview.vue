@@ -140,12 +140,16 @@ export default {
     },
     updateCacheByHash (data) {
       this.$store.dispatch('rpayStacksContractStore/updateCacheByHash', data).then((result) => {
-        if (result && typeof result.nftIndex !== 'undefined') this.nftIndex = result.nftIndex
-        data.nftIndex = result.nftIndex
-        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then(() => {
-          if (this.nftIndex && this.$route.name !== 'nft-preview') this.$router.push('/nft-preview/' + this.loopRun.contractId + '/' + result.nftIndex)
-          else this.fetchItem()
-        })
+        if (result && typeof result.nftIndex !== 'undefined') {
+          this.nftIndex = result.nftIndex
+          data.nftIndex = result.nftIndex
+          this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then(() => {
+            if (this.nftIndex && this.$route.name !== 'nft-preview') this.$router.push('/nft-preview/' + this.loopRun.contractId + '/' + result.nftIndex)
+            else this.fetchItem()
+          })
+        } else {
+          this.fetchItem()
+        }
       })
     },
     updateCacheByNftIndex (data) {

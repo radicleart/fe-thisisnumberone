@@ -20,12 +20,6 @@
       <h4 class="pointer" @click="showUploads()">all uploads</h4>
     </div>
   </div>
-  <div v-if="profile.superAdmin">
-    <h3 class="border-bottom mb-4">Operators</h3>
-    <div class="ml-5 my-3">
-      <h4 class="pointer" @click="showOperators()">open</h4>
-    </div>
-  </div>
 </div>
 </template>
 
@@ -68,9 +62,6 @@ export default {
     },
     showUploads () {
       this.$emit('update', { opcode: 'show-uploads' })
-    },
-    showOperators () {
-      this.$emit('update', { opcode: 'show-operators' })
     },
     projectId (project) {
       try {
