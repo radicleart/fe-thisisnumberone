@@ -5,7 +5,7 @@
       <img style="width:65%; padding-bottom:20px" src="https://images.prismic.io/dbid/2ad7e97c-417a-4c24-bfa1-91a2a0be391e_WTF2_1200.gif?auto=compress,format" />
       <div style="width:100%;" class="text-center">
         <p style="width:100%;" class="border-bottom">A CURATED GALLERY OF NFTS SECURED ON BITCOIN VIA STACKS.</p>
-        <p style="width:100%;">NEW SHIT COMING SOON. <span class="text-warning">CLICK HERE</span> TO GET WORD ON THE DROP.</p>
+        <p style="width:100%;">NEW SHIT COMING SOON. <a href="mailto:enquiries@thisisnumberone.com" class="text-warning" target="_blank">CLICK HERE</a> TO GET WORD ON THE DROP.</p>
       </div>
     </b-col>
   </b-row>

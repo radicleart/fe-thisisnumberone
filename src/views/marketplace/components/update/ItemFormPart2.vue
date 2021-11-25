@@ -5,7 +5,7 @@
     <b-form-input
       id="item-editions"
       type="number"
-      v-model="item.editions"
+      v-model="item.attributes.editions"
       :state="itemEditionsState"
       aria-describedby="item-editions-help item-editions-feedback"
       placeholder="Enter editions"
@@ -20,7 +20,7 @@
     <b-form-input
       id="item-edition-cost"
       type="number"
-      v-model="item.editionCost"
+      v-model="item.attributes.editionCost"
       :state="itemEditionCostState"
       aria-describedby="item-edition-cost-help item-edition-cost-feedback"
       placeholder="Cost to mint an edition"
@@ -45,12 +45,12 @@ export default {
   },
   computed: {
     itemEditionsState () {
-      if (!this.formSubmitted && !this.item.editions) return null
-      return (this.item.editions > 0 && this.item.editions < 101)
+      if (!this.formSubmitted && !this.item.attributes.editions) return null
+      return (this.item.attributes.editions > 0 && this.item.attributes.editions < 101)
     },
     itemEditionCostState () {
-      if (!this.formSubmitted && !this.item.editionCost) return null
-      return (parseInt(this.item.editionCost) >= 0)
+      if (!this.formSubmitted && !this.item.attributes.editionCost) return null
+      return (parseInt(this.item.attributes.editionCost) >= 0)
     }
   }
 }

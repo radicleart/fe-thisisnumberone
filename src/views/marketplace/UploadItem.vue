@@ -108,7 +108,9 @@ export default {
             myAsset.attributes.coverImage = data.media
           }
           myAsset.projectId = this.loopRun.contractId
-          myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
+          myAsset.attributes.collection = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
+          myAsset.attributes.editions = 10
+          myAsset.attributes.editionCost = 10
           this.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then(() => {
             this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
             this.$store.commit('setModalMessage', 'Saved NFT file.')
@@ -141,27 +143,6 @@ export default {
       else if (this.uploadState === 1) return 'Upload your music'
       else if (this.uploadState === 2) return 'Add cover art'
       else if (this.uploadState === 3) return 'Help people find it..'
-    },
-    uploadItem: function () {
-      if (this.item.editions) this.item.editions = parseInt(this.item.editions)
-      if (this.doValidate && !this.isValid()) {
-        this.$notify({ type: 'error', title: 'Upload Error', text: 'Please enter missing data' })
-        return
-      }
-      this.showWaitingModal = true
-      this.$store.commit('setModalMessage', 'Uploading files - can take a while.. <a target="_blank" href="https://radiclesociety.medium.com/radicle-peer-to-peer-marketplaces-whats-the-deal-767960da195b">read why</a>')
-      this.$root.$emit('bv::show::modal', 'waiting-modal')
-      this.item.attributes.collection = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
-      this.item.projectId = this.loopRun.contractId
-      this.$store.dispatch('rpayMyItemStore/saveItem', { item: this.item, artworkFile: this.item.attributes.artworkFile[0], coverImage: this.item.attributes.coverImage[0] }).then(() => {
-        this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
-        this.$root.$emit('bv::hide::modal', 'waiting-modal')
-        this.$root.$emit('bv::show::modal', 'success-modal')
-        this.$store.commit('setModalMessage', 'Uploading... once its saved you\'ll be able to mint this artowrk - registering your ownership on the blockchain. Once registered you\'ll be able to prove you own this artwork and be able to benefit not only from its sale but also from all secondary sales.')
-      }).catch((error) => {
-        this.$store.commit('setModalMessage', 'Error occurred processing transaction.')
-        this.result = error
-      })
     }
   },
   computed: {

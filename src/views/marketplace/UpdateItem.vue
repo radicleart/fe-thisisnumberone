@@ -157,7 +157,7 @@ export default {
         this.$store.dispatch('rpayMyItemStore/saveAttributesObject', { assetHash: this.assetHash, attributes: data.media }).then((attributes) => {
           const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
           myAsset.attributes[attributes.id] = attributes
-          myAsset.currentRunKey = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
+          myAsset.attributes.collection = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
           myAsset.projectId = this.loopRun.contractId
           $self.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((item) => {
             $self.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
@@ -191,7 +191,11 @@ export default {
     uploadItem: function () {
       this.showErrors = false
       const invalidItems = this.$store.getters[APP_CONSTANTS.KEY_ITEM_VALIDITY](this.item)
-      if (this.item.editions) this.item.editions = parseInt(this.item.editions)
+      if (this.item.attributes.editions) {
+        this.item.attributes.editions = parseInt(this.item.attributes.editions)
+      } else {
+        this.item.attributes.editions = 10
+      }
       if (this.doValidate && invalidItems.length > 0) {
         this.showErrors = true
         this.$notify({ type: 'error', title: 'Upload Error', text: 'Please enter missing data' })

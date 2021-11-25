@@ -39,8 +39,8 @@ export default {
 ;; (impl-trait .nft-trait.nft-trait)
 ;; (impl-trait .nft-tradable-trait.nft-tradable-trait)
 
-(impl-trait 'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait.nft-trait)
-(impl-trait 'params.administrator.nft-approvable-trait.nft-approvable-trait)
+(impl-trait 'params.nfttrait)
+(impl-trait 'params.approvabletrait)
 
 ;; contract variables
 (define-data-var administrator principal 'params.administrator)
@@ -1027,6 +1027,8 @@ export default {
     } else {
       throw new Error('unknown collection type.')
     }
+    this.source = this.source.replaceAll('params.nfttrait', process.env.VUE_APP_STACKS_NFT_TRAIT_ADDRESS) // utils.stringToHex(this.project.callBack))
+    this.source = this.source.replaceAll('params.approvabletrait', process.env.VUE_APP_STACKS_APPROVABLE_TRAIT_ADDRESS) // utils.stringToHex(this.project.callBack))
     this.source = this.source.replaceAll('params.collectionLimit', this.project.collectionLimit) // utils.stringToHex(this.project.callBack))
     this.source = this.source.replaceAll('params.callBack', '"' + this.project.callBack + '"') // utils.stringToHex(this.project.callBack))
   },
@@ -1107,18 +1109,31 @@ export default {
     },
     contractSourceDisplay () {
       const cleanTokenName = this.getCleanTokenName()
+
       let rep1 = '<span class="text-danger bg-white">' + this.project.owner + '</span>'
       let contractSourceDisplay = this.contractSource.replaceAll('params.administrator', rep1)
+
+      rep1 = '<span class="text-danger bg-white">' + process.env.VUE_APP_STACKS_NFT_TRAIT_ADDRESS + '</span>'
+      contractSourceDisplay = contractSourceDisplay.replaceAll('params.nfttrait', rep1)
+
+      rep1 = '<span class="text-danger bg-white">' + process.env.VUE_APP_STACKS_APPROVABLE_TRAIT_ADDRESS + '</span>'
+      contractSourceDisplay = contractSourceDisplay.replaceAll('params.approvabletrait', rep1)
+
       rep1 = '<span class="text-danger bg-white">' + cleanTokenName + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.tokenName', rep1)
+
       rep1 = '<span class="text-danger bg-white">' + cleanTokenName + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('loopbomb', rep1)
+
       rep1 = '<span class="text-danger bg-white">' + this.project.symbol + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.tokenSymbol', rep1)
+
       rep1 = '<span class="text-danger bg-white">' + this.project.mintPrice + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.mintPrice', rep1)
+
       rep1 = '<span class="text-danger bg-white">' + this.project.collectionLimit + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.collectionLimit', rep1)
+
       rep1 = '<span class="text-danger bg-white">' + this.project.platformAddress + '</span>'
       contractSourceDisplay = contractSourceDisplay.replaceAll('params.platformAddress', rep1)
       if (this.project.type === 'punks') {

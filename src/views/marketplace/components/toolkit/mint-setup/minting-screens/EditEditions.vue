@@ -20,7 +20,7 @@
         <b-form-input
           id="editions"
           size="sm"
-          v-model="item.editions"
+          v-model="item.attributes.editions"
           @blur="updateItem"
           :state="itemEditionsState"
           aria-describedby="editions-help editions-feedback"
@@ -37,7 +37,7 @@
           id="editionCost"
           size="sm"
           @blur="updateItem"
-          v-model="item.editionCost"
+          v-model="item.attributes.editionCost"
           :state="itemEditionCostState"
           aria-describedby="edition-cost-help editions-feedback"
           placeholder="Cost in STX"
@@ -72,25 +72,25 @@ export default {
       if (!this.item.attributes.buyNowPrice || this.item.attributes.buyNowPrice < 1) {
         this.item.attributes.buyNowPrice = 0
       }
-      if (!this.item.editions || this.item.editions < 1) {
-        this.item.editions = 1
+      if (!this.item.attributes.editions || this.item.attributes.editions < 1) {
+        this.item.attributes.editions = 1
       }
-      if (!this.item.editionCost || this.item.editionCost < 0) {
-        this.item.editionCost = 0
+      if (!this.item.attributes.editionCost || this.item.attributes.editionCost < 0) {
+        this.item.attributes.editionCost = 0
       }
-      this.item.editions = Number(this.item.editions)
-      this.item.editionCost = Number(this.item.editionCost)
+      this.item.attributes.editions = Number(this.item.attributes.editions)
+      this.item.attributes.editionCost = Number(this.item.attributes.editionCost)
       this.$store.dispatch('rpayMyItemStore/quickSaveItem', this.item)
     }
   },
   computed: {
     itemEditionsState () {
-      if (!this.formSubmitted && !this.item.editions) return null
-      return (this.item.editions > 0 && this.item.editions < 101)
+      if (!this.formSubmitted && !this.item.attributes.editions) return null
+      return (this.item.attributes.editions > 0 && this.item.attributes.editions < 101)
     },
     itemEditionCostState () {
-      if (!this.formSubmitted && !this.item.editionCost) return null
-      return (this.item.editionCost >= 0)
+      if (!this.formSubmitted && !this.item.attributes.editionCost) return null
+      return (this.item.attributes.editionCost >= 0)
     }
   }
 }
