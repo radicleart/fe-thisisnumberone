@@ -229,7 +229,7 @@ export default {
         (err code)))))
 
 ;; see nft-approvable-trait
-(define-public (set-approved (operator principal) (token-id uint) (approved bool))
+(define-public (set-approved (token-id uint) (operator principal) (approved bool))
   (ok (map-set approvals {owner: tx-sender, operator: operator, nft-index: token-id} approved))
 )
 

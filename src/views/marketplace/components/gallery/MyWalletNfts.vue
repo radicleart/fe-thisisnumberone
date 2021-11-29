@@ -81,7 +81,8 @@ export default {
         page: this.cachedPage,
         pageSize: this.cachedPageSize
       }
-      this.$store.dispatch('rpayStacksContractStore/cacheWalletNfts', data).then((nfts) => {
+      this.$store.dispatch('rpayStacksContractStore/cacheWalletNfts', data).then(() => {
+        /**
         const $self = this
         if (this.timer === null) {
           this.timer = setInterval(function () {
@@ -95,6 +96,7 @@ export default {
         } else {
           clearInterval(this.timer)
         }
+        **/
       })
     },
     updateResults (data) {

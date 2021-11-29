@@ -61,7 +61,7 @@ export default {
     Vue.nextTick(function () {
       this.addQrCode()
     }, this)
-    this.peerAddress = '178.79.138.62:10011'
+    this.peerAddress = '212.71.247.160:10011'
     if (location.href.indexOf('local') > -1) {
       this.peerAddress = '192.168.1.50:10011'
     }
