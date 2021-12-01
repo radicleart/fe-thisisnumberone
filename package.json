@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build-report": "vue-cli-service build --report",
-    "serve": "vue-cli-service serve --mode development  --port=8081",
+    "serve": "vue-cli-service serve --mode development  --port=8082",
     "build": "vue-cli-service build --mode development",
     "build-stag": "vue-cli-service build --mode staging",
     "build-prod": "vue-cli-service build",
