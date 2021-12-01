@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     hasTraits () {
-      return typeof this.asset.attributes.index === 'number' && this.asset.attributes.index > -1
+      return this.asset.attributes && typeof this.asset.attributes.index === 'number' && this.asset.attributes.index > -1
     },
     fetchTraits () {
       this.$emit('update', { opcode: 'display-trait', edition: this.asset.attributes.index })

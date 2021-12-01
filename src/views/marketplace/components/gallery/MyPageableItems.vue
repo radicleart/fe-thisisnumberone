@@ -5,7 +5,7 @@
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
       <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
-          <MySingleItem @updateImage="updateImage" :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
+          <MySingleItem @update="update" :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
         </div>
       </div>
       <div class="d-flex justify-content-start my-3 mx-4" v-else>
@@ -14,6 +14,10 @@
         </div>
       </div>
     </div>
+    <b-modal size="md" id="trait-modal">
+      <div v-html="trait"></div>
+      <template #modal-footer class="text-center"><div class="w-100"></div></template>
+    </b-modal>
   </div>
 </template>
 
@@ -32,6 +36,7 @@ export default {
   props: ['loopRun'],
   data () {
     return {
+      trait: '',
       showMinted: true,
       resultSet: [],
       tokenCount: null,
@@ -67,9 +72,23 @@ export default {
     }
   },
   methods: {
-    updateImage () {
-      // this.page = page - 1
-      this.fetchPage(this.nowOnPage)
+    update (data) {
+      if (data.opcode === 'display-trait') {
+        this.$store.dispatch('publicItemsStore/fetchTraits', data.edition).then((trait) => {
+          this.trait = this.toString(trait)
+          this.$bvModal.show('trait-modal')
+          // this.$notify({ type: 'success', title: 'Punk Traits', text: 'Click to display Punk Traits!' })
+        })
+      }
+    },
+    toString (trait) {
+      let attrString = '<h2>Punk Traits</h2>'
+      attrString += '<p>dna : ' + trait.dna + '</p>'
+      trait.attributes.forEach((o) => {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        attrString += '<p>' + o.trait_type + ' = ' + o.value + '</p>'
+      })
+      return attrString
     },
     gotoPage (page) {
       this.nowOnPage = page - 1

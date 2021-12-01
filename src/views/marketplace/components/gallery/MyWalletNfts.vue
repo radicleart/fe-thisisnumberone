@@ -8,11 +8,13 @@
       </div>
     </div>
     <div v-if="tokenCount < (nftTotal - 1)">
-      <p class="">
-        Indexing your wallet NFTs
-        <span v-if="showIndexingInfo" class="text-warning pointer" @click.prevent="showIndexingInfo = ! showIndexingInfo">less...</span>
-        <span v-else class="text-warning pointer" @click.prevent="showIndexingInfo = ! showIndexingInfo">more...</span>
-      </p>
+      <div class="mb-4 mt-5 d-flex justify-content-between">
+        <div>Indexing your wallet NFTs <span class="text-warning pointer" @click.prevent="fetchPage(0)" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Show newly indexed NFTs'"><b-icon icon="arrow-clockwise" font-scale="1"/></span></div>
+        <div class="text-small">
+          <span v-if="showIndexingInfo" class="text-warning pointer" @click.prevent="showIndexingInfo = ! showIndexingInfo">less...</span>
+          <span v-else class="text-warning pointer" @click.prevent="showIndexingInfo = ! showIndexingInfo">more...</span>
+        </div>
+      </div>
       <div v-show="showIndexingInfo">
         <p class="text-white">
           We are working, with others in the community, to deliver fully non-custodial, decentralised
@@ -30,7 +32,7 @@
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="tokenCount" v-if="numberOfItems < tokenCount"/>
       <div class="row" v-if="resultSet && resultSet.length > 0">
         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
-          <MySingleItem @updateImage="updateImage" :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
+          <MySingleItem @update="update" :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
         </div>
       </div>
       <div class="d-flex justify-content-start my-3 mx-4" v-else>
@@ -39,6 +41,10 @@
         </div>
       </div>
     </div>
+    <b-modal size="md" id="trait-modal">
+      <div v-html="trait"></div>
+      <template #modal-footer class="text-center"><div class="w-100"></div></template>
+    </b-modal>
   </div>
 </template>
 
@@ -57,6 +63,7 @@ export default {
   },
   data () {
     return {
+      trait: '',
       showIndexingInfo: false,
       showMinted: true,
       resultSet: [],
@@ -95,9 +102,23 @@ export default {
     })
   },
   methods: {
-    updateImage () {
-      // this.page = page - 1
-      this.fetchPage(this.nowOnPage)
+    update (data) {
+      if (data.opcode === 'display-trait') {
+        this.$store.dispatch('publicItemsStore/fetchTraits', data.edition).then((trait) => {
+          this.trait = this.toString(trait)
+          this.$bvModal.show('trait-modal')
+          // this.$notify({ type: 'success', title: 'Punk Traits', text: 'Click to display Punk Traits!' })
+        })
+      }
+    },
+    toString (trait) {
+      let attrString = '<h2>Punk Traits</h2>'
+      attrString += '<p>dna : ' + trait.dna + '</p>'
+      trait.attributes.forEach((o) => {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        attrString += '<p>' + o.trait_type + ' = ' + o.value + '</p>'
+      })
+      return attrString
     },
     gotoPage (page) {
       this.nowOnPage = page - 1

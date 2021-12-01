@@ -60,7 +60,7 @@ export default {
   methods: {
     parseRunKey (gaiaAsset) {
       const runKey = this.$store.getters[APP_CONSTANTS.KEY_RUN_KEY_FROM_META_DATA_URL](gaiaAsset.contractAsset)
-      if (runKey) {
+      if (runKey && runKey.indexOf('.json') === -1) {
         return runKey
       }
       return process.env.VUE_APP_DEFAULT_LOOP_RUN
