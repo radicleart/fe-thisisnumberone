@@ -59,8 +59,9 @@ export default {
   },
   methods: {
     parseRunKey (gaiaAsset) {
-      if (gaiaAsset.currentRunKey) {
-        return (gaiaAsset.currentRunKey.indexOf('/') > -1) ? gaiaAsset.currentRunKey.split('/')[0] : gaiaAsset.currentRunKey
+      const runKey = this.$store.getters[APP_CONSTANTS.KEY_RUN_KEY_FROM_META_DATA_URL](gaiaAsset.contractAsset)
+      if (runKey) {
+        return runKey
       }
       return process.env.VUE_APP_DEFAULT_LOOP_RUN
     },

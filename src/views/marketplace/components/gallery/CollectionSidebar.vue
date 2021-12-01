@@ -1,5 +1,5 @@
 <template>
-<div class="text-small">
+<div class="text-small" v-if="loaded">
   <div class="mb-5" v-if="isMyNfts()">
     <h3 class="border-bottom mb-4">My Wallet</h3>
     <div class="ml-5 my-3">

@@ -155,10 +155,10 @@ export default {
             $self.$store.dispatch('rpayCategoryStore/fetchLoopRun', $self.currentRunKey).then((loopRun) => {
               $self.loopRun = loopRun
               $self.setMintingStatus()
-              $self.componentKey++
               $self.mintImage = $self.loopRun.mintImage3 || $self.loopRun.image
               $self.result = ' status: ' + data.txStatus
               $self.$bvModal.hide('result-modal')
+              $self.componentKey++
             })
             // $self.$notify({ type: 'success', title: 'Tx Sent', text: 'Punks minted and meta data saved to Gaia!' })
           } else if (data.txStatus === 'pending') {
@@ -222,10 +222,12 @@ export default {
       return options
     },
     startMinting: function () {
-      this.$store.dispatch('rpayCategoryStore/registerSpin', this.profile)
-      this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow' })
-      this.$store.commit('rpayStore/setDisplayCard', 100)
-      this.$bvModal.show('minting-modal')
+      this.$store.dispatch('rpayCategoryStore/registerSpin', this.profile).then((loopRun) => {
+        this.loopRun = loopRun
+        this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow' })
+        this.$store.commit('rpayStore/setDisplayCard', 100)
+        this.$bvModal.show('minting-modal')
+      })
     },
     updateAllocation (data) {
       this.uiState = 'locked'

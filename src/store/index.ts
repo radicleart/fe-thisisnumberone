@@ -315,6 +315,7 @@ export default new Vuex.Store({
     publicItemsStore
   },
   state: {
+    splitter: 'hub/',
     configuration: setup({}),
     displayCard: 100,
     webWalletNeeded: false,

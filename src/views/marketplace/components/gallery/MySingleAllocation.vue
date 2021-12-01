@@ -16,12 +16,14 @@
     <b-card-text class="">
       <div class="d-flex justify-content-center p-2">
           <div v-if="allocation.txStatus === 'pending'" class="center">
-            <!-- <div v-if="loopRun.mintImage2">
-              <img width="100px" height="100px" :src="loopRun.mintImage" icon="circle" animation="throb" font-scale="5"/>
-            </div> -->
+            <div>
+              <img width="100%" :src="generating" alt="NFT minting in progress"/>
+            </div>
+            <!--
             <div>
               <b-icon v-if="allocation.txStatus === 'pending'" icon="circle" animation="throb" font-scale="5"></b-icon>
             </div>
+            -->
           </div>
           <div v-else-if="allocation.txStatus === 'success'" class="center">
               <img width="100px" height="100px" :src="loopRun.mintImage3" icon="circle" animation="throb" font-scale="5"/>
@@ -53,6 +55,7 @@ export default {
   props: ['allocation', 'loopRun', 'myTxFilter'],
   data () {
     return {
+      generating: 'https://res.cloudinary.com/mijo-enterprises/image/upload/v1636103377/collections/artists/artist1/generating.gif',
       image: null,
       newHeight: null,
       myChainChecker: null

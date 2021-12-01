@@ -1,10 +1,29 @@
 <template>
   <div v-if="!loading">
     <div class="border-bottom mb-4 mt-5 d-flex justify-content-between">
-      <h1 class="pointer" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> NFT Balance ({{tokenCount}})</h1>
+      <h1 class="pointer" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> NFT Balance ({{tokenCount}} / {{nftTotal}})</h1>
       <div class="d-flex justify-content-between">
         <SearchBar class="w-50" :displayClass="'text-small text-end'" @updateResults="updateResults" :mode="'wallet'"/>
         <span class="text-warning pointer" @click.prevent="cacheWalletNfts" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Refresh your NFT wallet information'"><b-icon icon="arrow-clockwise" font-scale="1"/></span>
+      </div>
+    </div>
+    <div v-if="tokenCount < (nftTotal - 1)">
+      <p class="">
+        Indexing your wallet NFTs
+        <span v-if="showIndexingInfo" class="text-warning pointer" @click.prevent="showIndexingInfo = ! showIndexingInfo">less...</span>
+        <span v-else class="text-warning pointer" @click.prevent="showIndexingInfo = ! showIndexingInfo">more...</span>
+      </p>
+      <div v-show="showIndexingInfo">
+        <p class="text-white">
+          We are working, with others in the community, to deliver fully non-custodial, decentralised
+          marketplaces to the Stacks eco-system.
+          <a class="text-warning" href="mailto:enquiries@thisisnumberone.com" target="_blank">Get Involved?</a>
+        </p>
+        <!--
+        <p class="text-white">
+          Want to build and connect your own NFT project to our marketplace? <a class="text-warning" href="mailto:enquiries@thisisnumberone.com" target="_blank">Get Connected?</a>
+        </p>
+        -->
       </div>
     </div>
     <div class="mb-4" v-if="showMinted">
@@ -38,8 +57,10 @@ export default {
   },
   data () {
     return {
+      showIndexingInfo: false,
       showMinted: true,
       resultSet: [],
+      nftTotal: 0,
       tokenCount: null,
       pageSize: 20,
       loading: true,
@@ -50,12 +71,20 @@ export default {
       cached: 0,
       cachedPage: 0,
       cachedPageSize: 50,
-      defQuery: null,
-      timer: null
+      defQuery: null
     }
   },
   mounted () {
-    this.fetchPage(0)
+    const data = {
+      // stxAddress: (process.env.VUE_APP_NETWORK === 'local') ? 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' : this.profile.stxAddress,
+      stxAddress: this.profile.stxAddress,
+      page: this.cachedPage,
+      pageSize: this.cachedPageSize
+    }
+    this.$store.dispatch('rpayStacksContractStore/cacheWalletNfts', data).then((nfts) => {
+      this.nftTotal = (nfts) ? nfts.total : 0
+      this.fetchPage(0)
+    })
     const $self = this
     let resizeTimer
     window.addEventListener('resize', function () {
@@ -76,8 +105,9 @@ export default {
     },
     cacheWalletNfts () {
       const data = {
-        // stxAddress: (NETWORK === 'local') ? 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' : this.profile.stxAddress
+        // stxAddress: (process.env.VUE_APP_NETWORK === 'local') ? 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' : this.profile.stxAddress,
         stxAddress: this.profile.stxAddress,
+        force: true,
         page: this.cachedPage,
         pageSize: this.cachedPageSize
       }
@@ -109,7 +139,7 @@ export default {
     },
     fetchPage (page) {
       const data = {
-        // stxAddress: (NETWORK === 'local') ? 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' : this.profile.stxAddress
+        // stxAddress: (process.env.VUE_APP_NETWORK === 'local') ? 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' : this.profile.stxAddress,
         stxAddress: this.profile.stxAddress,
         page: page,
         pageSize: this.pageSize,
@@ -121,8 +151,6 @@ export default {
         this.tokenCount = result.tokenCount
         if (this.tokenCount === 0) {
           this.cacheWalletNfts()
-        } else {
-          clearInterval(this.timer)
         }
         this.loading = false
       })

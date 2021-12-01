@@ -4,10 +4,14 @@
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
       <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
         <div class="text-white col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
-          <MySingleItem v-if="!skipme(asset)" :loopRun="loopRun" :parent="'list-view'" :asset="asset"/>
+          <MySingleItem @update="update" v-if="!skipme(asset)" :loopRun="loopRun" :parent="'list-view'" :asset="asset"/>
         </div>
       </div>
     </div>
+    <b-modal size="md" id="trait-modal">
+      <div v-html="trait"></div>
+      <template #modal-footer class="text-center"><div class="w-100"></div></template>
+    </b-modal>
   </div>
 </template>
 
@@ -30,6 +34,7 @@ export default {
   data () {
     return {
       resultSet: [],
+      trait: '',
       pageSize: 50,
       loading: true,
       doPaging: true,
@@ -58,6 +63,24 @@ export default {
     }
   },
   methods: {
+    update (data) {
+      if (data.opcode === 'display-trait') {
+        this.$store.dispatch('publicItemsStore/fetchTraits', data.edition).then((trait) => {
+          this.trait = this.toString(trait)
+          this.$bvModal.show('trait-modal')
+          // this.$notify({ type: 'success', title: 'Punk Traits', text: 'Click to display Punk Traits!' })
+        })
+      }
+    },
+    toString (trait) {
+      let attrString = '<h2>Punk Traits</h2>'
+      attrString += '<p>dna : ' + trait.dna + '</p>'
+      trait.attributes.forEach((o) => {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        attrString += '<p>' + o.trait_type + ' = ' + o.value + '</p>'
+      })
+      return attrString
+    },
     skipme (asset) {
       if (this.loopRun && this.isTheV2Contract()) {
         if (this.loopRun.currentRunKey === 'my_first_word') {

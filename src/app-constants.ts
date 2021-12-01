@@ -36,6 +36,7 @@ export const APP_CONSTANTS = {
   KEY_MEDIA_ATTRIBUTES: 'rpayCategoryStore/getMediaAttributes',
   KEY_ASSET_IMAGE_URL: 'rpayCategoryStore/getAssetImageUrl',
   GET_LOOP_RUN_BY_KEY: 'rpayCategoryStore/getLoopRunByRunKey',
+  KEY_RUN_KEY_FROM_META_DATA_URL: 'rpayCategoryStore/getRunKeyFromMetaDataUrl',
 
   KEY_MY_PROJECT: 'rpayProjectStore/getProject',
   KEY_MY_PROJECTS: 'rpayProjectStore/getProjects',

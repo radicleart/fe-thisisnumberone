@@ -31,9 +31,12 @@ export default {
   props: ['loopRun', 'item', 'errorMessage', 'hidePrimaries', 'mintButtonText'],
   data () {
     return {
-      allowEditEditions: true, // process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
+      allowEditEditions: false, // process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
       mintedMessage: null
     }
+  },
+  mounted () {
+    if (this.item) this.allowEditEditions = true
   },
   methods: {
     rangeEvent (displayCard) {

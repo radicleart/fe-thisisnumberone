@@ -3,7 +3,10 @@
   <b-card bg-variant="black" class="bg-black mt-0 py-2 text-white">
     <div class="px-2">
       <div class="text-left">
-        <p style="height: 2rem;" class="overflow-hidden text-bold">{{mintedMessage}}</p>
+        <div class="text-small d-flex justify-content-between">
+          <p style="height: 2rem;" class="overflow-hidden text-bold">{{mintedMessage}}</p>
+          <p class="text-right" v-if="hasTraits()"><b-link @click.prevent="fetchTraits()" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Click to display Punk Traits!'" class="text-warning"><b-icon icon="question-circle"/></b-link></p>
+        </div>
         <div class="text-small d-flex justify-content-between">
           <div class="text-right"><span v-if="loopRun">{{loopRun.currentRun}}</span> {{editionMessage}}</div>
           <div class="text-right">{{created()}}</div>
@@ -93,6 +96,12 @@ export default {
     })
   },
   methods: {
+    hasTraits () {
+      return typeof this.asset.attributes.index === 'number' && this.asset.attributes.index > -1
+    },
+    fetchTraits () {
+      this.$emit('update', { opcode: 'display-trait', edition: this.asset.attributes.index })
+    },
     isLoopbomb () {
       try {
         return ((this.contractAsset.tokenInfo.metaDataUrl.indexOf('loopbomb') > -1) || (this.loopRun && this.loopRun.currentRunKey.indexOf('loop') > -1))
@@ -240,6 +249,10 @@ export default {
 }
 </script>
 <style scoped>
+#trait-modal .modal-content {
+  border: none !important;
+  background-color: transparent !important;
+}
 
 .btn {
   width: inherit;
