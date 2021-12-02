@@ -1,5 +1,6 @@
 <template>
 <div class="mt-3" v-if="!loading">
+  <h4>Royalties on Secondary Sales</h4>
     <b-row class="mb-2 text-success">
       <b-col :cols="(hidePrimaries) ? 9 : 6">Address</b-col>
       <b-col cols="3" v-if="!hidePrimaries">Primary</b-col>

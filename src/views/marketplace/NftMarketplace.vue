@@ -21,7 +21,7 @@
       <b-col md="9" sm="12" v-else>
         <h1 class="mb-4 border-bottom">Collections</h1>
         <b-row >
-          <b-col class="mt-5" md="4" sm="6" xs="12" v-for="(loopRun, index) in loopRuns" :key="index">
+          <b-col class="mt-5" md="3" sm="6" xs="12" v-for="(loopRun, index) in loopRuns" :key="index">
             <div>
               <b-link class="text-warning" :to="collectionUrl(loopRun)">
                 <img width="100%" :src="getImageUrl(loopRun)"  v-b-tooltip.hover="{ variant: 'warning' }" :title="'Collection\n' + loopRun.currentRun"/>

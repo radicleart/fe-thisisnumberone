@@ -1,10 +1,11 @@
 <template>
 <div>
-  <h1 class="pointer mb-4 border-bottom"><b-icon font-scale="0.6" icon="chevron-right"/> Approved Operators</h1>
+  <h1 class="pointer mb-4 border-bottom"><b-icon font-scale="0.6" icon="chevron-right"/> Approved Operator</h1>
   <div class="col-12 mb-4">
     <b-input-group append="ADDR">
       <b-form-input v-model="operator" placeholder="STX Address of the operator / marketplace"></b-form-input>
     </b-input-group>
+    <p class="">An address you trust to manage this asset on your behalf.</p>
   </div>
   <div class="text-right">
     <b-form-checkbox v-model="approval" name="check-button" switch class="text-secondary">

@@ -17,7 +17,7 @@
       </div>
       <div v-show="showIndexingInfo">
         <p class="text-white">
-          We are working, with others in the community, to deliver fully non-custodial, decentralised
+          We are working, with others in the community, to deliver non-custodial, decentralised
           marketplaces to the Stacks eco-system.
           <a class="text-warning" href="mailto:enquiries@thisisnumberone.com" target="_blank">Get Involved?</a>
         </p>
