@@ -200,13 +200,10 @@ export default {
       const value = this.events[data.index][type]
       copyText.value = value
       copyText.select()
-      navigator.clipboard.readText().then((value) => {
-        // copyText.value += value
-        document.querySelector('#copy-address').innerText = value
+      navigator.clipboard.writeText(value).then(() => {
         this.doFlash(type, data.index)
-        this.$notify({ type: 'info', title: 'Copied to Clipboard', text: 'Copied address to clipboard: ' + copyText.value + '    ===   ' + value })
+        this.$notify({ type: 'info', title: 'Copied to Clipboard', text: 'Copied address to clipboard: ' + copyText.value })
       })
-      // document.execCommand('copy')
     },
     doFlash (type, index) {
       const flasher = this.$refs[type + '_' + index]
