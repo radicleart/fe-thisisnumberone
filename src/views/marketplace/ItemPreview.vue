@@ -15,7 +15,7 @@
         <div>
           <div class="mb-2 d-flex justify-content-between">
             <h2 class="d-block border-bottom mb-5">{{mintedMessage}}</h2>
-            <ItemActionMenu :item="item" :loopRun="loopRun"/>
+            <!-- <ItemActionMenu :item="item" :loopRun="loopRun"/> -->
           </div>
           <h6 v-if="item.artist" class="text-small">By : {{item.artist}}</h6>
         </div>
@@ -37,7 +37,7 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import MediaItemGeneral from '@/views/marketplace/components/media/MediaItemGeneral'
-import ItemActionMenu from '@/views/marketplace/components/update/ItemActionMenu'
+// import ItemActionMenu from '@/views/marketplace/components/update/ItemActionMenu'
 import PendingTransactionInfo from '@/views/marketplace/components/toolkit/nft-history/PendingTransactionInfo'
 import NftHistory from '@/views/marketplace/components/toolkit/nft-history/NftHistory'
 import MintInfo from '@/views/marketplace/components/toolkit/mint-setup/MintInfo'
@@ -50,8 +50,7 @@ export default {
     NftHistory,
     MintingTools,
     PendingTransactionInfo,
-    MintInfo,
-    ItemActionMenu
+    MintInfo
   },
   data: function () {
     return {
