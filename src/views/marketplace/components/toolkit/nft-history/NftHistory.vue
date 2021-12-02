@@ -32,7 +32,7 @@
       </b-table>
     </b-col>
   </b-row>
-  <input class="fake-input" style="visibility: hidden;" id="copy-address" readonly/>
+  <input class="fake-input" style="visibility: hidden;" id="copy-address" readonly v-model="paymentAddress"/>
 </div>
 </template>
 
@@ -80,6 +80,7 @@ export default {
   data: function () {
     return {
       events: null,
+      paymentAddress: null,
       timer: null,
       previouslyPending: false
     }
@@ -199,9 +200,13 @@ export default {
       const value = this.events[data.index][type]
       copyText.value = value
       copyText.select()
-      document.execCommand('copy')
-      this.doFlash(type, data.index)
-      this.$notify({ type: 'info', title: 'Copied to Clipboard', text: 'Copied address to clipboard: ' + copyText.value })
+      navigator.clipboard.readText().then((value) => {
+        // copyText.value += value
+        document.querySelector('#copy-address').innerText = value
+        this.doFlash(type, data.index)
+        this.$notify({ type: 'info', title: 'Copied to Clipboard', text: 'Copied address to clipboard: ' + copyText.value + '    ===   ' + value })
+      })
+      // document.execCommand('copy')
     },
     doFlash (type, index) {
       const flasher = this.$refs[type + '_' + index]
