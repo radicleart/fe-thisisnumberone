@@ -56,6 +56,7 @@ export default {
   data: function () {
     return {
       showHash: false,
+      loopRun: null,
       contractId: null,
       componentKey: 0,
       nftIndex: null,
@@ -98,24 +99,32 @@ export default {
       if (this.$route.name === 'nft-preview') {
         const data = { contractId: this.contractId, nftIndex: Number(this.$route.params.nftIndex) }
         this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then((item) => {
-          this.item = item
+          this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.parseRunKey(item)).then((loopRun) => {
+            this.item = item
+            this.loopRun = loopRun
+            this.$store.dispatch('rpayManageCacheStore/cacheUpdate', { contractId: this.contractId, nftIndex: this.nftIndex })
+            this.loading = false
+          })
         })
       } else {
         this.assetHash = this.$route.params.assetHash
         this.edition = Number(this.$route.params.edition)
         this.$store.dispatch('rpayMyItemStore/findItemByAssetHash', this.assetHash).then((item) => {
-          this.item = item
-          const data = {
-            asc: true,
-            page: 0,
-            pageSize: 100,
-            stxAddress: (process.env.VUE_APP_NETWORK !== 'local') ? this.profile.stxAddress : 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
-          }
-          this.$store.dispatch('rpayStacksContractStore/fetchMyTokens', data).then((results) => {
-            if (results && results.tokenCount > 0) {
-              const item = results.gaiaAssets.find((o) => o.assetHash === this.assetHash)
-              if (item) this.item = item
+          this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.parseRunKey(item)).then((loopRun) => {
+            this.item = item
+            this.loopRun = loopRun
+            const data = {
+              asc: true,
+              page: 0,
+              pageSize: 100,
+              stxAddress: (process.env.VUE_APP_NETWORK !== 'local') ? this.profile.stxAddress : 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
             }
+            this.$store.dispatch('rpayStacksContractStore/fetchMyTokens', data).then((results) => {
+              if (results && results.tokenCount > 0) {
+                const item = results.gaiaAssets.find((o) => o.assetHash === this.assetHash)
+                if (item) this.item = item
+              }
+            })
           })
         })
       }
@@ -176,6 +185,13 @@ export default {
     preserveWhiteSpace: function (content) {
       return '<span class="text-description" style="white-space: break-spaces;">' + content + '</span>'
     },
+    parseRunKey (gaiaAsset) {
+      const runKey = this.$store.getters[APP_CONSTANTS.KEY_RUN_KEY_FROM_META_DATA_URL](gaiaAsset.contractAsset)
+      if (runKey && runKey.indexOf('.json') === -1) {
+        return runKey
+      }
+      return process.env.VUE_APP_DEFAULT_LOOP_RUN
+    },
     targetItem: function () {
       return this.$store.getters[APP_CONSTANTS.KEY_TARGET_FILE_FOR_DISPLAY](this.item)
     }
@@ -190,6 +206,7 @@ export default {
       }
       return this.item.name
     },
+    /**
     loopRun () {
       const loopRuns = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUNS]
       if (!loopRuns || !this.contractId) {
@@ -197,6 +214,7 @@ export default {
       }
       return loopRuns.find((o) => o.contractId === this.contractId && o.currentRunKey.indexOf(this.runKey > -1))
     },
+    **/
     runKey () {
       const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
       let runKey = (this.item && this.item.attributes.collection) ? this.item.attributes.collection : defaultLoopRun
