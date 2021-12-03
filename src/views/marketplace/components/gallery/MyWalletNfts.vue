@@ -1,31 +1,30 @@
 <template>
   <div v-if="!loading">
     <div class="border-bottom mb-4 mt-5 d-flex justify-content-between">
-      <h1 class="pointer" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> NFT Balance ({{tokenCount}} / {{nftTotal}})</h1>
+      <h1 class="pointer">
+        <span @click="showMinted = !showMinted">
+          <b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/>
+          <b-icon font-scale="0.6" v-else icon="chevron-right"/> NFT Balance - {{tokenCount}} / {{nftTotal}}
+        </span>
+      </h1>
       <div class="d-flex justify-content-between">
         <SearchBar class="w-50" :displayClass="'text-small text-end'" @updateResults="updateResults" :mode="'wallet'"/>
-        <span class="text-warning pointer" @click.prevent="cacheWalletNfts" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Refresh your NFT wallet information'"><b-icon icon="arrow-clockwise" font-scale="1"/></span>
-      </div>
-    </div>
-    <div v-if="tokenCount < (nftTotal - 1)">
-      <div class="mb-4 mt-5 d-flex justify-content-between">
-        <div>Indexing your wallet NFTs <span class="text-warning pointer" @click.prevent="fetchPage(0)" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Show newly indexed NFTs'"><b-icon icon="arrow-clockwise" font-scale="1"/></span></div>
-        <div class="text-small">
-          <span v-if="showIndexingInfo" class="text-warning pointer" @click.prevent="showIndexingInfo = ! showIndexingInfo">less...</span>
-          <span v-else class="text-warning pointer" @click.prevent="showIndexingInfo = ! showIndexingInfo">more...</span>
+        <div style="width: 100px;">
+          <span class="mr-3 text-warning pointer" @click.prevent="cacheWalletNfts" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Refresh your NFT wallet information'"><b-icon icon="arrow-clockwise" font-scale="1"/></span>
+          <span class="text-warning pointer" @click.prevent="showIndexingInfo = ! showIndexingInfo"><b-icon icon="question-circle"/></span>
         </div>
       </div>
-      <div v-show="showIndexingInfo">
-        <p class="text-white">
+    </div>
+    <div class="mb-5" v-if="showIndexingInfo">
+      <div class="mb-4 mt-5">
+        <p>Indexing your wallet NFTs <!-- <span class="text-warning pointer" @click.prevent="fetchPage(0)" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Show newly indexed NFTs'"><b-icon icon="arrow-clockwise" font-scale="1"/></span> -->
+        </p>
+        <p>
+          We may not be able to display them all as this depends on how the contract was written.
           We are working, with others in the community, to deliver non-custodial, decentralised
           marketplaces to the Stacks eco-system.
           <a class="text-warning" href="mailto:enquiries@thisisnumberone.com" target="_blank">Get Involved?</a>
         </p>
-        <!--
-        <p class="text-white">
-          Want to build and connect your own NFT project to our marketplace? <a class="text-warning" href="mailto:enquiries@thisisnumberone.com" target="_blank">Get Connected?</a>
-        </p>
-        -->
       </div>
     </div>
     <div class="mb-4" v-if="showMinted">

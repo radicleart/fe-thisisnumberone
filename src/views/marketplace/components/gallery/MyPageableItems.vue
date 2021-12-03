@@ -4,7 +4,7 @@
     <div class="mb-4" v-if="showMinted && loopRun">
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
       <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
           <MySingleItem @update="update" :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
         </div>
       </div>
@@ -94,15 +94,19 @@ export default {
       this.nowOnPage = page - 1
       this.fetchPage(page - 1)
     },
+    isTheV2Contract () {
+      const STX_CONTRACT_NAME_V2 = process.env.VUE_APP_STACKS_CONTRACT_NAME_V2
+      return this.loopRun && this.loopRun.contractId.indexOf(STX_CONTRACT_NAME_V2) > -1
+    },
     fetchPage (page) {
       const data = {
-        // contractId: (this.loopRun) ? this.loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME,
         runKey: (this.loopRun) ? this.loopRun.currentRunKey : LOOP_RUN_DEF,
         stxAddress: this.profile.stxAddress,
         asc: true,
         page: page,
         pageSize: this.pageSize
       }
+      if (this.isTheV2Contract()) data.contractId = (this.loopRun) ? this.loopRun.contractId : process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME
       if (this.currentRunKey) data.runKey = this.currentRunKey
       if (process.env.VUE_APP_NETWORK === 'local') {
         data.stxAddress = 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'

@@ -9,7 +9,8 @@
     <template v-slot:footer>
       <div class="d-flex justify-content-between">
         <b-button @click="saveData()" class="rounded w-50 mr-2" variant="outline-light">Cancel</b-button>
-        <b-button @click="sendMintEvent()" class="w-50 ml-2" variant="warning"><span v-if="mintButtonText">{{mintButtonText}}</span><span v-else>Mint Now</span></b-button>
+        <b-button v-if="minting" class="w-50 ml-2" variant="warning"><span><b-icon icon="three-dots" animation="cylon" font-scale="1.5"></b-icon></span></b-button>
+        <b-button v-else @click="sendMintEvent()" class="w-50 ml-2" variant="warning"><span v-if="mintButtonText">{{mintButtonText}}</span><span v-else>Mint Now</span></b-button>
       </div>
     </template>
   </b-card>
@@ -31,6 +32,7 @@ export default {
   props: ['loopRun', 'item', 'errorMessage', 'hidePrimaries', 'mintButtonText'],
   data () {
     return {
+      minting: false,
       allowEditEditions: false, // process.env.VUE_APP_ALLOW_EDIT_EDITIONS,
       mintedMessage: null
     }
@@ -62,6 +64,7 @@ export default {
       window.eventBus.$emit('rpayEvent', { opcode: 'cancel-minting' })
     },
     sendMintEvent: function () {
+      this.minting = true
       this.$emit('mintToken')
     }
   },

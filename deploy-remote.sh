@@ -7,8 +7,7 @@ mkdir -p $PATH_DEPLOY
 export SERVER=locke.brightblock.org
 export BUILDER=build-stag
 if [ "$DEPLOYMENT" == "prod" ]; then
-  SERVER=russell.brightblock.org;
-  #SERVER=russell.risidio.com;
+  SERVER=chomsky.brightblock.org;
   BUILDER=build-prod
 fi
 
