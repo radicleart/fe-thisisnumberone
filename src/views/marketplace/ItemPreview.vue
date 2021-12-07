@@ -97,12 +97,13 @@ export default {
   methods: {
     fetchItem () {
       if (this.$route.name === 'nft-preview') {
-        const data = { contractId: this.contractId, nftIndex: Number(this.$route.params.nftIndex) }
+        this.nftIndex = Number(this.$route.params.nftIndex)
+        const data = { contractId: this.contractId, nftIndex: this.nftIndex }
         this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then((item) => {
           this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.parseRunKey(item)).then((loopRun) => {
             this.item = item
             this.loopRun = loopRun
-            this.$store.dispatch('rpayManageCacheStore/cacheUpdate', { contractId: this.contractId, nftIndex: this.nftIndex })
+            this.$store.dispatch('rpayManageCacheStore/updateCacheByNftIndex', { contractId: this.contractId, nftIndex: this.nftIndex })
             this.loading = false
           })
         })
@@ -186,9 +187,23 @@ export default {
       return '<span class="text-description" style="white-space: break-spaces;">' + content + '</span>'
     },
     parseRunKey (gaiaAsset) {
-      const runKey = this.$store.getters[APP_CONSTANTS.KEY_RUN_KEY_FROM_META_DATA_URL](gaiaAsset.contractAsset)
-      if (runKey && runKey.indexOf('.json') === -1) {
-        return runKey
+      if (gaiaAsset.contractAsset) {
+        const runKey = this.$store.getters[APP_CONSTANTS.KEY_RUN_KEY_FROM_META_DATA_URL](gaiaAsset.contractAsset)
+        if (runKey && runKey.indexOf('.json') === -1) {
+          return runKey
+        }
+      } else if (gaiaAsset.attributes.collection) {
+        if (gaiaAsset.attributes.collection.indexOf('/') === -1) {
+          return gaiaAsset.attributes.collection
+        } else {
+          return gaiaAsset.attributes.collection.split('/')[0]
+        }
+      } else if (gaiaAsset.currentRunKey) {
+        if (gaiaAsset.currentRunKey.indexOf('/') === -1) {
+          return gaiaAsset.currentRunKey
+        } else {
+          return gaiaAsset.currentRunKey.split('/')[0]
+        }
       }
       return process.env.VUE_APP_DEFAULT_LOOP_RUN
     },
@@ -206,15 +221,6 @@ export default {
       }
       return this.item.name
     },
-    /**
-    loopRun () {
-      const loopRuns = this.$store.getters[APP_CONSTANTS.GET_LOOP_RUNS]
-      if (!loopRuns || !this.contractId) {
-        return this.$store.getters[APP_CONSTANTS.GET_LOOP_RUN_BY_KEY](this.runKey)
-      }
-      return loopRuns.find((o) => o.contractId === this.contractId && o.currentRunKey.indexOf(this.runKey > -1))
-    },
-    **/
     runKey () {
       const defaultLoopRun = process.env.VUE_APP_DEFAULT_LOOP_RUN
       let runKey = (this.item && this.item.attributes.collection) ? this.item.attributes.collection : defaultLoopRun

@@ -5,7 +5,7 @@
     <div class="text-danger" v-html="errorMessage"></div>
     <EditEditions v-if="allowEditEditions" :item="item"/>
     <!-- <Beneficiaries :hidePrimaries="hidePrimaries" :beneficiaries="beneficiaries" v-on="$listeners"/> -->
-    <ListBeneficiaries :loopRun="loopRun" :item="item" />
+    <ListBeneficiaries v-if="loopRun" :loopRun="loopRun" :item="item" />
     <template v-slot:footer>
       <div class="d-flex justify-content-between">
         <b-button @click="saveData()" class="rounded w-50 mr-2" variant="outline-light">Cancel</b-button>

@@ -5,7 +5,7 @@
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
       <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
-          <MySingleItem @update="update" :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
+          <MySingleItem :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
         </div>
       </div>
       <div class="d-flex justify-content-start my-3 mx-4" v-else>
@@ -14,10 +14,6 @@
         </div>
       </div>
     </div>
-    <b-modal size="md" id="trait-modal">
-      <div v-html="trait"></div>
-      <template #modal-footer class="text-center"><div class="w-100"></div></template>
-    </b-modal>
   </div>
 </template>
 
@@ -31,7 +27,8 @@ const LOOP_RUN_DEF = process.env.VUE_APP_DEFAULT_LOOP_RUN
 export default {
   name: 'MyPageableItems',
   components: {
-    MySingleItem, Pagination
+    MySingleItem,
+    Pagination
   },
   props: ['loopRun'],
   data () {
@@ -72,24 +69,6 @@ export default {
     }
   },
   methods: {
-    update (data) {
-      if (data.opcode === 'display-trait') {
-        this.$store.dispatch('publicItemsStore/fetchTraits', data.edition).then((trait) => {
-          this.trait = this.toString(trait)
-          this.$bvModal.show('trait-modal')
-          // this.$notify({ type: 'success', title: 'Punk Traits', text: 'Click to display Punk Traits!' })
-        })
-      }
-    },
-    toString (trait) {
-      let attrString = '<h2>Punk Traits</h2>'
-      attrString += '<p>dna : ' + trait.dna + '</p>'
-      trait.attributes.forEach((o) => {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        attrString += '<p>' + o.trait_type + ' = ' + o.value + '</p>'
-      })
-      return attrString
-    },
     gotoPage (page) {
       this.nowOnPage = page - 1
       this.fetchPage(page - 1)

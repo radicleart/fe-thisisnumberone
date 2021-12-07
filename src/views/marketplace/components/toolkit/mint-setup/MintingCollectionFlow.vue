@@ -11,7 +11,7 @@
           </b-col>
           <b-col cols="8" class="px-5">
             <div class="bg-dark mt-0">
-              <RoyaltyScreen :hidePrimaries="true" :mintButtonText="mintButtonText()" :errorMessage="errorMessage" :item="null" @mintToken="beginMintProcess" :loopRun="loopRun" v-if="displayCard !== 102"/>
+              <RoyaltyScreen :loopRun="loopRun" :hidePrimaries="true" :mintButtonText="mintButtonText()" :errorMessage="errorMessage" :item="null" @mintToken="beginMintProcess" v-if="displayCard !== 102"/>
             </div>
           </b-col>
         </b-row>
@@ -199,14 +199,15 @@ export default {
       })
     },
     buildAssetHash (myAsset) {
-      const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](this.loopRun.contractId)
-      let mintPrice = application.tokenContract.mintPrice
-      const defaultMintPrice = Number(process.env.VUE_APP_DEFAULT_MINT_PRICE)
-      mintPrice = Math.max(application.tokenContract.mintPrice, defaultMintPrice)
-      const editions = myAsset.attributes.editions
-      const editionCost = myAsset.attributes.editionCost
-      const buyNowPrice = myAsset.attributes.buyNowPrice
-      const hashish = myAsset.image + myAsset.metaDataUrl + mintPrice + editions + editionCost + buyNowPrice
+      // const application = this.$store.getters[APP_CONSTANTS.KEY_APPLICATION_FROM_REGISTRY_BY_CONTRACT_ID](this.loopRun.contractId)
+      // let mintPrice = application.tokenContract.mintPrice
+      // const defaultMintPrice = Number(process.env.VUE_APP_DEFAULT_MINT_PRICE)
+      // mintPrice = Math.max(application.tokenContract.mintPrice, defaultMintPrice)
+      // const editions = myAsset.attributes.editions
+      // const editionCost = myAsset.attributes.editionCost
+      // const buyNowPrice = myAsset.attributes.buyNowPrice
+      // const hashish = myAsset.image + myAsset.metaDataUrl + mintPrice + editions + editionCost + buyNowPrice
+      const hashish = JSON.stringify(myAsset)
       myAsset.assetHash = utils.buildHash(hashish)
     },
     saveAssetWithMintTxId (gaiaAsset) {

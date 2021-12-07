@@ -1,10 +1,10 @@
 <template>
 <div class="mt-3" v-if="!loading">
   <h4>Royalties on Secondary Sales</h4>
-    <b-row class="mb-2 text-success">
-      <b-col :cols="(hidePrimaries) ? 9 : 6">Address</b-col>
+    <b-row class="mb-2 text-info text-bold">
+      <b-col :cols="(hidePrimaries) ? 8 : 6">Address</b-col>
       <b-col cols="3" v-if="!hidePrimaries">Primary</b-col>
-      <b-col cols="3">Secondary</b-col>
+      <b-col :cols="(hidePrimaries) ? 4 : 3">Secondary</b-col>
     </b-row>
   <div v-if="beneficiaries">
     <!--
@@ -21,6 +21,12 @@
   <div v-else>
     <p>Royalties are set by the first edition of the series.</p>
   </div>
+  <b-row class="">
+    <b-col cols="12">
+      <p class="text-bold text-xsmall mt-3"><span>Collection </span><span class="text-info" v-b-tooltip.hover="{ variant: 'warning' }"  :title="'Collection key: ' + loopRun.currentRunKey">{{loopRun.currentRun + ' / ' + loopRun.makerName}}</span></p>
+      <p class="text-bold text-xsmall"><span>Contract </span><span class="text-info">{{loopRun.contractId}}</span></p>
+    </b-col>
+  </b-row>
 </div>
 </template>
 

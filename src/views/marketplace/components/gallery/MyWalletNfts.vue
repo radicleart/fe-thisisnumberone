@@ -10,7 +10,7 @@
       <div class="d-flex justify-content-between">
         <SearchBar class="w-50" :displayClass="'text-small text-end'" @updateResults="updateResults" :mode="'wallet'"/>
         <div style="width: 100px;">
-          <span class="mr-3 text-warning pointer" @click.prevent="cacheWalletNfts" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Refresh your NFT wallet information'"><b-icon icon="arrow-clockwise" font-scale="1"/></span>
+          <span v-if="!reindexing" class="mr-3 text-warning pointer" @click.prevent="cacheWalletNfts" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Refresh from NFT wallet information'"><b-icon icon="arrow-clockwise" font-scale="1"/></span>
           <span class="text-warning pointer" @click.prevent="showIndexingInfo = ! showIndexingInfo"><b-icon icon="question-circle"/></span>
         </div>
       </div>
@@ -31,7 +31,7 @@
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="tokenCount" v-if="numberOfItems < tokenCount"/>
       <div class="row" v-if="resultSet && resultSet.length > 0">
         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
-          <MySingleItem @update="update" :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
+          <MySingleItem :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
         </div>
       </div>
       <div class="d-flex justify-content-start my-3 mx-4" v-else>
@@ -40,10 +40,6 @@
         </div>
       </div>
     </div>
-    <b-modal size="md" id="trait-modal">
-      <div v-html="trait"></div>
-      <template #modal-footer class="text-center"><div class="w-100"></div></template>
-    </b-modal>
   </div>
 </template>
 
@@ -63,6 +59,7 @@ export default {
   data () {
     return {
       trait: '',
+      reindexing: false,
       showIndexingInfo: false,
       showMinted: true,
       resultSet: [],
@@ -81,6 +78,7 @@ export default {
     }
   },
   mounted () {
+    this.reindexing = true
     const data = {
       // stxAddress: (process.env.VUE_APP_NETWORK === 'local') ? 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' : this.profile.stxAddress,
       stxAddress: this.profile.stxAddress,
@@ -101,24 +99,6 @@ export default {
     })
   },
   methods: {
-    update (data) {
-      if (data.opcode === 'display-trait') {
-        this.$store.dispatch('publicItemsStore/fetchTraits', data.edition).then((trait) => {
-          this.trait = this.toString(trait)
-          this.$bvModal.show('trait-modal')
-          // this.$notify({ type: 'success', title: 'Punk Traits', text: 'Click to display Punk Traits!' })
-        })
-      }
-    },
-    toString (trait) {
-      let attrString = '<h2>Punk Traits</h2>'
-      attrString += '<p>dna : ' + trait.dna + '</p>'
-      trait.attributes.forEach((o) => {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        attrString += '<p>' + o.trait_type + ' = ' + o.value + '</p>'
-      })
-      return attrString
-    },
     gotoPage (page) {
       this.nowOnPage = page - 1
       this.fetchPage(page - 1)
@@ -151,7 +131,11 @@ export default {
     },
     updateResults (data) {
       if (data.query === 'refresh') {
-        this.cacheWalletNfts()
+        if (!this.reindexing) {
+          this.cacheWalletNfts()
+        }
+        this.reindexing = true
+        this.$notify({ type: 'success', title: 'Wallet NFTs', text: 'Reindexing in progress - items will be displayed below!' })
       } else {
         this.defQuery = data.query
         this.fetchPage(0)

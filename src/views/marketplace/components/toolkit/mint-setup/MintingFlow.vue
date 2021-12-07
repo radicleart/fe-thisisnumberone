@@ -18,7 +18,7 @@
           </b-col>
           <b-col cols="8" class="px-5">
             <div class="bg-dark mt-0">
-              <RoyaltyScreen :errorMessage="errorMessage" :item="item" @mintToken="mintTwentyTokens" @editBeneficiary="editBeneficiary" @removeBeneficiary="removeBeneficiary" @updateBeneficiary="updateBeneficiary" @addNewBeneficiary="addNewBeneficiary" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
+              <RoyaltyScreen :loopRun="loopRun" :errorMessage="errorMessage" :item="item" @mintToken="mintTwentyTokens" @editBeneficiary="editBeneficiary" @removeBeneficiary="removeBeneficiary" @updateBeneficiary="updateBeneficiary" @addNewBeneficiary="addNewBeneficiary" :beneficiaries="beneficiaries" v-if="displayCard !== 102"/>
               <AddBeneficiaryScreen :errorMessage="errorMessage" :eBen="eBen" @addBeneficiary="addBeneficiary" :beneficiaries="beneficiaries" :item="item" v-if="displayCard === 102"/>
             </div>
           </b-col>
@@ -127,8 +127,8 @@ export default {
           metaDataUrl: this.items[0].metaDataUrl,
           minteficaries: this.minteficaries,
           beneficiaries: this.beneficiaries || [],
-          editions: (this.items[0].editions) ? this.items[0].editions : 1,
-          editionCost: (this.items[0].editionCost) ? this.items[0].editionCost : 0,
+          editions: (this.items[0].attributes.editions) ? this.items[0].attributes.editions : 1,
+          editionCost: (this.items[0].attributes.editionCost) ? this.items[0].attributes.editionCost : 0,
           sendAsSky: true, // only applicable in local
           contractAddress: this.loopRun.contractId.split('.')[0],
           contractName: this.loopRun.contractId.split('.')[1],

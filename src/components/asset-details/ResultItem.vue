@@ -1,9 +1,6 @@
 <template>
-  <div :style="dimensions" class="text-right" v-if="result">
-    <b-link @click="openAssetDetails">
-      <!-- <MediaItem class="p-0 m-0" @videoClicked="openAssetDetails" v-on="$listeners" :videoOptions="videoOptions" :attributes="result.attributes" :targetItem="targetItem()"/> -->
-      <MediaItemGeneral :classes="'hash1-image'" @videoClicked="openAssetDetails" :options="videoOptions" :mediaItem="getMediaItem().artworkFile" v-on="$listeners"/>
-    </b-link>
+  <div :style="dimensions" class="text-right" v-if="result" @click="openAssetDetails">
+    <MediaItemGeneral :classes="'hash1-image'" @videoClicked="videoClicked" :options="videoOptions" :mediaItem="getMediaItem().artworkFile" v-on="$listeners"/>
   </div>
 </template>
 
@@ -42,7 +39,26 @@ export default {
       const attributes = this.$store.getters[APP_CONSTANTS.KEY_MEDIA_ATTRIBUTES](this.result)
       return attributes
     },
+    videoClicked () {
+      const attributes = this.$store.getters[APP_CONSTANTS.KEY_MEDIA_ATTRIBUTES](this.result)
+      return attributes
+    },
     openAssetDetails () {
+      if (this.result && this.result.contractAsset) {
+        const newPath = '/nfts/' + this.result.contractAsset.contractId + '/' + this.result.contractAsset.nftIndex
+        if (window.location.href.indexOf('localhost') > -1) {
+          window.location.href = 'http://localhost:8082' + newPath
+        } else if (window.location.href.indexOf('staging') > -1) {
+          window.location.href = 'https://staging.thisisnumberone.com' + newPath
+        } else if (window.location.href.indexOf('thisisnumberone') > -1) {
+          window.location.href = 'https://thisisnumberone.com' + newPath
+        } else {
+          if (this.$route.path !== newPath) {
+            this.$router.push(newPath)
+            return
+          }
+        }
+      }
       if (this.result.assetHash !== this.$route.params.assetHash) {
         if (this.$route.path !== this.assetUrl) this.$router.push(this.assetUrl)
       }

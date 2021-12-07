@@ -36,28 +36,36 @@ export default {
       contractId: null
     }
   },
-  mounted () {
-    this.contractId = this.$route.params.contractId
-    if (this.$route.name === 'asset-by-index') {
-      this.nftIndex = Number(this.$route.params.nftIndex)
-      this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', { contractId: this.contractId, nftIndex: this.nftIndex }).then((gaiaAsset) => {
-        this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.parseRunKey(gaiaAsset)).then((loopRun) => {
-          this.gaiaAsset = gaiaAsset
-          this.loopRun = loopRun
-          this.$store.dispatch('rpayManageCacheStore/cacheUpdate', { contractId: this.contractId, nftIndex: this.nftIndex })
-          this.loading = false
-        })
-      })
-    } else {
-      this.assetHash = this.$route.params.assetHash
-      this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndAssetHash', { contractId: this.contractId, assetHash: this.assetHash }).then((gaiaAsset) => {
-        this.gaiaAsset = gaiaAsset
-        this.$store.dispatch('rpayManageCacheStore/cacheUpdate', { contractId: this.contractId, assetHash: this.assetHash })
-        this.loading = false
-      })
+  watch: {
+    '$route' () {
+      this.loadPage()
     }
   },
+  mounted () {
+    this.loadPage()
+  },
   methods: {
+    loadPage () {
+      this.contractId = this.$route.params.contractId
+      if (this.$route.name === 'asset-by-index') {
+        this.nftIndex = Number(this.$route.params.nftIndex)
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', { contractId: this.contractId, nftIndex: this.nftIndex }).then((gaiaAsset) => {
+          this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.parseRunKey(gaiaAsset)).then((loopRun) => {
+            this.gaiaAsset = gaiaAsset
+            this.loopRun = loopRun
+            this.$store.dispatch('rpayManageCacheStore/cacheUpdate', { contractId: this.contractId, nftIndex: this.nftIndex })
+            this.loading = false
+          })
+        })
+      } else {
+        this.assetHash = this.$route.params.assetHash
+        this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndAssetHash', { contractId: this.contractId, assetHash: this.assetHash }).then((gaiaAsset) => {
+          this.gaiaAsset = gaiaAsset
+          this.$store.dispatch('rpayManageCacheStore/cacheUpdate', { contractId: this.contractId, assetHash: this.assetHash })
+          this.loading = false
+        })
+      }
+    },
     parseRunKey (gaiaAsset) {
       const runKey = this.$store.getters[APP_CONSTANTS.KEY_RUN_KEY_FROM_META_DATA_URL](gaiaAsset.contractAsset)
       if (runKey && runKey.indexOf('.json') === -1) {

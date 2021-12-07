@@ -15,8 +15,14 @@
       <b-row v-if="showRoyalties">
         <b-col cols="12" class="mt-3">
           <h6 style="font-weight: 700;">Royalty Payments</h6>
-          <ListBeneficiaries :loopRun="loopRun" :item="item" />
+          <ListBeneficiaries v-if="loopRun" :loopRun="loopRun" :item="item" />
         </b-col>
+        <!--
+        <b-col cols="12">
+          <p class="text-bold text-xsmall mt-3"><span>Collection </span><span class="text-info" v-b-tooltip.hover="{ variant: 'warning' }"  :title="'Collection key: ' + loopRun.currentRunKey">{{loopRun.currentRun + ' / ' + loopRun.makerName}}</span></p>
+          <p class="text-bold text-xsmall mt-3"><span>Contract </span><span class="text-info">{{loopRun.contractId}}</span></p>
+        </b-col>
+        -->
       </b-row>
     </b-alert>
   </div>
@@ -40,7 +46,7 @@ export default {
   },
   methods: {
     variant () {
-      let v = (this.iAmOwner) ? 'warning' : 'light'
+      let v = (this.iAmOwner) ? 'dark' : 'light'
       if (this.$route.name === 'asset-by-hash' || this.$route.name === 'asset-by-index') {
         v = (this.iAmOwner) ? 'light' : 'dark'
       }

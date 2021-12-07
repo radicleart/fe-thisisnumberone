@@ -18,8 +18,13 @@
             <b-col cols="9" class="" align-self="end">
                 <div class="">
                   <div v-if="loopRun.type === 'punks'"><b-link :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.versionLimit - loopRun.tokenCount}} still available</b-link></div>
-                  <div v-else>{{numbTokens}} artworks</div>
-                  <div>by: <span class="text-warning">{{loopRun.makerName}}</span></div>
+                  <div v-else>
+                    <span class="mr-3" v-html="availableMessage()"></span>
+                    <span v-b-tooltip.hover="{ variant: 'warning' }" :title="'Vist project to mint new NFTs'" v-if="loopRun.externalUrl"><a :href="loopRun.externalUrl" target="_blank"><b-icon icon="arrow-up-right-circle" font-scale="0.8"/></a></span>
+                  </div>
+                  <div>
+                    by: <span class="mr-3 text-warning">{{loopRun.makerName}}</span>
+                  </div>
                 </div>
             </b-col>
           </b-row>
@@ -95,7 +100,7 @@ export default {
     }
   },
   mounted () {
-    this.makerUrlKey = this.$route.params.makerß
+    this.makerUrlKey = this.$route.params.makerUrlKey
     this.currentRunKey = this.$route.params.collection
     Vue.nextTick(function () {
       const vid = document.getElementById('video-column')
@@ -103,6 +108,13 @@ export default {
     }, this)
   },
   methods: {
+    availableMessage () {
+      if (this.loopRun.versionLimit - this.loopRun.tokenCount > 0) {
+        return this.loopRun.versionLimit - this.loopRun.tokenCount + ' still available'
+      } else {
+        return 'All ' + this.loopRun.versionLimit + ' minted - <a href="/nft-marketplace/' + this.loopRun.makerUrlKey + '/' + this.loopRun.currentRunKey + '">try the secondary market</a>'
+      }
+    },
     tokenCount (data) {
       this.numbTokens = data.numbTokens
     },

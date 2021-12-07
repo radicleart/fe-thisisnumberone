@@ -34,6 +34,7 @@
 <script>
 import RatesListing from '@/views/marketplace/components/toolkit/RatesListing'
 import { APP_CONSTANTS } from '@/app-constants'
+import formatUtils from '@/services/formatUtils.js'
 
 export default {
   name: 'PurchaseBuyNow',
@@ -54,7 +55,7 @@ export default {
   },
   methods: {
     rateMessage: function () {
-      return 'Buy now for' + this.contractAsset.saleData.buyNowOrStartingPrice + ' STX'
+      return 'Buy now for' + formatUtils.fmtAmount(this.contractAsset.saleData.buyNowOrStartingPrice, 'stx') + ' STX'
     }
   },
   computed: {

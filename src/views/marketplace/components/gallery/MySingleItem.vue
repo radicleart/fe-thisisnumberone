@@ -5,7 +5,7 @@
       <div class="text-left">
         <div class="text-small d-flex justify-content-between">
           <p style="height: 2rem;" class="overflow-hidden text-bold">{{mintedMessage}}</p>
-          <p class="text-right" v-if="hasTraits()"><b-link @click.prevent="fetchTraits()" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Click to display Punk Traits!'" class="text-warning"><b-icon icon="question-circle"/></b-link></p>
+          <RarityTable :image="asset.image" :edition="asset.attributes.index" :loopRun="loopRun" />
         </div>
         <div class="text-small d-flex justify-content-between">
           <div class="text-right"><span v-if="loopRun">{{loopRun.currentRun}}</span> {{editionMessage}}</div>
@@ -26,13 +26,13 @@
     </b-card-text>
     <b-card-text>
       <!-- Enables connecting meta data to the actual punk crash -->
-      <PunkConnect v-if="loopRun" :loopRun="loopRun" :asset="asset" @updateImage="updateImage"/> <!-- v-on="$listeners"/> -->
+      <PunkConnect v-if="allowReveal()" :loopRun="loopRun" :asset="asset" @updateImage="updateImage"/> <!-- v-on="$listeners"/> -->
       <div class="text-xsmall text-center mb-3">
         <span v-if="contractAsset">{{contractAsset.owner}}</span>
         <span v-else>'ownership in progress'</span>
       </div>
       <div class="mb-4 d-flex justify-content-center" v-if="marketplace || myNfts">
-        <b-button :to="nextUrl" :variant="variant">{{sellingMessage}}</b-button>
+        <b-button :to="nextUrl" :variant="variant" v-html="sellingMessage"></b-button>
       </div>
       <div class="d-flex justify-content-center" v-else-if="nftPage">
       </div>
@@ -59,12 +59,15 @@
 import { DateTime } from 'luxon'
 import { APP_CONSTANTS } from '@/app-constants'
 import PunkConnect from './PunkConnect'
+import formatUtils from '@/services/formatUtils.js'
+import RarityTable from './RarityTable'
 
 // noinspection JSUnusedGlobalSymbols
 export default {
   name: 'MySingleItem',
   components: {
-    PunkConnect
+    PunkConnect,
+    RarityTable
   },
   props: ['asset', 'loopRun', 'parent'],
   data () {
@@ -96,11 +99,8 @@ export default {
     })
   },
   methods: {
-    hasTraits () {
-      return this.asset.attributes && typeof this.asset.attributes.index === 'number' && this.asset.attributes.index > -1
-    },
-    fetchTraits () {
-      this.$emit('update', { opcode: 'display-trait', edition: this.asset.attributes.index })
+    allowReveal () {
+      return this.myNfts && this.loopRun
     },
     isLoopbomb () {
       try {
@@ -196,7 +196,11 @@ export default {
     },
     mintedMessage () {
       if (this.contractAsset && this.loopRun && this.loopRun.type === 'punks') {
-        return this.loopRun.currentRun + ' #' + this.contractAsset.nftIndex
+        if (this.profile.superAdmin) {
+          return this.loopRun.currentRun + ' #' + this.contractAsset.nftIndex + ' (' + this.asset.attributes.index + ')'
+        } else {
+          return this.loopRun.currentRun + ' #' + this.contractAsset.nftIndex
+        }
       }
       if (this.contractAsset) {
         if (this.contractAsset.assetName === 'crashpunks') {
@@ -219,9 +223,9 @@ export default {
     sellingMessage () {
       if (this.contractAsset) {
         if (this.contractAsset.saleData.saleType === 1) {
-          return 'Buy Now: ' + this.contractAsset.saleData.buyNowOrStartingPrice + ' STX'
+          return formatUtils.fmtAmount(this.contractAsset.saleData.buyNowOrStartingPrice, 'stx') + ' STX'
         } else if (this.contractAsset.saleData.saleType === 2) {
-          return 'Next Bid: ' + this.nextBid + ' STX'
+          return formatUtils.fmtAmount(this.nextBid, 'stx') + ' STX'
         }
       }
       return 'not on sale'

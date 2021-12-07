@@ -4,14 +4,10 @@
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
       <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
         <div class="text-white col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
-          <MySingleItem @update="update" v-if="!skipme(asset)" :loopRun="loopRun" :parent="'list-view'" :asset="asset"/>
+          <MySingleItem v-if="!skipme(asset)" :loopRun="loopRun" :parent="'list-view'" :asset="asset"/>
         </div>
       </div>
     </div>
-    <b-modal size="md" id="trait-modal">
-      <div v-html="trait"></div>
-      <template #modal-footer class="text-center"><div class="w-100"></div></template>
-    </b-modal>
   </div>
 </template>
 
@@ -23,6 +19,7 @@ import { APP_CONSTANTS } from '@/app-constants'
 const STX_CONTRACT_ADDRESS = process.env.VUE_APP_STACKS_CONTRACT_ADDRESS
 const STX_CONTRACT_NAME = process.env.VUE_APP_STACKS_CONTRACT_NAME
 const STX_CONTRACT_NAME_V2 = process.env.VUE_APP_STACKS_CONTRACT_NAME_V2
+const STX_CONTRACT_NAME_LPBSTXV1 = process.env.VUE_APP_STACKS_CONTRACT_NAME_LPBSTXV1
 
 export default {
   name: 'PageableItems',
@@ -34,6 +31,7 @@ export default {
   data () {
     return {
       resultSet: [],
+      edition: null,
       trait: '',
       pageSize: 50,
       loading: true,
@@ -63,24 +61,6 @@ export default {
     }
   },
   methods: {
-    update (data) {
-      if (data.opcode === 'display-trait') {
-        this.$store.dispatch('publicItemsStore/fetchTraits', data.edition).then((trait) => {
-          this.trait = this.toString(trait)
-          this.$bvModal.show('trait-modal')
-          // this.$notify({ type: 'success', title: 'Punk Traits', text: 'Click to display Punk Traits!' })
-        })
-      }
-    },
-    toString (trait) {
-      let attrString = '<h2>Punk Traits</h2>'
-      attrString += '<p>dna : ' + trait.dna + '</p>'
-      trait.attributes.forEach((o) => {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        attrString += '<p>' + o.trait_type + ' = ' + o.value + '</p>'
-      })
-      return attrString
-    },
     skipme (asset) {
       if (this.loopRun && this.isTheV2Contract()) {
         if (this.loopRun.currentRunKey === 'my_first_word') {
@@ -100,6 +80,9 @@ export default {
     isTheV2Contract () {
       return this.loopRun && this.loopRun.contractId.indexOf(STX_CONTRACT_NAME_V2) > -1
     },
+    isTheLPBSTXV1 () {
+      return this.loopRun && this.loopRun.contractId.indexOf(STX_CONTRACT_NAME_LPBSTXV1) > -1
+    },
     fetchPage (page, reset, query) {
       let queryStr = '?'
       if (this.loopRun && this.loopRun.currentRunKey === 'my_first_word') {
@@ -112,6 +95,7 @@ export default {
       if (query.onSale) queryStr += 'onSale=true&'
       if (query.editions) queryStr += 'editions=true&'
       if (query.sortField) queryStr += 'sortField=' + query.sortField + '&'
+      // NB adding the contract id negates the search by runKey (ie by collectionId)
       const data = {
         runKey: (this.loopRun) ? this.loopRun.currentRunKey : null,
         query: queryStr,
@@ -121,7 +105,7 @@ export default {
       this.resultSet = []
       if (query.allCollections !== 'all') {
         data.contractId = (this.loopRun) ? this.loopRun.contractId : STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME
-        if (this.isTheV2Contract()) {
+        if (this.isTheLPBSTXV1() || this.isTheV2Contract()) {
           data.contractId = null
           this.fetchV2Page(data, reset)
         } else {
@@ -160,7 +144,7 @@ export default {
           if (reset) this.componentKey++
           this.loading = false
         })
-      } else if (this.loopRun.currentRunKey.indexOf('genesis') > -1) {
+      } else if (this.isTheLPBSTXV1() || this.loopRun.currentRunKey.indexOf('genesis') > -1) {
         this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractId', data).then((result) => {
           this.resultSet = result.gaiaAssets
           this.tokenCount = result.tokenCount
