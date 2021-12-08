@@ -160,6 +160,15 @@ export default {
               $self.$bvModal.hide('result-modal')
               $self.componentKey++
             })
+            if (data.functionName === 'mint-token' || data.functionName === 'collection-mint-token') {
+              const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
+              $self.saveMintingInfo(item, data)
+            } else if (data.assetHashes && (data.functionName === 'mint-token-twenty' || data.functionName === 'collection-mint-token-twenty')) {
+              data.assetHashes.forEach((o) => {
+                const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](o)
+                $self.saveMintingInfo(item, data)
+              })
+            }
             // $self.$notify({ type: 'success', title: 'Tx Sent', text: 'Punks minted and meta data saved to Gaia!' })
           } else if (data.txStatus === 'pending') {
             $self.walletTx = data
@@ -177,6 +186,15 @@ export default {
     }
   },
   methods: {
+    saveMintingInfo (item, data) {
+      item.mintInfo = {
+        txId: data.txId,
+        txStatus: data.txStatus
+      }
+      this.$store.dispatch('rpayMyItemStore/quickSaveItem', item).then(() => {
+        this.setPending(data)
+      })
+    },
     transactionUrl: function () {
       if (!this.walletTx) return '#'
       let txId = this.walletTx.txId

@@ -79,15 +79,16 @@ export default {
         if (data.opcode === 'stx-transaction-sent') {
           $self.componentKey++
           // save transaction but not on gaia asset
-          if (data.txId && data.functionName === 'mint-token' && data.txStatus === 'success') {
-            const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
-            item.mintInfo = {
-              txId: data.txId,
-              txStatus: data.txStatus
+          if (data.txId && data.txStatus === 'success') {
+            if (data.functionName === 'mint-token' || data.functionName === 'collection-mint-token') {
+              const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](data.assetHash)
+              $self.saveMintingInfo(item, data)
+            } else if (data.assetHashes && (data.functionName === 'mint-token-twenty' || data.functionName === 'collection-mint-token-twenty')) {
+              data.assetHashes.forEach((o) => {
+                const item = $self.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](o)
+                $self.saveMintingInfo(item, data)
+              })
             }
-            $self.$store.dispatch('rpayMyItemStore/quickSaveItem', item).then(() => {
-              $self.setPending(data)
-            })
           }
           $self.setPending(data)
         }
@@ -95,6 +96,15 @@ export default {
     }
   },
   methods: {
+    saveMintingInfo (item, data) {
+      item.mintInfo = {
+        txId: data.txId,
+        txStatus: data.txStatus
+      }
+      this.$store.dispatch('rpayMyItemStore/quickSaveItem', item).then(() => {
+        this.setPending(data)
+      })
+    },
     fetchItem () {
       if (this.$route.name === 'nft-preview') {
         this.nftIndex = Number(this.$route.params.nftIndex)
