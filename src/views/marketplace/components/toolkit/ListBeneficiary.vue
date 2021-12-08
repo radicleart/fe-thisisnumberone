@@ -15,10 +15,10 @@
         {{beneficiary.chainAddress}}
       </span>
     </b-col>
-    <b-col cols="3" class="text-left">
+    <b-col cols="3"  class="text-right">
       <div v-if="!hidePrimaries">{{displayPrimary()}}%</div>
     </b-col>
-    <b-col cols="3" class="text-left">
+    <b-col cols="3"  class="text-right">
       <div class="">{{displaySecondary()}}%</div>
     </b-col>
     <b-col cols="11" class="py-2 mt-1 my-2 ml-3" v-if="showBeneficiary">

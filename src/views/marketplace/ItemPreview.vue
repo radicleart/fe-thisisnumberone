@@ -101,9 +101,7 @@ export default {
         txId: data.txId,
         txStatus: data.txStatus
       }
-      this.$store.dispatch('rpayMyItemStore/quickSaveItem', item).then(() => {
-        this.setPending(data)
-      })
+      this.$store.dispatch('rpayMyItemStore/quickSaveItem', item)
     },
     fetchItem () {
       if (this.$route.name === 'nft-preview') {
@@ -147,10 +145,15 @@ export default {
         }
         if (!result || !result.txStatus || result.txStatus === 'pending') {
           this.pending = result
-        } else if (result.txStatus === 'success' && result.functionName === 'mint-token') {
-          data.assetHash = result.assetHash
-          this.updateCacheByHash(data)
-        } else if (result.txStatus === 'success' && result.functionName !== 'mint-token') {
+        } else if (result.txStatus === 'success' && result.functionName.indexOf('mint-token') > -1) {
+          if (result.functionName.indexOf('-twenty') > -1) {
+            data.assetHash = result.assetHashes[0]
+            this.updateCacheByHash(data)
+          } else {
+            data.assetHash = result.assetHash
+            this.updateCacheByHash(data)
+          }
+        } else if (result.txStatus === 'success' && result.functionName.indexOf('mint-token') === -1) {
           data.nftIndex = result.nftIndex
           this.updateCacheByNftIndex(data)
         } else {

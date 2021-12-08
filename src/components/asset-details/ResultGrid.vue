@@ -27,12 +27,8 @@ export default {
     }
   },
   mounted () {
-    // this.$store.dispatch('rpaySearchStore/findByProjectId', STX_CONTRACT_ADDRESS + '.' + STX_CONTRACT_NAME).then(() => {
-    // this.results = this.resultSet(searchResults)
-    // this.setupGrid(padder)
     this.formatResults()
     this.loaded = true
-    // })
   },
   methods: {
     numbEntries: function () {

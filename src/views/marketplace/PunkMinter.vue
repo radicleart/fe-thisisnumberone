@@ -25,20 +25,20 @@
                 <p class="mt-5" v-if="loopRun.description" v-html="preserveWhiteSpace(loopRun.description)"></p>
               </b-col>
               <b-col cols="12" align-self="end">
-                <div class="mt-2">
-                  <span>{{credits}} Mints Remaining</span>
-                </div>
                 <div class="mt-2" v-if="walletTx">
                   <a class="mr-2" :href="transactionUrl()" target="_blank"><b-icon class="text-warning" font-scale="1.2" icon="arrow-up-right-circle"/> view on explorer</a>
                 </div>
                 <div class="mt-2" v-else>
-                  <div v-if="mintingStatus === 1">
+                  <div v-if="mintingStatus === 1 || mintingStatus === 6">
+                    <div class="mt-2">
+                      <span>{{credits}} Mints Remaining</span>
+                    </div>
                     <div v-if="mintingOk">
                       <b-row class="">
                         <b-col cols="6" class="px-0 pr-1 pl-4 mx-0">
                           <b-form-select style="text-align: center; font-size: 2rem; font-weight: 700; height: 4rem;" v-if="loopRun.batchSize > 1" id="batchOption" v-model="batchOption" :options="batchOptions()"></b-form-select>
                         </b-col>
-                        <b-col cols="6" class="px-0 pl-1 pr-4 mx-0">
+                        <b-col cols="6" class="px-0 pl-1 pr-4 mx-0" v-if="mintingStatus !== 6">
                           <b-button class="w-100 text-white" variant="warning" @click="startMinting()">Mint<span v-if="loopRun && loopRun.batchSize > 0"> {{batchOption}}</span></b-button>
                         </b-col>
                       </b-row>
@@ -50,13 +50,13 @@
                     </div>
                   </div>
                   <div v-else-if="mintingStatus === 2">
-                    Public minting is paused
+                    Minting is paused
                   </div>
                   <div v-else-if="mintingStatus === 5">
                     Mint pass all used up!
                   </div>
                   <div v-else>
-                    Public minting starts soons
+                    Minting starts soon
                   </div>
                 </div>
                 <div class="mt-4 pt-4 border-top text-right"><img :src="hashone" /></div>
@@ -127,6 +127,11 @@ export default {
       counter: 0
     }
   },
+  watch: {
+    'batchOption' () {
+      this.setMintingStatus()
+    }
+  },
   mounted () {
     this.makerUrlKey = this.$route.params.maker
     this.currentRunKey = this.$route.params.collection
@@ -192,7 +197,7 @@ export default {
         txStatus: data.txStatus
       }
       this.$store.dispatch('rpayMyItemStore/quickSaveItem', item).then(() => {
-        this.setPending(data)
+        // this.setPending(data)
       })
     },
     transactionUrl: function () {
@@ -214,10 +219,13 @@ export default {
     setMintingStatus () {
       if (this.loopRun.status !== 'active' && this.loopRun.status !== 'unrevealed' && this.credits > 0) {
         this.mintingStatus = 2
-      } else if (this.allowed && this.credits > 0) {
+      } else if (this.allowed && this.credits > 0 && this.batchOption <= this.credits) {
         this.mintingStatus = 1
       } else if (this.credits <= 0) {
         this.mintingStatus = 5
+      } else if (this.credits < this.batchOption) {
+        this.$notify({ type: 'warning', title: 'Over Mint Limit', text: 'Try reducing the batch size' })
+        this.mintingStatus = 6
       } else {
         this.mintingStatus = 3
       }
@@ -230,6 +238,8 @@ export default {
         this.$router.push('/nft-marketplace/' + data.loopRun.makerUrlKey + '/' + data.loopRun.currentRunKey)
       } else if (data.opcode === 'cancel') {
         this.$bvModal.hide('minting-modal')
+      } else if (data.opcode === 'update-loopRun') {
+        this.loopRun = data.loopRun
       }
     },
     batchOptions () {
@@ -240,11 +250,19 @@ export default {
       return options
     },
     startMinting: function () {
-      this.$store.dispatch('rpayCategoryStore/registerSpin', this.profile).then((loopRun) => {
-        this.loopRun = loopRun
-        this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow' })
-        this.$store.commit('rpayStore/setDisplayCard', 100)
-        this.$bvModal.show('minting-modal')
+      const data = {
+        stxAddress: this.profile.stxAddress,
+        contractId: this.loopRun.contractId,
+        currentRunKey: this.$route.params.collection
+      }
+      this.$store.dispatch('rpayCategoryStore/checkGuestList', data).then((result) => {
+        if (result) {
+          this.$store.commit(APP_CONSTANTS.SET_RPAY_FLOW, { flow: 'minting-flow' })
+          this.$store.commit('rpayStore/setDisplayCard', 100)
+          this.$bvModal.show('minting-modal')
+        } else {
+          this.$notify({ type: 'warning', title: 'Mint Pass Expired', text: 'New allow list in operation' })
+        }
       })
     },
     updateAllocation (data) {
@@ -287,7 +305,7 @@ export default {
       return this.items.length === this.loopRun.batchSize
     },
     credits () {
-      if (!this.profile.loggedIn) return true
+      if (!this.profile.loggedIn) return 0
       const loopRun = this.loopRun
       if (loopRun) {
         const remaining = loopRun.spinsPerDay - loopRun.spinsToday

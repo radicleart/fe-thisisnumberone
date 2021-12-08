@@ -205,10 +205,14 @@ export default {
         if (!result || !result.txStatus || result.txStatus === 'pending') {
           this.pending = result
         } else if (this.pending.txStatus === 'pending' && result.txStatus === 'success') {
-          if (result.functionName === 'mint-token') {
-            const data = { contractId: this.loopRun.contractId, assetHash: result.assetHash }
-            this.updateCacheByHash(data)
-          } else {
+          if (result.functionName.indexOf('mint-token') > -1) {
+            if (result.functionName.indexOf('-twenty') > -1) {
+              result.assetHash = result.assetHashes[0]
+              this.updateCacheByHash(result)
+            } else {
+              this.updateCacheByHash(result)
+            }
+          } else if (result.txStatus === 'success' && result.functionName.indexOf('mint-token') === -1) {
             const data = { contractId: this.loopRun.contractId, nftIndex: result.nftIndex }
             this.updateCacheByNftIndex(data)
           }

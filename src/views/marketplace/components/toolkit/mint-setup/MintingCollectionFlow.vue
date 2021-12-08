@@ -15,6 +15,21 @@
             </div>
           </b-col>
         </b-row>
+        <template #footer>
+          <b-row class="text-white text-bold">
+            <b-col cols="12" class="text-right">
+              <div><span class="text-xsmall">Minting to:</span> <span class="text-xsmall text-warning">{{profile.stxAddress}}</span></div>
+            </b-col>
+          </b-row>
+          <b-row class="text-white text-bold">
+            <b-col cols="5">
+              <span class="text-xsmall" v-b-tooltip.hover="{ variant: 'warning' }"  :title="'Collection key: ' + loopRun.currentRunKey">{{loopRun.currentRun + ' / ' + loopRun.makerName}}</span>
+            </b-col>
+            <b-col cols="7" class="text-right">
+              <span class="text-xsmall">{{loopRun.contractId}}</span>
+            </b-col>
+          </b-row>
+        </template>
       </b-card>
     </b-card-group>
   </div>
@@ -144,20 +159,23 @@ export default {
       })
     },
     updateMetaData (data) {
-      this.mintAllocations.forEach((ma) => {
-        const ga = this.gaiaAssets.find((o) => o.image.indexOf('/' + ma.punkIndex + '.png'))
-        ma.txId = data.txId
-        ma.status = (data.txStatus) ? data.txStatus : 'pending'
-        ma.assetHash = ga.assetHash
-      })
-      this.$store.dispatch('rpayCategoryStore/updateMintAllocations', this.mintAllocations)
+      this.$store.dispatch('rpayCategoryStore/registerSpin', { numbSpins: this.mintAllocations.length }).then((loopRun) => {
+        this.$emit('update', { opcode: 'update-loopRun', loopRun: loopRun })
+        this.mintAllocations.forEach((ma) => {
+          const ga = this.gaiaAssets.find((o) => o.image.indexOf('/' + ma.punkIndex + '.png'))
+          ma.txId = data.txId
+          ma.status = (data.txStatus) ? data.txStatus : 'pending'
+          ma.assetHash = ga.assetHash
+        })
+        this.$store.dispatch('rpayCategoryStore/updateMintAllocations', this.mintAllocations)
 
-      this.gaiaAssets.forEach((ga) => {
-        ga.mintInfo = {
-          txId: data.txId,
-          txStatus: (data.txStatus) ? data.txStatus : 'pending'
-        }
-        this.saveAssetWithMintTxId(ga)
+        this.gaiaAssets.forEach((ga) => {
+          ga.mintInfo = {
+            txId: data.txId,
+            txStatus: (data.txStatus) ? data.txStatus : 'pending'
+          }
+          this.saveAssetWithMintTxId(ga)
+        })
       })
     },
     createMetaData (index) {

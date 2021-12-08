@@ -5,9 +5,6 @@
     <b-col cols="12">
       <p class="mt-4 mb-5"><LoopRun :parent="'minting'" :currentLoopRun="loopRun"/></p>
       <p class="text-bold" v-if="item">{{item.name}}</p>
-      <div class="text-center mt-5">
-        <div>{{profile.stxAddress.substring(0, 6)}}...{{profile.stxAddress.substring(profile.stxAddress.length - 6)}}</div>
-      </div>
       <!-- <div class="mt-5 pt-4 border-top text-right"><img width="100px" :src="hashone" /></div> -->
     </b-col>
   </b-row>
