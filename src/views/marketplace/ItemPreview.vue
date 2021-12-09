@@ -111,7 +111,7 @@ export default {
           this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.parseRunKey(item)).then((loopRun) => {
             this.item = item
             this.loopRun = loopRun
-            this.$store.dispatch('rpayManageCacheStore/updateCacheByNftIndex', { contractId: this.contractId, nftIndex: this.nftIndex })
+            this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', { contractId: this.contractId, nftIndex: this.nftIndex })
             this.loading = false
           })
         })

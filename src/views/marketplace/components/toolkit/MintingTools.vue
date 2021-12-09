@@ -38,6 +38,9 @@
         <b-tab title="Transfer">
           <TransferNft :loopRun="loopRun" :item="items[0]"/>
         </b-tab>
+        <b-tab title="Metadata">
+          <UpdateMetaDataUrl :loopRun="loopRun" :item="items[0]"/>
+        </b-tab>
         <b-tab title="Operator">
           <ApprovalFlow :loopRun="loopRun" :item="items[0]"/>
         </b-tab>
@@ -76,6 +79,7 @@ import { APP_CONSTANTS } from '@/app-constants'
 import AcceptOffer from '@/views/marketplace/components/toolkit/AcceptOffer'
 // import ManageEditions from '@/views/marketplace/components/toolkit/editions/ManageEditions'
 import TransferNft from '@/views/marketplace/components/toolkit/TransferNft'
+import UpdateMetaDataUrl from '@/views/marketplace/components/toolkit/UpdateMetaDataUrl'
 import ApprovalFlow from '@/views/marketplace/components/toolkit/approvals/ApprovalFlow'
 import ListBeneficiaries from '@/views/marketplace/components/toolkit/ListBeneficiaries'
 // import OfferHistory from '@/views/marketplace/components/toolkit/offers/OfferHistory'
@@ -94,6 +98,7 @@ export default {
     // RisidioPay,
     AcceptOffer,
     TransferNft,
+    UpdateMetaDataUrl,
     ApprovalFlow,
     ListBeneficiaries
     // ManageEditions

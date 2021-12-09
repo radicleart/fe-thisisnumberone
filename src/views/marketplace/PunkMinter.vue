@@ -160,7 +160,7 @@ export default {
             $self.$store.dispatch('rpayCategoryStore/fetchLoopRun', $self.currentRunKey).then((loopRun) => {
               $self.loopRun = loopRun
               $self.setMintingStatus()
-              $self.mintImage = $self.loopRun.mintImage3 || $self.loopRun.image
+              $self.mintImage = $self.loopRun.mintImage1 || $self.loopRun.image
               $self.result = ' status: ' + data.txStatus
               $self.$bvModal.hide('result-modal')
               $self.componentKey++

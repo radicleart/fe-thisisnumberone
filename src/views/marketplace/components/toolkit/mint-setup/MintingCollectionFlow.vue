@@ -226,13 +226,16 @@ export default {
       // const buyNowPrice = myAsset.attributes.buyNowPrice
       // const hashish = myAsset.image + myAsset.metaDataUrl + mintPrice + editions + editionCost + buyNowPrice
       let metaNoImageUrl = {}
+      const artworkFile = myAsset.attributes.artworkFile
       metaNoImageUrl = Object.assign(metaNoImageUrl, myAsset)
       if (metaNoImageUrl.image) delete metaNoImageUrl.image
+      if (metaNoImageUrl.updated) delete metaNoImageUrl.updated
       if (metaNoImageUrl.metaDataUrl) delete metaNoImageUrl.metaDataUrl
       if (metaNoImageUrl.attributes.imageHash) delete metaNoImageUrl.attributes.imageHash
       if (metaNoImageUrl.attributes.artworkFile) delete metaNoImageUrl.attributes.artworkFile
       const hashish = JSON.stringify(metaNoImageUrl)
       myAsset.assetHash = utils.buildHash(hashish)
+      myAsset.attributes.artworkFile = artworkFile
     },
     saveAssetWithMintTxId (gaiaAsset) {
       this.$store.dispatch('rpayMyItemStore/saveItem', gaiaAsset).then(() => {

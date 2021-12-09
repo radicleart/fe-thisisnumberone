@@ -1,7 +1,8 @@
 <template>
-<div>
-  <b-link v-if="allowReveal()" class="text-small text-warning px-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Tear here to reveal your Crash Punk" @click.prevent="revealImage()"><span>reveal</span></b-link>
-</div>
+<span>
+  <b-link v-if="!revealing && allowReveal()" class="text-small text-warning px-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Tear here to reveal your Crash Punk" @click.prevent="revealImage()"><span>reveal</span></b-link>
+  <b-link v-if="revealing" class="text-small text-warning px-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Takes a few moments"><span><b-icon icon="circle" animation="throb" font-scale="1"/> revealing..</span></b-link>
+</span>
 </template>
 
 <script>
@@ -15,7 +16,21 @@ export default {
   props: ['asset', 'loopRun'],
   data () {
     return {
+      gaiaLocation1: null,
+      gaiaLocation2: null,
+      revealing: false
     }
+  },
+  mounted () {
+    const item = this.asset
+    this.gaiaLocation1 = item.contractAsset.tokenInfo.metaDataUrl
+    let assetPath = item.assetHash + '.json'
+    if (this.loopRun.type === 'punks') {
+      assetPath = item.attributes.collection + '/' + item.attributes.index + '.json'
+    } else if (item.attributes.collection) {
+      assetPath = item.attributes.collection + '/' + item.assetHash + '.json'
+    }
+    this.gaiaLocation2 = this.profile.gaiaHubConfig.url_prefix + this.profile.gaiaHubConfig.address + '/' + assetPath
   },
   methods: {
     allowReveal () {
@@ -35,6 +50,8 @@ export default {
         this.$notify({ type: 'error', title: 'Reveal', text: 'Base url is not set - please talk to tech team!' })
         throw new Error('Expecting base url and type for the images.')
       }
+      this.revealing = true
+      this.$emit('update', { opcode: 'update-interim-image' })
       const image = loopRun.punkImageBaseUrl + this.asset.attributes.index + loopRun.punkImageType
       utils.fetchBase64FromImageUrl(image, document).then((data) => {
         // this.asset.attributes.imageFrom = image
@@ -57,10 +74,28 @@ export default {
         this.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((item) => {
           this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
           this.$notify({ type: 'success', title: 'Save Data', text: 'Meta data saved to gaia!' })
+          if (this.gaiaLocation1 !== this.gaiaLocation2) {
+            this.$notify({ type: 'warning', title: 'Asset Transferred', text: 'Asset transfer detected (transfer or purchase) we need to update the meta data url in the contract to point to the new meta data location!' })
+            const contractAsset = item.contractAsset
+            const data = {
+              contractAddress: this.loopRun.contractId.split('.')[0],
+              contractName: this.loopRun.contractId.split('.')[1],
+              nftIndex: contractAsset.nftIndex,
+              metaDataUrl: this.gaiaLocation2,
+              sendAsSky: true
+            }
+            return this.$store.dispatch('rpayPurchaseStore/updateMetaDataUrl', data).then((result) => {
+              this.transferring = null
+              this.result = result
+            }).catch((err) => {
+              this.transferring = err
+            })
+          }
           const data = { contractId: this.loopRun.contractId, nftIndex: myAsset.contractAsset.nftIndex }
           this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', data).then(() => {
             this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then(() => {
               this.$emit('update', { opcode: 'update-image', asset: item })
+              this.revealing = false
             })
           })
         }).catch(() => {

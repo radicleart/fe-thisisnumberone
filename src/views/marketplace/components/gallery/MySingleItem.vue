@@ -6,10 +6,9 @@
         <div class="mb-3 text-small d-flex justify-content-between">
           <div style="height: 2rem;" class="overflow-hidden text-bold">{{mintedMessage}}</div>
           <div>
-            <PunkConnect :loopRun="loopRun" :asset="asset" @update="update"/>
-          </div>
-          <div v-if="isRevealed()">
-            <b-link class="text-small text-warning px-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Click here to see your Crash Punk traits" @click.prevent="showPunkRarity = !showPunkRarity"><span>traits</span></b-link>
+            <PunkConnect v-if="loopRun && loopRun.type === 'punks'" :loopRun="loopRun" :asset="asset" @update="update"/>
+            <b-link v-if="isRevealed()" class="text-small text-warning pl-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Click here to see your Crash Punk traits" @click.prevent="showPunkRarity = !showPunkRarity"><span>traits</span></b-link>
+            <a v-if="asset.contractAsset && asset.contractAsset.tokenInfo" :href="asset.contractAsset.tokenInfo.metaDataUrl" target="_blank" class="text-small text-warning pl-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Open meta data file"><span>meta</span></a>
           </div>
         </div>
         <div class="text-small d-flex justify-content-between">
@@ -18,7 +17,7 @@
         </div>
       </div>
     </div>
-    <b-card-text class="" v-if="showPunkRarity">
+    <b-card-text class="" v-if="loopRun && loopRun.type === 'punks' && showPunkRarity">
       <RarityTable :height="newHeight" :image="asset.image" :edition="asset.attributes.index" :loopRun="loopRun" />
     </b-card-text>
     <b-card-text v-else>
@@ -35,7 +34,7 @@
     <b-card-text>
       <!-- Enables connecting meta data to the actual punk crash -->
       <div class="text-xsmall text-center mb-3">
-        <span v-if="contractAsset">{{contractAsset.owner}}</span>
+        <span v-if="asset.contractAsset">{{asset.contractAsset.owner}}</span>
         <span v-else>'ownership in progress'</span>
       </div>
       <div class="mb-4 d-flex justify-content-center" v-if="marketplace || myNfts">
@@ -48,13 +47,13 @@
           <div><a v-b-tooltip.bottom title="Download NFT" class="text-info text-light ml-3" href="#" @click.prevent="download"><b-icon class="text-info arrow-repeat" font-scale="1" icon="arrow-down-circle"></b-icon></a></div>
         </div>
         <div v-else-if="myNfts">
-          <b-link v-if="contractAsset" class="text-small text-warning" :to="'/nft-preview/' + asset.contractAsset.contractId + '/' + asset.contractAsset.nftIndex">manage</b-link>
+          <b-link v-if="asset.contractAsset" class="text-small text-warning" :to="'/nft-preview/' + asset.contractAsset.contractId + '/' + asset.contractAsset.nftIndex">manage</b-link>
           <b-link v-else class="text-small text-warning" :to="'/item-preview/' + asset.assetHash + '/1'">mint now</b-link>
         </div>
         <div v-if="iAmOwner">
         </div>
         <div class="text-info" v-if="!marketplace && !nftPage">
-          <b-link v-if="contractAsset" class="text-small text-warning" :to="'/nfts/' + contractAsset.contractId + '/' + contractAsset.nftIndex">marketplace</b-link>
+          <b-link v-if="asset.contractAsset" class="text-small text-warning" :to="'/nfts/' + asset.contractAsset.contractId + '/' + contractAsset.nftIndex">marketplace</b-link>
         </div>
       </div>
     </b-card-text>
@@ -108,7 +107,7 @@ export default {
   },
   methods: {
     isRevealed () {
-      return this.loopRun && this.loopRun.status === 'active' && this.asset.image.indexOf(this.loopRun.mintImage3) === -1
+      return this.loopRun && this.loopRun.type === 'punks' && this.loopRun.status === 'active' && this.asset.image && this.asset.image.indexOf(this.loopRun.mintImage3) === -1
     },
     isLoopbomb () {
       try {
@@ -118,8 +117,13 @@ export default {
       }
     },
     update (data) {
-      this.asset.image = data.asset.image
-      this.image = data.asset.image
+      if (data.opcode === 'update-image') {
+        this.asset.image = data.asset.image
+        this.image = data.asset.image
+      } else if (data.opcode === 'update-interim-image') {
+        // this.asset.image = data.asset.image
+        this.image = this.loopRun.mintImage2
+      }
     },
     handler: function (e) {
       e.preventDefault()
