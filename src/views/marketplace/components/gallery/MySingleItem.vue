@@ -3,9 +3,14 @@
   <b-card bg-variant="black" class="bg-black mt-0 py-2 text-white">
     <div class="px-2">
       <div class="text-left">
-        <div class="text-small d-flex justify-content-between">
-          <p style="height: 2rem;" class="overflow-hidden text-bold">{{mintedMessage}}</p>
-          <RarityTable :image="asset.image" :edition="asset.attributes.index" :loopRun="loopRun" />
+        <div class="mb-3 text-small d-flex justify-content-between">
+          <div style="height: 2rem;" class="overflow-hidden text-bold">{{mintedMessage}}</div>
+          <div>
+            <PunkConnect :loopRun="loopRun" :asset="asset" @update="update"/>
+          </div>
+          <div v-if="isRevealed()">
+            <b-link class="text-small text-warning px-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Click here to see your Crash Punk traits" @click.prevent="showPunkRarity = !showPunkRarity"><span>traits</span></b-link>
+          </div>
         </div>
         <div class="text-small d-flex justify-content-between">
           <div class="text-right"><span v-if="loopRun">{{loopRun.currentRun}}</span> {{editionMessage}}</div>
@@ -13,7 +18,10 @@
         </div>
       </div>
     </div>
-    <b-card-text class="">
+    <b-card-text class="" v-if="showPunkRarity">
+      <RarityTable :height="newHeight" :image="asset.image" :edition="asset.attributes.index" :loopRun="loopRun" />
+    </b-card-text>
+    <b-card-text v-else>
       <b-link class="text-xsmall text-info" :to="nextUrl">
         <div style="min-height: 100px;" @contextmenu="handler($event)" class="d-flex justify-content-center p-2">
             <img
@@ -26,7 +34,6 @@
     </b-card-text>
     <b-card-text>
       <!-- Enables connecting meta data to the actual punk crash -->
-      <PunkConnect v-if="allowReveal()" :loopRun="loopRun" :asset="asset" @updateImage="updateImage"/> <!-- v-on="$listeners"/> -->
       <div class="text-xsmall text-center mb-3">
         <span v-if="contractAsset">{{contractAsset.owner}}</span>
         <span v-else>'ownership in progress'</span>
@@ -72,6 +79,7 @@ export default {
   props: ['asset', 'loopRun', 'parent'],
   data () {
     return {
+      showPunkRarity: false,
       image: null,
       newWidth: '100%',
       newHeight: null
@@ -99,8 +107,8 @@ export default {
     })
   },
   methods: {
-    allowReveal () {
-      return this.myNfts && this.loopRun
+    isRevealed () {
+      return this.loopRun && this.loopRun.status === 'active' && this.asset.image.indexOf(this.loopRun.mintImage3) === -1
     },
     isLoopbomb () {
       try {
@@ -109,9 +117,9 @@ export default {
         return false
       }
     },
-    updateImage (item) {
-      this.asset.image = item.image
-      this.image = item.image
+    update (data) {
+      this.asset.image = data.asset.image
+      this.image = data.asset.image
     },
     handler: function (e) {
       e.preventDefault()

@@ -1,8 +1,6 @@
 <template>
-<div class="" v-if="allowRevealImage()">
-  <div class="text-center mb-3">
-    <span class="pointer text-danger" @click="revealImage()">tear and claim your punk!</span>
-  </div>
+<div>
+  <b-link v-if="allowReveal()" class="text-small text-warning px-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Tear here to reveal your Crash Punk" @click.prevent="revealImage()"><span>reveal</span></b-link>
 </div>
 </template>
 
@@ -20,21 +18,21 @@ export default {
     }
   },
   methods: {
+    allowReveal () {
+      if (!this.myNfts || !this.loopRun) return false
+      const image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
+      return this.loopRun.status === 'active' && image && image.indexOf(this.loopRun.mintImage3) > -1
+    },
     revealImage () {
       this.$store.dispatch('rpayCategoryStore/fetchLoopRunForReveal', { currentRunKey: this.loopRun.currentRunKey, contractId: this.loopRun.contractId, nftIndex: this.asset.contractAsset.nftIndex }).then((loopRun) => {
         this.fixMetaData(loopRun)
       })
     },
-    allowRevealImage () {
-      const image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
-      return this.loopRun.status === 'active' && image && image.indexOf(this.loopRun.mintImage3) > -1
-    },
-    // https://res.cloudinary.com/mijo-enterprises/image/upload/v1635240308/collections/artists/artist1/set3/907.png
-    // https://res.cloudinary.com/mijo-enterprises/image/upload/v1635240326/collections/artists/artist1/set3/
     fixMetaData (loopRun) {
       // create but don't store - wait till the last minute to register the batch!
       // see component MintingFlow.vue
       if (!loopRun.punkImageBaseUrl) {
+        this.$notify({ type: 'error', title: 'Reveal', text: 'Base url is not set - please talk to tech team!' })
         throw new Error('Expecting base url and type for the images.')
       }
       const image = loopRun.punkImageBaseUrl + this.asset.attributes.index + loopRun.punkImageType
@@ -62,7 +60,7 @@ export default {
           const data = { contractId: this.loopRun.contractId, nftIndex: myAsset.contractAsset.nftIndex }
           this.$store.dispatch('rpayStacksContractStore/updateCacheByNftIndex', data).then(() => {
             this.$store.dispatch('rpayStacksContractStore/fetchTokenByContractIdAndNftIndex', data).then(() => {
-              this.$emit('updateImage', item)
+              this.$emit('update', { opcode: 'update-image', asset: item })
             })
           })
         }).catch(() => {
@@ -72,6 +70,9 @@ export default {
     }
   },
   computed: {
+    myNfts () {
+      return this.$route.name === 'my-nfts'
+    },
     profile () {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       return profile

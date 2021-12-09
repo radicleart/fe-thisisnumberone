@@ -1,26 +1,19 @@
 <template>
-  <div>
-    <div v-if="allowRevealRarities() && hasTraits()"><b-link @click.prevent="fetchTraits()" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Click to display Punk Traits!'" class="text-warning"><b-icon icon="question-circle"/></b-link></div>
-    <b-modal class="trait-modal" size="md" :id="'trait-modal-' + edition" v-if="trait">
-      <template #modal-header="{ close }">
-        <div class="text-black text-warning w-100 d-flex justify-content-between">
-          <div><h2>Punk Traits</h2></div>
-          <b-button size="sm" @click="close()"  class="m-0 p-1 text-dark" style="background: #fff; border:none; max-width: 30px !important; max-height: 30px !important;">
-            <img class="filter-black" :src="cross" alt="close" style="max-width: 20px !important; max-height: 20px !important;"/>
-          </b-button>
-        </div>
-      </template>
-      <div class="mb-5 d-flex justify-content-between">
-        <div>DNA: {{trait.dna}}</div>
-        <div>{{trait.normalizedRarityScore.toFixed(2)}}</div>
-      </div>
-      <div>
-        <b-table striped hover :items="values()" :fields="fields()" class="text-white">
-        </b-table>
-      </div>
-      <template #modal-footer class="text-center"><div class="w-100"></div></template>
-    </b-modal>
-  </div>
+<b-card class="bg-black mt-0 py-1 text-white" style="overflow-y: scroll; overflow-x: hidden; ">
+  <b-card-text :style="'height:' + (height - 20) + 'px;'">
+    <div class="text-xsmall text-center" v-if="trait">
+      <div>{{trait.dna}}</div>
+    </div>
+    <div class="text-small d-flex justify-content-between" v-if="trait">
+      <div><span class="text-warning" v-b-tooltip.hover="{ variant: 'warning' }" title="Normalized rarity score - 100 is most rare, 0 least.">{{trait.normalizedRarityScore.toFixed(4)}}</span></div>
+      <div><span class="text-warning">{{trait.rank}} / {{loopRun.versionLimit}}</span></div>
+    </div>
+    <div>
+      <b-table striped hover :items="values()" :fields="fields()" class="my-0 bg-black text-small text-white">
+      </b-table>
+    </div>
+  </b-card-text>
+</b-card>
 </template>
 
 <script>
@@ -30,17 +23,17 @@ export default {
   name: 'RarityTable',
   components: {
   },
-  props: ['image', 'loopRun', 'edition'],
+  props: ['height', 'image', 'loopRun', 'edition'],
   data () {
     return {
       cross: require('@/assets/img/navbar-footer/cross.svg'),
       trait: null
     }
   },
+  mounted () {
+    this.fetchTraits()
+  },
   methods: {
-    hasTraits () {
-      return typeof this.edition === 'number' && this.edition > -1
-    },
     fetchTraits () {
       // this.$emit('update', { opcode: 'display-trait', edition: this.edition })
       this.$store.dispatch('publicItemsStore/fetchTraits', this.edition).then((trait) => {
@@ -49,13 +42,22 @@ export default {
         // this.$notify({ type: 'success', title: 'Punk Traits', text: 'Click to display Punk Traits!' })
       })
     },
-    allowRevealRarities () {
-      return this.loopRun && this.loopRun.status === 'active' && this.image.indexOf(this.loopRun.mintImage3) === -1
-    },
     fields () {
-      return ['Layer', 'Trait', 'Chance']
+      return [
+        {
+          key: 'Layer'
+        },
+        {
+          key: 'Trait'
+        },
+        {
+          key: 'Chance',
+          sortable: true
+        }
+      ]
     },
     values () {
+      if (!this.trait) return []
       let mapped = []
       mapped = this.trait.attributes.map(function (trait) {
         const label = trait.trait_type.split('_')
