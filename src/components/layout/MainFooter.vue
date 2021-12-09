@@ -11,7 +11,7 @@
         </div>
 
         <div class="col-3 offset-2 col-lg-2 footer-top--content">
-          <div class="column-header">About</div>
+          <!-- <div class="column-header">About</div>
           <div v-scroll-to="{ offset: -60, element: '#thisisone', duration: 1000 }">
             <b-link to="/about">About This is #1</b-link>
           </div>
@@ -26,7 +26,7 @@
           </div>
           <div v-scroll-to="{ offset: -60, element: '#collaborate', duration: 1000 }">
             <b-link to="/about">Collaborate</b-link>
-          </div>
+          </div> -->
           <!--
           <div v-for="(item,index) of content.column_about" :key="index">
             <div v-if="item.title_of_the_link[0].type === 'paragraph'"><a :href="item.link.url" target="_blank">{{ item.title_of_the_link[0].text }}</a></div>
@@ -95,12 +95,12 @@
       </div>
 
       <div class="d-none d-sm-flex justify-content-between footer-bottom">
-        <div class="footer-bottom--left">
+        <!-- <div class="footer-bottom--left">
           {{ content.left_bottom_corner[0].text }}
         </div>
         <div class="footer-bottom--left">
           For the <b-icon icon="heart-fill" class="text-danger"/> of crypto!
-        </div>
+        </div> -->
       </div>
         <!--
       <div class="d-none d-sm-flex justify-content-between footer-bottom">
