@@ -107,7 +107,7 @@ export default {
           if (data.media.type.indexOf('image') > -1) {
             myAsset.attributes.coverImage = data.media
           }
-          myAsset.projectId = this.loopRun.contractId
+          myAsset.contractId = this.loopRun.contractId
           myAsset.attributes.collection = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
           myAsset.attributes.editions = 10
           myAsset.attributes.editionCost = 10

@@ -158,7 +158,7 @@ export default {
           const myAsset = this.$store.getters[APP_CONSTANTS.KEY_MY_ITEM](this.assetHash)
           myAsset.attributes[attributes.id] = attributes
           myAsset.attributes.collection = this.loopRun.currentRunKey + '/' + this.loopRun.makerUrlKey
-          myAsset.projectId = this.loopRun.contractId
+          myAsset.contractId = this.loopRun.contractId
           $self.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((item) => {
             $self.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
             $self.item = item
@@ -204,7 +204,7 @@ export default {
       this.showWaitingModal = true
       this.$store.commit('setModalMessage', 'Uploading... once its saved you\'ll be able to mint this artwork - registering your ownership on the blockchain. Once registered you\'ll be able to prove you own it and be able to benefit from sales and from secondary sales.')
       this.$root.$emit('bv::show::modal', 'waiting-modal')
-      this.item.projectId = this.loopRun.contractId
+      this.item.contractId = this.loopRun.contractId
       if (this.overrideLoopRun) {
         this.item.attributes.collection = this.overrideLoopRun.currentRunKey + '/' + this.overrideLoopRun.makerUrlKey
       } else {
