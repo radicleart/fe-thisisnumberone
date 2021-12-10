@@ -37,7 +37,7 @@
         <b-col cols="6" class="p-0 px-2 mt-3">
           <div class="border text-center " id="container">
             <div id="content">
-              <h3><b-link to="/about">WTF?</b-link></h3>
+              <!-- <h3><b-link to="/about">WTF?</b-link></h3> -->
             </div>
           </div>
         </b-col>
