@@ -87,6 +87,10 @@ export default {
   },
   mounted () {
     this.$store.dispatch('rpayCategoryStore/fetchRoyalties', this.loopRun.currentRunKey).then((royalties) => {
+      if (!royalties || !royalties.saleRoyalties) {
+        this.$notify({ type: 'warning', title: 'Royalties', text: 'Please save the royalties on the collection before minting.' })
+        return
+      }
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       this.minteficaries = royalties.mintRoyalties
       this.beneficiaries = royalties.saleRoyalties
