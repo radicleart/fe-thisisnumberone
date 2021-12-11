@@ -53,13 +53,25 @@ export default {
       this.revealing = true
       this.$emit('update', { opcode: 'update-interim-image' })
       const image = loopRun.punkImageBaseUrl + this.asset.attributes.index + loopRun.punkImageType
-      utils.fetchBase64FromImageUrl(image, document).then((data) => {
-        // this.asset.attributes.imageFrom = image
-        this.asset.attributes.imageHash = utils.buildHash(data.dataURL)
-        this.asset.attributes.artworkFile.dataUrl = data.dataURL
-        this.asset.attributes.artworkFile.type = data.mimeType
-        this.asset.attributes.artworkFile.fileUrl = image
-        this.storeInGaia(this.asset, this.asset.attributes.artworkFile)
+      this.$store.dispatch('publicItemsStore/fetchTraits', this.asset.attributes.index).then((trait) => {
+        const traits = trait.attributes
+        if (trait.attributes) delete trait.attributes
+        if (trait.image) delete trait.image
+        if (trait.rarityScore) delete trait.rarityScore
+        if (trait.normalizedRarityScore) delete trait.normalizedRarityScore
+        if (trait.rank) delete trait.rank
+        if (trait._id) delete trait._id
+        if (trait.id) delete trait.id
+        if (trait.description) delete trait.description
+        this.asset.properties = trait
+        this.asset.properties.traits = traits
+        this.asset.attributes.imageHash = trait.imageHash
+        utils.fetchBase64FromImageUrl(image, document).then((data) => {
+          this.asset.attributes.artworkFile.dataUrl = data.dataURL
+          this.asset.attributes.artworkFile.type = data.mimeType
+          this.asset.attributes.artworkFile.fileUrl = image
+          this.storeInGaia(this.asset, this.asset.attributes.artworkFile)
+        })
       })
     },
     storeInGaia: function (myAsset, artworkFile) {
