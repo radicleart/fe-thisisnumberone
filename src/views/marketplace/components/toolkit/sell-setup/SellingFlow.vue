@@ -8,7 +8,8 @@
         <template v-slot:footer>
           <div class="d-flex justify-content-between">
             <b-button @click="$emit('cancel')" class="w-50 mr-1" variant="light">Cancel</b-button>
-            <b-button @click="setTradeInfo()" class="w-50 ml-1" variant="outline-warning">Save</b-button>
+            <!-- <b-button @click="setTradeInfo()" class="w-50 ml-1" variant="outline-warning">Save</b-button> -->
+            <b-button class="w-50 ml-1" variant="outline-warning">Paused</b-button>
           </div>
         </template>
       </b-card>

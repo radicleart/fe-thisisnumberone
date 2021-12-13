@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <b-card-text class="" v-if="loopRun && loopRun.type === 'punks' && showPunkRarity">
+    <b-card-text class="" v-if="loopRun && loopRun.type === 'punks' && showPunkRarity && asset.attributes">
       <RarityTable :height="newHeight" :image="asset.image" :edition="asset.attributes.index" :loopRun="loopRun" />
     </b-card-text>
     <b-card-text v-else>
@@ -208,7 +208,7 @@ export default {
     },
     mintedMessage () {
       if (this.contractAsset && this.loopRun && this.loopRun.type === 'punks') {
-        if (this.profile.superAdmin) {
+        if (this.profile.superAdmin && this.asset && this.asset.attributes) {
           return this.loopRun.currentRun + ' #' + this.contractAsset.nftIndex + ' (' + this.asset.attributes.index + ')'
         } else {
           return this.loopRun.currentRun + ' #' + this.contractAsset.nftIndex

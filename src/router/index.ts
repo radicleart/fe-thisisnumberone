@@ -66,7 +66,9 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'splash',
+    redirect: '/nft-marketplace',
     components: { default: Relaunch },
+    // components: { default: NftGallery, header: MainNavbar, footer: MainFooter },
     meta: { title: 'This is Number One on Stacks NFT Marketplace secured by Bitcoin' }
   },
   {

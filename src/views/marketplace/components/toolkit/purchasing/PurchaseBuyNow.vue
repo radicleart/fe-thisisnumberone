@@ -25,7 +25,8 @@
       You own this NFT!
     </b-col>
     <b-col class="mt-5" cols="12" v-else>
-      <b-button variant="success" @click="$emit('buyNow')">BUY NOW</b-button>
+      <!-- <b-button variant="success" @click="$emit('buyNow')">BUY NOW</b-button> -->
+      <b-button variant="success" >PAUSED</b-button>
     </b-col>
   </b-row>
 </b-container>

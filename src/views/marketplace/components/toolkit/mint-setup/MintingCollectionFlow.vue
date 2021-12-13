@@ -140,7 +140,7 @@ export default {
       const lockData = { batchOption: this.batchOption, stxAddress: this.profile.stxAddress, currentRunKey: this.currentRunKey }
       this.$store.dispatch('rpayCategoryStore/fetchNextToMint', lockData).then((mintAllocations) => {
         if (!mintAllocations || mintAllocations.length === 0) {
-          this.$notify({ type: 'success', title: 'All Minted', text: 'Wey hey - no more left - better luck next time!' })
+          this.$notify({ type: 'error', title: 'Error Minting', text: 'We are working hard to fix this and will let you know as soon as its fixed!' })
           return
         }
         this.loaded = true
