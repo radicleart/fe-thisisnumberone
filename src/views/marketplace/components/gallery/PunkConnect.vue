@@ -30,7 +30,7 @@ export default {
     } else if (item.attributes.collection) {
       assetPath = item.attributes.collection + '/' + item.assetHash + '.json'
     }
-    this.gaiaLocation2 = this.profile.gaiaHubConfig.url_prefix + this.profile.gaiaHubConfig.address + '/' + assetPath
+    if (this.profile.gaiaHubConfig) this.gaiaLocation2 = this.profile.gaiaHubConfig.url_prefix + this.profile.gaiaHubConfig.address + '/' + assetPath
   },
   methods: {
     allowReveal () {
@@ -86,7 +86,7 @@ export default {
         this.$store.dispatch('rpayMyItemStore/saveItem', myAsset).then((item) => {
           this.$store.dispatch('rpayMyItemStore/saveRootFileOnce')
           this.$notify({ type: 'success', title: 'Save Data', text: 'Meta data saved to gaia!' })
-          if (this.gaiaLocation1 !== this.gaiaLocation2) {
+          if (this.gaiaLocation2 && this.gaiaLocation1 !== this.gaiaLocation2) {
             this.$notify({ type: 'warning', title: 'Asset Transferred', text: 'Asset transfer detected (transfer or purchase) we need to update the meta data url in the contract to point to the new meta data location!' })
             const contractAsset = item.contractAsset
             const data = {
