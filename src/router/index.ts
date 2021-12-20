@@ -6,7 +6,6 @@ import store from '@/store'
 // import AboutNavbar from '@/components/layout/AboutNavbar.vue'
 import MainNavbar from '@/components/layout/MainNavbar.vue'
 import MainFooter from '@/components/layout/MainFooter.vue'
-import AdminNav from '@/views/mgmnt/AdminNav.vue'
 
 // public pages
 import HomeFooter from '@/components/layout/HomeFooter.vue'

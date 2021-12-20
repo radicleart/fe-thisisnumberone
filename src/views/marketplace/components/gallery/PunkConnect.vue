@@ -39,9 +39,12 @@ export default {
       return this.loopRun.status === 'active' && image && image.indexOf(this.loopRun.mintImage3) > -1
     },
     revealImage () {
+      this.$emit('revealCrashpunk', { nftIndex: this.asset.contractAsset.nftIndex })
+      /**
       this.$store.dispatch('rpayCategoryStore/fetchLoopRunForReveal', { currentRunKey: this.loopRun.currentRunKey, contractId: this.loopRun.contractId, nftIndex: this.asset.contractAsset.nftIndex }).then((loopRun) => {
         this.fixMetaData(loopRun)
       })
+      **/
     },
     fixMetaData (loopRun) {
       // create but don't store - wait till the last minute to register the batch!

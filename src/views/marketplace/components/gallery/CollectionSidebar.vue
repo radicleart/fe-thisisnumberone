@@ -1,6 +1,6 @@
 <template>
 <div class="text-small" v-if="loaded">
-  <div class="mb-5" v-if="isMyNfts()">
+  <div class="mb-5" v-if="isMyNfts() && showWalletNfts">
     <h3 class="border-bottom mb-4">My Wallet</h3>
     <div class="ml-5 my-3">
       <h4 class="pointer" @click="showNftWallet()">all my nfts</h4>
@@ -34,6 +34,7 @@ export default {
   props: ['allowUploads'],
   data () {
     return {
+      showWalletNfts: false,
       loaded: false,
       showColls: true,
       projects: [],

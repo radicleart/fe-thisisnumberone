@@ -10,7 +10,7 @@
       <div class="d-flex justify-content-between">
         <SearchBar class="w-50" :displayClass="'text-small text-end'" @updateResults="updateResults" :mode="'wallet'"/>
         <div style="width: 100px;">
-          <!-- <span v-if="!reindexing" class="mr-3 text-warning pointer" @click.prevent="cacheWalletNfts" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Refresh from NFT wallet information'"><b-icon icon="arrow-clockwise" font-scale="1"/></span> -->
+          <span v-if="!reindexing" class="mr-3 text-warning pointer" @click.prevent="cacheWalletNfts" v-b-tooltip.hover="{ variant: 'warning' }" :title="'Refresh from NFT wallet information'"><b-icon icon="arrow-clockwise" font-scale="1"/></span>
           <span class="text-warning pointer" @click.prevent="showIndexingInfo = ! showIndexingInfo"><b-icon icon="question-circle"/></span>
         </div>
       </div>
@@ -79,10 +79,10 @@ export default {
   },
   mounted () {
     this.reindexing = true
-    /**
     const data = {
       // stxAddress: (process.env.VUE_APP_NETWORK === 'local') ? 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' : this.profile.stxAddress,
       stxAddress: this.profile.stxAddress,
+      contractFilter: 'crashpunks',
       page: this.cachedPage,
       pageSize: this.cachedPageSize
     }
@@ -90,7 +90,6 @@ export default {
       this.nftTotal = (nfts) ? nfts.total : 0
       this.fetchPage(0)
     })
-    **/
     const $self = this
     let resizeTimer
     window.addEventListener('resize', function () {
@@ -105,7 +104,6 @@ export default {
       this.nowOnPage = page - 1
       this.fetchPage(page - 1)
     },
-    /**
     cacheWalletNfts () {
       const data = {
         // stxAddress: (process.env.VUE_APP_NETWORK === 'local') ? 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG' : this.profile.stxAddress,
@@ -114,7 +112,7 @@ export default {
         page: this.cachedPage,
         pageSize: this.cachedPageSize
       }
-      this.$store.dispatch('rpayStacksContractStore/cacheWalletNfts', data).then(() => {
+      this.$store.dispatch('rpayStacksContractStore/cacheWalletNfts', data).then((nfts) => {
         const $self = this
         if (this.timer === null) {
           this.timer = setInterval(function () {
@@ -130,7 +128,6 @@ export default {
         }
       })
     },
-    **/
     updateResults (data) {
       if (data.query === 'refresh') {
         if (!this.reindexing) {

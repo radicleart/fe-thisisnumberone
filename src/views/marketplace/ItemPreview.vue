@@ -128,7 +128,7 @@ export default {
               pageSize: 100,
               stxAddress: (process.env.VUE_APP_NETWORK !== 'local') ? this.profile.stxAddress : 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
             }
-            this.$store.dispatch('rpayStacksContractStore/fetchMyTokens', data).then((results) => {
+            this.$store.dispatch('rpayStacksContractStore/fetchMyTokensCPSV2', data).then((results) => {
               if (results && results.tokenCount > 0) {
                 const item = results.gaiaAssets.find((o) => o.assetHash === this.assetHash)
                 if (item) this.item = item

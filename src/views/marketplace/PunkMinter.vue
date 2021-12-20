@@ -21,7 +21,7 @@
               <b-col cols="12" align-self="start">
                 <h1 class="border-bottom mb-5">{{loopRun.currentRun}} ({{loopRun.tokenCount + '/' + loopRun.versionLimit}})</h1>
                 <p class="mt-5">EDITION: {{loopRun.versionLimit}}</p>
-                <p>AVAILABLE: {{loopRun.versionLimit - loopRun.tokenCount}}</p>
+                <!-- <p>AVAILABLE: {{loopRun.versionLimit - loopRun.tokenCount}}</p> -->
                 <p class="mt-5" v-if="loopRun.description" v-html="preserveWhiteSpace(loopRun.description)"></p>
               </b-col>
               <b-col cols="12" align-self="end">
@@ -56,7 +56,7 @@
                     Mint pass all used up!
                   </div>
                   <div v-else>
-                    Minting starts soon
+                    Minting paused
                   </div>
                 </div>
                 <div class="mt-4 pt-4 border-top text-right"><img :src="hashone" /></div>
@@ -68,7 +68,7 @@
     </b-row>
   </b-container>
   <b-modal size="md" id="minting-modal">
-    <MintingCollectionFlow :loopRun="loopRun" @update="update" :batchOption="batchOption"/>
+    <CPSMintingFlow :loopRun="loopRun" @update="update" :batchOption="batchOption"/>
     <template #modal-footer class="text-center"><div class="w-100"></div></template>
   </b-modal>
   <b-modal scrollable id="result-modal" title="">
@@ -95,7 +95,7 @@
 <script>
 import { APP_CONSTANTS } from '@/app-constants'
 import CollectionSidebar from '@/views/marketplace/components/gallery/CollectionSidebar'
-import MintingCollectionFlow from '@/views/marketplace/components/toolkit/mint-setup/MintingCollectionFlow'
+import CPSMintingFlow from '@/views/marketplace/components/toolkit/mint-setup/CPSMintingFlow'
 import VideoJsPlayer from '@/views/marketplace/components/media/VideoJsPlayer'
 
 export default {
@@ -103,7 +103,7 @@ export default {
   components: {
     CollectionSidebar,
     VideoJsPlayer,
-    MintingCollectionFlow
+    CPSMintingFlow
   },
   data () {
     return {

@@ -6,9 +6,9 @@
         <div class="mb-3 text-small d-flex justify-content-between">
           <div style="height: 2rem;" class="overflow-hidden text-bold">{{mintedMessage}}</div>
           <div>
-            <PunkConnect v-if="loopRun && loopRun.type === 'punks'" :loopRun="loopRun" :asset="asset" @update="update"/>
+            <PunkConnect v-on="$listeners" v-if="!hideOtherLinks && loopRun && loopRun.type === 'punks'" :loopRun="loopRun" :asset="asset" @update="update"/>
             <b-link v-if="isRevealed()" class="text-small text-warning pl-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Click here to see your Crash Punk traits" @click.prevent="showPunkRarity = !showPunkRarity"><span>traits</span></b-link>
-            <a v-if="asset.contractAsset && asset.contractAsset.tokenInfo" :href="asset.contractAsset.tokenInfo.metaDataUrl" target="_blank" class="text-small text-warning pl-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Open meta data file"><span>meta</span></a>
+            <!-- <a v-if="asset.contractAsset && asset.contractAsset.tokenInfo" :href="asset.contractAsset.tokenInfo.metaDataUrl" target="_blank" class="text-small text-warning pl-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Open meta data file"><span>meta</span></a> -->
           </div>
         </div>
         <div class="text-small d-flex justify-content-between">
@@ -21,7 +21,8 @@
       <RarityTable :height="newHeight" :image="asset.image" :edition="asset.attributes.index" :loopRun="loopRun" />
     </b-card-text>
     <b-card-text v-else>
-      <b-link class="text-xsmall text-info" :to="nextUrl">
+      <b-link v-if="!hideOtherLinks" class="text-xsmall text-info" :to="nextUrl">
+      </b-link>
         <div style="min-height: 100px;" @contextmenu="handler($event)" class="d-flex justify-content-center p-2">
             <img
               ref="itemImage"
@@ -29,15 +30,15 @@
               :height="newHeight"
               :src="image" @error="imageError()"/>
         </div>
-      </b-link>
     </b-card-text>
     <b-card-text>
       <!-- Enables connecting meta data to the actual punk crash -->
       <div class="text-xsmall text-center mb-3">
         <span v-if="asset.contractAsset">{{asset.contractAsset.owner}}</span>
         <span v-else>'ownership in progress'</span>
+        <span  v-if="loopRun">{{loopRun.contractId.split('.')[1]}}</span>
       </div>
-      <div class="mb-4 d-flex justify-content-center" v-if="marketplace || myNfts">
+      <div class="mb-4 d-flex justify-content-center" v-if="!hideOtherLinks && (marketplace || myNfts)">
         <b-button :to="nextUrl" :variant="variant" v-html="sellingMessage"></b-button>
       </div>
       <div class="d-flex justify-content-center" v-else-if="nftPage">
@@ -46,13 +47,13 @@
         <div v-if="itemPreview">
           <div><a v-b-tooltip.bottom title="Download NFT" class="text-info text-light ml-3" href="#" @click.prevent="download"><b-icon class="text-info arrow-repeat" font-scale="1" icon="arrow-down-circle"></b-icon></a></div>
         </div>
-        <div v-else-if="myNfts">
+        <div v-else-if="myNfts && !hideOtherLinks">
           <b-link v-if="asset.contractAsset" class="text-small text-warning" :to="'/nft-preview/' + asset.contractAsset.contractId + '/' + asset.contractAsset.nftIndex">manage</b-link>
           <b-link v-else class="text-small text-warning" :to="'/item-preview/' + asset.assetHash + '/1'">mint now</b-link>
         </div>
         <div v-if="iAmOwner">
         </div>
-        <div class="text-info" v-if="!marketplace && !nftPage">
+        <div class="text-info" v-if="!marketplace && !nftPage && !hideOtherLinks">
           <b-link v-if="asset.contractAsset" class="text-small text-warning" :to="'/nfts/' + asset.contractAsset.contractId + '/' + contractAsset.nftIndex">marketplace</b-link>
         </div>
       </div>
@@ -67,6 +68,9 @@ import { APP_CONSTANTS } from '@/app-constants'
 import PunkConnect from './PunkConnect'
 import formatUtils from '@/services/formatUtils.js'
 import RarityTable from './RarityTable'
+import axios from 'axios'
+
+const HTTPS_HASHONE_MYPINATA_CLOUD_IPFS = 'https://hashone.mypinata.cloud/ipfs/'
 
 // noinspection JSUnusedGlobalSymbols
 export default {
@@ -78,6 +82,7 @@ export default {
   props: ['asset', 'loopRun', 'parent'],
   data () {
     return {
+      hideOtherLinks: true,
       showPunkRarity: false,
       image: null,
       newWidth: '100%',
@@ -86,6 +91,24 @@ export default {
   },
   mounted () {
     this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
+    if (!this.asset.image) {
+      // https://gaia.blockstack.org/hub/14TmYwEZm3peoEH3NFq9vK7BFJBcwDRsUY/crash_punks_t8/grace.btc/5578.json
+      // axios.get(this.asset.contractAsset.tokenInfo.metaDataUrl).then(response => {
+      const data = {
+        tokenUri: 'https://hashone.mypinata.cloud/ipfs/QmNPQzfmPBSya8XLFnkns1YotxKUZDPPYSjcaS5JeDJNgE/crashpunks-0.json',
+        contractId: this.asset.contractAsset.contractId
+      }
+      const uri = process.env.VUE_APP_RISIDIO_API + '/mesh/v2/meta-data-json'
+      axios.post(uri, data).then(response => {
+        this.metaData = response.data
+        this.metaData.contractAsset = this.asset.contractAsset
+        if (this.metaData.image.startsWith('ipfs://')) {
+          this.image = this.metaData.image.replace('ipfs://', HTTPS_HASHONE_MYPINATA_CLOUD_IPFS)
+        }
+      }).catch(() => {
+        this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
+      })
+    }
     const $self = this
     const $ele = this.$refs.itemImage
     if (this.isLoopbomb()) {

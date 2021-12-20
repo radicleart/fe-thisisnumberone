@@ -23,7 +23,7 @@
       <div v-if="loopRun && loopRun.type === 'punks' && loopRun.status === 'unrevealed'">
         <p><b-link :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.currentRun}} artwork available - mint here!</b-link></p>
       </div>
-      <div>
+      <div v-if="showTxs">
         <h1 class="pointer mb-4 border-bottom" @click="showPending = !showPending"><b-icon font-scale="0.6" v-if="showPending" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> My Transactions</h1>
         <b-row class="mb-4" v-if="showPending && loopRun">
           <div class="w-100 d-flex justify-content-end">
@@ -61,6 +61,7 @@ export default {
   },
   data () {
     return {
+      showTxs: false,
       componentKey: 0,
       approved: false,
       loopRun: null,
@@ -81,7 +82,7 @@ export default {
   mounted () {
     let currentRunKey = this.$route.params.collection
     if (!currentRunKey) {
-      this.showWalletNfts = true
+      this.showWalletNfts = false
       this.loading = false
       currentRunKey = process.env.VUE_APP_DEFAULT_LOOP_RUN
       this.fetchLoopRun()

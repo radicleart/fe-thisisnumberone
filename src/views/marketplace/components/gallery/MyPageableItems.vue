@@ -1,11 +1,14 @@
 <template>
   <div v-if="!loading">
     <h1 class="pointer mb-4 border-bottom" @click="showMinted = !showMinted"><b-icon font-scale="0.6" v-if="showMinted" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> {{tokenCount}} NFTs</h1>
-    <div class="mb-4" v-if="showMinted && loopRun">
+    <div class="mb-4" v-if="showMinted && loopRun && tokenCount > 0">
+      <div class="my-5 text-center" v-if="loopRun.contractId.indexOf('crashpunks-t8') > -1 || loopRun.contractId.indexOf('crashpunks-v1') > -1">
+        <p><b-button @click="revealCrashpunks" variant="outline-warning">Reveal Your Crash Punks</b-button></p>
+      </div>
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
       <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 mx-0 p-1" v-for="(asset, index) of resultSet" :key="index">
-          <MySingleItem :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
+          <MySingleItem @revealCrashpunk="revealCrashpunk" :parent="'list-view'" :loopRun="loopRun" :asset="asset" :key="componentKey"/>
         </div>
       </div>
       <div class="d-flex justify-content-start my-3 mx-4" v-else>
@@ -21,6 +24,9 @@
 import MySingleItem from './MySingleItem'
 import Pagination from './common/Pagination'
 import { APP_CONSTANTS } from '@/app-constants'
+import {
+  uintCV, listCV, NonFungibleConditionCode, makeStandardNonFungiblePostCondition, createAssetInfo
+} from '@stacks/transactions'
 
 const LOOP_RUN_DEF = process.env.VUE_APP_DEFAULT_LOOP_RUN
 
@@ -73,25 +79,75 @@ export default {
       this.nowOnPage = page - 1
       this.fetchPage(page - 1)
     },
+    getPostCondition (nftIndex) {
+      const nonFungibleAssetInfo = createAssetInfo(
+        this.loopRun.contractId.split('.')[0],
+        this.loopRun.contractId.split('.')[1],
+        'crashpunks'
+      )
+      return makeStandardNonFungiblePostCondition(
+        this.profile.stxAddress,
+        NonFungibleConditionCode.DoesNotOwn,
+        nonFungibleAssetInfo,
+        uintCV(nftIndex)
+      )
+    },
+    revealCrashpunk (data) {
+      const callData = {
+        postConditions: [this.getPostCondition(data.nftIndex)],
+        contractAddress: this.loopRun.contractId.split('.')[0],
+        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME_CPS_UPGRADE,
+        functionName: 'upgrade-v1-to-v2',
+        functionArgs: [uintCV(data.nftIndex)]
+      }
+      const methos = (process.env.VUE_APP_NETWORK === 'local') ? 'rpayStacksStore/callContractRisidio' : 'rpayStacksStore/callContractBlockstack'
+      this.$store.dispatch(methos, callData).then(() => {
+        this.$notify({ type: 'success', title: 'Reveal in Progress', text: 'Check the explorer - your Punks will be ready soon!' })
+      }).catch(() => {
+        this.$notify({ type: 'Error', title: 'Upagrade Failed', text: 'Thanks for your patience while we investigate!' })
+      })
+    },
+    revealCrashpunks () {
+      const postConditions = []
+      const upgradeList = []
+      this.resultSet.forEach((o) => {
+        upgradeList.push(uintCV(o.nftIndex))
+        postConditions.push(this.getPostCondition(o.nftIndex))
+      })
+      const callData = {
+        postConditions: postConditions,
+        contractAddress: this.loopRun.contractId.split('.')[0],
+        contractName: process.env.VUE_APP_STACKS_CONTRACT_NAME_CPS_UPGRADE,
+        functionName: 'batch-upgrade-v1-to-v2',
+        functionArgs: [listCV(upgradeList)]
+      }
+      const methos = (process.env.VUE_APP_NETWORK === 'local') ? 'rpayStacksStore/callContractRisidio' : 'rpayStacksStore/callContractBlockstack'
+      this.$store.dispatch(methos, callData).then(() => {
+        this.$notify({ type: 'success', title: 'Reveal in Progress', text: 'Check the explorer - your Punks will be ready soon!' })
+      }).catch(() => {
+        this.$notify({ type: 'Error', title: 'Upagrade Failed', text: 'Thanks for your patience while we investigate!' })
+      })
+    },
     isTheV2Contract () {
       const STX_CONTRACT_NAME_V2 = process.env.VUE_APP_STACKS_CONTRACT_NAME_V2
       return this.loopRun && this.loopRun.contractId.indexOf(STX_CONTRACT_NAME_V2) > -1
     },
     fetchPage (page) {
       const data = {
-        runKey: (this.loopRun) ? this.loopRun.currentRunKey : LOOP_RUN_DEF,
+        // runKey: (this.loopRun) ? this.loopRun.currentRunKey : LOOP_RUN_DEF,
+        contractId: this.loopRun.contractId,
         stxAddress: this.profile.stxAddress,
         asc: true,
         page: page,
         pageSize: this.pageSize
       }
       if (this.isTheV2Contract()) data.contractId = (this.loopRun) ? this.loopRun.contractId : process.env.VUE_APP_STACKS_CONTRACT_ADDRESS + '.' + process.env.VUE_APP_STACKS_CONTRACT_NAME
-      if (this.currentRunKey) data.runKey = this.currentRunKey
+      // if (this.currentRunKey) data.runKey = this.currentRunKey
       if (process.env.VUE_APP_NETWORK === 'local') {
         data.stxAddress = 'STFJEDEQB1Y1CQ7F04CS62DCS5MXZVSNXXN413ZG'
       }
       this.resultSet = null
-      this.$store.dispatch('rpayStacksContractStore/fetchMyTokens', data).then((result) => {
+      this.$store.dispatch('rpayStacksContractStore/fetchMyTokensCPSV2', data).then((result) => {
         this.resultSet = result.gaiaAssets // this.resultSet.concat(results)
         this.tokenCount = result.tokenCount
         this.numberOfItems = result.gaiaAssets.length
@@ -113,4 +169,7 @@ export default {
 </script>
 <style>
 .myItemsIntroText {font-weight: 200; font-size: 1.1rem; color: #fff;}
+.btn {
+  width: auto;
+}
 </style>

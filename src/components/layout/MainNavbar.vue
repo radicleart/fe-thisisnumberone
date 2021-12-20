@@ -21,17 +21,17 @@
           <div class="text-small mt-0">
             <span class="text-warning">{{profile.stxAddress}}</span>
           </div>
-          <div v-if="profile.accountInfo" class="text-small">
+          <div v-if="allowed && profile.accountInfo" class="text-small">
             <span class="mr-5"><a style="font-size: 1.2rem;" :href="getStacksMateUrl" v-b-tooltip.hover="{ variant: 'light' }" :title="'Top up your Stacks at Stacks Mate'" class="text-white text-small ml-3" target="_blank">Balance:</a> <span class="text-warning">{{profile.accountInfo.balance}}</span> STX</span>
           </div>
         </div>
-        <div class="mb-5"><b-link to="/nft-gallery">Gallery</b-link></div>
+        <div v-if="allowed" class="mb-5"><b-link to="/nft-gallery">Gallery</b-link></div>
         <div class="mb-5" v-if="!canUpload()">
-          <b-link v-if="profile.loggedIn" to="/exhibit-here">Apply to Exhibit</b-link>
-          <b-link v-else to="/login?redirect=%2Fexhibit-here">Exhibit Here?</b-link>
+          <b-link v-if="allowed && profile.loggedIn" to="/exhibit-here">Apply to Exhibit</b-link>
+          <b-link v-else-if="allowed" to="/login?redirect=%2Fexhibit-here">Exhibit Here?</b-link>
         </div>
-        <div class="mb-5" v-if="canUpload()"><b-link to="/upload-item">Create NFT</b-link></div>
-        <div class="mb-5" v-if="profile.loggedIn"><b-link to="/profile">My Profile</b-link></div>
+        <div class="mb-5" v-if="allowed && canUpload()"><b-link to="/upload-item">Create NFT</b-link></div>
+        <div class="mb-5" v-if="allowed && profile.loggedIn"><b-link to="/profile">My Profile</b-link></div>
         <div class="mb-5 pb-5 border-bottom" v-if="profile.loggedIn"><b-link to="/my-nfts">My NFTs</b-link></div>
         <div class="mb-5" v-if="profile.superAdmin"><b-link to="/mgmnt/registry">Admin</b-link></div>
         <div class="mb-5" v-if="!profile.loggedIn && webWalletNeeded">
@@ -47,7 +47,7 @@
       <b-nav-item v-if="profile.loggedIn && profile.superAdmin" class="mt-3 mr-4 mt-0 d-none d-lg-block d-xl-none" to="/mgmnt/registry">Admin</b-nav-item>
       <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0" to="/my-nfts"><span class="mr-3"><img :src="listPoint"/></span> My NFTs</b-nav-item>
       <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0" to="/nft-marketplace"><span class="mr-3"><img :src="listPoint"/></span>Marketplace</b-nav-item>
-      <b-nav-item v-if="profile.loggedIn && canUpload()" class="mt-3 mr-4 mt-0" to="/upload-item"><span class="mr-3"><img :src="listPoint"/></span>Upload</b-nav-item>
+      <b-nav-item v-if="allowed && profile.loggedIn && canUpload()" class="mt-3 mr-4 mt-0" to="/upload-item"><span class="mr-3"><img :src="listPoint"/></span>Upload</b-nav-item>
       <!-- <b-nav-item class="mb-5" to="/about"><img height="15px" :src="wtf" alt="about link"/></b-nav-item> -->
       <b-nav-item v-if="profile.loggedIn" class="mr-4"><a v-b-toggle.my-sidebar class="nav-text" ><b-icon icon="person" font-scale="2" class="mb-3 mr-0"/></a></b-nav-item>
       <b-nav-item v-else class="mt-3 text-big text-white" @click.prevent="startLogin()" href="#">Login</b-nav-item>
@@ -76,7 +76,8 @@ export default {
       listPoint: require('@/assets/img/phase2/Nav_Divider.png'),
       grid: require('@/assets/img/navbar-footer/grid.svg'),
       cross: require('@/assets/img/navbar-footer/cross.svg'),
-      collapsed: true
+      collapsed: true,
+      allowed: false
     }
   },
   methods: {

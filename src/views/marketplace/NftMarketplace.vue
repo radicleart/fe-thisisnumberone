@@ -4,7 +4,7 @@
     <b-row>
       <b-col md="3" sm="12">
         <h1 class="border-bottom mb-5">Marketplace</h1>
-        <div class="mb-5">
+        <div class="mb-5" v-if="allowSearch">
           <h3 class="mb-4 border-bottom pointer" @click="showSearch"><b-icon font-scale="0.8" v-if="showSearchFilters" icon="chevron-down"/> <b-icon font-scale="0.8" v-else icon="chevron-right"/> NFT Search</h3>
           <div v-if="showSearchFilters">
             <SearchBar @updateResults="updateResults" :displayClass="''" :mode="'search'"/>
@@ -60,6 +60,7 @@ export default {
   data () {
     return {
       loaded: false,
+      allowSearch: false,
       showSearchFilters: false,
       defQuery: {
         query: null,
