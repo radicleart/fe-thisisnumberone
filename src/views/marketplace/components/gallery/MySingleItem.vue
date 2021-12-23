@@ -5,9 +5,9 @@
       <div class="text-left">
         <div class="mb-3 text-small d-flex justify-content-between">
           <div style="height: 2rem;" class="overflow-hidden text-bold">{{mintedMessage}}</div>
-          <div>
-            <PunkConnect v-on="$listeners" v-if="!hideOtherLinks && loopRun && loopRun.type === 'punks'" :loopRun="loopRun" :asset="asset" @update="update"/>
-            <b-link v-if="isRevealed()" class="text-small text-warning pl-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Click here to see your Crash Punk traits" @click.prevent="showPunkRarity = !showPunkRarity"><span>traits</span></b-link>
+          <div v-if="showTraitsLink()">
+            <!-- <PunkConnect v-on="$listeners" v-if="!hideOtherLinks && loopRun && loopRun.type === 'punks'" :loopRun="loopRun" :asset="asset" @update="update"/> -->
+            <b-link class="text-small text-warning pl-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Click here to see your Crash Punk traits" @click.prevent="openPunkRarity()"><span>traits</span></b-link>
             <!-- <a v-if="asset.contractAsset && asset.contractAsset.tokenInfo" :href="asset.contractAsset.tokenInfo.metaDataUrl" target="_blank" class="text-small text-warning pl-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Open meta data file"><span>meta</span></a> -->
           </div>
         </div>
@@ -17,8 +17,8 @@
         </div>
       </div>
     </div>
-    <b-card-text class="" v-if="loopRun && loopRun.type === 'punks' && showPunkRarity && asset.attributes">
-      <RarityTable :height="newHeight" :image="asset.image" :edition="asset.attributes.index" :loopRun="loopRun" />
+    <b-card-text class="" v-if="showPunkRarity">
+      <RarityTable :height="newHeight" :image="asset.image" :edition="asset.contractAsset.nftIndex" :loopRun="loopRun" />
     </b-card-text>
     <b-card-text v-else>
       <b-link v-if="!hideOtherLinks" class="text-xsmall text-info" :to="nextUrl">
@@ -34,9 +34,9 @@
     <b-card-text>
       <!-- Enables connecting meta data to the actual punk crash -->
       <div class="text-xsmall text-center mb-3">
-        <span v-if="asset.contractAsset">{{asset.contractAsset.owner}}</span>
-        <span v-else>'ownership in progress'</span>
-        <span  v-if="loopRun">{{loopRun.contractId.split('.')[1]}}</span>
+        <div v-if="asset.contractAsset">{{asset.contractAsset.owner}}</div>
+        <div v-else>'ownership in progress'</div>
+        <div  v-if="loopRun">{{loopRun.contractId.split('.')[1]}}</div>
       </div>
       <div class="mb-4 d-flex justify-content-center" v-if="!hideOtherLinks && (marketplace || myNfts)">
         <b-button :to="nextUrl" :variant="variant" v-html="sellingMessage"></b-button>
@@ -65,7 +65,6 @@
 <script>
 import { DateTime } from 'luxon'
 import { APP_CONSTANTS } from '@/app-constants'
-import PunkConnect from './PunkConnect'
 import formatUtils from '@/services/formatUtils.js'
 import RarityTable from './RarityTable'
 import axios from 'axios'
@@ -76,7 +75,6 @@ const HTTPS_HASHONE_MYPINATA_CLOUD_IPFS = 'https://hashone.mypinata.cloud/ipfs/'
 export default {
   name: 'MySingleItem',
   components: {
-    PunkConnect,
     RarityTable
   },
   props: ['asset', 'loopRun', 'parent'],
@@ -86,16 +84,14 @@ export default {
       showPunkRarity: false,
       image: null,
       newWidth: '100%',
-      newHeight: null
+      newHeight: null,
+      metaData: null
     }
   },
   mounted () {
-    this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
     if (!this.asset.image) {
-      // https://gaia.blockstack.org/hub/14TmYwEZm3peoEH3NFq9vK7BFJBcwDRsUY/crash_punks_t8/grace.btc/5578.json
-      // axios.get(this.asset.contractAsset.tokenInfo.metaDataUrl).then(response => {
       const data = {
-        tokenUri: 'https://hashone.mypinata.cloud/ipfs/QmNPQzfmPBSya8XLFnkns1YotxKUZDPPYSjcaS5JeDJNgE/crashpunks-0.json',
+        tokenUri: this.asset.contractAsset.tokenInfo.metaDataUrl,
         contractId: this.asset.contractAsset.contractId
       }
       const uri = process.env.VUE_APP_RISIDIO_API + '/mesh/v2/meta-data-json'
@@ -104,10 +100,14 @@ export default {
         this.metaData.contractAsset = this.asset.contractAsset
         if (this.metaData.image.startsWith('ipfs://')) {
           this.image = this.metaData.image.replace('ipfs://', HTTPS_HASHONE_MYPINATA_CLOUD_IPFS)
+        } else {
+          this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.metaData)
         }
       }).catch(() => {
         this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
       })
+    } else {
+      this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
     }
     const $self = this
     const $ele = this.$refs.itemImage
@@ -129,8 +129,15 @@ export default {
     })
   },
   methods: {
-    isRevealed () {
-      return this.loopRun && this.loopRun.type === 'punks' && this.loopRun.status === 'active' && this.asset.image && this.asset.image.indexOf(this.loopRun.mintImage3) === -1
+    showTraitsLink () {
+      if (process.env.VUE_APP_NETWORK === 'testnet') {
+        return true
+      } else {
+        return this.loopRun && this.loopRun.type === 'punks' && this.loopRun.status === 'active' && this.metaData && this.metaData.attributes // && this.asset.image && this.asset.image.indexOf(this.loopRun.mintImage3) === -1
+      }
+    },
+    openPunkRarity () {
+      this.showPunkRarity = !this.showPunkRarity
     },
     isLoopbomb () {
       try {

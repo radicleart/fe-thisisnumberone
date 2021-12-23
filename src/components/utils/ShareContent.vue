@@ -47,7 +47,7 @@ export default {
       if (this.gaiaAsset.image) {
         return this.gaiaAsset.image
       }
-      return this.gaiaAsset.attributes.artworkFile.fileUrl
+      return this.gaiaAsset.image
     }
   },
   computed: {

@@ -153,9 +153,10 @@ export default {
     },
     startLogin () {
       this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
+        localStorage.removeItem('UPGRADE_TX')
         this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
         if (this.$route.name !== 'my-nfts') {
-          this.$router.push('/my-nfts')
+          this.$router.push('/my-nfts/crash_punks_v1')
         }
       }).catch((err) => {
         console.log(err)

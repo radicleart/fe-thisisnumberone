@@ -32,7 +32,7 @@
         </div>
         <div class="mb-5" v-if="allowed && canUpload()"><b-link to="/upload-item">Create NFT</b-link></div>
         <div class="mb-5" v-if="allowed && profile.loggedIn"><b-link to="/profile">My Profile</b-link></div>
-        <div class="mb-5 pb-5 border-bottom" v-if="profile.loggedIn"><b-link to="/my-nfts">My NFTs</b-link></div>
+        <div class="mb-5 pb-5 border-bottom" v-if="profile.loggedIn"><b-link to="/my-nfts/crash_punks_v1">My NFTs</b-link></div>
         <div class="mb-5" v-if="profile.superAdmin"><b-link to="/mgmnt/registry">Admin</b-link></div>
         <div class="mb-5" v-if="!profile.loggedIn && webWalletNeeded">
           <h1><a :href="webWalletLink" target="_blank">Get a Stacks Web Wallet <b-icon class="ml-3 mb-3" icon="arrow-up-right-square-fill"/></a></h1>
@@ -45,7 +45,7 @@
   <b-collapse id="nav-collapse" is-nav align="right">
     <b-navbar-nav class="ml-auto">
       <b-nav-item v-if="profile.loggedIn && profile.superAdmin" class="mt-3 mr-4 mt-0 d-none d-lg-block d-xl-none" to="/mgmnt/registry">Admin</b-nav-item>
-      <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0" to="/my-nfts"><span class="mr-3"><img :src="listPoint"/></span> My NFTs</b-nav-item>
+      <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0" to="/my-nfts/crash_punks_v1"><span class="mr-3"><img :src="listPoint"/></span> My NFTs</b-nav-item>
       <b-nav-item v-if="profile.loggedIn" class="mt-3 mr-4 mt-0" to="/nft-marketplace"><span class="mr-3"><img :src="listPoint"/></span>Marketplace</b-nav-item>
       <b-nav-item v-if="allowed && profile.loggedIn && canUpload()" class="mt-3 mr-4 mt-0" to="/upload-item"><span class="mr-3"><img :src="listPoint"/></span>Upload</b-nav-item>
       <!-- <b-nav-item class="mb-5" to="/about"><img height="15px" :src="wtf" alt="about link"/></b-nav-item> -->
@@ -128,6 +128,7 @@ export default {
         this.$emit('connect-login', myProfile)
       } else {
         this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
+          localStorage.removeItem('UPGRADE_TX')
           this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
         }).catch(() => {
           this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN }, { root: true })

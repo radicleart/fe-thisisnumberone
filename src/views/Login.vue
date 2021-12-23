@@ -59,6 +59,7 @@ export default {
         this.$emit('connect-login', this.profile)
       } else {
         this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
+          localStorage.removeItem('UPGRADE_TX')
           this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
         }).catch(() => {
           this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN }, { root: true })

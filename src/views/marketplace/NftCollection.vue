@@ -28,7 +28,7 @@
                 </div>
             </b-col>
           </b-row>
-          <b-row class="">
+          <b-row class="" v-if="ready">
             <b-col>
               <div class="mb-4 border-bottom d-flex justify-content-between">
                 <h1 class="">NFTs</h1>
@@ -37,12 +37,14 @@
             </b-col>
           </b-row>
         </div>
-        <div :key="searchKey" class="mb-4" v-if="loopRun && (loopRun.status === 'unrevealed' || loopRun.status === 'active' || loopRun.status === 'inactive')">
+        <div :key="searchKey" class="mb-4" v-if="ready && (loopRun.status === 'unrevealed' || loopRun.status === 'active' || loopRun.status === 'inactive')">
           <PageableItems @tokenCount="tokenCount" :defQuery="defQuery" :loopRun="loopRun"/>
         </div>
+        <!--
         <div class="mb-4" v-else-if="loopRun && loopRun.status === 'unrevealed'">
           <p v-if="loopRun.type === 'punks'"><b-link :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.currentRun}} artwork available - mint here!</b-link></p>
         </div>
+        -->
       </b-col>
     </b-row>
   </b-container>
@@ -77,6 +79,7 @@ export default {
   data () {
     return {
       showMinted: true,
+      ready: false,
       showCollectionData: true,
       showSearch: false,
       defQuery: {

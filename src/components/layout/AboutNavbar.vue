@@ -43,7 +43,7 @@
           </b-nav-item>
           <b-nav-item class="text-white" v-if="canUpload()" to="/upload-item">Create NFT</b-nav-item>
           <b-nav-item class="text-white" v-if="profile.loggedIn" to="/profile">My Profile</b-nav-item>
-          <b-nav-item class="text-white mt-5 pt-5 border-top" v-if="profile.loggedIn" to="/my-nfts">My NFTs</b-nav-item>
+          <b-nav-item class="text-white mt-5 pt-5 border-top" v-if="profile.loggedIn" to="/my-nfts/crash_punks_v1">My NFTs</b-nav-item>
           <b-nav-item class="text-white" v-if="profile.superAdmin"><b-link to="/mgmnt/registry">Admin</b-link></b-nav-item>
           <b-nav-item class="text-white" v-if="!profile.loggedIn && webWalletNeeded">
             <h1><a :href="webWalletLink" target="_blank">Get a Stacks Web Wallet <b-icon class="ml-3 mb-3" icon="arrow-up-right-square-fill"/></a></h1>
@@ -123,6 +123,7 @@ export default {
         this.$emit('connect-login', myProfile)
       } else {
         this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
+          localStorage.removeItem('UPGRADE_TX')
           this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
         }).catch(() => {
           this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForAnon', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN }, { root: true })

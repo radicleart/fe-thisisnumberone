@@ -71,6 +71,7 @@ export default {
   props: ['mode', 'displayClass'],
   data () {
     return {
+      hideForCPS: true,
       showCollectionsFilter: false,
       assetNames: [],
       query: {
@@ -109,10 +110,12 @@ export default {
       return this.mode === 'search' || this.mode === 'traditional' || this.mode === 'punks'
     },
     showEditions () {
+      if (this.hideForCPS) return false
       if (this.mode === 'loopbomb') return false
       return this.mode === 'search' || this.mode === 'traditional' || this.mode === 'punks'
     },
     showSelling () {
+      if (this.hideForCPS) return false
       if (this.mode === 'loopbomb') return true
       return this.mode === 'search' || this.mode === 'traditional' || this.mode === 'punks'
     },

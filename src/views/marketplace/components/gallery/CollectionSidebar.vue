@@ -10,11 +10,11 @@
     <h3 class="border-bottom pointer mb-4" @click="showColls = !showColls"><b-icon font-scale="0.8" v-if="showColls" icon="chevron-down"/> <b-icon font-scale="0.8" v-else icon="chevron-right"/> #1 Collections</h3>
     <div class="" v-if="showColls">
       <div class="ml-5 my-3" v-for="(loopRun, index) in allLoopRuns" :key="index">
-        <p :class="isSelected(loopRun.currentRunKey)" v-if="loopRun.status !== 'disabled'" class="pointer" @click="showCollection(loopRun)">{{loopRun.currentRun}}</p>
+        <p :class="isSelected(loopRun.currentRunKey)" v-if="loopRun.currentRunKey === 'crash_punks_v2' && loopRun.status !== 'disabled'" class="pointer" @click="showCollection(loopRun)">{{loopRun.currentRun}}</p>
       </div>
     </div>
   </div>
-  <div v-if="canUpload()">
+  <div v-if="enabled && canUpload()">
     <h3 class="border-bottom mb-4">Uploads</h3>
     <div class="ml-5 my-3">
       <h4 class="pointer" @click="showUploads()">all uploads</h4>
@@ -34,6 +34,7 @@ export default {
   props: ['allowUploads'],
   data () {
     return {
+      enabled: false,
       showWalletNfts: false,
       loaded: false,
       showColls: true,

@@ -4,7 +4,6 @@
     <b-row align-h="center" :style="'min-height: ' + videoHeight + 'px'">
       <b-col lg="7" sm="10" class="mb-5">
         <div id="video-column" :style="dimensions">
-          <!-- <MediaItem :videoOptions="videoOptions" :attributes="gaiaAsset.attributes" :targetItem="targetItem()"/> -->
           <MediaItemGeneral :classes="'hash1-image'" v-on="$listeners" :options="videoOptions" :mediaItem="getMediaItem().artworkFile"/>
         </div>
       </b-col>
@@ -13,7 +12,7 @@
           <b-col cols="12" class="">
             <div class="d-flex justify-content-between mb-5">
               <div><router-link class="text-white" to="/nft-marketplace"><b-icon icon="chevron-left" shift-h="-4" variant="white"></b-icon> Back</router-link></div>
-              <div class="d-flex justify-content-between">
+              <div class="d-flex justify-content-between" v-if="!hiddenCPS">
                 <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'light' }" :title="ttOnAuction" class="text-white" variant="outline-success"><b-icon class="ml-2" icon="question-circle"/></b-link>
                 <div class="text-center on-auction-text ml-3 py-3 px-4 bg-warning text-white">
                   <div>{{salesBadgeLabel}}</div>
@@ -141,6 +140,7 @@ export default {
   data: function () {
     return {
       forceOfferFlow: false,
+      hiddenCPS: true,
       grid: require('@/assets/img/navbar-footer/grid.svg'),
       cross: require('@/assets/img/navbar-footer/cross.svg'),
       hammer: require('@/assets/img/auction.svg'),
@@ -296,9 +296,7 @@ export default {
       return 'max-width: ' + dims.height + '; max-height: ' + dims.height + ';'
     },
     poster: function () {
-      if (this.gaiaAsset.attributes.coverImage) {
-        return this.gaiaAsset.attributes.coverImage.fileUrl
-      }
+      return this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.gaiaAsset)
     },
     getArtist: function () {
       if (this.gaiaAsset.artist) {
@@ -321,6 +319,7 @@ export default {
       const profile = this.$store.getters[APP_CONSTANTS.KEY_PROFILE]
       if (!profile.loggedIn && this.gaiaAsset.contractAsset.saleData.saleType !== 3) {
         this.$store.dispatch('rpayAuthStore/startLogin').then(() => {
+          localStorage.removeItem('UPGRADE_TX')
           this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: process.env.VUE_APP_DEFAULT_LOOP_RUN, stxAddress: profile.stxAddress }, { root: true })
           this.$emit('registerByConnect')
         }).catch((err) => {
@@ -471,6 +470,7 @@ export default {
       return configuration
     },
     videoOptions () {
+      const sources = (this.gaiaAsset.attributes) ? { src: this.gaiaAsset.attributes.artworkFile.fileUrl, type: this.gaiaAsset.attributes.artworkFile.type } : {}
       const videoOptions = {
         emitOnHover: true,
         playOnHover: false,
@@ -482,10 +482,8 @@ export default {
         showMeta: false,
         dimensions: 'max-width: 100%; max-height: auto;',
         aspectRatio: '1:1',
-        poster: (this.gaiaAsset.attributes.coverImage) ? this.gaiaAsset.attributes.coverImage.fileUrl : null,
-        sources: [
-          { src: this.gaiaAsset.attributes.artworkFile.fileUrl, type: this.gaiaAsset.attributes.artworkFile.type }
-        ],
+        poster: this.gaiaAsset.image,
+        sources: [sources],
         fluid: false
       }
       return videoOptions

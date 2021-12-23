@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="allowed">
     <div class="mb-4" :key="componentKey">
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
       <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
@@ -30,6 +30,7 @@ export default {
   props: ['loopRun', 'defQuery'],
   data () {
     return {
+      allowed: false,
       resultSet: [],
       edition: null,
       trait: '',
@@ -110,7 +111,9 @@ export default {
           this.fetchV2Page(data, reset)
         } else {
           // after V2 we added the runKey/makerurl to the metaDataUrl to filter tokens more easily.
-          this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((result) => {
+          // this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractIdAndRunKey', data).then((result) => {
+          // data.query = null
+          this.$store.dispatch('rpayStacksContractStore/fetchTokensByContractId', data).then((result) => {
             this.resultSet = result.gaiaAssets
             this.tokenCount = result.tokenCount
             this.numberOfItems = result.tokenCount

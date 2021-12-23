@@ -9,7 +9,7 @@
           </span>
         </b-col>
         <b-col cols="12">
-          <span class="pointer" @click="showRoyalties = !showRoyalties">{{item.contractAsset.owner}} <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'warning' }"  :title="'The owning stacks address of this loopbomb'"><b-icon class="ml-2" font-scale="1.3" icon="question-circle"/></b-link></span>
+          <span class="">{{item.contractAsset.owner}} <b-link router-tag="span" v-b-tooltip.hover="{ variant: 'warning' }"  :title="'The owning stacks address'"><b-icon class="ml-2" font-scale="1.3" icon="question-circle"/></b-link></span>
         </b-col>
       </b-row>
       <b-row v-if="showRoyalties">

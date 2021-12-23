@@ -6,7 +6,7 @@
       <CollectionSidebar :allowUploads="true" @update="update"/>
     </b-col>
     <b-col md="9" sm="12" >
-      <div v-if="showUploads">
+      <div v-if="allowed && showUploads">
         <h1 class="mb-4 border-bottom">Uploads (<b-link to="/upload-item">new</b-link>)</h1>
         <b-row>
           <b-col v-for="(gaiaAsset, index) in gaiaAssets" :key="index" lg="3" md="6" sm="6" xs="12">
@@ -14,16 +14,18 @@
           </b-col>
         </b-row>
       </div>
-      <div v-if="showWalletNfts">
+      <div v-if="allowed && showWalletNfts">
         <MyWalletNfts/>
       </div>
-      <div v-else-if="loopRun && (loopRun.status !== 'disabled')">
+      <div v-if="loopRun && (loopRun.status !== 'disabled')">
         <MyPageableItems :loopRun="loopRun"/>
       </div>
+      <!--
       <div v-if="loopRun && loopRun.type === 'punks' && loopRun.status === 'unrevealed'">
         <p><b-link :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.currentRun}} artwork available - mint here!</b-link></p>
       </div>
-      <div v-if="showTxs">
+      -->
+      <div v-if="allowed && showTxs">
         <h1 class="pointer mb-4 border-bottom" @click="showPending = !showPending"><b-icon font-scale="0.6" v-if="showPending" icon="chevron-down"/><b-icon font-scale="0.6" v-else icon="chevron-right"/> My Transactions</h1>
         <b-row class="mb-4" v-if="showPending && loopRun">
           <div class="w-100 d-flex justify-content-end">
@@ -61,6 +63,7 @@ export default {
   },
   data () {
     return {
+      allowed: false,
       showTxs: false,
       componentKey: 0,
       approved: false,
@@ -133,6 +136,7 @@ export default {
       const profile = this.$store.getters['rpayAuthStore/getMyProfile']
       if (!profile.loggedIn) {
         this.$store.dispatch('rpayAuthStore/startLogin').then((profile) => {
+          localStorage.removeItem('UPGRADE_TX')
           this.$store.dispatch('rpayCategoryStore/fetchLatestLoopRunForStxAddress', { currentRunKey: this.loopRun.currentRunKey, stxAddress: profile.stxAddress }, { root: true })
           this.$emit('registerByConnect')
         }).catch(() => {

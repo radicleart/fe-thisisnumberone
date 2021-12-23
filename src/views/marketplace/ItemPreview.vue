@@ -205,7 +205,7 @@ export default {
         if (runKey && runKey.indexOf('.json') === -1) {
           return runKey
         }
-      } else if (gaiaAsset.attributes.collection) {
+      } else if (gaiaAsset.attributes && gaiaAsset.attributes.collection) {
         if (gaiaAsset.attributes.collection.indexOf('/') === -1) {
           return gaiaAsset.attributes.collection
         } else {

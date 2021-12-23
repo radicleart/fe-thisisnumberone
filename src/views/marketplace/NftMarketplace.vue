@@ -12,7 +12,7 @@
         </div>
         <CollectionSidebar :allowUploads="false" @update="update"/>
       </b-col>
-      <b-col md="9" sm="12" v-if="showSearchFilters">
+      <b-col md="9" sm="12" v-if="ready && showSearchFilters">
         <h1 class="mb-4 border-bottom">Search for NFTs</h1>
         <div :key="searchKey" class="mb-4">
           <PageableItems :defQuery="defQuery"/>
@@ -60,6 +60,7 @@ export default {
   data () {
     return {
       loaded: false,
+      ready: false,
       allowSearch: false,
       showSearchFilters: false,
       defQuery: {

@@ -59,7 +59,9 @@ export default {
     values () {
       if (!this.trait) return []
       let mapped = []
-      mapped = this.trait.attributes.map(function (trait) {
+      const withVals = this.trait.attributes.filter((o) => o.value !== null && o.value.length > 0)
+      mapped = withVals.map(function (trait) {
+        if (!trait.value || trait.value.length === 0) return {}
         const label = trait.trait_type.split('_')
         label.splice(0, 2)
         const value = (trait.value) ? trait.value.split('_') : ['']
