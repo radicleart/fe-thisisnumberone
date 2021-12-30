@@ -19,7 +19,7 @@
           <b-col sm="5" xs="12">
             <b-row style="height: 100%;">
               <b-col cols="12" align-self="start">
-                <h1 class="border-bottom mb-5">{{loopRun.currentRun}} ({{loopRun.tokenCount + '/' + loopRun.versionLimit}})</h1>
+                <h1 class="border-bottom mb-5">{{loopRun.currentRun}}</h1> <!-- ({{loopRun.tokenCount + '/' + loopRun.versionLimit}}) -->
                 <p class="mt-5">EDITION: {{loopRun.versionLimit}}</p>
                 <!-- <p>AVAILABLE: {{loopRun.versionLimit - loopRun.tokenCount}}</p> -->
                 <p class="mt-5" v-if="loopRun.description" v-html="preserveWhiteSpace(loopRun.description)"></p>
@@ -31,7 +31,7 @@
                 <div class="mt-2" v-else>
                   <div v-if="mintingStatus === 1 || mintingStatus === 6">
                     <div class="mt-2">
-                      <span>{{credits}} Mints Remaining</span>
+                      <!-- <span>{{credits}} Mints Remaining</span> -->
                     </div>
                     <div v-if="mintingOk">
                       <b-row class="">

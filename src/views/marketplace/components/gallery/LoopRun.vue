@@ -29,7 +29,7 @@
           <a class="text-warning" :href="origin + '/nft-marketplace/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey" target="_blank">{{loopRun.currentRun}}</a>
         </div>
         <div>
-          Minting: {{mintPrice}} STX
+          Minting: 50 STX
         </div>
       </div>
   </div>

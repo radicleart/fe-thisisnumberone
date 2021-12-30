@@ -17,7 +17,7 @@
             </b-col>
             <b-col cols="9" class="" align-self="end">
                 <div class="">
-                  <div v-if="loopRun.type === 'punks'"><b-link v-if="loopRun.currentRun != 'Crash Punks V1'" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey">{{loopRun.versionLimit - loopRun.tokenCount}} still available</b-link></div>
+                  <div v-if="loopRun.type === 'punks'"><b-link v-if="loopRun.currentRun != 'Crash Punks V1'" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey"><!-- {{loopRun.versionLimit - loopRun.tokenCount}}--> mint here</b-link></div>
                   <div v-else>
                     <span class="mr-3" v-html="availableMessage()"></span>
                     <span v-b-tooltip.hover="{ variant: 'warning' }" :title="'Vist project to mint new NFTs'" v-if="loopRun.externalUrl"><a :href="loopRun.externalUrl" target="_blank"><b-icon icon="arrow-up-right-circle" font-scale="0.8"/></a></span>
