@@ -33,6 +33,7 @@ const MetaData = () => import(/* webpackChunkName: "MetaData" */ '@/views/market
 const MyNftLibrary = () => import('@/views/marketplace/MyNftLibrary.vue')
 const NftGallery = () => import('@/views/marketplace/NftGallery.vue')
 const NftMarketplace = () => import('@/views/marketplace/NftMarketplace.vue')
+const NftsAtAddress = () => import('@/views/marketplace/NftsAtAddress.vue')
 const NftCollection = () => import('@/views/marketplace/NftCollection.vue')
 const PunkMinter = () => import('@/views/marketplace/PunkMinter.vue')
 const UploadItem = () => import('@/views/marketplace/UploadItem.vue')
@@ -96,6 +97,12 @@ const routes: Array<RouteConfig> = [
     path: '/nft-marketplace/:maker/:collection',
     name: 'nft-collection',
     components: { default: NftCollection, header: MainNavbar, footer: MainFooter },
+    meta: { title: 'Marketplace for NFTs by the Number One Team Secured by Bitcoin' }
+  },
+  {
+    path: '/nfts/:stxAddress',
+    name: 'nfts-at-address',
+    components: { default: NftsAtAddress, header: MainNavbar, footer: MainFooter },
     meta: { title: 'Marketplace for NFTs by the Number One Team Secured by Bitcoin' }
   },
   {

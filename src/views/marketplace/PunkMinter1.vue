@@ -34,8 +34,6 @@
                       <!-- <span>{{credits}} Mints Remaining</span> -->
                     </div>
                     <div v-if="mintingOk">
-                      Minting is paused
-                      <!--
                       <b-row class="">
                         <b-col cols="6" class="px-0 pr-1 pl-4 mx-0">
                           <b-form-select style="text-align: center; font-size: 2rem; font-weight: 700; height: 4rem;" v-if="loopRun.batchSize > 1" id="batchOption" v-model="batchOption" :options="batchOptions()"></b-form-select>
@@ -44,7 +42,6 @@
                           <b-button class="w-100 text-white" variant="warning" @click="startMinting()">Mint<span v-if="loopRun && loopRun.batchSize > 0"> {{batchOption}}</span></b-button>
                         </b-col>
                       </b-row>
-                      -->
                     </div>
                     <div v-else>
                       <div class="d-flex justify-content-between">
@@ -140,22 +137,16 @@ export default {
     this.currentRunKey = this.$route.params.collection
     this.$store.dispatch('rpayCategoryStore/fetchLoopRun', this.currentRunKey).then((loopRun) => {
       this.loopRun = loopRun
-      this.setMintingStatus()
-      if (this.profile.loggedIn) {
-        const data = {
-          stxAddress: this.profile.stxAddress,
-          contractAddress: loopRun.contractId.split('.')[0],
-          contractName: loopRun.contractId.split('.')[1],
-          currentRunKey: this.$route.params.collection
-        }
-        this.$store.dispatch('rpayMarketStore/lookupMintPassBalance', data).then((result) => {
-          if (result && result > 0) {
-            this.mintImage = loopRun.mintImage1 || loopRun.image
-            this.allowed = result
-            this.setMintingStatus()
-          }
-        })
+      const data = {
+        stxAddress: this.profile.stxAddress,
+        contractId: loopRun.contractId,
+        currentRunKey: this.$route.params.collection
       }
+      this.$store.dispatch('rpayCategoryStore/checkGuestList', data).then((result) => {
+        this.mintImage = loopRun.mintImage1 || loopRun.image
+        this.allowed = result
+        this.setMintingStatus()
+      })
     })
     if (window.eventBus && window.eventBus.$on) {
       const $self = this

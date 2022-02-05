@@ -1,5 +1,5 @@
 <template>
-  <div v-if="allowed">
+  <div>
     <div class="mb-4" :key="componentKey">
       <Pagination @changePage="gotoPage" :pageSize="pageSize" :numberOfItems="numberOfItems" v-if="numberOfItems > 0"/>
       <div id="my-table" class="row" v-if="resultSet && resultSet.length > 0">
@@ -30,7 +30,6 @@ export default {
   props: ['loopRun', 'defQuery'],
   data () {
     return {
-      allowed: false,
       resultSet: [],
       edition: null,
       trait: '',

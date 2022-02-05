@@ -107,7 +107,11 @@ export default {
         this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
       })
     } else {
-      this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
+      if (this.asset.image.startsWith('ipfs://')) {
+        this.image = this.asset.image.replace('ipfs://', HTTPS_HASHONE_MYPINATA_CLOUD_IPFS)
+      } else {
+        this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
+      }
     }
     const $self = this
     const $ele = this.$refs.itemImage
@@ -159,7 +163,7 @@ export default {
       e.preventDefault()
     },
     imageError () {
-      this.image = this.asset.attributes.artworkFile.fileUrl
+      this.image = this.$store.getters[APP_CONSTANTS.KEY_ASSET_IMAGE_URL](this.asset)
     },
     created () {
       if (this.asset && this.asset.mintInfo && this.asset.mintInfo.timestamp) {

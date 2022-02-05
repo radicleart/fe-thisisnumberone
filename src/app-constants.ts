@@ -59,6 +59,8 @@ export const APP_CONSTANTS = {
   KEY_MY_ITEM: 'rpayMyItemStore/myItem',
   KEY_ITEM_VALIDITY: 'rpayMyItemStore/getItemValidity',
 
+  KEY_MARKET_BIDDING_CURRENT_BID: 'rpayMarketStore/getCurrentListPrice',
+
   KEY_BIDDING_CURRENT_BID: 'rpayPurchaseStore/getCurrentBid',
   KEY_BIDDING_NEXT_BID: 'rpayPurchaseStore/getNextBid',
   KEY_SALES_BUTTON_LABEL: 'rpayPurchaseStore/getSalesButtonLabel',

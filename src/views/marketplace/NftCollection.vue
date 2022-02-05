@@ -17,7 +17,7 @@
             </b-col>
             <b-col cols="9" class="" align-self="end">
                 <div class="">
-                  <div v-if="loopRun.type === 'punks'"><b-link v-if="loopRun.currentRun != 'Crash Punks V1'" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey"><!-- {{loopRun.versionLimit - loopRun.tokenCount}}--> mint here</b-link></div>
+                  <div v-if="loopRun.type === 'punks'"><b-link v-if="loopRun.currentRun === 'nothing'" :to="'/punk-minter/' + loopRun.makerUrlKey + '/' + loopRun.currentRunKey"><!-- {{loopRun.versionLimit - loopRun.tokenCount}}--> mint here</b-link></div>
                   <div v-else>
                     <span class="mr-3" v-html="availableMessage()"></span>
                     <span v-b-tooltip.hover="{ variant: 'warning' }" :title="'Vist project to mint new NFTs'" v-if="loopRun.externalUrl"><a :href="loopRun.externalUrl" target="_blank"><b-icon icon="arrow-up-right-circle" font-scale="0.8"/></a></span>
@@ -28,7 +28,7 @@
                 </div>
             </b-col>
           </b-row>
-          <b-row class="" v-if="ready">
+          <b-row class="">
             <b-col>
               <div class="mb-4 border-bottom d-flex justify-content-between">
                 <h1 class="">NFTs</h1>
@@ -37,7 +37,7 @@
             </b-col>
           </b-row>
         </div>
-        <div :key="searchKey" class="mb-4" v-if="ready && (loopRun.status === 'unrevealed' || loopRun.status === 'active' || loopRun.status === 'inactive')">
+        <div :key="searchKey" class="mb-4" v-if="(loopRun.status === 'unrevealed' || loopRun.status === 'active' || loopRun.status === 'inactive')">
           <PageableItems @tokenCount="tokenCount" :defQuery="defQuery" :loopRun="loopRun"/>
         </div>
         <!--
@@ -79,7 +79,6 @@ export default {
   data () {
     return {
       showMinted: true,
-      ready: false,
       showCollectionData: true,
       showSearch: false,
       defQuery: {
@@ -115,7 +114,7 @@ export default {
       if (this.loopRun.versionLimit - this.loopRun.tokenCount > 0) {
         return this.loopRun.versionLimit - this.loopRun.tokenCount + ' still available'
       } else {
-        return 'All ' + this.loopRun.versionLimit + ' minted - <a href="/nft-marketplace/' + this.loopRun.makerUrlKey + '/' + this.loopRun.currentRunKey + '">try the secondary market</a>'
+        return this.loopRun.versionLimit + ' minted'
       }
     },
     tokenCount (data) {
