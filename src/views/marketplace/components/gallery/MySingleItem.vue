@@ -6,9 +6,7 @@
         <div class="mb-3 text-small d-flex justify-content-between">
           <div style="height: 2rem;" class="overflow-hidden text-bold">{{mintedMessage}}</div>
           <div v-if="showTraitsLink()">
-            <!-- <PunkConnect v-on="$listeners" v-if="!hideOtherLinks && loopRun && loopRun.type === 'punks'" :loopRun="loopRun" :asset="asset" @update="update"/> -->
             <b-link class="text-small text-warning pl-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Click here to see your Crash Punk traits" @click.prevent="openPunkRarity()"><span>traits</span></b-link>
-            <!-- <a v-if="asset.contractAsset && asset.contractAsset.tokenInfo" :href="asset.contractAsset.tokenInfo.metaDataUrl" target="_blank" class="text-small text-warning pl-2 py-0 my-0" v-b-tooltip.hover="{ variant: 'warning' }" title="Open meta data file"><span>meta</span></a> -->
           </div>
         </div>
         <div class="text-small d-flex justify-content-between">
